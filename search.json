@@ -1,10 +1,10 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "guides.html",
+    "href": "guides.html",
+    "title": "Guides",
     "section": "",
-    "text": "MADS-Net"
+    "text": "Guides\n\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\nDescription\n\n\n\n\n\n\n\n\nJun 2, 2025\n\n\nContainerized MADS\n\n\nPaolo Bosetti\n\n\nThe base agents for setting up a MADS network are available as a ontainerized environment. \n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "index.html",
@@ -14,10 +14,38 @@
     "text": "What is it\nMADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.\nIt is made by a main set of executables available in the MADS tools collection repo, which also provides installers for Linux, MacOS and Windows.\nThe MADS tools collection includes a broker and a set of general purpose agents that can act as sources, filters, or sinks. The actual operations performed by agents can be customized either via scripting languages (using simple popen interface), or by implementing dedicated plugins in C++.\nSome of the available plugins are:\n\narduino_plugin: reads from a serial connected arduino\nhpe2D_plugin: performs human pose estimation from a camera stream\nmqtt_plugin: acts as a bridge with an MQTT network\nsay_plugin: Text-to-speech of incoming messages\nble_plugin: Bluetooth Low Energy source plugin\ntui_plugin: Terminal User Interface for sending metadata commands to MADS network\nlua_plugin: Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)\n\nThere are also additional monolithic agents:\n\npython_agent: Interfacing Python3 scripts to the MADS network (useful for prototyping and rapid development)\n\nLook into the guides section for more information on how to use the MADS tools collection."
   },
   {
-    "objectID": "guides.html",
-    "href": "guides.html",
-    "title": "Guides",
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
     "section": "",
-    "text": "Guides\n\n\n\n\n\n\n\n    \n      \n      \n    \n\n\n\n\nDate\nTitle\nAuthor\nDescription\n\n\n\n\n\nNo matching items"
+    "text": "MADS-Net"
+  },
+  {
+    "objectID": "guides/containerized.html",
+    "href": "guides/containerized.html",
+    "title": "Containerized MADS",
+    "section": "",
+    "text": "Setting up a MADS network requires a minimum of a broker, a MongoDB server, and the logger agent. This guide explains the easiest and more portable solution to have them up and running in minuts in a Docker environment."
+  },
+  {
+    "objectID": "guides/containerized.html#step-1.-clone-the-repo",
+    "href": "guides/containerized.html#step-1.-clone-the-repo",
+    "title": "Containerized MADS",
+    "section": "Step 1. Clone the repo",
+    "text": "Step 1. Clone the repo\nAll you need is in the MADS_container repository. You can clone it with the following command:\ngit clone --depth 1 https://github.com/MADS-NET/MADS_container.git"
+  },
+  {
+    "objectID": "guides/containerized.html#step-2.-build-contaners",
+    "href": "guides/containerized.html#step-2.-build-contaners",
+    "title": "Containerized MADS",
+    "section": "Step 2. Build contaners",
+    "text": "Step 2. Build contaners\nIn the MADS_container directory, you can build the containers with the following command:\ndocker compose build\n\n\n\n\n\n\nNote\n\n\n\nThis is only to be done once."
+  },
+  {
+    "objectID": "guides/containerized.html#step-3.-run-the-containers",
+    "href": "guides/containerized.html#step-3.-run-the-containers",
+    "title": "Containerized MADS",
+    "section": "Step 3. Run the containers",
+    "text": "Step 3. Run the containers\nYou can now run the containers with the following command:\ndocker compose up\nThis starts the three containerized processes: MogoDB, the broker, and the logger agent in terminal attached mode: this means that you can read the logs and stop all three containers at once by pressing Ctrl-C.\nOnce you are sure that everything works as expected, you may start the containers in detached mode with the following command:\ndocker compose up -d\n\n\n\n\n\n\nNote\n\n\n\nYou can stop the containers at any time with the command docker compose down.\n\n\nNow the broker and the database are also accessible as if they were processes running on your host machine."
   }
 ]

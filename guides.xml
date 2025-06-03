@@ -10,6 +10,96 @@
 <atom:link href="https://MADS-NET.github.io/mads-net.github.io/guides.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.7.30</generator>
-<lastBuildDate>Mon, 02 Jun 2025 15:16:45 GMT</lastBuildDate>
+<lastBuildDate>Sun, 01 Jun 2025 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>Containerized MADS</title>
+  <dc:creator>Paolo Bosetti</dc:creator>
+  <link>https://MADS-NET.github.io/mads-net.github.io/guides/containerized.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="contents" class="level1">
+<h1>Contents</h1>
+<p>Setting up a MADS network requires a minimum of a broker, a MongoDB server, and the logger agent. This guide explains the easiest and more portable solution to have them up and running in minuts in a Docker environment.</p>
+</section>
+<section id="prerequisites" class="level1">
+<h1>Prerequisites</h1>
+<p>You need to have Docker installed on your machine. If you don’t have it yet, you can follow the <a href="https://docs.docker.com/get-docker/">official installation guide</a>. Follow that guide thoroughly, and make sure you can run this command in your terminal:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">docker</span> run hello-world</span></code></pre></div>
+</section>
+<section id="running-the-mads-network" class="level1">
+<h1>Running the MADS network</h1>
+<p>The MADS Network is actually available as a <strong>compose</strong> network of three containers: the broker, the MongoDB server, and the logger agent. Docker has a <code>docker compose</code> command that allows to build and deploy multiple, synchronized containers properly sharing network communications.</p>
+<p>To find more on <code>docker compose</code>, have a look at the <a href="https://docs.docker.com/compose/">documentation</a>.</p>
+<section id="step-1.-clone-the-repo" class="level2">
+<h2 class="anchored" data-anchor-id="step-1.-clone-the-repo">Step 1. Clone the repo</h2>
+<p>All you need is in the <a href="https://github.com/MADS-NET/MADS_container">MADS_container</a> repository. You can clone it with the following command:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">git</span> clone <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--depth</span> 1 https://github.com/MADS-NET/MADS_container.git</span></code></pre></div>
+</section>
+<section id="step-2.-build-contaners" class="level2">
+<h2 class="anchored" data-anchor-id="step-2.-build-contaners">Step 2. Build contaners</h2>
+<p>In the <code>MADS_container</code> directory, you can build the containers with the following command:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">docker</span> compose build</span></code></pre></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This is only to be done once.</p>
+</div>
+</div>
+</section>
+<section id="step-3.-run-the-containers" class="level2">
+<h2 class="anchored" data-anchor-id="step-3.-run-the-containers">Step 3. Run the containers</h2>
+<p>You can now run the containers with the following command:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">docker</span> compose up</span></code></pre></div>
+<p>This starts the three containerized processes: MogoDB, the broker, and the logger agent <strong>in terminal attached mode</strong>: this means that you can read the logs and stop all three containers at once by pressing <code>Ctrl-C</code>.</p>
+<p>Once you are sure that everything works as expected, you may start the containers in <strong>detached mode</strong> with the following command:</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">docker</span> compose up <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-d</span></span></code></pre></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You can stop the containers at any time with the command <code>docker compose down</code>.</p>
+</div>
+</div>
+<p>Now the broker and the database are also accessible as if they were processes running on your host machine.</p>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>template</category>
+  <guid>https://MADS-NET.github.io/mads-net.github.io/guides/containerized.html</guid>
+  <pubDate>Sun, 01 Jun 2025 22:00:00 GMT</pubDate>
+</item>
 </channel>
 </rss>
