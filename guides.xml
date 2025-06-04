@@ -163,6 +163,46 @@ Figure&nbsp;1: MADS Network
 </div>
 </div>
 </div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Remember that the above schematic represent <em>processes</em>, regardless the physical machine on which they are being executed.</p>
+<p>For example, the whole network could run on a single workstation, or it could be conversely distributed over multiple devices connected to the same IP network, each device running a single process/node.</p>
+</div>
+</div>
+<p>In the figure Figure&nbsp;1, the solid lines represent a <a href="https://zeromq.org">ZeroMQ</a> connection over TCP/IP, which uses compressed JSON as a data encoding protocol. Compression is preformed with the <a href="https://github.com/google/snappy">snappy</a> library. The dashed line, conversely, represents the proprietary MongoDB protocol, with data serialized as BSON (Binary-JSON).</p>
+<section id="the-broker" class="level2">
+<h2 class="anchored" data-anchor-id="the-broker">The broker</h2>
+<p>What is the broker purpose?</p>
+<p>The broker solves the issue of knowing multiple network addresses when you have a number of devices participating to the same distributed system.</p>
+<p>With the aid of the broker, any separate device partaking to the MADS network only needs to know a single hostname/IP address: that of the machine running the broker.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There can only be a single broker per network.</p>
+</div>
+</div>
+<p>Running the broker is quite simple:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> broker</span></code></pre></div>
+</section>
+<section id="the-agents" class="level2">
+<h2 class="anchored" data-anchor-id="the-agents">The agents</h2>
 <p>Agents can be:</p>
 <ul>
 <li><strong>monolithic</strong>: implemented as a single executable inheriting the <code>Mads::Agent</code> C++ class.</li>
@@ -175,7 +215,7 @@ Figure&nbsp;1: MADS Network
 <li><strong>sink</strong>: they consume information received from the network (e.g.&nbsp;to store or visualize)</li>
 </ul>
 <p>The MADS installer provides three general purpose agents, aptly named <code>source</code>, <code>filter</code>, and <code>sink</code>, that are designe do load proper plugins. The command <code>mads plugin</code> can be used to generate a suitable template for a new plugin to be developed.</p>
-<p>In the figure Figure&nbsp;1, the solid lines represent a <a href="https://zeromq.org">ZeroMQ</a> connection over TCP/IP, which uses compressed JSON as a data encoding protocol. Compression is preformed with the <a href="https://github.com/google/snappy">snappy</a> library.</p>
+</section>
 </section>
 <section id="layout-and-requirements" class="level1">
 <h1>Layout and requirements</h1>
