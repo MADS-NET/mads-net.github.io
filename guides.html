@@ -81,7 +81,7 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
+      valueNames: ['listing-date','listing-title','listing-author','listing-description','listing-categories','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
       
       searchColumns: ["listing-date","listing-title","listing-author"],
     };
@@ -175,14 +175,8 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#guides" id="toc-guides" class="nav-link active" data-scroll-target="#guides">Guides</a></li>
-  </ul>
-</nav>
-    </div>
+        
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="YWdlbnQ=">agent <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Y29udGFpbmVy">container <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ZG9ja2Vy">docker <span class="quarto-category-count">(1)</span></div><div class="category" data-category="cHl0aG9u">python <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c2V0dXA=">setup <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -217,12 +211,22 @@ window.Quarto = {
 </header>
 
 
-<section id="guides" class="level1">
-<h1>Guides</h1>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Guides are open to contribution: fork the repo <a href="https://github.com/mads-net/mads-net.github.io" class="uri">https://github.com/mads-net/mads-net.github.io</a>, make some changes, and submit a pull request.</p>
+</div>
+</div>
 
 
 
-</section>
 
 <div class="quarto-listing quarto-listing-container-table" id="listing-listing">
 <div class="listing-actions-group">
@@ -250,7 +254,7 @@ window.Quarto = {
       <input type="text" class="search form-control" placeholder="Filter">
     </div>
 </div>
-<table class="quarto-listing-table table">
+<table class="quarto-listing-table table table-hover">
 <thead>
 <tr>
 
@@ -270,11 +274,20 @@ window.Quarto = {
 Description
 </th>
 
+<th>
+Categories
+</th>
+
+<th>
+Reading Time
+</th>
+
 </tr>
 </thead>
 <tbody class="list">
 
-<tr data-index="0" data-categories="dGVtcGxhdGU=" data-listing-date-sort="1748815200000" data-listing-file-modified-sort="1748935407458" data-listing-date-modified-sort="1748988000000" data-listing-reading-time-sort="2" data-listing-word-count-sort="288" data-listing-title-sort="Containerized MADS" data-listing-filename-sort="containerized.qmd">
+<tr data-index="0" data-categories="ZG9ja2VyJTJDY29udGFpbmVyJTJDc2V0dXA=" data-listing-date-sort="1748815200000" data-listing-file-modified-sort="1749036375497" data-listing-date-modified-sort="1748988000000" data-listing-reading-time-sort="2" data-listing-word-count-sort="288" data-listing-title-sort="Containerized MADS" data-listing-filename-sort="containerized.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-date">Jun 2, 2025</span>
 </td>
@@ -287,10 +300,17 @@ Description
 <td>
 <span class="listing-description">The base agents for setting up a MADS network are available as a ontainerized environment. </span>
 </td>
+<td>
+<span class="listing-categories">docker, container, setup</span>
+</td>
+<td>
+<span class="listing-reading-time">2 min</span>
+</td>
 
 </tr>
 
-<tr data-index="1" data-categories="dGVtcGxhdGU=" data-listing-date-sort="1748815200000" data-listing-file-modified-sort="1749034140023" data-listing-date-modified-sort="1748988000000" data-listing-reading-time-sort="2" data-listing-word-count-sort="344" data-listing-title-sort="Python Agent" data-listing-filename-sort="python_agent.qmd">
+<tr data-index="1" data-categories="cHl0aG9uJTJDYWdlbnQ=" data-listing-date-sort="1748815200000" data-listing-file-modified-sort="1749036478136" data-listing-date-modified-sort="1748988000000" data-listing-reading-time-sort="3" data-listing-word-count-sort="594" data-listing-title-sort="Python Agent" data-listing-filename-sort="python_agent.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
 <td>
 <span class="listing-date">Jun 2, 2025</span>
 </td>
@@ -302,6 +322,12 @@ Description
 </td>
 <td>
 <span class="listing-description">The <code>python_agent</code> repo on GitHub provides a MADS agent with an embedded python3 interpreter for developing MADS sgents in Python </span>
+</td>
+<td>
+<span class="listing-categories">python, agent</span>
+</td>
+<td>
+<span class="listing-reading-time">3 min</span>
 </td>
 
 </tr>
@@ -382,7 +408,7 @@ Description
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/MADS-NET\.github\.io\/mads-net\.github\.io\/");
+        var filterRegex = new RegExp("https:\/\/mads-net\.github\.io");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

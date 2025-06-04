@@ -6,15 +6,15 @@
       version="2.0">
 <channel>
 <title>MADS</title>
-<link>https://MADS-NET.github.io/mads-net.github.io/guides.html</link>
-<atom:link href="https://MADS-NET.github.io/mads-net.github.io/guides.xml" rel="self" type="application/rss+xml"/>
-<description></description>
+<link>https://mads-net.github.io/guides.html</link>
+<atom:link href="https://mads-net.github.io/guides.xml" rel="self" type="application/rss+xml"/>
+<description>MADS - Multi-Agent Distributed System</description>
 <generator>quarto-1.7.30</generator>
 <lastBuildDate>Sun, 01 Jun 2025 22:00:00 GMT</lastBuildDate>
 <item>
   <title>Containerized MADS</title>
   <dc:creator>Paolo Bosetti</dc:creator>
-  <link>https://MADS-NET.github.io/mads-net.github.io/guides/containerized.html</link>
+  <link>https://mads-net.github.io/guides/containerized.html</link>
   <description><![CDATA[ 
 
 
@@ -97,14 +97,16 @@ Note
 </section>
 
  ]]></description>
-  <category>template</category>
-  <guid>https://MADS-NET.github.io/mads-net.github.io/guides/containerized.html</guid>
+  <category>docker</category>
+  <category>container</category>
+  <category>setup</category>
+  <guid>https://mads-net.github.io/guides/containerized.html</guid>
   <pubDate>Sun, 01 Jun 2025 22:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Python Agent</title>
   <dc:creator>Paolo Bosetti</dc:creator>
-  <link>https://MADS-NET.github.io/mads-net.github.io/guides/python_agent.html</link>
+  <link>https://mads-net.github.io/guides/python_agent.html</link>
   <description><![CDATA[ 
 
 
@@ -129,14 +131,11 @@ font-style: inherit;">source</span> .venv/bin/activate</span>
 <span id="cb1-3"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">pip</span> install numpy</span>
-<span id="cb1-4"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">pip</span> install pyserial</span>
-<span id="cb1-5"><span class="co" style="color: #5E5E5E;
+<span id="cb1-4"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># also install other necessary Python libs</span></span>
-<span id="cb1-6"></span>
-<span id="cb1-7"><span class="fu" style="color: #4758AB;
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">cmake</span> <span class="at" style="color: #657422;
 background-color: null;
@@ -157,14 +156,14 @@ background-color: null;
 font-style: inherit;">)</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span></span>
-<span id="cb1-8"><span class="fu" style="color: #4758AB;
+<span id="cb1-7"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">cmake</span> <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">--build</span> build <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">-j6</span></span>
-<span id="cb1-9"><span class="fu" style="color: #4758AB;
+<span id="cb1-8"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sudo</span> cmake <span class="at" style="color: #657422;
 background-color: null;
@@ -186,7 +185,10 @@ background-color: null;
 font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">venv</span>\Scripts\activate</span>
-<span id="cb2-3">pip install numpy</span></code></pre></div>
+<span id="cb2-3">pip install numpy</span>
+<span id="cb2-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># also install other necessary Python libs</span></span></code></pre></div>
 <p>Then:</p>
 <div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb3-1">cmake <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -213,14 +215,106 @@ font-style: inherit;">--</span>config Release</span>
 <span id="cb3-3">sudo cmake <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">--</span>install build</span></code></pre></div>
-<p>Then you can just type <code>mads-python -h</code>.</p>
-<p><strong>Note</strong>: for <code>sudo</code> to work on Windows, you need to enable it on <em>Settings &gt; System &gt; For Developers</em> and set <em>Enable sudo</em> to On.</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Enable sudo on Windows">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Enable sudo on Windows
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For <code>sudo</code> to work on Windows, you need to enable it on <em>Settings &gt; System &gt; For Developers</em> and set <em>Enable sudo</em> to On.</p>
+</div>
+</div>
 </section>
 </section>
 <section id="executing" class="level2">
 <h2 class="anchored" data-anchor-id="executing">Executing</h2>
-<p>Typically, to launch an agent named <code>python_source</code>, that gets its settings from a <code>python_source</code> section in <code>mads.ini</code>, and uses the Python module named <code>source</code> defined in the <code>source.py</code> file and that runs every 100 ms, the command is:</p>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+<p>The new agent is installed as <code>mads-python</code>, so you can just type <code>mads python -h</code> (or <code>mads-python -h</code> on Windows) to know more:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> mads <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">python</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-h</span></span>
+<span id="cb4-2"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">python</span> ver. 1.2.6</span>
+<span id="cb4-3"></span>
+<span id="cb4-4"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Usage:</span></span>
+<span id="cb4-5">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">python</span> <span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">[</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">OPTION...</span><span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">]</span></span>
+<span id="cb4-6"></span>
+<span id="cb4-7">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-p,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--period</span> arg         Sampling period <span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">default</span> 100 ms<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">)</span></span>
+<span id="cb4-8">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-m,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--module</span> arg         Python module to load</span>
+<span id="cb4-9">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-n,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--name</span> arg           Agent name <span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">default</span> to <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'python'</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">)</span></span>
+<span id="cb4-10">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-i,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--agent-id</span> arg       Agent ID to be added to JSON frames</span>
+<span id="cb4-11">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-s,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--settings</span> arg       Settings file path/URI</span>
+<span id="cb4-12">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-S,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--save-settings</span> arg  Save settings to ini file</span>
+<span id="cb4-13">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-v,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--version</span>            Print version</span>
+<span id="cb4-14">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-h,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--help</span>               Print usage</span></code></pre></div>
+<p>Typically, to launch an agent named <code>python_source</code>, which gets its settings from a <code>python_source</code> section in <code>mads.ini</code>, and uses the Python module named <code>source</code> defined in the <code>source.py</code> file and that runs every 100 ms, the command is:</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">mads</span> python <span class="at" style="color: #657422;
 background-color: null;
@@ -229,6 +323,12 @@ background-color: null;
 font-style: inherit;">-m</span> source <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">-p100</span></span></code></pre></div>
+<p>where:</p>
+<ul>
+<li><code>-n python_source</code> sets the agent name to <code>python_source</code>, and gets its settings from the same section in the <code>mads.ini</code> file</li>
+<li><code>-m source</code> sets the Python module to <code>source.py</code>, which is searched for in the Python modules search paths, see below</li>
+<li><code>-p100</code> sets the sampling period to 100 ms</li>
+</ul>
 </section>
 <section id="python-modules-search-paths" class="level2">
 <h2 class="anchored" data-anchor-id="python-modules-search-paths">Python modules search paths</h2>
@@ -245,14 +345,14 @@ font-style: inherit;">-p100</span></span></code></pre></div>
 </ul>
 <p>plus any path listed in the <code>mads.ini</code> file under the <code>search_path</code> key (an array or a single string).</p>
 </section>
-<section id="mads.ini-section" class="level2">
-<h2 class="anchored" data-anchor-id="mads.ini-section"><code>mads.ini</code> section</h2>
+<section id="the-mads.ini-section" class="level2">
+<h2 class="anchored" data-anchor-id="the-mads.ini-section">The <code>mads.ini</code> section</h2>
 <p>The following fields are typically used:</p>
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb5-1"><span class="kw" style="color: #003B4F;
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">[python_source]</span></span>
-<span id="cb5-2"><span class="dt" style="color: #AD0000;
+<span id="cb6-2"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">period </span><span class="ot" style="color: #003B4F;
 background-color: null;
@@ -261,32 +361,45 @@ background-color: null;
 font-style: inherit;"> </span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">200</span></span>
-<span id="cb5-3"><span class="dt" style="color: #AD0000;
+<span id="cb6-3"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">venv </span><span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;"> "/path/to/.venv"</span></span>
-<span id="cb5-4"><span class="dt" style="color: #AD0000;
+<span id="cb6-4"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">python_module </span><span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;"> "my_source"</span></span>
-<span id="cb5-5"><span class="dt" style="color: #AD0000;
+<span id="cb6-5"><span class="dt" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">search_paths </span><span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;"> ["/path/to/python/folder"]</span></span></code></pre></div>
+font-style: inherit;"> ["/path/to/python/folder"</span></span></code></pre></div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The section name must match the <code>-m</code> option argument when you launch the agent, so in the case aboxe you must use <code>-m python_source</code>.</p>
+</div>
+</div>
 </section>
 <section id="module-types" class="level2">
 <h2 class="anchored" data-anchor-id="module-types">Module Types</h2>
 <p>Python modules can be of type <code>source</code>, <code>filter</code>, or <code>sink</code>. The module type is defined by setting a top level variable like this, typically at the beginning of the script, just after the various <code>import</code>s:</p>
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1">agent_type <span class="op" style="color: #5E5E5E;
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">agent_type <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
@@ -312,13 +425,15 @@ Note
 <p>To be completed</p>
 </div>
 </div>
+<hr>
 
 
 </section>
 
  ]]></description>
-  <category>template</category>
-  <guid>https://MADS-NET.github.io/mads-net.github.io/guides/python_agent.html</guid>
+  <category>python</category>
+  <category>agent</category>
+  <guid>https://mads-net.github.io/guides/python_agent.html</guid>
   <pubDate>Sun, 01 Jun 2025 22:00:00 GMT</pubDate>
 </item>
 </channel>
