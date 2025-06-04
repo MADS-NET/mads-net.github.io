@@ -2,7 +2,8 @@
   {
     "listing": "/guides.html",
     "items": [
-      "/guides/containerized.html"
+      "/guides/containerized.html",
+      "/guides/python_agent.html"
     ]
   }
 ]

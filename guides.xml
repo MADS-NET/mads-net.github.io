@@ -101,5 +101,225 @@ Note
   <guid>https://MADS-NET.github.io/mads-net.github.io/guides/containerized.html</guid>
   <pubDate>Sun, 01 Jun 2025 22:00:00 GMT</pubDate>
 </item>
+<item>
+  <title>Python Agent</title>
+  <dc:creator>Paolo Bosetti</dc:creator>
+  <link>https://MADS-NET.github.io/mads-net.github.io/guides/python_agent.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="contents" class="level1">
+<h1>Contents</h1>
+<p>The Python3 MADS agent is available on <a href="https://github.com/MADS-net/python_agent" class="uri">https://github.com/MADS-net/python_agent</a>.</p>
+<section id="installing" class="level2">
+<h2 class="anchored" data-anchor-id="installing">Installing</h2>
+<p>You need to have <code>python3</code> and <code>python3-dev</code> installed. Then proceed as follows depending on your platform.</p>
+<section id="unix" class="level3">
+<h3 class="anchored" data-anchor-id="unix">UNIX</h3>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">python3</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-m</span> venv .venv</span>
+<span id="cb1-2"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">source</span> .venv/bin/activate</span>
+<span id="cb1-3"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">pip</span> install numpy</span>
+<span id="cb1-4"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">pip</span> install pyserial</span>
+<span id="cb1-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># also install other necessary Python libs</span></span>
+<span id="cb1-6"></span>
+<span id="cb1-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cmake</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-Bbuild</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-DCMAKE_INSTALL_PREFIX</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-p</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span>
+<span id="cb1-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cmake</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--build</span> build <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-j6</span></span>
+<span id="cb1-9"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sudo</span> cmake <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--install</span> build</span></code></pre></div>
+<p>The above is tested on MacOS and Ubuntu 22.04.</p>
+</section>
+<section id="windows" class="level3">
+<h3 class="anchored" data-anchor-id="windows">Windows</h3>
+<p>Run the following from project root:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb2-1">python <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>m venv <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">venv</span></span>
+<span id="cb2-2"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">venv</span>\Scripts\activate</span>
+<span id="cb2-3">pip install numpy</span></code></pre></div>
+<p>Then:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb3-1">cmake <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>Bbuild <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>DCMAKE_INSTALL_PREFIX<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$(</span>mads <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>p<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span>
+<span id="cb3-2">cmake <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">--</span>build build <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">--</span>config Release</span>
+<span id="cb3-3">sudo cmake <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">--</span>install build</span></code></pre></div>
+<p>Then you can just type <code>mads-python -h</code>.</p>
+<p><strong>Note</strong>: for <code>sudo</code> to work on Windows, you need to enable it on <em>Settings &gt; System &gt; For Developers</em> and set <em>Enable sudo</em> to On.</p>
+</section>
+</section>
+<section id="executing" class="level2">
+<h2 class="anchored" data-anchor-id="executing">Executing</h2>
+<p>Typically, to launch an agent named <code>python_source</code>, that gets its settings from a <code>python_source</code> section in <code>mads.ini</code>, and uses the Python module named <code>source</code> defined in the <code>source.py</code> file and that runs every 100 ms, the command is:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> python <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-n</span> python_source <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-m</span> source <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-p100</span></span></code></pre></div>
+</section>
+<section id="python-modules-search-paths" class="level2">
+<h2 class="anchored" data-anchor-id="python-modules-search-paths">Python modules search paths</h2>
+<p>The Python modules are searched for in the following folders:</p>
+<ul>
+<li><code>./python</code></li>
+<li><code>./scripts</code></li>
+<li><code>../python</code></li>
+<li><code>../scripts</code></li>
+<li><code>../../python</code></li>
+<li><code>../../scripts</code></li>
+<li><code>INSTALL_PREFIX + /python</code></li>
+<li><code>INSTALL_PREFIX + /scripts</code></li>
+</ul>
+<p>plus any path listed in the <code>mads.ini</code> file under the <code>search_path</code> key (an array or a single string).</p>
+</section>
+<section id="mads.ini-section" class="level2">
+<h2 class="anchored" data-anchor-id="mads.ini-section"><code>mads.ini</code> section</h2>
+<p>The following fields are typically used:</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb5-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[python_source]</span></span>
+<span id="cb5-2"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">period </span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> </span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">200</span></span>
+<span id="cb5-3"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">venv </span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> "/path/to/.venv"</span></span>
+<span id="cb5-4"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">python_module </span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> "my_source"</span></span>
+<span id="cb5-5"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">search_paths </span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> ["/path/to/python/folder"]</span></span></code></pre></div>
+</section>
+<section id="module-types" class="level2">
+<h2 class="anchored" data-anchor-id="module-types">Module Types</h2>
+<p>Python modules can be of type <code>source</code>, <code>filter</code>, or <code>sink</code>. The module type is defined by setting a top level variable like this, typically at the beginning of the script, just after the various <code>import</code>s:</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1">agent_type <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"sink"</span></span></code></pre></div>
+<p>All the modules <strong>must</strong> implement a <code>setup()</code> function, which is expected to use the dictionary available in the module variable <code>params</code> (a dictionary)&nbsp;to do initial setup (opening ports or files, etc.)</p>
+<p><strong>Source</strong> modules <strong>must</strong> implement a <code>get_output()</code> function, that produces the JSON string that will be published.</p>
+<p><strong>Filter</strong> modules <strong>must</strong> implement a <code>process()</code> function, that is supposed to operate on the last received data dictionary (available as <code>data</code>, a module variable) and produce a JSON string that will be published.</p>
+<p><strong>Sink</strong> modules <strong>must</strong> implement a <code>deal_with_data()</code> function, that operates on the <code>data</code> dictionary, a module variable.</p>
+</section>
+</section>
+<section id="examples" class="level1">
+<h1>Examples</h1>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To be completed</p>
+</div>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>template</category>
+  <guid>https://MADS-NET.github.io/mads-net.github.io/guides/python_agent.html</guid>
+  <pubDate>Sun, 01 Jun 2025 22:00:00 GMT</pubDate>
+</item>
 </channel>
 </rss>
