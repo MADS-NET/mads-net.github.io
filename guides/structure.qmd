@@ -6,12 +6,13 @@ author:
       - name: "University of Trento"
 date: 06/04/2025
 date-modified: today
-format: 
-  html:
-    toc: true
-  pdf:
-    toc: true
-draft: false
+format: html
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+
 categories: [template, basics]
 abstract: |
   Illustrate a typical MADS network structure and its requirements.
