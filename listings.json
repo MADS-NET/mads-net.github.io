@@ -3,6 +3,7 @@
     "listing": "/guides.html",
     "items": [
       "/guides/structure.html",
+      "/guides/contribute.html",
       "/guides/containerized.html",
       "/guides/python_agent.html"
     ]

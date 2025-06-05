@@ -2,19 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://mads-net.github.io/guides/containerized.html</loc>
-    <lastmod>2025-06-05T09:50:33.422Z</lastmod>
+    <lastmod>2025-06-05T16:39:13.121Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/about.html</loc>
-    <lastmod>2025-06-02T15:14:35.324Z</lastmod>
+    <loc>https://mads-net.github.io/guides.html</loc>
+    <lastmod>2025-06-04T11:15:05.627Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/index.html</loc>
     <lastmod>2025-06-04T10:38:59.185Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides.html</loc>
-    <lastmod>2025-06-04T11:15:05.627Z</lastmod>
+    <loc>https://mads-net.github.io/about.html</loc>
+    <lastmod>2025-06-02T15:14:35.324Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/guides/contribute.html</loc>
+    <lastmod>2025-06-05T16:40:12.435Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/python_agent.html</loc>
@@ -22,6 +26,6 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/structure.html</loc>
-    <lastmod>2025-06-05T10:01:57.367Z</lastmod>
+    <lastmod>2025-06-05T17:00:52.876Z</lastmod>
   </url>
 </urlset>
