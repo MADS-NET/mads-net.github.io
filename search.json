@@ -1,24 +1,52 @@
 [
   {
-    "objectID": "guides/structure.html",
-    "href": "guides/structure.html",
-    "title": "Network structure",
+    "objectID": "guides/containerized.html",
+    "href": "guides/containerized.html",
+    "title": "Containerized MADS",
     "section": "",
-    "text": "The typical architecture of a MADS network can be represented as:\n\n\n\n\n\n\n\n\nMADS Network\n\n\n\np1\n\nPlugin 1\n\n\n\na1\n\nAgent 1\n(source)\n\n\n\np1-&gt;a1\n\n\n\n\nbroker\n\nbroker\n\n\n\na1-&gt;broker\n\n\n\n\n\np2\n\nPlugin 2\n\n\n\na2\n\nAgent 2\n(filter)\n\n\n\np2-&gt;a2\n\n\n\n\na2-&gt;broker\n\n\n\n\n\n\np3\n\nPlugin 3\n\n\n\na3\n\nAgent 3\n(sink)\n\n\n\np3-&gt;a3\n\n\n\n\na3-&gt;broker\n\n\n\n\n\na4\n\nMonolithic\nAgent (filter)\n\n\n\na4-&gt;broker\n\n\n\n\n\n\nmongo\n\n\nMongoDB\n\n\n\nlogger\n\nlogger\n\n\n\nbroker-&gt;logger\n\n\n\n\n\nlogger-&gt;mongo\n\n\nBSON\n\n\n\n\n\n\nFigure 1: MADS Network\n\n\n\n\n\n\n\n\n\n\n\nImportant\n\n\n\nRemember that the above schematic represent processes, regardless the physical machine on which they are being executed.\nFor example, the whole network could run on a single workstation, or it could be conversely distributed over multiple devices connected to the same IP network, each device running a single process/node.\n\n\nIn the figure Figure 1, the solid lines represent a ZeroMQ connection over TCP/IP, which uses compressed JSON as a data encoding protocol. Compression is preformed with the snappy library. The dashed line, conversely, represents the proprietary MongoDB protocol, with data serialized as BSON (Binary-JSON).\n\n\nWhat is the broker purpose?\nThe broker solves the issue of knowing multiple network addresses when you have a number of devices participating to the same distributed system.\nWith the aid of the broker, any separate device partaking to the MADS network only needs to know a single hostname/IP address: that of the machine running the broker.\n\n\n\n\n\n\nWarning\n\n\n\nThere can only be a single broker per network.\n\n\nRunning the broker is quite simple:\nmads broker\n\n\n\nAgents can be:\n\nmonolithic: implemented as a single executable inheriting the Mads::Agent C++ class.\nplug-in: a single executable that on runtime loads a proper plug-in (i.e. a dynamically loaded library)\n\nRegardless the type, agent can have three different behaviors:\n\nsource: they provide information to the network (e.g. by reading sensors)\nfilter: they operate and transform received information\nsink: they consume information received from the network (e.g. to store or visualize)\n\nThe MADS installer provides three general purpose agents, aptly named source, filter, and sink, that are designe do load proper plugins. The command mads plugin can be used to generate a suitable template for a new plugin to be developed."
+    "text": "Setting up a MADS network requires a minimum of a broker, a MongoDB server, and the logger agent. This guide explains the easiest and more portable solution to have them up and running in minuts in a Docker environment."
   },
   {
-    "objectID": "guides/structure.html#the-broker",
-    "href": "guides/structure.html#the-broker",
-    "title": "Network structure",
-    "section": "",
-    "text": "What is the broker purpose?\nThe broker solves the issue of knowing multiple network addresses when you have a number of devices participating to the same distributed system.\nWith the aid of the broker, any separate device partaking to the MADS network only needs to know a single hostname/IP address: that of the machine running the broker.\n\n\n\n\n\n\nWarning\n\n\n\nThere can only be a single broker per network.\n\n\nRunning the broker is quite simple:\nmads broker"
+    "objectID": "guides/containerized.html#step-1.-clone-the-repo",
+    "href": "guides/containerized.html#step-1.-clone-the-repo",
+    "title": "Containerized MADS",
+    "section": "Step 1. Clone the repo",
+    "text": "Step 1. Clone the repo\nAll you need is in the MADS_container repository. You can clone it with the following command:\ngit clone --depth 1 https://github.com/MADS-NET/MADS_container.git"
   },
   {
-    "objectID": "guides/structure.html#the-agents",
-    "href": "guides/structure.html#the-agents",
-    "title": "Network structure",
+    "objectID": "guides/containerized.html#step-2.-build-contaners",
+    "href": "guides/containerized.html#step-2.-build-contaners",
+    "title": "Containerized MADS",
+    "section": "Step 2. Build contaners",
+    "text": "Step 2. Build contaners\nIn the MADS_container directory, you can build the containers with the following command:\ndocker compose build\n\n\n\n\n\n\nNote\n\n\n\nThis is only to be done once."
+  },
+  {
+    "objectID": "guides/containerized.html#step-3.-run-the-containers",
+    "href": "guides/containerized.html#step-3.-run-the-containers",
+    "title": "Containerized MADS",
+    "section": "Step 3. Run the containers",
+    "text": "Step 3. Run the containers\nYou can now run the containers with the following command:\ndocker compose up\nThis starts the three containerized processes: MogoDB, the broker, and the logger agent in terminal attached mode: this means that you can read the logs and stop all three containers at once by pressing Ctrl-C.\nOnce you are sure that everything works as expected, you may start the containers in detached mode with the following command:\ndocker compose up -d\n\n\n\n\n\n\nNote\n\n\n\nYou can stop the containers at any time with the command docker compose down.\n\n\nNow the broker and the database are also accessible as if they were processes running on your host machine."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
     "section": "",
-    "text": "Agents can be:\n\nmonolithic: implemented as a single executable inheriting the Mads::Agent C++ class.\nplug-in: a single executable that on runtime loads a proper plug-in (i.e. a dynamically loaded library)\n\nRegardless the type, agent can have three different behaviors:\n\nsource: they provide information to the network (e.g. by reading sensors)\nfilter: they operate and transform received information\nsink: they consume information received from the network (e.g. to store or visualize)\n\nThe MADS installer provides three general purpose agents, aptly named source, filter, and sink, that are designe do load proper plugins. The command mads plugin can be used to generate a suitable template for a new plugin to be developed."
+    "text": "MADS-Net"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "MADS: Multi-Agent Distributed System",
+    "section": "",
+    "text": "What is it\nMADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.\nIt is made by a main set of executables available in the MADS tools collection repo, which also provides installers for Linux, MacOS and Windows.\nThe MADS tools collection includes a broker and a set of general purpose agents that can act as sources, filters, or sinks. The actual operations performed by agents can be customized either via scripting languages (using simple popen interface), or by implementing dedicated plugins in C++.\nSome of the available plugins are:\n\narduino_plugin: reads from a serial connected arduino\nhpe2D_plugin: performs human pose estimation from a camera stream\nmqtt_plugin: acts as a bridge with an MQTT network\nsay_plugin: Text-to-speech of incoming messages\nble_plugin: Bluetooth Low Energy source plugin\ntui_plugin: Terminal User Interface for sending metadata commands to MADS network\nlua_plugin: Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)\n\nThere are also additional monolithic agents:\n\npython_agent: Interfacing Python3 scripts to the MADS network (useful for prototyping and rapid development)\n\nLook into the guides section for more information on how to use the MADS tools collection."
+  },
+  {
+    "objectID": "guides.html",
+    "href": "guides.html",
+    "title": "Guides",
+    "section": "",
+    "text": "Note\n\n\n\nGuides are open to contribution: fork the repo https://github.com/mads-net/mads-net.github.io, make some changes, and submit a pull request.\n\n\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\nDescription\n\n\n\nCategories\n\n\n\nReading Time\n\n\n\n\n\n\n\n\nJun 4, 2025\n\n\nNetwork structure\n\n\nPaolo Bosetti\n\n\nIllustrate a typical MADS network structure and its requirements. \n\n\ntemplate, basics\n\n\n2 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nContainerized MADS\n\n\nPaolo Bosetti\n\n\nThe base agents for setting up a MADS network are available as a ontainerized environment. \n\n\ndocker, basics\n\n\n2 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nPython Agent\n\n\nPaolo Bosetti\n\n\nThe python_agent repo on GitHub provides a MADS agent with an embedded python3 interpreter for developing MADS sgents in Python \n\n\npython, agent, intermediate\n\n\n3 min\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "guides/python_agent.html",
@@ -63,52 +91,24 @@
     "text": "Python modules can be of type source, filter, or sink. The module type is defined by setting a top level variable like this, typically at the beginning of the script, just after the various imports:\nagent_type = \"sink\"\nAll the modules must implement a setup() function, which is expected to use the dictionary available in the module variable params (a dictionary) to do initial setup (opening ports or files, etc.)\nSource modules must implement a get_output() function, that produces the JSON string that will be published.\nFilter modules must implement a process() function, that is supposed to operate on the last received data dictionary (available as data, a module variable) and produce a JSON string that will be published.\nSink modules must implement a deal_with_data() function, that operates on the data dictionary, a module variable."
   },
   {
-    "objectID": "guides.html",
-    "href": "guides.html",
-    "title": "Guides",
+    "objectID": "guides/structure.html",
+    "href": "guides/structure.html",
+    "title": "Network structure",
     "section": "",
-    "text": "Note\n\n\n\nGuides are open to contribution: fork the repo https://github.com/mads-net/mads-net.github.io, make some changes, and submit a pull request.\n\n\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\nDescription\n\n\n\nCategories\n\n\n\nReading Time\n\n\n\n\n\n\n\n\nJun 4, 2025\n\n\nNetwork structure\n\n\nPaolo Bosetti\n\n\nIllustrate a typical MADS network structure and its requirements. \n\n\ntemplate\n\n\n2 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nContainerized MADS\n\n\nPaolo Bosetti\n\n\nThe base agents for setting up a MADS network are available as a ontainerized environment. \n\n\ndocker, container, setup\n\n\n2 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nPython Agent\n\n\nPaolo Bosetti\n\n\nThe python_agent repo on GitHub provides a MADS agent with an embedded python3 interpreter for developing MADS sgents in Python \n\n\npython, agent\n\n\n3 min\n\n\n\n\n\n\nNo matching items"
+    "text": "The typical architecture of a MADS network can be represented as:\n\n\n\n\n\n\n\n\nMADS Network\n\n\n\np1\n\nPlugin 1\n\n\n\na1\n\nAgent 1\n(source)\n\n\n\np1-&gt;a1\n\n\n\n\nbroker\n\nbroker\n\n\n\na1-&gt;broker\n\n\n\n\n\np2\n\nPlugin 2\n\n\n\na2\n\nAgent 2\n(filter)\n\n\n\np2-&gt;a2\n\n\n\n\na2-&gt;broker\n\n\n\n\n\n\np3\n\nPlugin 3\n\n\n\na3\n\nAgent 3\n(sink)\n\n\n\np3-&gt;a3\n\n\n\n\na3-&gt;broker\n\n\n\n\n\na4\n\nMonolithic\nAgent (filter)\n\n\n\na4-&gt;broker\n\n\n\n\n\n\nmongo\n\n\nMongoDB\n\n\n\nlogger\n\nlogger\n\n\n\nbroker-&gt;logger\n\n\n\n\n\nlogger-&gt;mongo\n\n\nBSON\n\n\n\n\n\n\nFigure 1: MADS Network\n\n\n\n\n\n\n\n\n\n\n\nImportant\n\n\n\nRemember that the above schematic represent processes, regardless the physical machine on which they are being executed.\nFor example, the whole network could run on a single workstation, or it could be conversely distributed over multiple devices connected to the same IP network, each device running a single process/node.\n\n\nIn the figure Figure 1, the solid lines represent a ZeroMQ connection over TCP/IP, which uses compressed JSON as a data encoding protocol. Compression is preformed with the snappy library. The dashed line, conversely, represents the proprietary MongoDB protocol, with data serialized as BSON (Binary-JSON).\n\n\nWhat is the broker purpose?\nThe broker solves the issue of knowing multiple network addresses when you have a number of devices participating to the same distributed system.\nWith the aid of the broker, any separate device partaking to the MADS network only needs to know a single hostname/IP address: that of the machine running the broker.\n\n\n\n\n\n\nWarning\n\n\n\nThere can only be a single broker per network.\n\n\nRunning the broker is quite simple:\nmads broker\n\n\n\nAgents can be:\n\nmonolithic: implemented as a single executable inheriting the Mads::Agent C++ class.\nplug-in: a single executable that on runtime loads a proper plug-in (i.e. a dynamically loaded library)\n\nRegardless the type, agent can have three different behaviors:\n\nsource: they provide information to the network (e.g. by reading sensors)\nfilter: they operate and transform received information\nsink: they consume information received from the network (e.g. to store or visualize)\n\nThe MADS installer provides three general purpose agents, aptly named source, filter, and sink, that are designe do load proper plugins. The command mads plugin can be used to generate a suitable template for a new plugin to be developed."
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "MADS: Multi-Agent Distributed System",
+    "objectID": "guides/structure.html#the-broker",
+    "href": "guides/structure.html#the-broker",
+    "title": "Network structure",
     "section": "",
-    "text": "What is it\nMADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.\nIt is made by a main set of executables available in the MADS tools collection repo, which also provides installers for Linux, MacOS and Windows.\nThe MADS tools collection includes a broker and a set of general purpose agents that can act as sources, filters, or sinks. The actual operations performed by agents can be customized either via scripting languages (using simple popen interface), or by implementing dedicated plugins in C++.\nSome of the available plugins are:\n\narduino_plugin: reads from a serial connected arduino\nhpe2D_plugin: performs human pose estimation from a camera stream\nmqtt_plugin: acts as a bridge with an MQTT network\nsay_plugin: Text-to-speech of incoming messages\nble_plugin: Bluetooth Low Energy source plugin\ntui_plugin: Terminal User Interface for sending metadata commands to MADS network\nlua_plugin: Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)\n\nThere are also additional monolithic agents:\n\npython_agent: Interfacing Python3 scripts to the MADS network (useful for prototyping and rapid development)\n\nLook into the guides section for more information on how to use the MADS tools collection."
+    "text": "What is the broker purpose?\nThe broker solves the issue of knowing multiple network addresses when you have a number of devices participating to the same distributed system.\nWith the aid of the broker, any separate device partaking to the MADS network only needs to know a single hostname/IP address: that of the machine running the broker.\n\n\n\n\n\n\nWarning\n\n\n\nThere can only be a single broker per network.\n\n\nRunning the broker is quite simple:\nmads broker"
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "guides/structure.html#the-agents",
+    "href": "guides/structure.html#the-agents",
+    "title": "Network structure",
     "section": "",
-    "text": "MADS-Net"
-  },
-  {
-    "objectID": "guides/containerized.html",
-    "href": "guides/containerized.html",
-    "title": "Containerized MADS",
-    "section": "",
-    "text": "Setting up a MADS network requires a minimum of a broker, a MongoDB server, and the logger agent. This guide explains the easiest and more portable solution to have them up and running in minuts in a Docker environment."
-  },
-  {
-    "objectID": "guides/containerized.html#step-1.-clone-the-repo",
-    "href": "guides/containerized.html#step-1.-clone-the-repo",
-    "title": "Containerized MADS",
-    "section": "Step 1. Clone the repo",
-    "text": "Step 1. Clone the repo\nAll you need is in the MADS_container repository. You can clone it with the following command:\ngit clone --depth 1 https://github.com/MADS-NET/MADS_container.git"
-  },
-  {
-    "objectID": "guides/containerized.html#step-2.-build-contaners",
-    "href": "guides/containerized.html#step-2.-build-contaners",
-    "title": "Containerized MADS",
-    "section": "Step 2. Build contaners",
-    "text": "Step 2. Build contaners\nIn the MADS_container directory, you can build the containers with the following command:\ndocker compose build\n\n\n\n\n\n\nNote\n\n\n\nThis is only to be done once."
-  },
-  {
-    "objectID": "guides/containerized.html#step-3.-run-the-containers",
-    "href": "guides/containerized.html#step-3.-run-the-containers",
-    "title": "Containerized MADS",
-    "section": "Step 3. Run the containers",
-    "text": "Step 3. Run the containers\nYou can now run the containers with the following command:\ndocker compose up\nThis starts the three containerized processes: MogoDB, the broker, and the logger agent in terminal attached mode: this means that you can read the logs and stop all three containers at once by pressing Ctrl-C.\nOnce you are sure that everything works as expected, you may start the containers in detached mode with the following command:\ndocker compose up -d\n\n\n\n\n\n\nNote\n\n\n\nYou can stop the containers at any time with the command docker compose down.\n\n\nNow the broker and the database are also accessible as if they were processes running on your host machine."
+    "text": "Agents can be:\n\nmonolithic: implemented as a single executable inheriting the Mads::Agent C++ class.\nplug-in: a single executable that on runtime loads a proper plug-in (i.e. a dynamically loaded library)\n\nRegardless the type, agent can have three different behaviors:\n\nsource: they provide information to the network (e.g. by reading sensors)\nfilter: they operate and transform received information\nsink: they consume information received from the network (e.g. to store or visualize)\n\nThe MADS installer provides three general purpose agents, aptly named source, filter, and sink, that are designe do load proper plugins. The command mads plugin can be used to generate a suitable template for a new plugin to be developed."
   }
 ]

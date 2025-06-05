@@ -270,6 +270,7 @@ Note
 
  ]]></description>
   <category>template</category>
+  <category>basics</category>
   <guid>https://mads-net.github.io/guides/structure.html</guid>
   <pubDate>Tue, 03 Jun 2025 22:00:00 GMT</pubDate>
 </item>
@@ -360,8 +361,7 @@ Note
 
  ]]></description>
   <category>docker</category>
-  <category>container</category>
-  <category>setup</category>
+  <category>basics</category>
   <guid>https://mads-net.github.io/guides/containerized.html</guid>
   <pubDate>Sun, 01 Jun 2025 22:00:00 GMT</pubDate>
 </item>
@@ -695,6 +695,7 @@ Note
  ]]></description>
   <category>python</category>
   <category>agent</category>
+  <category>intermediate</category>
   <guid>https://mads-net.github.io/guides/python_agent.html</guid>
   <pubDate>Sun, 01 Jun 2025 22:00:00 GMT</pubDate>
 </item>
