@@ -19,8 +19,24 @@ abstract: |
 
 # Contents
 q
+
 ## subtitle
 
 -   topic 1
 
 -   topic 2
+
+```{r}
+#| echo: false
+curve(sin(x), from = -pi, to = pi, col = "blue", lwd = 2,
+      xlab = "x", ylab = "sin(x)", main = "Sine Function")
+```
+
+
+
+```cpp
+int main(int argc, char** argv) {
+    std::cout << "Hello, World!" << std::endl;
+    return 0;
+}
+```
