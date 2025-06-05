@@ -1,0 +1,165 @@
+---
+title: "How to contribute"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 06/02/2025
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [how-to]
+abstract: |
+  We explain how to contribute to the MADS guides collection.
+---
+
+# Introduction
+
+These guides are prepared in [Quarto](https://quarto.org/){target="_blank"} format, which is a markdown-based format that allows for the creation of documents and websites with rich formatting and interactivity. The website structure is hosted on [GitHub](https://github.com/mads-net/mads-net.github.io){target="_blank"}, and contributions can be made through pull requests.
+
+# Set-up
+
+## Prerequisites
+
+* Git and a GitHub account
+* An IDE:
+  * [RStudio](https://posit.co/download/rstudio-desktop/){target="_blank"} (recommended)
+  * [Visual Studio Code](https://code.visualstudio.com/){target="_blank"}
+* If you opt for VS Code, you will need to install [Quarto](https://quarto.org){target="_blank"} and the [Quarto extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto){target="_blank"}. RStudio comes with Quarto pre-packaged.
+
+## Forking the repository
+
+To contribute to the MADS guides collection, you need to fork the repository. This allows you to create your own copy of the repository where you can make changes without affecting the original project. To fork the repository, follow these steps:
+
+1. go to <https://github.com/MADS-Net/mads-net.github.io>
+2. click on the "Fork" button in the top right corner of the page
+3. select your GitHub account as the destination for the fork
+4. wait for GitHub to create the forked repository in your account
+
+## Authorizing your computer
+
+The best way to authorize your computer to work on GitHub repositories is to use the `gh` command line utility. You can get it from <https://cli.github.com>{target="_blank"}. Once installed, open a terminal and type:
+
+```bash
+gh auth login
+```
+
+then follow instructions to authenticate your GitHub account. This will allow you to push changes to your forked repository and create pull requests. It is typically done once per computer.
+
+## Cloning the repository
+
+You cannot edit the official repository, but you can freely edit your forked repository. To do this, you need to clone the repository to your local machine. This creates a local copy of the repository that you can work on. To clone the repository, follow these steps:
+
+1. open your terminal or command prompt
+2. navigate to the directory where you want to clone the repository
+3. type the following:
+
+```bash
+gh repo clone <your-username>/mads-net.github.io.git
+```
+
+replacing `<your-username>` with your GitHub username. This will create a folder named `mads-net.github.io` in your current directory, containing the cloned repository. Then open the `mads_doc.Rproj` file if you are using RStudio. If you are using VSCode, just open that folder.
+
+# Creating a new guide
+
+The [Guides](/guides.html) page automatically presents the guides available in the `guides` folder of the repository. To create a new guide, follow these steps.
+
+## Ensure your repository is up to date
+
+Other people could contribute to the guides while you are working on your own. To ensure that your repository is up to date and to minimize the risks for conflicts, you shall pull the latest changes from the original repository. To do this, follow these steps:
+
+```bash
+# Navigate to the cloned repository folder
+cd mads-net.github.io
+# fetch any new changes from the original repository
+git fetch upstream
+# merge the changes into your local repository
+git merge upstream/main
+```
+
+## Create a new guide
+
+To create a new guide, you can use the `guides/template.qmd` file as a starting point. This file contains the basic structure and formatting for a guide. Make a copy of it with a suitable name. 
+
+If the guide you are working is complex and is probably going to require images and/or data files, you should put the guide in a separate folder. For example, if you are writing a guide on "Data Analysis", you could create a folder named `guides/data-analysis` and put the `data-analysis.qmd` file inside it. Quarto will automatically add that file as a new guide in the [Guides](/guides.html) page listing. Images and supporting files can then be put in the same folder, and they will be automatically linked in the guide.
+
+## Edit the guide
+
+The guide YAML preamble is the first thing to edit. Ensure that you set the `title`, `author`, and `date` fields correctly. You can also set the `categories` field to categorize your guide, and the `abstract` field to provide a brief description of the guide.
+
+Note that the preamble has a `draft: true` field. This means that the guide will not be published until you set it to `draft: false`. This is useful to work on the guide without it being visible on the website or when previewing the website locally. A guide in draft mode will not be listed in the [Guides](/guides.html) page, but it will be accessible via its URL. 
+
+::: callout-note
+If you want that the guide is also available in PDF format, uncomment the preamble section for the `format` key. In this way, the guide will be available in both HTML and PDF formats.
+:::
+
+Refer to the [Quarto documentation](https://quarto.org/docs/guide/){target="_blank"} for more information on how to format the guide using Quarto markdown.
+
+## Preview the guide
+
+To preview the guide, you can use the `quarto preview` command. This will start a local web server and open the guide in your default web browser. To do this, follow these steps:
+
+```bash
+# Navigate to the cloned repository folder
+cd mads-net.github.io
+# Start the local web server
+quarto preview
+```
+
+:::{.callout-note title="Automatic refresh"}
+The local web server will automatically refresh the page whenever you save changes to the guide files. This allows you to see the changes in real-time without having to manually refresh the page.
+
+However, some changes (e.g. adding new files) are not always detected. In these cases, you can manually refresh the page in your browser to see the changes, and if it does not work, you can stop the server with `Ctrl+C` and restart it with `quarto preview`.
+:::
+
+## Publish your contribute
+
+Whenever you are content with your contributed guide, you can commit your work and push it to your forked repository. **before doing that, however**, ensure that there are no new contribution on the `uspstream` repository. 
+Since you cannot pull changes on your repository if it has pending changes, you first **stash** your changes, i.e. you put them temporarily aside, reverting back to a clean state (the last commit, in synchron with `upstream`):
+
+```bash
+git stash
+```
+
+Now you can pull the latest changes from the original repository:
+
+```bash
+# Fetch any new changes from the original repository
+git fetch upstream
+# Merge the changes into your local repository
+git merge upstream/main
+```
+
+After this, you can reapply your changes:
+
+```bash
+git stash pop
+```
+
+If there were new changes from `upstream`, and you have changed the same files, you might have to resolve conflicts. In this case, Git will show you the files with conflicts, and you will need to manually edit them to resolve the conflicts.
+
+A conflict is typically marked in the file with `<<<<<<< HEAD`, `=======`, and `>>>>>>> upstream/main`. You need to choose which changes to keep, or merge them together, and then remove these markers. Once you are done, you can add the resolved files to the staging area, make a new commit and publish your changes on gitHub:
+
+```bash
+git add .
+git commit -m "Resolved conflicts and updated guide"
+git push origin main
+```
+
+Now **your** forked repository will be ahead of the original, `upstream`, repository. This means that you have changes that are not yet in the original repository. So you can now create a *pull request* to the original repository. This will allow the maintainers of the MADS guides collection to review your changes and merge them into the main repository. To create a pull request, follow these steps:
+
+1. go to your forked repository on GitHub
+2. click on the "Pull requests" tab
+3. click on the "New pull request" button
+4. select the branch you want to merge into the original repository (usually `main`)
+5. review the changes and add a title and description for the pull request (be informative!!!)
+6. click on the "Create pull request" button
+7. wait for the maintainers to review your changes and merge them into the original repository
+
+

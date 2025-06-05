@@ -60,16 +60,10 @@ This is only to be done once.
 You can now run the containers with the following command:
 
 ```sh
-docker compose up
-```
-
-This starts the three containerized processes: MogoDB, the broker, and the logger agent **in terminal attached mode**: this means that you can read the logs and stop all three containers at once by pressing `Ctrl-C`. 
-
-Once you are sure that everything works as expected, you may start the containers in **detached mode** with the following command:
-
-```sh
 docker compose up -d
 ```
+
+This starts the three containerized processes: MogoDB, the broker, and the logger agent.
 
 ::: callout-note
 You can stop the containers at any time with the command `docker compose down`.

@@ -5,6 +5,7 @@ website:
   title: "MADS"
   description: "MADS - Multi-Agent Distributed System"
   site-url: "https://mads-net.github.io"
+  draft-mode: unlinked
   navbar:
     left:
       - href: guides.qmd

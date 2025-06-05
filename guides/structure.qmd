@@ -100,10 +100,65 @@ The MADS installer provides three general purpose agents, aptly named `source`, 
 
 # Layout and requirements
 
+At the bare minimum, a MADS network requires:
+
+- the broker
+- the MongoDB database
+- the logger agent
+
+The MADS installers provide broker and logger, but MongoDB must be installed separatedly. The easiest route is to it via Docker.
+
+Ideally, broker, logger and database should run on a single machine, having enough resources to store the data flow on the database, while agents can be distributed over multiple device. 
+
 ::: callout-note
-To be done.
+According to our testing, Linux is the best choice for running MADS broker and logger in terms of performance.
 :::
 
+Any other agent can be run on the same machine or on a separate machine. In the latter case, it must be started with the `-s` option stating the broker address, e.g.: `-s tcp://<hostname>:9092`, where `<hostname>` shall be replaced with the proper host name, if available, or with the machine IP address. This is the only address that any agent needs to know in order to connect to the MADS network.
+
+To help you find out the proper address, you can use the `-n list` broker option:
+
+```bash
+> mads broker -n list
+Reading settings from /Users/p4010/usr/local/etc/mads.ini [broker]
+Using network interface list
+Available network adapters:
+[       lo0] - 127.0.0.1
+[       en0] - 192.168.1.220
+[ bridge100] - 198.19.249.3
+Binding broker frontend (XSUB) at tcp://*:9090
+Binding broker backend (XPUB) at tcp://*:9091
+Binding broker shared settings (REP) at tcp://*:9092
+Timecode FPS: 25
+Settings are provided via tcp://127.0.0.1:9092
+CTRL-C to immediate exit
+Type P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings
+```
+
+This shows that the host has three network interfaces. The public one is probably `en0` (your names may vary). Now quit the broker and relaunch it as:
+
+```bash
+> mads broker -n en0
+Reading settings from /Users/p4010/usr/local/etc/mads.ini [broker]
+Using network interface en0
+Binding broker frontend (XSUB) at tcp://*:9090
+Binding broker backend (XPUB) at tcp://*:9091
+Binding broker shared settings (REP) at tcp://*:9092
+Timecode FPS: 25
+Settings are provided via tcp://192.168.1.220:9092
+CTRL-C to immediate exit
+Type P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings
+```
+
+Look at the line `Settings are provided via tcp://192.168.1.220:9092`: that is the address that you must use to start any agent in the network, e.g.:
+
+```bash
+mads feedback -s tcp://192.168.1.220:9092
+```
+
+::: callout-important
+The `-n` command line option **has no effect** on how the broker operates. Its only purpose is to help you find out the proper address to use when starting agents that run on different machines or devices.
+:::
 
 # How to develop a plugin
 
