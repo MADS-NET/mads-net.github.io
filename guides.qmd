@@ -13,8 +13,13 @@ listing:
   table-hover: true
 ---
 
-::: callout-note
-Guides are open to contribution: fork the repo <https://github.com/mads-net/mads-net.github.io>, make some changes, and submit a pull request.
+::: callout-note 
+# Spotlight
+
+Be sure to start with [MADS structure](guides/structure.html) guide.
+
+If you want to contribute, head on to the [contribution guide](guides/contribute.html).
+
 :::
 
 
