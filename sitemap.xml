@@ -1,31 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://mads-net.github.io/guides/mongodb.html</loc>
+    <lastmod>2025-06-06T07:25:50.271Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/guides/python_agent.html</loc>
+    <lastmod>2025-06-06T07:26:13.434Z</lastmod>
+  </url>
+  <url>
     <loc>https://mads-net.github.io/guides/containerized.html</loc>
-    <lastmod>2025-06-05T18:35:05.286Z</lastmod>
+    <lastmod>2025-06-06T07:26:38.647Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides.html</loc>
-    <lastmod>2025-06-06T06:57:44.450Z</lastmod>
+    <loc>https://mads-net.github.io/guides/plugins.html</loc>
+    <lastmod>2025-06-06T07:25:19.450Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/index.html</loc>
-    <lastmod>2025-06-04T10:38:59.185Z</lastmod>
+    <loc>https://mads-net.github.io/guides/monolithic_agents.html</loc>
+    <lastmod>2025-06-06T07:25:30.912Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/about.html</loc>
     <lastmod>2025-06-02T15:14:35.324Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/contribute.html</loc>
-    <lastmod>2025-06-05T16:40:12.435Z</lastmod>
+    <loc>https://mads-net.github.io/index.html</loc>
+    <lastmod>2025-06-04T10:38:59.185Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/python_agent.html</loc>
-    <lastmod>2025-06-05T18:35:19.350Z</lastmod>
+    <loc>https://mads-net.github.io/guides.html</loc>
+    <lastmod>2025-06-06T06:57:44.450Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/guides/services.html</loc>
+    <lastmod>2025-06-06T07:24:12.938Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/guides/contribute.html</loc>
+    <lastmod>2025-06-06T07:26:27.327Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/guides/timing.html</loc>
+    <lastmod>2025-06-06T07:27:53.625Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/structure.html</loc>
-    <lastmod>2025-06-05T18:35:27.352Z</lastmod>
+    <lastmod>2025-06-06T07:33:29.668Z</lastmod>
   </url>
 </urlset>

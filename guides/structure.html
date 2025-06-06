@@ -160,8 +160,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#the-agents" id="toc-the-agents" class="nav-link" data-scroll-target="#the-agents">The agents</a></li>
   </ul></li>
   <li><a href="#layout-and-requirements" id="toc-layout-and-requirements" class="nav-link" data-scroll-target="#layout-and-requirements">Layout and requirements</a></li>
-  <li><a href="#how-to-develop-a-plugin" id="toc-how-to-develop-a-plugin" class="nav-link" data-scroll-target="#how-to-develop-a-plugin">How to develop a plugin</a></li>
-  <li><a href="#how-to-deal-with-time" id="toc-how-to-deal-with-time" class="nav-link" data-scroll-target="#how-to-deal-with-time">How to deal with time</a></li>
+  <li><a href="#where-to-go-next" id="toc-where-to-go-next" class="nav-link" data-scroll-target="#where-to-go-next">Where to go next</a></li>
   </ul>
 </nav>
     </div>
@@ -483,37 +482,20 @@ Important
 </div>
 </div>
 </section>
-<section id="how-to-develop-a-plugin" class="level1">
-<h1>How to develop a plugin</h1>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>To be done.</p>
-</div>
-</div>
-</section>
-<section id="how-to-deal-with-time" class="level1">
-<h1>How to deal with time</h1>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>To be done.</p>
-</div>
-</div>
+<section id="where-to-go-next" class="level1">
+<h1>Where to go next</h1>
+<p>Once you have the bare minimum running, the next step is to configure and customize your distributed steps. In detail, you will have to:</p>
+<ol type="1">
+<li>learn how to develop your custom agents. This can be done in three ways:
+<ul>
+<li>by developing your own monolithic agent, using the MADS C++17 library (<a href="../guides/monolithic_agents.html">hardest</a>, high performance and maximum flexibility)</li>
+<li>by implementing a C++17 plugin (<a href="../guides/plugins.html">hard</a>, high performance, some compromise in flexibility)</li>
+<li>by using the Python wrapper agent and implementing the details in Python (<a href="../guides/python_agent.html">easy</a>, limited performance and flexibility)</li>
+</ul></li>
+<li><a href="../guides/services.html">learn</a> how to make your agents into <strong>services</strong> (only on linux)</li>
+<li><a href="../guides/timing.html">learn</a> how to synchronize time on multiple devices</li>
+<li><a href="../guides/mongodb.html">learn</a> how to analyze the data collected by the MongoDB database</li>
+</ol>
 
 
 </section>

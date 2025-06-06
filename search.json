@@ -1,5 +1,54 @@
 [
   {
+    "objectID": "guides/mongodb.html",
+    "href": "guides/mongodb.html",
+    "title": "MongoDB",
+    "section": "",
+    "text": "Contents\n\n\n\n\n\n\nWarning\n\n\n\nTo be done."
+  },
+  {
+    "objectID": "guides/python_agent.html",
+    "href": "guides/python_agent.html",
+    "title": "Python Agent",
+    "section": "",
+    "text": "The Python3 MADS agent is available on https://github.com/MADS-net/python_agent.\n\n\nYou need to have python3 and python3-dev installed. Then proceed as follows depending on your platform.\n\n\npython3 -m venv .venv\nsource .venv/bin/activate\npip install numpy\n# also install other necessary Python libs\n\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build -j6\nsudo cmake --install build\nThe above is tested on MacOS and Ubuntu 22.04.\n\n\n\nRun the following from project root:\npython -m venv .venv\n.venv\\Scripts\\activate\npip install numpy\n# also install other necessary Python libs\nThen:\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build --config Release\nsudo cmake --install build\n\n\n\n\n\n\nEnable sudo on Windows\n\n\n\nFor sudo to work on Windows, you need to enable it on Settings &gt; System &gt; For Developers and set Enable sudo to On.\n\n\n\n\n\n\nThe new agent is installed as mads-python, so you can just type mads python -h (or mads-python -h on Windows) to know more:\n&gt; mads python -h\npython ver. 1.2.6\n\nUsage:\n  python [OPTION...]\n\n  -p, --period arg         Sampling period (default 100 ms)\n  -m, --module arg         Python module to load\n  -n, --name arg           Agent name (default to 'python')\n  -i, --agent-id arg       Agent ID to be added to JSON frames\n  -s, --settings arg       Settings file path/URI\n  -S, --save-settings arg  Save settings to ini file\n  -v, --version            Print version\n  -h, --help               Print usage\nTypically, to launch an agent named python_source, which gets its settings from a python_source section in mads.ini, and uses the Python module named source defined in the source.py file and that runs every 100 ms, the command is:\nmads python -n python_source -m source -p100\nwhere:\n\n-n python_source sets the agent name to python_source, and gets its settings from the same section in the mads.ini file\n-m source sets the Python module to source.py, which is searched for in the Python modules search paths, see below\n-p100 sets the sampling period to 100 ms\n\n\n\n\nThe Python modules are searched for in the following folders:\n\n./python\n./scripts\n../python\n../scripts\n../../python\n../../scripts\nINSTALL_PREFIX + /python\nINSTALL_PREFIX + /scripts\n\nplus any path listed in the mads.ini file under the search_path key (an array or a single string).\n\n\n\nThe following fields are typically used:\n[python_source]\nperiod = 200\nvenv = \"/path/to/.venv\"\npython_module = \"my_source\"\nsearch_paths = [\"/path/to/python/folder\"\n\n\n\n\n\n\nWarning\n\n\n\nThe section name must match the -m option argument when you launch the agent, so in the case aboxe you must use -m python_source.\n\n\n\n\n\nPython modules can be of type source, filter, or sink. The module type is defined by setting a top level variable like this, typically at the beginning of the script, just after the various imports:\nagent_type = \"sink\"\nAll the modules must implement a setup() function, which is expected to use the dictionary available in the module variable params (a dictionary) to do initial setup (opening ports or files, etc.)\nSource modules must implement a get_output() function, that produces the JSON string that will be published.\nFilter modules must implement a process() function, that is supposed to operate on the last received data dictionary (available as data, a module variable) and produce a JSON string that will be published.\nSink modules must implement a deal_with_data() function, that operates on the data dictionary, a module variable."
+  },
+  {
+    "objectID": "guides/python_agent.html#installing",
+    "href": "guides/python_agent.html#installing",
+    "title": "Python Agent",
+    "section": "",
+    "text": "You need to have python3 and python3-dev installed. Then proceed as follows depending on your platform.\n\n\npython3 -m venv .venv\nsource .venv/bin/activate\npip install numpy\n# also install other necessary Python libs\n\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build -j6\nsudo cmake --install build\nThe above is tested on MacOS and Ubuntu 22.04.\n\n\n\nRun the following from project root:\npython -m venv .venv\n.venv\\Scripts\\activate\npip install numpy\n# also install other necessary Python libs\nThen:\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build --config Release\nsudo cmake --install build\n\n\n\n\n\n\nEnable sudo on Windows\n\n\n\nFor sudo to work on Windows, you need to enable it on Settings &gt; System &gt; For Developers and set Enable sudo to On."
+  },
+  {
+    "objectID": "guides/python_agent.html#executing",
+    "href": "guides/python_agent.html#executing",
+    "title": "Python Agent",
+    "section": "",
+    "text": "The new agent is installed as mads-python, so you can just type mads python -h (or mads-python -h on Windows) to know more:\n&gt; mads python -h\npython ver. 1.2.6\n\nUsage:\n  python [OPTION...]\n\n  -p, --period arg         Sampling period (default 100 ms)\n  -m, --module arg         Python module to load\n  -n, --name arg           Agent name (default to 'python')\n  -i, --agent-id arg       Agent ID to be added to JSON frames\n  -s, --settings arg       Settings file path/URI\n  -S, --save-settings arg  Save settings to ini file\n  -v, --version            Print version\n  -h, --help               Print usage\nTypically, to launch an agent named python_source, which gets its settings from a python_source section in mads.ini, and uses the Python module named source defined in the source.py file and that runs every 100 ms, the command is:\nmads python -n python_source -m source -p100\nwhere:\n\n-n python_source sets the agent name to python_source, and gets its settings from the same section in the mads.ini file\n-m source sets the Python module to source.py, which is searched for in the Python modules search paths, see below\n-p100 sets the sampling period to 100 ms"
+  },
+  {
+    "objectID": "guides/python_agent.html#python-modules-search-paths",
+    "href": "guides/python_agent.html#python-modules-search-paths",
+    "title": "Python Agent",
+    "section": "",
+    "text": "The Python modules are searched for in the following folders:\n\n./python\n./scripts\n../python\n../scripts\n../../python\n../../scripts\nINSTALL_PREFIX + /python\nINSTALL_PREFIX + /scripts\n\nplus any path listed in the mads.ini file under the search_path key (an array or a single string)."
+  },
+  {
+    "objectID": "guides/python_agent.html#the-mads.ini-section",
+    "href": "guides/python_agent.html#the-mads.ini-section",
+    "title": "Python Agent",
+    "section": "",
+    "text": "The following fields are typically used:\n[python_source]\nperiod = 200\nvenv = \"/path/to/.venv\"\npython_module = \"my_source\"\nsearch_paths = [\"/path/to/python/folder\"\n\n\n\n\n\n\nWarning\n\n\n\nThe section name must match the -m option argument when you launch the agent, so in the case aboxe you must use -m python_source."
+  },
+  {
+    "objectID": "guides/python_agent.html#module-types",
+    "href": "guides/python_agent.html#module-types",
+    "title": "Python Agent",
+    "section": "",
+    "text": "Python modules can be of type source, filter, or sink. The module type is defined by setting a top level variable like this, typically at the beginning of the script, just after the various imports:\nagent_type = \"sink\"\nAll the modules must implement a setup() function, which is expected to use the dictionary available in the module variable params (a dictionary) to do initial setup (opening ports or files, etc.)\nSource modules must implement a get_output() function, that produces the JSON string that will be published.\nFilter modules must implement a process() function, that is supposed to operate on the last received data dictionary (available as data, a module variable) and produce a JSON string that will be published.\nSink modules must implement a deal_with_data() function, that operates on the data dictionary, a module variable."
+  },
+  {
     "objectID": "guides/containerized.html",
     "href": "guides/containerized.html",
     "title": "Containerized MADS",
@@ -28,11 +77,25 @@
     "text": "Step 3. Run the containers\nYou can now run the containers with the following command:\ndocker compose up -d\nThis starts the three containerized processes: MogoDB, the broker, and the logger agent.\n\n\n\n\n\n\nNote\n\n\n\nYou can stop the containers at any time with the command docker compose down.\n\n\nNow the broker and the database are also accessible as if they were processes running on your host machine."
   },
   {
-    "objectID": "guides.html",
-    "href": "guides.html",
-    "title": "Guides",
+    "objectID": "guides/plugins.html",
+    "href": "guides/plugins.html",
+    "title": "Plugins",
     "section": "",
-    "text": "Spotlight\n\n\n\nBe sure to start with MADS structure guide.\nIf you want to contribute, head on to the contribution guide.\n\n\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\nDescription\n\n\n\nCategories\n\n\n\nReading Time\n\n\n\n\n\n\n\n\nJun 4, 2025\n\n\nNetwork structure\n\n\nPaolo Bosetti\n\n\nIllustrate a typical MADS network structure and its requirements. \n\n\ntemplate, basics\n\n\n4 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nHow to contribute\n\n\nPaolo Bosetti\n\n\nWe explain how to contribute to the MADS guides collection. \n\n\nhow-to\n\n\n7 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nContainerized MADS\n\n\nPaolo Bosetti\n\n\nThe base agents for setting up a MADS network are available as a ontainerized environment. \n\n\ndocker, basics\n\n\n2 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nPython Agent\n\n\nPaolo Bosetti\n\n\nThe python_agent repo on GitHub provides a MADS agent with an embedded python3 interpreter for developing MADS sgents in Python \n\n\npython, agent, intermediate\n\n\n3 min\n\n\n\n\n\n\nNo matching items"
+    "text": "Contents\n\n\n\n\n\n\nWarning\n\n\n\nTo be done."
+  },
+  {
+    "objectID": "guides/monolithic_agents.html",
+    "href": "guides/monolithic_agents.html",
+    "title": "Monolithic agents",
+    "section": "",
+    "text": "Contents\n\n\n\n\n\n\nWarning\n\n\n\nTo be done."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "MADS-Net"
   },
   {
     "objectID": "index.html",
@@ -42,11 +105,18 @@
     "text": "What is it\nMADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.\nIt is made by a main set of executables available in the MADS tools collection repo, which also provides installers for Linux, MacOS and Windows.\nThe MADS tools collection includes a broker and a set of general purpose agents that can act as sources, filters, or sinks. The actual operations performed by agents can be customized either via scripting languages (using simple popen interface), or by implementing dedicated plugins in C++.\nSome of the available plugins are:\n\narduino_plugin: reads from a serial connected arduino\nhpe2D_plugin: performs human pose estimation from a camera stream\nmqtt_plugin: acts as a bridge with an MQTT network\nsay_plugin: Text-to-speech of incoming messages\nble_plugin: Bluetooth Low Energy source plugin\ntui_plugin: Terminal User Interface for sending metadata commands to MADS network\nlua_plugin: Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)\n\nThere are also additional monolithic agents:\n\npython_agent: Interfacing Python3 scripts to the MADS network (useful for prototyping and rapid development)\n\nLook into the guides section for more information on how to use the MADS tools collection."
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "guides.html",
+    "href": "guides.html",
+    "title": "Guides",
     "section": "",
-    "text": "MADS-Net"
+    "text": "Spotlight\n\n\n\nBe sure to start with MADS structure guide.\nIf you want to contribute, head on to the contribution guide.\n\n\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\nDescription\n\n\n\nCategories\n\n\n\nReading Time\n\n\n\n\n\n\n\n\nJun 6, 2025\n\n\nMonolithic agents\n\n\nPaolo Bosetti\n\n\nHow to develop a custom monolithic agent by explouting the MADS C++17 library. \n\n\nadvanced, development, c++\n\n\n1 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nServices\n\n\nPaolo Bosetti\n\n\nOnce tested, agents can be turned into linux services, so that they start automatically on boot. \n\n\nintermediate, OS, setup\n\n\n1 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nPlugins\n\n\nPaolo Bosetti\n\n\nMADS supports agents implemented as plugins in C++17. This guide explains how to create a plugin. \n\n\nadvanced, plugins, development, c++\n\n\n1 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nTime and time synchronization\n\n\nPaolo Bosetti\n\n\nMADS collects and transforms data from a network of distributed devices: synchronizing the timestamps is of paramount importance for having a quality database. \n\n\nintermediate, timing, OS, setup\n\n\n1 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nMongoDB\n\n\nPaolo Bosetti\n\n\nHow to use data collected in the MongoDB database. \n\n\nintermediate, javascript, database, analysis\n\n\n1 min\n\n\n\n\n\n\nJun 4, 2025\n\n\nNetwork structure\n\n\nPaolo Bosetti\n\n\nIllustrate a typical MADS network structure and its requirements. \n\n\ntemplate, basics\n\n\n5 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nHow to contribute\n\n\nPaolo Bosetti\n\n\nWe explain how to contribute to the MADS guides collection. \n\n\nhow-to, easy\n\n\n7 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nContainerized MADS\n\n\nPaolo Bosetti\n\n\nThe base agents for setting up a MADS network are available as a ontainerized environment. \n\n\ndocker, easy, OS, setup\n\n\n2 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nPython Agent\n\n\nPaolo Bosetti\n\n\nThe python_agent repo on GitHub provides a MADS agent with an embedded python3 interpreter for developing MADS sgents in Python \n\n\npython, agent, easy\n\n\n3 min\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "guides/services.html",
+    "href": "guides/services.html",
+    "title": "Services",
+    "section": "",
+    "text": "Contents\n\n\n\n\n\n\nWarning\n\n\n\nTo be done."
   },
   {
     "objectID": "guides/contribute.html",
@@ -119,46 +189,11 @@
     "text": "Publish your contribute\nWhenever you are content with your contributed guide, you can commit your work and push it to your forked repository. before doing that, however, ensure that there are no new contribution on the uspstream repository. Since you cannot pull changes on your repository if it has pending changes, you first stash your changes, i.e. you put them temporarily aside, reverting back to a clean state (the last commit, in synchron with upstream):\ngit stash\nNow you can pull the latest changes from the original repository:\n# Fetch any new changes from the original repository\ngit fetch upstream\n# Merge the changes into your local repository\ngit merge upstream/main\nAfter this, you can reapply your changes:\ngit stash pop\nIf there were new changes from upstream, and you have changed the same files, you might have to resolve conflicts. In this case, Git will show you the files with conflicts, and you will need to manually edit them to resolve the conflicts.\nA conflict is typically marked in the file with &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD, =======, and &gt;&gt;&gt;&gt;&gt;&gt;&gt; upstream/main. You need to choose which changes to keep, or merge them together, and then remove these markers. Once you are done, you can add the resolved files to the staging area, make a new commit and publish your changes on gitHub:\ngit add .\ngit commit -m \"Resolved conflicts and updated guide\"\ngit push origin main\nNow your forked repository will be ahead of the original, upstream, repository. This means that you have changes that are not yet in the original repository. So you can now create a pull request to the original repository. This will allow the maintainers of the MADS guides collection to review your changes and merge them into the main repository. To create a pull request, follow these steps:\n\ngo to your forked repository on GitHub\nclick on the “Pull requests” tab\nclick on the “New pull request” button\nselect the branch you want to merge into the original repository (usually main)\nreview the changes and add a title and description for the pull request (be informative!!!)\nclick on the “Create pull request” button\nwait for the maintainers to review your changes and merge them into the original repository"
   },
   {
-    "objectID": "guides/python_agent.html",
-    "href": "guides/python_agent.html",
-    "title": "Python Agent",
+    "objectID": "guides/timing.html",
+    "href": "guides/timing.html",
+    "title": "Time and time synchronization",
     "section": "",
-    "text": "The Python3 MADS agent is available on https://github.com/MADS-net/python_agent.\n\n\nYou need to have python3 and python3-dev installed. Then proceed as follows depending on your platform.\n\n\npython3 -m venv .venv\nsource .venv/bin/activate\npip install numpy\n# also install other necessary Python libs\n\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build -j6\nsudo cmake --install build\nThe above is tested on MacOS and Ubuntu 22.04.\n\n\n\nRun the following from project root:\npython -m venv .venv\n.venv\\Scripts\\activate\npip install numpy\n# also install other necessary Python libs\nThen:\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build --config Release\nsudo cmake --install build\n\n\n\n\n\n\nEnable sudo on Windows\n\n\n\nFor sudo to work on Windows, you need to enable it on Settings &gt; System &gt; For Developers and set Enable sudo to On.\n\n\n\n\n\n\nThe new agent is installed as mads-python, so you can just type mads python -h (or mads-python -h on Windows) to know more:\n&gt; mads python -h\npython ver. 1.2.6\n\nUsage:\n  python [OPTION...]\n\n  -p, --period arg         Sampling period (default 100 ms)\n  -m, --module arg         Python module to load\n  -n, --name arg           Agent name (default to 'python')\n  -i, --agent-id arg       Agent ID to be added to JSON frames\n  -s, --settings arg       Settings file path/URI\n  -S, --save-settings arg  Save settings to ini file\n  -v, --version            Print version\n  -h, --help               Print usage\nTypically, to launch an agent named python_source, which gets its settings from a python_source section in mads.ini, and uses the Python module named source defined in the source.py file and that runs every 100 ms, the command is:\nmads python -n python_source -m source -p100\nwhere:\n\n-n python_source sets the agent name to python_source, and gets its settings from the same section in the mads.ini file\n-m source sets the Python module to source.py, which is searched for in the Python modules search paths, see below\n-p100 sets the sampling period to 100 ms\n\n\n\n\nThe Python modules are searched for in the following folders:\n\n./python\n./scripts\n../python\n../scripts\n../../python\n../../scripts\nINSTALL_PREFIX + /python\nINSTALL_PREFIX + /scripts\n\nplus any path listed in the mads.ini file under the search_path key (an array or a single string).\n\n\n\nThe following fields are typically used:\n[python_source]\nperiod = 200\nvenv = \"/path/to/.venv\"\npython_module = \"my_source\"\nsearch_paths = [\"/path/to/python/folder\"\n\n\n\n\n\n\nWarning\n\n\n\nThe section name must match the -m option argument when you launch the agent, so in the case aboxe you must use -m python_source.\n\n\n\n\n\nPython modules can be of type source, filter, or sink. The module type is defined by setting a top level variable like this, typically at the beginning of the script, just after the various imports:\nagent_type = \"sink\"\nAll the modules must implement a setup() function, which is expected to use the dictionary available in the module variable params (a dictionary) to do initial setup (opening ports or files, etc.)\nSource modules must implement a get_output() function, that produces the JSON string that will be published.\nFilter modules must implement a process() function, that is supposed to operate on the last received data dictionary (available as data, a module variable) and produce a JSON string that will be published.\nSink modules must implement a deal_with_data() function, that operates on the data dictionary, a module variable."
-  },
-  {
-    "objectID": "guides/python_agent.html#installing",
-    "href": "guides/python_agent.html#installing",
-    "title": "Python Agent",
-    "section": "",
-    "text": "You need to have python3 and python3-dev installed. Then proceed as follows depending on your platform.\n\n\npython3 -m venv .venv\nsource .venv/bin/activate\npip install numpy\n# also install other necessary Python libs\n\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build -j6\nsudo cmake --install build\nThe above is tested on MacOS and Ubuntu 22.04.\n\n\n\nRun the following from project root:\npython -m venv .venv\n.venv\\Scripts\\activate\npip install numpy\n# also install other necessary Python libs\nThen:\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build --config Release\nsudo cmake --install build\n\n\n\n\n\n\nEnable sudo on Windows\n\n\n\nFor sudo to work on Windows, you need to enable it on Settings &gt; System &gt; For Developers and set Enable sudo to On."
-  },
-  {
-    "objectID": "guides/python_agent.html#executing",
-    "href": "guides/python_agent.html#executing",
-    "title": "Python Agent",
-    "section": "",
-    "text": "The new agent is installed as mads-python, so you can just type mads python -h (or mads-python -h on Windows) to know more:\n&gt; mads python -h\npython ver. 1.2.6\n\nUsage:\n  python [OPTION...]\n\n  -p, --period arg         Sampling period (default 100 ms)\n  -m, --module arg         Python module to load\n  -n, --name arg           Agent name (default to 'python')\n  -i, --agent-id arg       Agent ID to be added to JSON frames\n  -s, --settings arg       Settings file path/URI\n  -S, --save-settings arg  Save settings to ini file\n  -v, --version            Print version\n  -h, --help               Print usage\nTypically, to launch an agent named python_source, which gets its settings from a python_source section in mads.ini, and uses the Python module named source defined in the source.py file and that runs every 100 ms, the command is:\nmads python -n python_source -m source -p100\nwhere:\n\n-n python_source sets the agent name to python_source, and gets its settings from the same section in the mads.ini file\n-m source sets the Python module to source.py, which is searched for in the Python modules search paths, see below\n-p100 sets the sampling period to 100 ms"
-  },
-  {
-    "objectID": "guides/python_agent.html#python-modules-search-paths",
-    "href": "guides/python_agent.html#python-modules-search-paths",
-    "title": "Python Agent",
-    "section": "",
-    "text": "The Python modules are searched for in the following folders:\n\n./python\n./scripts\n../python\n../scripts\n../../python\n../../scripts\nINSTALL_PREFIX + /python\nINSTALL_PREFIX + /scripts\n\nplus any path listed in the mads.ini file under the search_path key (an array or a single string)."
-  },
-  {
-    "objectID": "guides/python_agent.html#the-mads.ini-section",
-    "href": "guides/python_agent.html#the-mads.ini-section",
-    "title": "Python Agent",
-    "section": "",
-    "text": "The following fields are typically used:\n[python_source]\nperiod = 200\nvenv = \"/path/to/.venv\"\npython_module = \"my_source\"\nsearch_paths = [\"/path/to/python/folder\"\n\n\n\n\n\n\nWarning\n\n\n\nThe section name must match the -m option argument when you launch the agent, so in the case aboxe you must use -m python_source."
-  },
-  {
-    "objectID": "guides/python_agent.html#module-types",
-    "href": "guides/python_agent.html#module-types",
-    "title": "Python Agent",
-    "section": "",
-    "text": "Python modules can be of type source, filter, or sink. The module type is defined by setting a top level variable like this, typically at the beginning of the script, just after the various imports:\nagent_type = \"sink\"\nAll the modules must implement a setup() function, which is expected to use the dictionary available in the module variable params (a dictionary) to do initial setup (opening ports or files, etc.)\nSource modules must implement a get_output() function, that produces the JSON string that will be published.\nFilter modules must implement a process() function, that is supposed to operate on the last received data dictionary (available as data, a module variable) and produce a JSON string that will be published.\nSink modules must implement a deal_with_data() function, that operates on the data dictionary, a module variable."
+    "text": "Contents\n\n\n\n\n\n\nWarning\n\n\n\nTo be done."
   },
   {
     "objectID": "guides/structure.html",
