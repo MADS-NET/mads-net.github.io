@@ -1,0 +1,27 @@
+---
+title: "Plugins"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 06/06/2025
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [advanced, plugins, development, c++]
+abstract: |
+  MADS supports agents implemented as plugins in C++17. This guide explains how to create a plugin.
+---
+
+# Contents
+
+
+::: callout-warning
+To be done.
+:::

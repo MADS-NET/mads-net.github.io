@@ -1,0 +1,27 @@
+---
+title: "Monolithic agents"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 06/06/2025
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [advanced, development, c++]
+abstract: |
+  How to develop a custom monolithic agent by explouting the MADS C++17 library.
+---
+
+# Contents
+
+
+::: callout-warning
+To be done.
+:::

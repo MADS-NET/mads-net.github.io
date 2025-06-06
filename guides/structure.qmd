@@ -161,15 +161,15 @@ mads feedback -s tcp://192.168.1.220:9092
 The `-n` command line option **has no effect** on how the broker operates. Its only purpose is to help you find out the proper address to use when starting agents that run on different machines or devices.
 :::
 
-# How to develop a plugin
 
-::: callout-note
-To be done.
-:::
+# Where to go next
 
+Once you have the bare minimum running, the next step is to configure and customize your distributed steps. In detail, you will have to:
 
-# How to deal with time
-
-::: callout-note
-To be done.
-:::
+1. learn how to develop your custom agents. This can be done in three ways:
+   * by developing your own monolithic agent, using the MADS C++17 library ([hardest](/guides/monolithic_agents.html), high performance and maximum flexibility)
+   * by implementing a C++17 plugin ([hard](/guides/plugins.html), high performance, some compromise in flexibility)
+   * by using the Python wrapper agent and implementing the details in Python ([easy](/guides/python_agent.html), limited performance and flexibility)
+2. [learn](/guides/services.html) how to make your agents into **services** (only on linux)
+3. [learn](/guides/timing.qmd) how to synchronize time on multiple devices
+4. [learn](/guides/mongodb.qmd) how to analyze the data collected by the MongoDB database

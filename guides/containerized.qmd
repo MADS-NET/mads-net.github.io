@@ -13,7 +13,7 @@ format: html
 #   pdf:
 #     toc: true
 draft: false
-categories: [docker, basics]
+categories: [docker, easy, OS, setup]
 abstract: |
   The base agents for setting up a MADS network are available as a ontainerized environment.
 ---

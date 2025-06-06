@@ -14,7 +14,7 @@ format: html
 #     toc: true
 
 draft: false
-categories: [python, agent, intermediate]
+categories: [python, agent, easy]
 abstract: |
   The `python_agent` repo on GitHub provides a MADS agent with an embedded python3 interpreter for developing MADS sgents in Python
 ---
