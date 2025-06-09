@@ -12,41 +12,6 @@
 <generator>quarto-1.7.30</generator>
 <lastBuildDate>Thu, 05 Jun 2025 22:00:00 GMT</lastBuildDate>
 <item>
-  <title>Monolithic agents</title>
-  <dc:creator>Paolo Bosetti</dc:creator>
-  <link>https://mads-net.github.io/guides/monolithic_agents.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="contents" class="level1">
-<h1>Contents</h1>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>To be done.</p>
-</div>
-</div>
-
-
-</section>
-
- ]]></description>
-  <category>advanced</category>
-  <category>development</category>
-  <category>c++</category>
-  <guid>https://mads-net.github.io/guides/monolithic_agents.html</guid>
-  <pubDate>Thu, 05 Jun 2025 22:00:00 GMT</pubDate>
-</item>
-<item>
   <title>Services</title>
   <dc:creator>Paolo Bosetti</dc:creator>
   <link>https://mads-net.github.io/guides/services.html</link>
@@ -55,8 +20,9 @@ Warning
 
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
+<section id="why-services" class="level1">
+<h1>Why services</h1>
+<p>Agents are typically expected to run on boot: as soon as the machine or device starts, you want the agent to become immediately available. To do that, MADS offers a solution for quickly create a service for a given combination of MADS command and arguments.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -67,9 +33,189 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>To be done.</p>
+<p>At the moment, this functionality is only available on Linux (Ubuntu or Debian). There are no immediate plans to extend it to MacOS or Windows.</p>
 </div>
 </div>
+</section>
+<section id="what-is-a-service" class="level1">
+<h1>What is a service</h1>
+<p>On Ubuntu or Debian Linux, a service is a INI file located in <code>/etc/systemd/system</code> that details a command to be executed on boot and its requirements. Once you have the service file installed, e.g.&nbsp;as <code>/etc/systemd/system/my_service.service</code>, you can:</p>
+<ul>
+<li>Enable/disable the service: <code>sudo systemctl enable|disable my_service</code>. If the service is disabled, It <strong>does not</strong> starts automatically.</li>
+<li>Start the service manually: <code>sudo systemctl start my_service</code></li>
+<li>Stop the service manually: <code>sudo systemctl stop my_service</code></li>
+<li>Enquire the service status: <code>sudo systemctl status my_service</code></li>
+</ul>
+<p>So, if the service is enabled, it starts automatically on boot; if it is disabled, you can still start it with the <code>systemctl start</code> command.</p>
+</section>
+<section id="how-to-create-a-mads-service" class="level1">
+<h1>How to create a MADS service</h1>
+<p>Suppose that you knwo that the following command launches properly an agent:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> source <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-i</span> in0_01 arduino.plugin</span></code></pre></div>
+<p>Now you want turn this command into a service. Just put <code>mads service &lt;service_name</code> in forn t of that command line, e.g.:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> service arduino source <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-i</span> in0_01 arduino.plugin</span></code></pre></div>
+<p>where <code>mads service arduino</code> means “create a service file called <code>mads-arduino</code>” (<code>mads-</code> is added automatically), and <code>source -i in0_01 arduino.plugin</code> is the proper command line for the <code>mads</code> command.</p>
+<p>You should get an output like:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#  __  __    _    ____  ____</span></span>
+<span id="cb3-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># |  \/  |  / \  |  _ \/ ___|</span></span>
+<span id="cb3-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># | |\/| | / _ \ | | | \___ \</span></span>
+<span id="cb3-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># | |  | |/ ___ \| |_| |___) |</span></span>
+<span id="cb3-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># |_|  |_/_/   \_\____/|____/</span></span>
+<span id="cb3-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#</span></span>
+<span id="cb3-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Linux Systemd service file for mads-arduino, a mads-source agent</span></span>
+<span id="cb3-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Notice that the settings file will be read from</span></span>
+<span id="cb3-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># /usr/local/etc/mads.ini</span></span>
+<span id="cb3-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#</span></span>
+<span id="cb3-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Save this file to /etc/systemd/system/mads-arduino.service</span></span>
+<span id="cb3-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Or run "sudo mads service publish source publish.plugin "</span></span>
+<span id="cb3-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># then run "sudo systemctl enable mads-arduino.service"</span></span>
+<span id="cb3-14"></span>
+<span id="cb3-15"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[Unit]</span></span>
+<span id="cb3-16"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">Description</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">mads-arduino</span></span>
+<span id="cb3-17"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">After</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">network.target</span></span>
+<span id="cb3-18"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">StartLimitIntervalSec</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb3-19"></span>
+<span id="cb3-20"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[Service]</span></span>
+<span id="cb3-21"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">Type</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">simple</span></span>
+<span id="cb3-22"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">Restart</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">always</span></span>
+<span id="cb3-23"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">RestartSec</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb3-24"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">User</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">root</span></span>
+<span id="cb3-25"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">ExecStart</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">/usr/local/bin/mads-source -i in0_01 arduino.plugin</span></span>
+<span id="cb3-26"></span>
+<span id="cb3-27"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[Install]</span></span>
+<span id="cb3-28"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">WantedBy</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">multi-user.target</span></span></code></pre></div>
+<p>As instructed in the comments, you shall check if everything looks fine, and if so, <strong>install</strong> the service file in the proper directory by simply re-executing the same command with <code>sudo</code> :</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sudo</span> mads service arduino source <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-i</span> in0_01 arduino.plugin</span></code></pre></div>
+<p>A longer and more flexible path is to save the file locally, edit it to taste, then manually copy/move it to <code>/etc/systemd/system</code>:</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> service arduino source <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-i</span> in0_01 arduino.plugin <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> mads-arduino.service</span>
+<span id="cb5-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># edit the file to taste</span></span>
+<span id="cb5-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sudo</span> cp mads-arduino.service /usr/systemd/system/</span></code></pre></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The fist way is the suggested one, unless you really need to adjust the service file (and you know what you are doing).</p>
+</div>
+</div>
+<p>Finally, enable the service with <code>sudo systemctl enable mads-arduino.service</code>.</p>
+<p>Note that enabling the service does not makes it start: to do so, you either have to reboot the machine or to manually start with <code>sudo systemctl start mads-arduino.service</code>.</p>
 
 
 </section>
@@ -90,23 +236,143 @@ Warning
 
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
-<div class="callout callout-style-default callout-warning callout-titled">
+<section id="what-are-plugins" class="level1">
+<h1>What are plugins</h1>
+<p>Originally, MADS only allowed to develop monolitic agents: this required to write the whole executable code, including the management of command line arguments and loading of serrings from the INI file (either local or loaded from the broker). This solution is still possible (see <a href="monolithic_agents.html">the guide</a>) and allows maximum flexibility, but it requires a good knowledse of the MADS innards and is more tedious and error prone.</p>
+<p>For this reason, we developed the plugin support: the common functionality of an agent are already available, and only the data management operations need to be implemented.</p>
+</section>
+<section id="behaviors-of-plugins" class="level1">
+<h1>Behaviors of plugins</h1>
+<p>Remember that there are three <a href="structure.html#the-agents"><em>behaviors</em> for plugins</a>:</p>
+<ul>
+<li>source: puts data into the MADS network</li>
+<li>filter: transforms data</li>
+<li>sink: consumes data</li>
+</ul>
+<p>As a consequences, there are three MADS subcommands to load a plugin, depending on its behavior: <code>mads source</code>, <code>mads filter</code>, and <code>mads sink</code>. They all take a mandatory argument that is the name or the path to a proper <em>plugin file</em>.</p>
+<p>A plugin file is a compiled dynamic library with the extension <code>.plugin</code>. The <em>behavior</em> of a plugin is rigid: a <em>source</em> plugin cannot be loaded by a <em>filter</em> agent.</p>
+</section>
+<section id="how-to-create-a-plugin" class="level1">
+<h1>How to create a plugin</h1>
+<p>The <code>mads</code> command provides an utility to generate a template for a new plugin:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> mads <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">plugin</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-h</span></span>
+<span id="cb1-2"></span>
+<span id="cb1-3"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Usage:</span></span>
+<span id="cb1-4">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">plugin</span> <span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">[</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">OPTION...</span><span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">]</span> name</span>
+<span id="cb1-5"></span>
+<span id="cb1-6">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-t,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--type</span> arg         Type of the plugin</span>
+<span id="cb1-7">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-d,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--dir</span> arg          Directory of the plugin</span>
+<span id="cb1-8">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-i,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--install-dir</span> arg  Directory where to install the plugin</span>
+<span id="cb1-9">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-o,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--overwrite</span>        Overwrite existing files</span>
+<span id="cb1-10">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-v,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--version</span>          Print version</span>
+<span id="cb1-11">  <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">-h,</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--help</span>             Print usage</span></code></pre></div>
+<p>Suppose that you want to create a source plugin named <code>my_plugin</code>: then the command shall be <code>mads plugin -t source -d my_source my_source</code>. This will create a CMake stub project in the folder <code>my_source</code> that, once compiled, will produce a <code>my_source.plugin</code> library, setting CMake to install that file in the default MADS prefix path, as given by <code>mads -p</code>. The command line option <code>-i</code> can be used to override that path.</p>
+</section>
+<section id="how-to-configure-and-build" class="level1">
+<h1>How to configure and build</h1>
+<p>As suggested by the command output:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">cd</span> my_source</span>
+<span id="cb2-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cmake</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-Bbuild</span> </span>
+<span id="cb2-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># make your changes</span></span>
+<span id="cb2-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cmake</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--build</span> build <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-j6</span></span></code></pre></div>
+<p>These steps are iterative, and probably need to tweak with the <code>CMakeLists.txt</code> file for adding third party libraries and other source/header files. The last command produces in the <code>build</code> folder two notable files:</p>
+<ul>
+<li><code>my_source.plugin</code>: the plugin proper;</li>
+<li><code>my_source</code>: an executable generated by conditionally enabling the <code>&nbsp;main</code> function at the end of the <code>my_source.cpp</code> file.</li>
+</ul>
+<p>The second file can be used for checking that the plogin properly deals with the data, without the need of a MADS network available (broker etc.). Indeed, that executable does not even connect to the broker. Launch it as:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">build/my_source</span></span></code></pre></div>
+<p>During development, you want to use this executable quite often to test what you are doing. You also have to tune the <code>main</code> function so that the dummy data are properly defined.</p>
+<p>When the bare executable works, you can try to load the plugin with the proper agent: provided that the broker is running and the <code>mads.ini</code> file contains a proper <code>[my_source]</code> section, you load the plugin as:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> source build/my_source.plugin</span></code></pre></div>
+<p>The agent name is the name of the plugin (i.e.&nbsp;<code>my_source</code>). If you need to override that name — for example, because you want to have different <em>identical</em> agents that load <em>different</em> settings — then you can use the <code>-n</code> command line option and match the proper <code>mads.ini</code> section.</p>
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>To be done.</p>
+<p>On MacOS, the plugin file <strong>can also be directly executed</strong>, so the <code>my_source</code> executable is not generated and the <code>my_source.plugin</code> can be both loaded from an agent or directly executed for testing.</p>
 </div>
 </div>
+<section id="how-to-install-the-plugin" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-install-the-plugin">How to install the plugin</h2>
+<p>Once the plugin is tested (both standalone and when loaded from an agent) it should be installed in the MADS tree. Remember that the command <code>mads -i</code> shows where plugins are expected to be installed (usually, <code>/usr/local/lib</code>). To install:</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cmake</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--install</span> build</span></code></pre></div>
+<p>The you can launch it as agent with:</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> source my_source.plugin</span></code></pre></div>
+<p>And when you are satisfield with the result, you can make it a service as explained <a href="services.html">here</a>.</p>
 
 
+</section>
 </section>
 
  ]]></description>
@@ -115,78 +381,6 @@ Warning
   <category>development</category>
   <category>c++</category>
   <guid>https://mads-net.github.io/guides/plugins.html</guid>
-  <pubDate>Thu, 05 Jun 2025 22:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Time and time synchronization</title>
-  <dc:creator>Paolo Bosetti</dc:creator>
-  <link>https://mads-net.github.io/guides/timing.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="contents" class="level1">
-<h1>Contents</h1>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>To be done.</p>
-</div>
-</div>
-
-
-</section>
-
- ]]></description>
-  <category>intermediate</category>
-  <category>timing</category>
-  <category>OS</category>
-  <category>setup</category>
-  <guid>https://mads-net.github.io/guides/timing.html</guid>
-  <pubDate>Thu, 05 Jun 2025 22:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>MongoDB</title>
-  <dc:creator>Paolo Bosetti</dc:creator>
-  <link>https://mads-net.github.io/guides/mongodb.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="contents" class="level1">
-<h1>Contents</h1>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>To be done.</p>
-</div>
-</div>
-
-
-</section>
-
- ]]></description>
-  <category>intermediate</category>
-  <category>javascript</category>
-  <category>database</category>
-  <category>analysis</category>
-  <guid>https://mads-net.github.io/guides/mongodb.html</guid>
   <pubDate>Thu, 05 Jun 2025 22:00:00 GMT</pubDate>
 </item>
 <item>
@@ -620,8 +814,8 @@ Important
 <li>by using the Python wrapper agent and implementing the details in Python (<a href="../guides/python_agent.html">easy</a>, limited performance and flexibility)</li>
 </ul></li>
 <li><a href="../guides/services.html">learn</a> how to make your agents into <strong>services</strong> (only on linux)</li>
-<li><a href="../guides/timing.html">learn</a> how to synchronize time on multiple devices</li>
-<li><a href="../guides/mongodb.html">learn</a> how to analyze the data collected by the MongoDB database</li>
+<li>learn how to synchronize time on multiple devices</li>
+<li>learn how to analyze the data collected by the MongoDB database</li>
 </ol>
 
 
@@ -867,30 +1061,10 @@ font-style: inherit;">git</span> clone <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">--depth</span> 1 https://github.com/MADS-NET/MADS_container.git</span></code></pre></div>
 </section>
-<section id="step-2.-build-contaners" class="level2">
-<h2 class="anchored" data-anchor-id="step-2.-build-contaners">Step 2. Build contaners</h2>
-<p>In the <code>MADS_container</code> directory, you can build the containers with the following command:</p>
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">docker</span> compose build</span></code></pre></div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This is only to be done once.</p>
-</div>
-</div>
-</section>
-<section id="step-3.-run-the-containers" class="level2">
-<h2 class="anchored" data-anchor-id="step-3.-run-the-containers">Step 3. Run the containers</h2>
+<section id="step-2.-run-the-containers" class="level2">
+<h2 class="anchored" data-anchor-id="step-2.-run-the-containers">Step 2. Run the containers</h2>
 <p>You can now run the containers with the following command:</p>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">docker</span> compose up <span class="at" style="color: #657422;
 background-color: null;
@@ -910,6 +1084,14 @@ Note
 </div>
 </div>
 <p>Now the broker and the database are also accessible as if they were processes running on your host machine.</p>
+</section>
+<section id="update-images" class="level2">
+<h2 class="anchored" data-anchor-id="update-images">Update images</h2>
+<p>To update the images to the latest version, do:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">docker</span> compose pull</span></code></pre></div>
+<p>from project root (i.e.&nbsp;the same folder containing <code>compose.yml</code>).</p>
 
 
 </section>
@@ -937,7 +1119,13 @@ Note
 <p>The Python3 MADS agent is available on <a href="https://github.com/MADS-net/python_agent" class="uri">https://github.com/MADS-net/python_agent</a>.</p>
 <section id="installing" class="level2">
 <h2 class="anchored" data-anchor-id="installing">Installing</h2>
-<p>You need to have <code>python3</code> and <code>python3-dev</code> installed. Then proceed as follows depending on your platform.</p>
+<p>You need to have <code>python3</code> and <code>python3-dev</code> installed, or Python3 on Windows.</p>
+<p>Also, you need to have installed the latest <a href="https://github.com/pbosetti/MADS/releases">MADS version</a> and the proper build toolkit:</p>
+<ul>
+<li>on UNIX, this means cmake, clang, git</li>
+<li>on Windows, this means Visual Studio 2022 (community edition is fine), git and cmake.</li>
+</ul>
+<p>Then proceed as follows depending on your platform.</p>
 <section id="unix" class="level3">
 <h3 class="anchored" data-anchor-id="unix">UNIX</h3>
 <div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
@@ -1215,6 +1403,8 @@ Warning
 <p>The section name must match the <code>-m</code> option argument when you launch the agent, so in the case aboxe you must use <code>-m python_source</code>.</p>
 </div>
 </div>
+<p>During <strong>development</strong>, you typically run the plugin interactively and using a python module that is under your home folder. In these conditions, you probably want to set the module name on the command line, such as <code>mads python -n python_source -m my_module</code>. This means that you must have the file <code>my_module.py</code> in the <code>python</code> or <code>scripts</code> subfolder of your current working directory.</p>
+<p>During <strong>deployment</strong>, you want to transform the agent in a service, so that you rely on the module to be loaded according to the <code>&nbsp;mads.ini</code> file (from the <code>python_module</code> key), and the module is expected to be placed in <code>&lt;INSTALL_PREFIX&gt;/python/my_module.py</code>. Since <code>INSTALL_PREFIX</code> is usually <code>/usr/local</code>, this means that the file should be in <code>/usr/local/python/my_module.py</code>. Then you create a service as documented <a href="services.html">here</a>.</p>
 </section>
 <section id="module-types" class="level2">
 <h2 class="anchored" data-anchor-id="module-types">Module Types</h2>

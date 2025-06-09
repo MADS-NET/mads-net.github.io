@@ -2,11 +2,8 @@
   {
     "listing": "/guides.html",
     "items": [
-      "/guides/monolithic_agents.html",
       "/guides/services.html",
       "/guides/plugins.html",
-      "/guides/timing.html",
-      "/guides/mongodb.html",
       "/guides/structure.html",
       "/guides/contribute.html",
       "/guides/containerized.html",

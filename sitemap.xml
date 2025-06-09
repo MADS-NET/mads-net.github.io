@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://mads-net.github.io/guides/mongodb.html</loc>
-    <lastmod>2025-06-06T07:25:50.271Z</lastmod>
-  </url>
-  <url>
     <loc>https://mads-net.github.io/guides/python_agent.html</loc>
-    <lastmod>2025-06-06T07:26:13.434Z</lastmod>
+    <lastmod>2025-06-09T09:30:23.184Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/containerized.html</loc>
-    <lastmod>2025-06-06T07:26:38.647Z</lastmod>
+    <lastmod>2025-06-09T09:17:12.148Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/plugins.html</loc>
-    <lastmod>2025-06-06T07:25:19.450Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/guides/monolithic_agents.html</loc>
-    <lastmod>2025-06-06T07:25:30.912Z</lastmod>
+    <lastmod>2025-06-09T10:57:05.354Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/about.html</loc>
@@ -30,19 +22,15 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/guides.html</loc>
-    <lastmod>2025-06-06T06:57:44.450Z</lastmod>
+    <lastmod>2025-06-09T09:13:27.478Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/services.html</loc>
-    <lastmod>2025-06-06T07:24:12.938Z</lastmod>
+    <lastmod>2025-06-09T10:05:00.131Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/contribute.html</loc>
     <lastmod>2025-06-06T07:26:27.327Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/guides/timing.html</loc>
-    <lastmod>2025-06-06T07:27:53.625Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/structure.html</loc>
