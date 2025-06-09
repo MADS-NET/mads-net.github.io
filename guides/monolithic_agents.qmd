@@ -13,7 +13,7 @@ format: html
 #     toc: true
 #   pdf:
 #     toc: true
-draft: false
+draft: true
 categories: [advanced, development, c++]
 abstract: |
   How to develop a custom monolithic agent by explouting the MADS C++17 library.

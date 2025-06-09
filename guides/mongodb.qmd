@@ -13,7 +13,7 @@ format: html
 #     toc: true
 #   pdf:
 #     toc: true
-draft: false
+draft: true
 categories: [intermediate, javascript, database, analysis]
 abstract: |
   How to use data collected in the MongoDB database.

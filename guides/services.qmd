@@ -19,9 +19,93 @@ abstract: |
   Once tested, agents can be turned into linux services, so that they start automatically on boot.
 ---
 
-# Contents
+# Why services
 
+Agents are typically expected to run on boot: as soon as the machine or device starts, you want the agent to become immediately available. To do that, MADS offers a solution for quickly create a service for a given combination of MADS command and arguments.
 
 ::: callout-warning
-To be done.
+At the moment, this functionality is only available on Linux (Ubuntu or Debian). There are no immediate plans to extend it to MacOS or Windows.
 :::
+
+# What is a service
+
+On Ubuntu or Debian Linux, a service is a INI file located in `/etc/systemd/system` that details a command to be executed on boot and its requirements. Once you have the service file installed, e.g. as `/etc/systemd/system/my_service.service`, you can:
+
+* Enable/disable the service: `sudo systemctl enable|disable my_service`. If the service is disabled, It **does not** starts automatically.
+* Start the service manually: `sudo systemctl start my_service`
+* Stop the service manually: `sudo systemctl stop my_service`
+* Enquire the service status: `sudo systemctl status my_service`
+
+So, if the service is enabled, it starts automatically on boot; if it is disabled, you can still start it with the `systemctl start` command.
+
+
+# How to create a MADS service
+
+Suppose that you knwo that the following command launches properly an agent:
+
+```bash
+mads source -i in0_01 arduino.plugin
+```
+
+Now you want turn this command into a service. Just put `mads service <service_name` in forn t of that command line, e.g.:
+
+```bash
+mads service arduino source -i in0_01 arduino.plugin
+```
+
+where `mads service arduino` means "create a service file called `mads-arduino`" (`mads-` is added automatically), and `source -i in0_01 arduino.plugin` is the proper command line for the `mads` command.
+
+You should get an output like:
+
+```ini
+#  __  __    _    ____  ____
+# |  \/  |  / \  |  _ \/ ___|
+# | |\/| | / _ \ | | | \___ \
+# | |  | |/ ___ \| |_| |___) |
+# |_|  |_/_/   \_\____/|____/
+#
+# Linux Systemd service file for mads-arduino, a mads-source agent
+# Notice that the settings file will be read from
+# /usr/local/etc/mads.ini
+#
+# Save this file to /etc/systemd/system/mads-arduino.service
+# Or run "sudo mads service publish source publish.plugin "
+# then run "sudo systemctl enable mads-arduino.service"
+
+[Unit]
+Description=mads-arduino
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/local/bin/mads-source -i in0_01 arduino.plugin
+
+[Install]
+WantedBy=multi-user.target
+```
+
+As instructed in the comments, you shall check if everything looks fine, and if so, **install** the service file in the proper directory by simply re-executing the same command with `sudo` :
+
+```bash
+sudo mads service arduino source -i in0_01 arduino.plugin
+```
+
+A longer and more flexible path is to save the file locally, edit it to taste, then manually copy/move it to `/etc/systemd/system`:
+
+```bash
+mads service arduino source -i in0_01 arduino.plugin > mads-arduino.service
+# edit the file to taste
+sudo cp mads-arduino.service /usr/systemd/system/
+```
+
+::: callout-tip
+The fist way is the suggested one, unless you really need to adjust the service file (and you know what you are doing).
+:::
+
+Finally, enable the service with `sudo systemctl enable mads-arduino.service`.
+
+Note that enabling the service does not makes it start: to do so, you either have to reboot the machine or to manually start with `sudo systemctl start mads-arduino.service`.

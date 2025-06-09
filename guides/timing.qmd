@@ -13,7 +13,7 @@ format: html
 #     toc: true
 #   pdf:
 #     toc: true
-draft: false
+draft: true
 categories: [intermediate, timing, OS, setup]
 abstract: |
   MADS collects and transforms data from a network of distributed devices: synchronizing the timestamps is of paramount importance for having a quality database.

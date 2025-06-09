@@ -44,19 +44,7 @@ All you need is in the [MADS_container](https://github.com/MADS-NET/MADS_contain
 git clone --depth 1 https://github.com/MADS-NET/MADS_container.git
 ```
 
-## Step 2. Build contaners
-
-In the `MADS_container` directory, you can build the containers with the following command:
-
-```sh
-docker compose build
-```
-
-::: callout-note
-This is only to be done once.
-:::
-
-## Step 3. Run the containers
+## Step 2. Run the containers
 
 You can now run the containers with the following command:
 
@@ -71,3 +59,13 @@ You can stop the containers at any time with the command `docker compose down`.
 :::
 
 Now the broker and the database are also accessible as if they were processes running on your host machine.
+
+## Update images
+
+To update the images to the latest version, do:
+
+```bash
+docker compose pull
+```
+
+from project root (i.e. the same folder containing `compose.yml`).
