@@ -7,7 +7,8 @@
       "/guides/structure.html",
       "/guides/contribute.html",
       "/guides/containerized.html",
-      "/guides/python_agent.html"
+      "/guides/python_agent.html",
+      "/guides/zeroconf.html"
     ]
   }
 ]

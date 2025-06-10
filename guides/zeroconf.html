@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-06-06">
+<meta name="dcterms.date" content="2025-06-02">
 
-<title>MongoDB – MADS</title>
+<title>ZeroConf (aka Avahi) network discovery – MADS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -69,7 +104,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<meta name="quarto:status" content="draft">
 
 
 </head>
@@ -77,7 +111,7 @@ ul.task-list li input[type="checkbox"] {
 <body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -120,7 +154,13 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#contents" id="toc-contents" class="nav-link active" data-scroll-target="#contents">Contents</a></li>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation">Motivation</a></li>
+  <li><a href="#how-to-enable-zeroconf" id="toc-how-to-enable-zeroconf" class="nav-link" data-scroll-target="#how-to-enable-zeroconf">How to enable ZeroConf</a>
+  <ul class="collapse">
+  <li><a href="#install-the-needed-packages" id="toc-install-the-needed-packages" class="nav-link" data-scroll-target="#install-the-needed-packages">Install the needed packages</a></li>
+  <li><a href="#configure-the-service" id="toc-configure-the-service" class="nav-link" data-scroll-target="#configure-the-service">Configure the service</a></li>
+  <li><a href="#apply-the-changes" id="toc-apply-the-changes" class="nav-link" data-scroll-target="#apply-the-changes">Apply the changes</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -129,12 +169,13 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">MongoDB</h1>
+<h1 class="title">ZeroConf (aka Avahi) network discovery</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">intermediate</div>
-    <div class="quarto-category">javascript</div>
-    <div class="quarto-category">database</div>
-    <div class="quarto-category">analysis</div>
+    <div class="quarto-category">networking</div>
+    <div class="quarto-category">IP</div>
+    <div class="quarto-category">configuration</div>
+    <div class="quarto-category">OS</div>
+    <div class="quarto-category">Linux</div>
   </div>
   </div>
 
@@ -159,7 +200,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 6, 2025</p>
+      <p class="date">June 2, 2025</p>
     </div>
   </div>
   
@@ -175,7 +216,7 @@ ul.task-list li input[type="checkbox"] {
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>How to use data collected in the MongoDB database.</p>
+    <p>Using hostnames rather than IP addresses is easier and much more robust. In this guide, we learn how to setup a Linux box for advertising its address by using the Avahi protocol/service.</p>
   </div>
 </div>
 
@@ -183,23 +224,50 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>To be done.</p>
-</div>
-</div>
+<section id="motivation" class="level1">
+<h1>Motivation</h1>
+<p>Using IP addresses for accessing other machines is bad practice, for The IP address of a given machine can change unexpectedly — for example, because it has been assigned by a DHCP server from a dynamic pool of available IPs.</p>
+<p>Much more preferable is to use hostnames, that map to IP addresses dynamically. On the other hand, This requires a DNS server properly configured and updated.</p>
+<p>ZeroConf comes to the rescue: it is an open protocol where all nodes on the same network advertise their services (ports) and host names by broadcasting, and by sharing the same, default local domain: <code>.local</code>.</p>
+<p>The name ZeroConf is a bit misleading, for actually <em>there is</em> a configuration step, although it’s minimal and simple. The configuration, additionally, is <em>node local</em>, decentralized, and there is no need for any central server.</p>
+</section>
+<section id="how-to-enable-zeroconf" class="level1">
+<h1>How to enable ZeroConf</h1>
+<p>On MacOS systems, Zeroconf is automatically available, so if your machine name is <code>MyMac</code>, your machine is available on the local network as <code>MyMac.local</code> (case insensitive!).</p>
+<p>On Linux, the same protocol and service goes under the name of <code>Avahi</code>. To enable it, do the following steps.</p>
+<section id="install-the-needed-packages" class="level2">
+<h2 class="anchored" data-anchor-id="install-the-needed-packages">Install the needed packages</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt install avahi-utils avahi-daemon openssh-server</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="configure-the-service" class="level2">
+<h2 class="anchored" data-anchor-id="configure-the-service">Configure the service</h2>
+<p>Create a file named <code>/stc/avahi/services/ssh.service</code> with the following content:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode xml code-with-copy"><code class="sourceCode xml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- See avahi.service(5) for more information about this configuration file --&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">service-group</span>&gt;</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  &lt;<span class="kw">name</span><span class="ot"> replace-wildcards=</span><span class="st">"yes"</span>&gt;%h&lt;/<span class="kw">name</span>&gt;</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  &lt;<span class="kw">service</span>&gt;</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">type</span>&gt;_ssh._tcp&lt;/<span class="kw">type</span>&gt;</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">port</span>&gt;22&lt;/<span class="kw">port</span>&gt;</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  &lt;/<span class="kw">service</span>&gt;</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">service-group</span>&gt;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This is making the host accessible as <code>%h.local</code>, where <code>%h</code> is a wildcard for the current hostname, and also advertising the ssh servoice on TCP port 22.</p>
+<p>The list of services advertised on the local network can be obtained with:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">avahi-browse</span> <span class="at">-a</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="apply-the-changes" class="level2">
+<h2 class="anchored" data-anchor-id="apply-the-changes">Apply the changes</h2>
+<p>Remember to enable and start the service:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable avahi-daemon</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl start avahi-daemon</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now you can use <code>&lt;hostname&gt;.local</code> in place of its address: for example, when launching MADS agents, supposing the the broker is running on a device with hostname set to <code>mads-broker</code>, you can simply do:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-s</span> tcp://mads-broker.local:9092 my_plugin.plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

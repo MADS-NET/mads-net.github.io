@@ -1447,5 +1447,124 @@ Note
   <guid>https://mads-net.github.io/guides/python_agent.html</guid>
   <pubDate>Sun, 01 Jun 2025 22:00:00 GMT</pubDate>
 </item>
+<item>
+  <title>ZeroConf (aka Avahi) network discovery</title>
+  <dc:creator>Paolo Bosetti</dc:creator>
+  <link>https://mads-net.github.io/guides/zeroconf.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="motivation" class="level1">
+<h1>Motivation</h1>
+<p>Using IP addresses for accessing other machines is bad practice, for The IP address of a given machine can change unexpectedly — for example, because it has been assigned by a DHCP server from a dynamic pool of available IPs.</p>
+<p>Much more preferable is to use hostnames, that map to IP addresses dynamically. On the other hand, This requires a DNS server properly configured and updated.</p>
+<p>ZeroConf comes to the rescue: it is an open protocol where all nodes on the same network advertise their services (ports) and host names by broadcasting, and by sharing the same, default local domain: <code>.local</code>.</p>
+<p>The name ZeroConf is a bit misleading, for actually <em>there is</em> a configuration step, although it’s minimal and simple. The configuration, additionally, is <em>node local</em>, decentralized, and there is no need for any central server.</p>
+</section>
+<section id="how-to-enable-zeroconf" class="level1">
+<h1>How to enable ZeroConf</h1>
+<p>On MacOS systems, Zeroconf is automatically available, so if your machine name is <code>MyMac</code>, your machine is available on the local network as <code>MyMac.local</code> (case insensitive!).</p>
+<p>On Linux, the same protocol and service goes under the name of <code>Avahi</code>. To enable it, do the following steps.</p>
+<section id="install-the-needed-packages" class="level2">
+<h2 class="anchored" data-anchor-id="install-the-needed-packages">Install the needed packages</h2>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sudo</span> apt update <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">&amp;&amp;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sudo</span> apt install avahi-utils avahi-daemon openssh-server</span></code></pre></div>
+</section>
+<section id="configure-the-service" class="level2">
+<h2 class="anchored" data-anchor-id="configure-the-service">Configure the service</h2>
+<p>Create a file named <code>/stc/avahi/services/ssh.service</code> with the following content:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode xml code-with-copy"><code class="sourceCode xml"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;!-- See avahi.service(5) for more information about this configuration file --&gt;</span></span>
+<span id="cb2-2"></span>
+<span id="cb2-3">&lt;<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">service-group</span>&gt;</span>
+<span id="cb2-4"></span>
+<span id="cb2-5">  &lt;<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">name</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;"> replace-wildcards=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"yes"</span>&gt;%h&lt;/<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">name</span>&gt;</span>
+<span id="cb2-6"></span>
+<span id="cb2-7">  &lt;<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">service</span>&gt;</span>
+<span id="cb2-8">    &lt;<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">type</span>&gt;_ssh._tcp&lt;/<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">type</span>&gt;</span>
+<span id="cb2-9">    &lt;<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">port</span>&gt;22&lt;/<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">port</span>&gt;</span>
+<span id="cb2-10">  &lt;/<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">service</span>&gt;</span>
+<span id="cb2-11"></span>
+<span id="cb2-12">&lt;/<span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">service-group</span>&gt;</span></code></pre></div>
+<p>This is making the host accessible as <code>%h.local</code>, where <code>%h</code> is a wildcard for the current hostname, and also advertising the ssh servoice on TCP port 22.</p>
+<p>The list of services advertised on the local network can be obtained with:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">avahi-browse</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-a</span></span></code></pre></div>
+</section>
+<section id="apply-the-changes" class="level2">
+<h2 class="anchored" data-anchor-id="apply-the-changes">Apply the changes</h2>
+<p>Remember to enable and start the service:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sudo</span> systemctl enable avahi-daemon</span>
+<span id="cb4-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sudo</span> systemctl start avahi-daemon</span></code></pre></div>
+<p>Now you can use <code>&lt;hostname&gt;.local</code> in place of its address: for example, when launching MADS agents, supposing the the broker is running on a device with hostname set to <code>mads-broker</code>, you can simply do:</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> source <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-s</span> tcp://mads-broker.local:9092 my_plugin.plugin</span></code></pre></div>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>networking</category>
+  <category>IP</category>
+  <category>configuration</category>
+  <category>OS</category>
+  <category>Linux</category>
+  <guid>https://mads-net.github.io/guides/zeroconf.html</guid>
+  <pubDate>Sun, 01 Jun 2025 22:00:00 GMT</pubDate>
+</item>
 </channel>
 </rss>
