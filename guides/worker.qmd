@@ -1,0 +1,199 @@
+---
+title: "Parallel computing with MADS"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 07/07/2025
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [plugin, parallel computing, advanced, kubernetes, docker]
+abstract: |
+  MADS has two special agents, `dealer` and `worker`, thatallow to distribute many different computations to a set of identical workers, in round-robin fashion.
+---
+
+# Motivation
+
+Sometimes, we want to explore a large parameter space, and run multiple time-demanding simulations over a grid of points in the parameter space. This is the case for example when we want to run a sensitivity analysis, or when we want to explore the effect of different parameters on the model output and perhaps find the optimal set of parameters for a given objective function.
+
+If we have at hand a number of machines with multiple cores, we can effectively scale the problem by running each simulation on a different machine, or on a different core of the same machine. This is particularly useful when the simulations are independent and can be run in parallel.
+
+
+# MADS solution
+
+MADS has two special agents, `dealer` and `worker`, that allow to distribute many different computations to a set of identical workers, in round-robin fashion. This is useful when you have many independent tasks that can be run in parallel, such as running multiple simulations or processing large datasets.
+
+This configuration exploits ZeroMQ's feature called ["PUSH-PULL"](https://zguide.zeromq.org/docs/chapter2/#Messaging-Patterns) to distribute tasks among workers. The `dealer` agent acts as a task distributor, while the `worker` agents are responsible for executing the tasks. Once a `worker` completes a task, it sends the result back to the MADS net — which can then process or store the results as needed — and becomes available again for new tasks.
+
+The scheme is illustrated in Figure @fig-net. In this installation, the network has a broker, a logger (connected to the MongoDB database), and a generic source plugin, which is expected to generate the computational load, i.e., a sequence of **input tasks** (as JSON object). The source plugin can be freely implemented (monolithic, plugin, or even a python agent).
+
+A special agent, called `dealer`, which is part of standard MADS distribution, is also connected to the broker. It also provides connection to the workers on an additional port, by default 9093 (blue arrows in @fig-net).
+
+
+```{dot}
+//| label: fig-net
+//| fig-cap: "Dealer-Worker"
+//| fig-width: 6
+//| fig-height: 3
+digraph "Dealer-worker" {
+  rankdir=LR
+  bgcolor="#ffffff00"
+  node[shape="rect", style=filled, fillcolor="#ffffff"]
+
+  broker
+  source
+  dealer [label="dealer", shape=box, fillcolor="#f0f0f0"]
+  mongo [label="MongoDB", shape=cylinder]
+  
+  w1 [label="worker 1", shape=box, fillcolor="#f0f0f0"]
+  w2 [label="worker 2", shape=box, fillcolor="#f0f0f0"]
+  w3 [label="worker 3", shape=box, fillcolor="#f0f0f0"]
+  w4 [label="worker 4", shape=box, fillcolor="#f0f0f0"]
+  
+  p[label="Plugin", shape=cds, orientation=180]
+  
+  w1 -> p[arrowhead=none, style=dashed]
+  w2 -> p[arrowhead=none, style=dashed]
+  w3 -> p[arrowhead=none, style=dashed]
+  w4 -> p[arrowhead=none, style=dashed]
+
+  source -> broker
+  broker -> dealer
+  dealer -> w1[color="blue"]
+  dealer -> w2[color="blue"]
+  dealer -> w3[color="blue"]
+  dealer -> w4[color="blue"]
+  
+  w1 -> broker
+  w2 -> broker
+  w3 -> broker
+  w4 -> broker
+  
+  broker->logger
+  logger->mongo[label="BSON", style=dashed]
+}
+```
+
+A variable number of `worker` agents (also part of MADS distribution) are then connected to the `dealer` with a PUSH-PULL ZeroMQ socket, and also act as source agents towards the broker. 
+
+Workers are plugin-based agents, and typically all load the same plugin file (preferably obtained OTA).
+
+As soon as the broker receives a new task from `source`, it dispatches it to the `dealer`, which then forwards it to the next available `worker`. The `worker` executes the task and sends the result back to the broker, which can then routes the results to any subscribed agent (e.g. the `logger`).
+
+
+# Resource scaling
+
+The worker instances in @fig-net can be fun on the same machine/device, or on different machine, in a way that is totally irrelevant and transparent to the MADS network. The only requirement is that the `dealer` and the `worker` agents are connected to the same broker, and that the `worker` agents are able to connect to the `dealer` on the port 9093 (or any other port specified in the configuration).
+
+Of course, if the number of machines for running the workers becomes large enough, it would be impractical to manually install and load the workers on tens or hundreds of machines. In this case, it is possible to use a *container orchestration system* such as **Kubernetes** to automatically deploy and manage the worker instances.
+
+In this case, we have a Kubernetes deployment that defines a containerized list of MADS worker agents, each then loading the computation plugin via OTA from the broker. Once the Kubernetes cluster is set up, scaling it is just a matter of adding more machines to the same cluster and dynamically request the desired number of replicas. 
+
+## Example deployment
+
+Kubernetes deployments are YAML files that declare the configuration for each instance. a workable example is:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: default
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: "p4010/mads:latest"
+          args: ["worker", "-s", "tcp://198.19.249.3:9092", "-n", "test_worker_arm64"]
+          resources:
+            limits:
+              cpu: 200m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+          ports:
+            - containerPort: 9091
+              name: zmq-in
+            - containerPort: 9092
+              name: zmq-ini
+            - containerPort: 9093
+              name: zmq-deal
+```
+
+This is defining each worker as an instance of the `p4010/mads:latest` Docker image, which is the official MADS image on Docker Hub. The `args` field specifies the command line arguments to pass to the worker agent, including the broker address and the worker name. In this case, we are assuming that Kubernetes runs on an ARM64 architecture, and the worker name is set to `test_worker_arm64` (see [OTA Plugins](OTA_plugins.qmd) for more details on the worker name).
+
+With this configuration saved as ``manifest.yml`, we can deploy the workers to the Kubernetes cluster with the following command:
+
+```bash
+kubectl apply -f manifest.yml
+```
+
+This will start 5 replicas of the same worker instance, each loading the plugin OTA from the broker. If we want (and can) scale up the number of workers, we can do it transparently without disrupting any operation:
+
+```bash
+kubectl scale deployments/worker --replicas=100
+```
+
+::: callout-warning
+The maximum number of replicas shall be less or equal to the **total number of cores in the Kubernetes cluster**. If you try to scale up beyond that, CPU resources will be further subdivided among the workers, and each worker will get less CPU time, which may lead to performance degradation.
+:::
+
+When we are done, we can scale down the number of workers to zero, or delete the deployment altogether:
+
+```sh
+kubectl delete deployments worker
+```
+
+
+## Keeping track of completed tasks
+
+The number of submitted and completed tasks can be easily monitored with a Python agent:
+
+```python
+import json
+agent_type = "sink"
+
+def setup():
+  print("[Python] Setting up sink...")
+  print("[Python] Parameters: " + json.dumps(params))
+  state["submitted"] = 0
+  state["accepted"] = 0
+ 
+def deal_with_data():
+  if topic == "dealer":
+    state["submitted"] += 1
+  if topic == "test_worker":
+    state["accepted"] += 1
+  print("\33[2K[Python] Submitted: " + str(state["submitted"]) + ", Accepted: " + str(state["accepted"]) + ", Pending: " + str(state["submitted"] - state["accepted"]), end="\r")
+```
+
+Save this as `counter.py` in the folder `usr/local/scripts` under the MADS prefix directory (given by `mads -p`), add the following section to the INI file:
+
+```ini
+[counter]
+sub_topic = ["dealer", "test_worker"]
+python_module = "counter"
+```
+
+then run the agent with the command:
+
+```bash
+mads python -n counter
+```
+

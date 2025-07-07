@@ -14,7 +14,7 @@ format: html
 #   pdf:
 #     toc: true
 draft: false
-categories: [intermediate, OS, setup]
+categories: [intermediate, OS, setup, easy]
 abstract: |
   Once tested, agents can be turned into linux services, so that they start automatically on boot.
 ---
