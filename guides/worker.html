@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-06-04">
+<meta name="dcterms.date" content="2025-06-02">
 
-<title>Network structure – MADS</title>
+<title>Parallel computing with MADS – MADS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -154,13 +154,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#architecture" id="toc-architecture" class="nav-link active" data-scroll-target="#architecture">Architecture</a>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation">Motivation</a></li>
+  <li><a href="#mads-solution" id="toc-mads-solution" class="nav-link" data-scroll-target="#mads-solution">MADS solution</a></li>
+  <li><a href="#resource-scaling" id="toc-resource-scaling" class="nav-link" data-scroll-target="#resource-scaling">Resource scaling</a>
   <ul class="collapse">
-  <li><a href="#the-broker" id="toc-the-broker" class="nav-link" data-scroll-target="#the-broker">The broker</a></li>
-  <li><a href="#the-agents" id="toc-the-agents" class="nav-link" data-scroll-target="#the-agents">The agents</a></li>
+  <li><a href="#example-deployment" id="toc-example-deployment" class="nav-link" data-scroll-target="#example-deployment">Example deployment</a></li>
   </ul></li>
-  <li><a href="#layout-and-requirements" id="toc-layout-and-requirements" class="nav-link" data-scroll-target="#layout-and-requirements">Layout and requirements</a></li>
-  <li><a href="#where-to-go-next" id="toc-where-to-go-next" class="nav-link" data-scroll-target="#where-to-go-next">Where to go next</a></li>
   </ul>
 </nav>
     </div>
@@ -169,11 +168,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Network structure</h1>
+<h1 class="title">Parallel computing with MADS</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">template</div>
-    <div class="quarto-category">basics</div>
-    <div class="quarto-category">easy</div>
+    <div class="quarto-category">plugin</div>
+    <div class="quarto-category">parallel computing</div>
+    <div class="quarto-category">advanced</div>
+    <div class="quarto-category">kubernetes</div>
+    <div class="quarto-category">docker</div>
   </div>
   </div>
 
@@ -198,7 +199,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 4, 2025</p>
+      <p class="date">June 2, 2025</p>
     </div>
   </div>
   
@@ -214,7 +215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>Illustrate a typical MADS network structure and its requirements.</p>
+    <p>MADS has two special agents, <code>dealer</code> and <code>worker</code>, thatallow to distribute many different computations to a set of identical workers, in round-robin fashion.</p>
   </div>
 </div>
 
@@ -222,169 +223,242 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="architecture" class="level1">
-<h1>Architecture</h1>
-<p>The typical architecture of a MADS network can be represented as:</p>
+<section id="motivation" class="level1">
+<h1>Motivation</h1>
+<p>Sometimes, we want to explore a large parameter space, and run multiple time-demanding simulations over a grid of points in the parameter space. This is the case for example when we want to run a sensitivity analysis, or when we want to explore the effect of different parameters on the model output and perhaps find the optimal set of parameters for a given objective function.</p>
+<p>If we have at hand a number of machines with multiple cores, we can effectively scale the problem by running each simulation on a different machine, or on a different core of the same machine. This is particularly useful when the simulations are independent and can be run in parallel.</p>
+</section>
+<section id="mads-solution" class="level1">
+<h1>MADS solution</h1>
+<p>MADS has two special agents, <code>dealer</code> and <code>worker</code>, that allow to distribute many different computations to a set of identical workers, in round-robin fashion. This is useful when you have many independent tasks that can be run in parallel, such as running multiple simulations or processing large datasets.</p>
+<p>This configuration exploits ZeroMQ’s feature called <a href="https://zguide.zeromq.org/docs/chapter2/#Messaging-Patterns">“PUSH-PULL”</a> to distribute tasks among workers. The <code>dealer</code> agent acts as a task distributor, while the <code>worker</code> agents are responsible for executing the tasks. Once a <code>worker</code> completes a task, it sends the result back to the MADS net — which can then process or store the results as needed — and becomes available again for new tasks.</p>
+<p>The scheme is illustrated in Figure <a href="#fig-net" class="quarto-xref">Figure&nbsp;1</a>. In this installation, the network has a broker, a logger (connected to the MongoDB database), and a generic source plugin, which is expected to generate the computational load, i.e., a sequence of <strong>input tasks</strong> (as JSON object). The source plugin can be freely implemented (monolithic, plugin, or even a python agent).</p>
+<p>A special agent, called <code>dealer</code>, which is part of standard MADS distribution, is also connected to the broker. It also provides connection to the workers on an additional port, by default 9093 (blue arrows in <a href="#fig-net" class="quarto-xref">Figure&nbsp;1</a>).</p>
 <div class="cell" data-fig-width="6" data-fig-height="3" data-layout-align="default">
 <div class="cell-output-display">
 <div id="fig-net" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-net-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
-<svg width="576" height="288" viewbox="0.00 0.00 529.55 229.60" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 225.6)">
-<title>MADS Network</title>
-<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-225.6 525.55,-225.6 525.55,4 -4,4"></polygon>
-<!-- p1 -->
-<g id="node1" class="node">
-<title>p1</title>
-<polygon fill="#ffffff" stroke="black" points="51.1,-212.8 -0.03,-212.8 -0.03,-188.8 51.1,-188.8 63.1,-200.8 51.1,-212.8"></polygon>
-<text text-anchor="middle" x="31.53" y="-196.6" font-family="Times,serif" font-size="14.00">Plugin 1</text>
-</g>
-<!-- a1 -->
-<g id="node2" class="node">
-<title>a1</title>
-<polygon fill="#ffffff" stroke="black" points="176.05,-221.4 114.33,-221.4 114.33,-180.2 176.05,-180.2 176.05,-221.4"></polygon>
-<text text-anchor="middle" x="145.19" y="-205" font-family="Times,serif" font-size="14.00">Agent 1</text>
-<text text-anchor="middle" x="145.19" y="-188.2" font-family="Times,serif" font-size="14.00">(source)</text>
-</g>
-<!-- p1&#45;&gt;a1 -->
-<g id="edge1" class="edge">
-<title>p1-&gt;a1</title>
-<path fill="none" stroke="black" d="M63.34,-200.8C79.22,-200.8 98.5,-200.8 114.25,-200.8"></path>
-</g>
+<svg width="576" height="288" viewbox="0.00 0.00 484.24 273.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 269)">
+<title>Dealer-worker</title>
+<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-269 480.24,-269 480.24,4 -4,4"></polygon>
 <!-- broker -->
-<g id="node9" class="node">
+<g id="node1" class="node">
 <title>broker</title>
-<polygon fill="#ffffff" stroke="black" points="281.31,-119.8 227.31,-119.8 227.31,-83.8 281.31,-83.8 281.31,-119.8"></polygon>
-<text text-anchor="middle" x="254.31" y="-97.6" font-family="Times,serif" font-size="14.00">broker</text>
+<polygon fill="#ffffff" stroke="black" points="145,-138 91,-138 91,-102 145,-102 145,-138"></polygon>
+<text text-anchor="middle" x="118" y="-115.8" font-family="Times,serif" font-size="14.00">broker</text>
 </g>
-<!-- a1&#45;&gt;broker -->
-<g id="edge4" class="edge">
-<title>a1-&gt;broker</title>
-<path fill="none" stroke="black" d="M176.32,-181.71C181.14,-178.26 185.97,-174.56 190.31,-170.8 205.34,-157.78 220.41,-141.41 232.05,-127.89"></path>
-<polygon fill="black" stroke="black" points="235.03,-129.78 238.82,-119.89 229.69,-125.26 235.03,-129.78"></polygon>
-</g>
-<!-- p2 -->
+<!-- dealer -->
 <g id="node3" class="node">
-<title>p2</title>
-<polygon fill="#ffffff" stroke="black" points="51.1,-152.8 -0.03,-152.8 -0.03,-128.8 51.1,-128.8 63.1,-140.8 51.1,-152.8"></polygon>
-<text text-anchor="middle" x="31.53" y="-136.6" font-family="Times,serif" font-size="14.00">Plugin 2</text>
+<title>dealer</title>
+<polygon fill="#f0f0f0" stroke="black" points="236,-168 182,-168 182,-132 236,-132 236,-168"></polygon>
+<text text-anchor="middle" x="209" y="-145.8" font-family="Times,serif" font-size="14.00">dealer</text>
 </g>
-<!-- a2 -->
-<g id="node4" class="node">
-<title>a2</title>
-<polygon fill="#ffffff" stroke="black" points="175.4,-161.4 114.97,-161.4 114.97,-120.2 175.4,-120.2 175.4,-161.4"></polygon>
-<text text-anchor="middle" x="145.19" y="-145" font-family="Times,serif" font-size="14.00">Agent 2</text>
-<text text-anchor="middle" x="145.19" y="-128.2" font-family="Times,serif" font-size="14.00">(filter)</text>
-</g>
-<!-- p2&#45;&gt;a2 -->
-<g id="edge2" class="edge">
-<title>p2-&gt;a2</title>
-<path fill="none" stroke="black" d="M63.34,-140.8C79.35,-140.8 98.82,-140.8 114.64,-140.8"></path>
-</g>
-<!-- a2&#45;&gt;broker -->
-<g id="edge5" class="edge">
-<title>a2-&gt;broker</title>
-<path fill="none" stroke="black" d="M184.86,-126.72C195.46,-122.86 206.91,-118.69 217.36,-114.89"></path>
-<polygon fill="black" stroke="black" points="183.66,-123.43 175.46,-130.14 186.05,-130.01 183.66,-123.43"></polygon>
-<polygon fill="black" stroke="black" points="218.8,-118.09 227,-111.38 216.41,-111.51 218.8,-118.09"></polygon>
-</g>
-<!-- p3 -->
-<g id="node5" class="node">
-<title>p3</title>
-<polygon fill="#ffffff" stroke="black" points="51.1,-92.8 -0.03,-92.8 -0.03,-68.8 51.1,-68.8 63.1,-80.8 51.1,-92.8"></polygon>
-<text text-anchor="middle" x="31.53" y="-76.6" font-family="Times,serif" font-size="14.00">Plugin 3</text>
-</g>
-<!-- a3 -->
-<g id="node6" class="node">
-<title>a3</title>
-<polygon fill="#ffffff" stroke="black" points="175.4,-101.4 114.97,-101.4 114.97,-60.2 175.4,-60.2 175.4,-101.4"></polygon>
-<text text-anchor="middle" x="145.19" y="-85" font-family="Times,serif" font-size="14.00">Agent 3</text>
-<text text-anchor="middle" x="145.19" y="-68.2" font-family="Times,serif" font-size="14.00">(sink)</text>
-</g>
-<!-- p3&#45;&gt;a3 -->
-<g id="edge3" class="edge">
-<title>p3-&gt;a3</title>
-<path fill="none" stroke="black" d="M63.34,-80.8C79.35,-80.8 98.82,-80.8 114.64,-80.8"></path>
-</g>
-<!-- a3&#45;&gt;broker -->
+<!-- broker&#45;&gt;dealer -->
 <g id="edge6" class="edge">
-<title>a3-&gt;broker</title>
-<path fill="none" stroke="black" d="M185.67,-88.54C199.45,-91.24 214.56,-94.2 227,-96.64"></path>
-<polygon fill="black" stroke="black" points="185.95,-85.03 175.46,-86.54 184.6,-91.9 185.95,-85.03"></polygon>
-</g>
-<!-- a4 -->
-<g id="node7" class="node">
-<title>a4</title>
-<polygon fill="#ffffff" stroke="black" points="190.43,-41.4 99.94,-41.4 99.94,-0.2 190.43,-0.2 190.43,-41.4"></polygon>
-<text text-anchor="middle" x="145.19" y="-25" font-family="Times,serif" font-size="14.00">Monolithic</text>
-<text text-anchor="middle" x="145.19" y="-8.2" font-family="Times,serif" font-size="14.00">Agent (filter)</text>
-</g>
-<!-- a4&#45;&gt;broker -->
-<g id="edge7" class="edge">
-<title>a4-&gt;broker</title>
-<path fill="none" stroke="black" d="M185.52,-47.3C187.15,-48.47 188.75,-49.64 190.31,-50.8 201.45,-59.08 213.36,-68.55 223.79,-77.06"></path>
-<polygon fill="black" stroke="black" points="187.46,-44.38 177.28,-41.46 183.41,-50.09 187.46,-44.38"></polygon>
-<polygon fill="black" stroke="black" points="221.85,-79.99 231.8,-83.64 226.3,-74.59 221.85,-79.99"></polygon>
-</g>
-<!-- mongo -->
-<g id="node8" class="node">
-<title>mongo</title>
-<path fill="#ffffff" stroke="black" d="M521.5,-116.53C521.5,-118.33 504.51,-119.8 483.6,-119.8 462.69,-119.8 445.71,-118.33 445.71,-116.53 445.71,-116.53 445.71,-87.07 445.71,-87.07 445.71,-85.27 462.69,-83.8 483.6,-83.8 504.51,-83.8 521.5,-85.27 521.5,-87.07 521.5,-87.07 521.5,-116.53 521.5,-116.53"></path>
-<path fill="none" stroke="black" d="M521.5,-116.53C521.5,-114.72 504.51,-113.25 483.6,-113.25 462.69,-113.25 445.71,-114.72 445.71,-116.53"></path>
-<text text-anchor="middle" x="483.6" y="-97.6" font-family="Times,serif" font-size="14.00">MongoDB</text>
+<title>broker-&gt;dealer</title>
+<path fill="none" stroke="black" d="M145.22,-128.84C153.73,-131.71 163.32,-134.94 172.4,-138"></path>
+<polygon fill="black" stroke="black" points="171.37,-141.35 181.97,-141.22 173.61,-134.71 171.37,-141.35"></polygon>
 </g>
 <!-- logger -->
 <g id="node10" class="node">
 <title>logger</title>
-<polygon fill="#ffffff" stroke="black" points="372.31,-119.8 318.31,-119.8 318.31,-83.8 372.31,-83.8 372.31,-119.8"></polygon>
-<text text-anchor="middle" x="345.31" y="-97.6" font-family="Times,serif" font-size="14.00">logger</text>
+<polygon fill="#ffffff" stroke="black" points="236,-36 182,-36 182,0 236,0 236,-36"></polygon>
+<text text-anchor="middle" x="209" y="-13.8" font-family="Times,serif" font-size="14.00">logger</text>
 </g>
 <!-- broker&#45;&gt;logger -->
-<g id="edge8" class="edge">
+<g id="edge15" class="edge">
 <title>broker-&gt;logger</title>
-<path fill="none" stroke="black" d="M281.53,-101.8C289.86,-101.8 299.22,-101.8 308.13,-101.8"></path>
-<polygon fill="black" stroke="black" points="308.28,-105.3 318.28,-101.8 308.28,-98.3 308.28,-105.3"></polygon>
+<path fill="none" stroke="black" d="M127.78,-101.99C135.65,-86.99 148.21,-65.65 163,-50 166.28,-46.52 170,-43.19 173.84,-40.07"></path>
+<polygon fill="black" stroke="black" points="175.99,-42.83 181.84,-34 171.76,-37.26 175.99,-42.83"></polygon>
+</g>
+<!-- source -->
+<g id="node2" class="node">
+<title>source</title>
+<polygon fill="#ffffff" stroke="black" points="54,-138 0,-138 0,-102 54,-102 54,-138"></polygon>
+<text text-anchor="middle" x="27" y="-115.8" font-family="Times,serif" font-size="14.00">source</text>
+</g>
+<!-- source&#45;&gt;broker -->
+<g id="edge5" class="edge">
+<title>source-&gt;broker</title>
+<path fill="none" stroke="black" d="M54.22,-120C62.55,-120 71.91,-120 80.82,-120"></path>
+<polygon fill="black" stroke="black" points="80.97,-123.5 90.97,-120 80.97,-116.5 80.97,-123.5"></polygon>
+</g>
+<!-- w1 -->
+<g id="node5" class="node">
+<title>w1</title>
+<polygon fill="#f0f0f0" stroke="black" points="380.44,-265 314.14,-265 314.14,-229 380.44,-229 380.44,-265"></polygon>
+<text text-anchor="middle" x="347.29" y="-242.8" font-family="Times,serif" font-size="14.00">worker 1</text>
+</g>
+<!-- dealer&#45;&gt;w1 -->
+<g id="edge7" class="edge">
+<title>dealer-&gt;w1</title>
+<path fill="none" stroke="blue" d="M233.1,-168.26C239.78,-173.43 247.13,-179.01 254,-184 272.31,-197.31 293.1,-211.57 310.3,-223.15"></path>
+<polygon fill="blue" stroke="blue" points="308.69,-226.28 318.94,-228.95 312.59,-220.47 308.69,-226.28"></polygon>
+</g>
+<!-- w2 -->
+<g id="node6" class="node">
+<title>w2</title>
+<polygon fill="#f0f0f0" stroke="black" points="380.44,-103 314.14,-103 314.14,-67 380.44,-67 380.44,-103"></polygon>
+<text text-anchor="middle" x="347.29" y="-80.8" font-family="Times,serif" font-size="14.00">worker 2</text>
+</g>
+<!-- dealer&#45;&gt;w2 -->
+<g id="edge8" class="edge">
+<title>dealer-&gt;w2</title>
+<path fill="none" stroke="blue" d="M236.28,-137.47C255.64,-128.24 282.35,-115.49 304.61,-104.88"></path>
+<polygon fill="blue" stroke="blue" points="306.32,-107.94 313.84,-100.48 303.31,-101.62 306.32,-107.94"></polygon>
+</g>
+<!-- w3 -->
+<g id="node7" class="node">
+<title>w3</title>
+<polygon fill="#f0f0f0" stroke="black" points="380.44,-157 314.14,-157 314.14,-121 380.44,-121 380.44,-157"></polygon>
+<text text-anchor="middle" x="347.29" y="-134.8" font-family="Times,serif" font-size="14.00">worker 3</text>
+</g>
+<!-- dealer&#45;&gt;w3 -->
+<g id="edge9" class="edge">
+<title>dealer-&gt;w3</title>
+<path fill="none" stroke="blue" d="M236.28,-147.88C255.38,-146.34 281.64,-144.22 303.71,-142.44"></path>
+<polygon fill="blue" stroke="blue" points="304.16,-145.91 313.84,-141.62 303.59,-138.93 304.16,-145.91"></polygon>
+</g>
+<!-- w4 -->
+<g id="node8" class="node">
+<title>w4</title>
+<polygon fill="#f0f0f0" stroke="black" points="380.44,-211 314.14,-211 314.14,-175 380.44,-175 380.44,-211"></polygon>
+<text text-anchor="middle" x="347.29" y="-188.8" font-family="Times,serif" font-size="14.00">worker 4</text>
+</g>
+<!-- dealer&#45;&gt;w4 -->
+<g id="edge10" class="edge">
+<title>dealer-&gt;w4</title>
+<path fill="none" stroke="blue" d="M236.28,-158.29C255.46,-164.34 281.88,-172.68 304.01,-179.66"></path>
+<polygon fill="blue" stroke="blue" points="303.25,-183.09 313.84,-182.76 305.36,-176.42 303.25,-183.09"></polygon>
+</g>
+<!-- mongo -->
+<g id="node4" class="node">
+<title>mongo</title>
+<path fill="#ffffff" stroke="black" d="M385.19,-32.73C385.19,-34.53 368.2,-36 347.29,-36 326.38,-36 309.4,-34.53 309.4,-32.73 309.4,-32.73 309.4,-3.27 309.4,-3.27 309.4,-1.47 326.38,0 347.29,0 368.2,0 385.19,-1.47 385.19,-3.27 385.19,-3.27 385.19,-32.73 385.19,-32.73"></path>
+<path fill="none" stroke="black" d="M385.19,-32.73C385.19,-30.92 368.2,-29.45 347.29,-29.45 326.38,-29.45 309.4,-30.92 309.4,-32.73"></path>
+<text text-anchor="middle" x="347.29" y="-13.8" font-family="Times,serif" font-size="14.00">MongoDB</text>
+</g>
+<!-- w1&#45;&gt;broker -->
+<g id="edge11" class="edge">
+<title>w1-&gt;broker</title>
+<path fill="none" stroke="black" d="M314.13,-242.48C279.56,-236.55 223.93,-223.84 182,-199 161.18,-186.67 144.5,-164.68 133.55,-147.03"></path>
+<polygon fill="black" stroke="black" points="136.47,-145.09 128.35,-138.27 130.45,-148.66 136.47,-145.09"></polygon>
+</g>
+<!-- p -->
+<g id="node9" class="node">
+<title>p</title>
+<polygon fill="#ffffff" stroke="black" points="434.24,-153 476.24,-153 476.24,-177 434.24,-177 422.24,-165 434.24,-153"></polygon>
+<text text-anchor="middle" x="449.24" y="-160.8" font-family="Times,serif" font-size="14.00">Plugin</text>
+</g>
+<!-- w1&#45;&gt;p -->
+<g id="edge1" class="edge">
+<title>w1-&gt;p</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M373.56,-228.99C377.51,-226.04 381.52,-222.98 385.24,-220 400.1,-208.12 416.25,-194 428.47,-183.04"></path>
+</g>
+<!-- w2&#45;&gt;broker -->
+<g id="edge12" class="edge">
+<title>w2-&gt;broker</title>
+<path fill="none" stroke="black" d="M313.96,-89.98C271.93,-96.45 198.75,-107.72 155,-114.46"></path>
+<polygon fill="black" stroke="black" points="154.42,-111 145.07,-115.99 155.49,-117.92 154.42,-111"></polygon>
+</g>
+<!-- w2&#45;&gt;p -->
+<g id="edge2" class="edge">
+<title>w2-&gt;p</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M373.51,-103.07C377.47,-106.01 381.49,-109.06 385.24,-112 399.64,-123.29 415.39,-136.54 427.54,-146.97"></path>
+</g>
+<!-- w3&#45;&gt;broker -->
+<g id="edge13" class="edge">
+<title>w3-&gt;broker</title>
+<path fill="none" stroke="black" d="M314.07,-133.3C292.14,-129.67 262.41,-125.25 236,-123 208.96,-120.7 178.29,-119.98 155.14,-119.82"></path>
+<polygon fill="black" stroke="black" points="155.08,-116.32 145.07,-119.79 155.06,-123.32 155.08,-116.32"></polygon>
+</g>
+<!-- w3&#45;&gt;p -->
+<g id="edge3" class="edge">
+<title>w3-&gt;p</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M380.47,-147.37C393.94,-150.87 409.39,-154.89 422.13,-158.21"></path>
+</g>
+<!-- w4&#45;&gt;broker -->
+<g id="edge14" class="edge">
+<title>w4-&gt;broker</title>
+<path fill="none" stroke="black" d="M313.91,-195.68C279.65,-197.21 224.72,-195.89 182,-177 166.06,-169.96 151.42,-157.28 140.27,-145.66"></path>
+<polygon fill="black" stroke="black" points="142.81,-143.25 133.47,-138.25 137.65,-147.99 142.81,-143.25"></polygon>
+</g>
+<!-- w4&#45;&gt;p -->
+<g id="edge4" class="edge">
+<title>w4-&gt;p</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M380.47,-183.99C393.94,-180.21 409.39,-175.88 422.13,-172.31"></path>
 </g>
 <!-- logger&#45;&gt;mongo -->
-<g id="edge9" class="edge">
+<g id="edge16" class="edge">
 <title>logger-&gt;mongo</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M372.59,-101.8C390.4,-101.8 414.45,-101.8 435.52,-101.8"></path>
-<polygon fill="black" stroke="black" points="435.59,-105.3 445.59,-101.8 435.59,-98.3 435.59,-105.3"></polygon>
-<text text-anchor="middle" x="408.98" y="-106" font-family="Times,serif" font-size="14.00">BSON</text>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M236.28,-18C254.09,-18 278.14,-18 299.21,-18"></path>
+<polygon fill="black" stroke="black" points="299.28,-21.5 309.28,-18 299.28,-14.5 299.28,-21.5"></polygon>
+<text text-anchor="middle" x="272.67" y="-22.2" font-family="Times,serif" font-size="14.00">BSON</text>
 </g>
 </g>
 </svg>
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-net-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: MADS Network
+Figure&nbsp;1: Dealer-Worker
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Remember that the above schematic represent <em>processes</em>, regardless the physical machine on which they are being executed.</p>
-<p>For example, the whole network could run on a single workstation, or it could be conversely distributed over multiple devices connected to the same IP network, each device running a single process/node.</p>
-</div>
-</div>
-<p>In the figure <a href="#fig-net" class="quarto-xref">Figure&nbsp;1</a>, the solid lines represent a <a href="https://zeromq.org">ZeroMQ</a> connection over TCP/IP, which uses compressed JSON as a data encoding protocol. Compression is preformed with the <a href="https://github.com/google/snappy">snappy</a> library. The dashed line, conversely, represents the proprietary MongoDB protocol, with data serialized as BSON (Binary-JSON).</p>
-<section id="the-broker" class="level2">
-<h2 class="anchored" data-anchor-id="the-broker">The broker</h2>
-<p>What is the broker purpose?</p>
-<p>The broker solves the issue of knowing multiple network addresses when you have a number of devices participating to the same distributed system.</p>
-<p>With the aid of the broker, any separate device partaking to the MADS network only needs to know a single hostname/IP address: that of the machine running the broker.</p>
+<p>A variable number of <code>worker</code> agents (also part of MADS distribution) are then connected to the <code>dealer</code> with a PUSH-PULL ZeroMQ socket, and also act as source agents towards the broker.</p>
+<p>Workers are plugin-based agents, and typically all load the same plugin file (preferably obtained OTA).</p>
+<p>As soon as the broker receives a new task from <code>source</code>, it dispatches it to the <code>dealer</code>, which then forwards it to the next available <code>worker</code>. The <code>worker</code> executes the task and sends the result back to the broker, which can then routes the results to any subscribed agent (e.g.&nbsp;the <code>logger</code>).</p>
+</section>
+<section id="resource-scaling" class="level1">
+<h1>Resource scaling</h1>
+<p>The worker instances in <a href="#fig-net" class="quarto-xref">Figure&nbsp;1</a> can be fun on the same machine/device, or on different machine, in a way that is totally irrelevant and transparent to the MADS network. The only requirement is that the <code>dealer</code> and the <code>worker</code> agents are connected to the same broker, and that the <code>worker</code> agents are able to connect to the <code>dealer</code> on the port 9093 (or any other port specified in the configuration).</p>
+<p>Of course, if the number of machines for running the workers becomes large enough, it would be impractical to manually install and load the workers on tens or hundreds of machines. In this case, it is possible to use a <em>container orchestration system</em> such as <strong>Kubernetes</strong> to automatically deploy and manage the worker instances.</p>
+<p>In this case, we have a Kubernetes deployment that defines a containerized list of MADS worker agents, each then loading the computation plugin via OTA from the broker. Once the Kubernetes cluster is set up, scaling it is just a matter of adding more machines to the same cluster and dynamically request the desired number of replicas.</p>
+<section id="example-deployment" class="level2">
+<h2 class="anchored" data-anchor-id="example-deployment">Example deployment</h2>
+<p>Kubernetes deployments are YAML files that declare the configuration for each instance. a workable example is:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> apps/v1</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> Deployment</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> worker</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">namespace</span><span class="kw">:</span><span class="at"> default</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">replicas</span><span class="kw">:</span><span class="at"> </span><span class="dv">5</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">selector</span><span class="kw">:</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">matchLabels</span><span class="kw">:</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">app</span><span class="kw">:</span><span class="at"> worker</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">template</span><span class="kw">:</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">labels</span><span class="kw">:</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">app</span><span class="kw">:</span><span class="at"> worker</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">containers</span><span class="kw">:</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> worker</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">image</span><span class="kw">:</span><span class="at"> </span><span class="st">"p4010/mads:latest"</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">args</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">"worker"</span><span class="kw">,</span><span class="at"> </span><span class="st">"-s"</span><span class="kw">,</span><span class="at"> </span><span class="st">"tcp://198.19.249.3:9092"</span><span class="kw">,</span><span class="at"> </span><span class="st">"-n"</span><span class="kw">,</span><span class="at"> </span><span class="st">"test_worker_arm64"</span><span class="kw">]</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">resources</span><span class="kw">:</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">limits</span><span class="kw">:</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 200m</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 500Mi</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">requests</span><span class="kw">:</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">cpu</span><span class="kw">:</span><span class="at"> 100m</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 200Mi</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="kw">-</span><span class="at"> </span><span class="fu">containerPort</span><span class="kw">:</span><span class="at"> </span><span class="dv">9091</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">name</span><span class="kw">:</span><span class="at"> zmq-in</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="kw">-</span><span class="at"> </span><span class="fu">containerPort</span><span class="kw">:</span><span class="at"> </span><span class="dv">9092</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">name</span><span class="kw">:</span><span class="at"> zmq-ini</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="kw">-</span><span class="at"> </span><span class="fu">containerPort</span><span class="kw">:</span><span class="at"> </span><span class="dv">9093</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">name</span><span class="kw">:</span><span class="at"> zmq-deal</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This is defining each worker as an instance of the <code>p4010/mads:latest</code> Docker image, which is the official MADS image on Docker Hub. The <code>args</code> field specifies the command line arguments to pass to the worker agent, including the broker address and the worker name. In this case, we are assuming that Kubernetes runs on an ARM64 architecture, and the worker name is set to <code>test_worker_arm64</code> (see <a href="../guides/OTA_plugins.html">OTA Plugins</a> for more details on the worker name).</p>
+<p>With this configuration saved as `<code>manifest.yml</code>, we can deploy the workers to the Kubernetes cluster with the following command:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> manifest.yml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This will start 5 replicas of the same worker instance, each loading the plugin OTA from the broker. If we want (and can) scale up the number of workers, we can do it transparently without disrupting any operation:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> scale deployments/worker <span class="at">--replicas</span><span class="op">=</span>100</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -395,110 +469,14 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>There can only be a single broker per network.</p>
+<p>The maximum number of replicas shall be less or equal to the <strong>total number of cores in the Kubernetes cluster</strong>. If you try to scale up beyond that, CPU resources will be further subdivided among the workers, and each worker will get less CPU time, which may lead to performance degradation.</p>
 </div>
 </div>
-<p>Running the broker is quite simple:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> broker</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-<section id="the-agents" class="level2">
-<h2 class="anchored" data-anchor-id="the-agents">The agents</h2>
-<p>Agents can be:</p>
-<ul>
-<li><strong>monolithic</strong>: implemented as a single executable inheriting the <code>Mads::Agent</code> C++ class.</li>
-<li><strong>plug-in</strong>: a single executable that on runtime loads a proper plug-in (i.e.&nbsp;a dynamically loaded library)</li>
-</ul>
-<p>Regardless the type, agent can have three different behaviors:</p>
-<ul>
-<li><strong>source</strong>: they provide information to the network (e.g.&nbsp;by reading sensors)</li>
-<li><strong>filter</strong>: they operate and transform received information</li>
-<li><strong>sink</strong>: they consume information received from the network (e.g.&nbsp;to store or visualize)</li>
-</ul>
-<p>The MADS installer provides three general purpose agents, aptly named <code>source</code>, <code>filter</code>, and <code>sink</code>, that are designe do load proper plugins. The command <code>mads plugin</code> can be used to generate a suitable template for a new plugin to be developed.</p>
-</section>
-</section>
-<section id="layout-and-requirements" class="level1">
-<h1>Layout and requirements</h1>
-<p>At the bare minimum, a MADS network requires:</p>
-<ul>
-<li>the broker</li>
-<li>the MongoDB database</li>
-<li>the logger agent</li>
-</ul>
-<p>The MADS installers provide broker and logger, but MongoDB must be installed separatedly. The easiest route is to it via Docker.</p>
-<p>Ideally, broker, logger and database should run on a single machine, having enough resources to store the data flow on the database, while agents can be distributed over multiple device.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>According to our testing, Linux is the best choice for running MADS broker and logger in terms of performance.</p>
-</div>
-</div>
-<p>Any other agent can be run on the same machine or on a separate machine. In the latter case, it must be started with the <code>-s</code> option stating the broker address, e.g.: <code>-s tcp://&lt;hostname&gt;:9092</code>, where <code>&lt;hostname&gt;</code> shall be replaced with the proper host name, if available, or with the machine IP address. This is the only address that any agent needs to know in order to connect to the MADS network.</p>
-<p>To help you find out the proper address, you can use the <code>-n list</code> broker option:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> mads <span class="ex">broker</span> <span class="at">-n</span> list</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Reading</span> settings from /Users/p4010/usr/local/etc/mads.ini <span class="pp">[</span><span class="ss">broker</span><span class="pp">]</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Using</span> network interface list</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Available</span> network adapters:</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span>       lo0] - 127.0.0.1</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="er">[</span>       <span class="er">en0</span><span class="ex">]</span> <span class="at">-</span> 192.168.1.220</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> bridge100] - 198.19.249.3</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="er">Binding</span> <span class="er">broker</span> <span class="ex">frontend</span> <span class="er">(</span><span class="ex">XSUB</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9090</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Binding</span> broker backend <span class="er">(</span><span class="ex">XPUB</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9091</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Binding</span> broker shared settings <span class="er">(</span><span class="ex">REP</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9092</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="ex">Timecode</span> FPS: 25</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="ex">Settings</span> are provided via tcp://127.0.0.1:9092</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="ex">CTRL-C</span> to immediate exit</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="ex">Type</span> P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This shows that the host has three network interfaces. The public one is probably <code>en0</code> (your names may vary). Now quit the broker and relaunch it as:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> mads <span class="ex">broker</span> <span class="at">-n</span> en0</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Reading</span> settings from /Users/p4010/usr/local/etc/mads.ini <span class="pp">[</span><span class="ss">broker</span><span class="pp">]</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Using</span> network interface en0</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Binding</span> broker frontend <span class="er">(</span><span class="ex">XSUB</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9090</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Binding</span> broker backend <span class="er">(</span><span class="ex">XPUB</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9091</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Binding</span> broker shared settings <span class="er">(</span><span class="ex">REP</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9092</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Timecode</span> FPS: 25</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Settings</span> are provided via tcp://192.168.1.220:9092</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">CTRL-C</span> to immediate exit</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Type</span> P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Look at the line <code>Settings are provided via tcp://192.168.1.220:9092</code>: that is the address that you must use to start any agent in the network, e.g.:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> feedback <span class="at">-s</span> tcp://192.168.1.220:9092</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The <code>-n</code> command line option <strong>has no effect</strong> on how the broker operates. Its only purpose is to help you find out the proper address to use when starting agents that run on different machines or devices.</p>
-</div>
-</div>
-</section>
-<section id="where-to-go-next" class="level1">
-<h1>Where to go next</h1>
-<p>Once you have the bare minimum running, the next step is to configure and customize your distributed steps. In detail, you will have to:</p>
-<ol type="1">
-<li>learn how to develop your custom agents. This can be done in three ways:
-<ul>
-<li>by developing your own monolithic agent, using the MADS C++17 library (<a href="../guides/monolithic_agents.html">hardest</a>, high performance and maximum flexibility)</li>
-<li>by implementing a C++17 plugin (<a href="../guides/plugins.html">hard</a>, high performance, some compromise in flexibility)</li>
-<li>by using the Python wrapper agent and implementing the details in Python (<a href="../guides/python_agent.html">easy</a>, limited performance and flexibility)</li>
-</ul></li>
-<li><a href="../guides/services.html">learn</a> how to make your agents into <strong>services</strong> (only on linux)</li>
-<li>learn how to synchronize time on multiple devices</li>
-<li>learn how to analyze the data collected by the MongoDB database</li>
-</ol>
+<p>When we are done, we can scale down the number of workers to zero, or delete the deployment altogether:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> delete deployments worker</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

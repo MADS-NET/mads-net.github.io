@@ -8,7 +8,9 @@
       "/guides/contribute.html",
       "/guides/containerized.html",
       "/guides/python_agent.html",
-      "/guides/zeroconf.html"
+      "/guides/zeroconf.html",
+      "/guides/OTA_plugins.html",
+      "/guides/worker.html"
     ]
   }
 ]

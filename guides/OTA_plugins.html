@@ -9,7 +9,7 @@
 <meta name="author" content="Paolo Bosetti">
 <meta name="dcterms.date" content="2025-06-02">
 
-<title>template – MADS</title>
+<title>OTA Plugins – MADS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -69,7 +104,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<meta name="quarto:status" content="draft">
 
 
 </head>
@@ -77,7 +111,7 @@ ul.task-list li input[type="checkbox"] {
 <body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -120,7 +154,15 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#contents" id="toc-contents" class="nav-link active" data-scroll-target="#contents">Contents</a></li>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation">Motivation</a></li>
+  <li><a href="#how-it-works" id="toc-how-it-works" class="nav-link" data-scroll-target="#how-it-works">How it works</a></li>
+  <li><a href="#implementation-details" id="toc-implementation-details" class="nav-link" data-scroll-target="#implementation-details">Implementation details</a>
+  <ul class="collapse">
+  <li><a href="#plugin-and-agent-names" id="toc-plugin-and-agent-names" class="nav-link" data-scroll-target="#plugin-and-agent-names">Plugin and agent names</a></li>
+  <li><a href="#dealing-with-architectures" id="toc-dealing-with-architectures" class="nav-link" data-scroll-target="#dealing-with-architectures">Dealing with architectures</a></li>
+  <li><a href="#command-line-vs.-attachment" id="toc-command-line-vs.-attachment" class="nav-link" data-scroll-target="#command-line-vs.-attachment">Command line vs.&nbsp;attachment</a></li>
+  </ul></li>
+  <li><a href="#python-agent" id="toc-python-agent" class="nav-link" data-scroll-target="#python-agent">Python agent</a></li>
   </ul>
 </nav>
     </div>
@@ -129,9 +171,12 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">template</h1>
+<h1 class="title">OTA Plugins</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">template</div>
+    <div class="quarto-category">plugin</div>
+    <div class="quarto-category">OTA</div>
+    <div class="quarto-category">over-the-air</div>
+    <div class="quarto-category">intermediate</div>
   </div>
   </div>
 
@@ -172,7 +217,7 @@ ul.task-list li input[type="checkbox"] {
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>This is a template for Quarto documents. It can be used to create reports, articles, or any other type of document. You can use it as a starting point for your own documents.</p>
+    <p>MADS <strong>Version 1.3.0</strong> introduces the possibility to load plugins Over-The-Air (OTA): plugin files can be provided to agents by the broker. This allows to centralize the management of plugins and to update them without the need to manually copy compiled plugins to the devices running the agents.</p>
   </div>
 </div>
 
@@ -180,8 +225,101 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
+<section id="motivation" class="level1">
+<h1>Motivation</h1>
+<p>Suppose that you have a MADS network made by a relatively large number of devices, each running one or more agents. You want to update the plugins loaded by the agents. If you have only a few devices (say 2–3), you can manually copy the plugin files to each device. But if you have many devices, this is not practical and it is also error prone, because you need to keep track of which devices have been updated and which haven’t.</p>
+<p>This use case is where the idea of being able to load plugins OTA comes from. The broker can provide the plugin files to the agents, which can then load them dynamically. This allows you to update the plugins without having to manually copy the files to each device: only the broker needs to have the plugin files, and the agents will load them automatically. <strong>There is only one copy of each plugin, and no risk of mismatching versions</strong>.</p>
+</section>
+<section id="how-it-works" class="level1">
+<h1>How it works</h1>
+<p>Upon launch, each agent needs to load its settings file. By default, the agent assumes that it is running on the same device of the broker, so it tries and load the <code>mads.ini</code> file from the MADS prefix directory (equivalent to <code>$(mads -p)/etc</code>). If the agent is running on a different device, it must load the settings <strong>from the broker</strong>. This is done by providing the <code>-s</code> command line option to the agent, which specifies the broker address and port that provides the settings file (typ. port 9093). For example:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-s</span> tcp://mads-broker.local:9093 my_datasource.plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When the <code>-s</code> option contains a TCP URI address, the agent opens a special ZeroMQ communication channel to the broker, requesting for settings. To this request, the broker replies with a copy of the <code>mads.ini</code> file <strong>as loaded by the broker itself</strong>.</p>
+<p>Starting from MADS 1.3.0, the <code>mads.ini</code> file can contain, for each section, a new option called <code>attachment</code>. When this option is provided for an agent, the broker attaches to the INI file copy a binary attachment, read form the file path specified in the option. For example, the following <code>mads.ini</code> file:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[my_datasource]</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">attachment </span><span class="ot">=</span><span class="st"> "/path/to/my_datasource.plugin"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>will cause the broker to attach the file <code>/path/to/my_datasource.plugin</code> to the <code>mads.ini</code> file copy sent to the agent. The agent will then save the attached plugin to a temporary folder and load it dynamically.</p>
+</section>
+<section id="implementation-details" class="level1">
+<h1>Implementation details</h1>
+<p>There are a number of things to keep in mind when using this feature:</p>
+<ul>
+<li>how to define the <strong>plugin and the agent name</strong></li>
+<li>how to deal with plugins compiled for <strong>different architectures</strong></li>
+<li>what happens if a plugin is provided as attachment <strong>and also</strong> on the command line</li>
+</ul>
+<section id="plugin-and-agent-names" class="level2">
+<h2 class="anchored" data-anchor-id="plugin-and-agent-names">Plugin and agent names</h2>
+<p>In MADS, there are three agents able to load plugins: <code>source</code>, <code>filter</code>, and <code>sink</code>. As for any agent, the INI section to be loaded is defined by the <em>agent name</em>. In turn, the latter is defined as:</p>
+<ul>
+<li>the name of the agent executable for monolithic plugins</li>
+<li>the name of the plugin for <code>source</code>, <code>filter</code>, and <code>sink</code></li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In reality, there is also the <code>worker</code> agent (see <a href="../guides/worker.html">here</a>), which behaves as a filter agent but it is designed for a 1 dealer / n worker scenario for parallel computing, where a single dealer agent dispatches a list of computations to a number of identical workers in a round-robin fashion. The agent name for a worker is <strong>mandatory</strong> (no default).</p>
+</div>
+</div>
+<p>Also, note that <code>source</code>, <code>filter</code>, and <code>sink</code> agents can be called <strong>without a plugin</strong>: in this case, they run as general-purpose agents that deal with input and output data (as valid JSON strings) via <strong>pipes</strong>. When this happen, the agent names are <code>publish</code> for the <code>source</code> agent, <code>bridge</code> for the <code>filter</code> agent, and <code>feedback</code> for the <code>sink</code> agent.</p>
+<p>The name of an agent can be always be overridden by the <code>-n</code> command line option, which allows to specify a custom name for the agent. This is useful, for example, when you want to run multiple instances of the same agent with different settings.</p>
+<p>Now, since the OTA loading of the plugin happens <strong>after</strong> the agent has loaded its settings, the agent name <strong>must be specified</strong> with the <code>-n</code> CLI option, otherwise would simply launch as general purpose agent with default names.</p>
+<p>For example, if the <code>mads.ini</code> file contains the <code>[my_datasource]</code> section as above, the agent must be launched as:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-s</span> tcp://mads-broker.local:9093 <span class="at">-n</span> my_datasource</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="dealing-with-architectures" class="level2">
+<h2 class="anchored" data-anchor-id="dealing-with-architectures">Dealing with architectures</h2>
+<p>When the plugin is provided as an attachment, the broker will send a copy of the file to the agent, which will save it to a temporary folder and load it dynamically. This means that the plugin must be compatible with the architecture of the device running the agent.</p>
+<p>Now suppose that we want to run the same plugin on different devices, some of which are ARM-based and some are x86-based. If the plugin is compiled for a specific architecture, it will not work on the other architecture.</p>
+<p>The solution follows these steps:</p>
+<ul>
+<li><p>compile two plugin versions, one for each architecture, and copy both files on the broker filesystem. Call them, for example, <code>my_datasource_arm.plugin</code> and <code>my_datasource_x86.plugin</code></p></li>
+<li><p>in the <code>mads.ini</code> file, define two sections, one for each architecture with different names:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[my_datasource_arm]</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">attachment </span><span class="ot">=</span><span class="st"> "/path/to/my_datasource_arm.plugin"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">[my_datasource_x86]</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">attachment </span><span class="ot">=</span><span class="st"> "/path/to/my_datasource_x86.plugin"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>when launching the agent, specify the correct section name with the <code>-n</code> option, depending on the architecture of the device running the agent:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-s</span> tcp://mads-broker.local:9093 <span class="at">-n</span> my_datasource_arm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ul>
+<p>Note that, when compiling a plugin, the <code>CMakeLists.txt</code> file in the plugin project has an option to append an architecture suffix to the generated plugin file: if you configure the project as:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-DPLUGIN_SUFFIX</span><span class="op">=</span>arm <span class="at">-DCMAKE_INSTALL_PREFIX</span><span class="op">=</span><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>then the plugin will be compiled as <code>my_datasource_arm.plugin</code> (assuming the plugin name is <code>my_datasource</code>). Of course, versions for non-native architectures must be cross-compiled or compiled in a virtual machine or on the target device itself.</p>
+</section>
+<section id="command-line-vs.-attachment" class="level2">
+<h2 class="anchored" data-anchor-id="command-line-vs.-attachment">Command line vs.&nbsp;attachment</h2>
+<p>Note that command line options always override the settings in the <code>mads.ini</code> file, so if you also specify the plugin name, the broker attachment will be ignored. For example, the following command will not load the plugin from the broker, but will use the one specified on the command line (on the local filesystem):</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-s</span> tcp://mads-broker.local:9093 <span class="at">-n</span> my_datasource my_datasource.plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="python-agent" class="level1">
+<h1>Python agent</h1>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This feature is only available from MADS v1.3.1 onwards.</p>
+</div>
+</div>
+<p>The <code>attachment</code> feature can be also exploited by the <code>python_agent</code> monolithic agent. In this case, the <code>attachment</code> option must be the path of a valid and MADS-compatible Python module in the broker filesystem, and the remote agent will receive a copy of that file and load it upon launch. Note that the virtual environment still needs to be set up on the remote agents, exactly as if the agent was loading the Python module from the local filesystem.</p>
+<p>Note that by default, attachments are saved as temporary files with the <code>.plugin</code> extension, which would normally prevent the Python agent from loading them. For this reason, the INI file also supports an <code>attachment_ext</code> option, which specifies the extension of the attachment file. For example:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[my_python_agent]</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="dt">attachment </span><span class="ot">=</span><span class="st"> "/path/to/my_python_agent.py"</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="dt">attachment_ext </span><span class="ot">=</span><span class="st"> "py" # WARNING: NO LEADING DOT!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>attachment_ext</code> option <strong>is mandatory</strong> unless you are giving a plugin file with the <code>.plugin</code> extension, which is the default. It must not contain the leading dot, so for example if you want to load a Python module called <code>my_python_agent.py</code>, you must specify <code>attachment_ext = "py"</code>.</p>
 
 
 </section>
