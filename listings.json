@@ -2,15 +2,15 @@
   {
     "listing": "/guides.html",
     "items": [
+      "/guides/OTA_plugins.html",
+      "/guides/worker.html",
       "/guides/services.html",
       "/guides/plugins.html",
       "/guides/structure.html",
       "/guides/contribute.html",
       "/guides/containerized.html",
       "/guides/python_agent.html",
-      "/guides/zeroconf.html",
-      "/guides/OTA_plugins.html",
-      "/guides/worker.html"
+      "/guides/zeroconf.html"
     ]
   }
 ]

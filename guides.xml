@@ -10,7 +10,972 @@
 <atom:link href="https://mads-net.github.io/guides.xml" rel="self" type="application/rss+xml"/>
 <description>MADS - Multi-Agent Distributed System</description>
 <generator>quarto-1.7.30</generator>
-<lastBuildDate>Thu, 05 Jun 2025 22:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sun, 06 Jul 2025 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>OTA Plugins</title>
+  <dc:creator>Paolo Bosetti</dc:creator>
+  <link>https://mads-net.github.io/guides/OTA_plugins.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="motivation" class="level1">
+<h1>Motivation</h1>
+<p>Suppose that you have a MADS network made by a relatively large number of devices, each running one or more agents. You want to update the plugins loaded by the agents. If you have only a few devices (say 2–3), you can manually copy the plugin files to each device. But if you have many devices, this is not practical and it is also error prone, because you need to keep track of which devices have been updated and which haven’t.</p>
+<p>This use case is where the idea of being able to load plugins OTA comes from. The broker can provide the plugin files to the agents, which can then load them dynamically. This allows you to update the plugins without having to manually copy the files to each device: only the broker needs to have the plugin files, and the agents will load them automatically. <strong>There is only one copy of each plugin, and no risk of mismatching versions</strong>.</p>
+</section>
+<section id="how-it-works" class="level1">
+<h1>How it works</h1>
+<p>Upon launch, each agent needs to load its settings file. By default, the agent assumes that it is running on the same device of the broker, so it tries and load the <code>mads.ini</code> file from the MADS prefix directory (equivalent to <code>$(mads -p)/etc</code>). If the agent is running on a different device, it must load the settings <strong>from the broker</strong>. This is done by providing the <code>-s</code> command line option to the agent, which specifies the broker address and port that provides the settings file (typ. port 9093). For example:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> source <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-s</span> tcp://mads-broker.local:9093 my_datasource.plugin</span></code></pre></div>
+<p>When the <code>-s</code> option contains a TCP URI address, the agent opens a special ZeroMQ communication channel to the broker, requesting for settings. To this request, the broker replies with a copy of the <code>mads.ini</code> file <strong>as loaded by the broker itself</strong>.</p>
+<p>Starting from MADS 1.3.0, the <code>mads.ini</code> file can contain, for each section, a new option called <code>attachment</code>. When this option is provided for an agent, the broker attaches to the INI file copy a binary attachment, read form the file path specified in the option. For example, the following <code>mads.ini</code> file:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb2-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[my_datasource]</span></span>
+<span id="cb2-2"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">attachment </span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> "/path/to/my_datasource.plugin"</span></span></code></pre></div>
+<p>will cause the broker to attach the file <code>/path/to/my_datasource.plugin</code> to the <code>mads.ini</code> file copy sent to the agent. The agent will then save the attached plugin to a temporary folder and load it dynamically.</p>
+</section>
+<section id="implementation-details" class="level1">
+<h1>Implementation details</h1>
+<p>There are a number of things to keep in mind when using this feature:</p>
+<ul>
+<li>how to define the <strong>plugin and the agent name</strong></li>
+<li>how to deal with plugins compiled for <strong>different architectures</strong></li>
+<li>what happens if a plugin is provided as attachment <strong>and also</strong> on the command line</li>
+</ul>
+<section id="plugin-and-agent-names" class="level2">
+<h2 class="anchored" data-anchor-id="plugin-and-agent-names">Plugin and agent names</h2>
+<p>In MADS, there are three agents able to load plugins: <code>source</code>, <code>filter</code>, and <code>sink</code>. As for any agent, the INI section to be loaded is defined by the <em>agent name</em>. In turn, the latter is defined as:</p>
+<ul>
+<li>the name of the agent executable for monolithic plugins</li>
+<li>the name of the plugin for <code>source</code>, <code>filter</code>, and <code>sink</code></li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In reality, there is also the <code>worker</code> agent (see <a href="../guides/worker.html">here</a>), which behaves as a filter agent but it is designed for a 1 dealer / n worker scenario for parallel computing, where a single dealer agent dispatches a list of computations to a number of identical workers in a round-robin fashion. The agent name for a worker is <strong>mandatory</strong> (no default).</p>
+</div>
+</div>
+<p>Also, note that <code>source</code>, <code>filter</code>, and <code>sink</code> agents can be called <strong>without a plugin</strong>: in this case, they run as general-purpose agents that deal with input and output data (as valid JSON strings) via <strong>pipes</strong>. When this happen, the agent names are <code>publish</code> for the <code>source</code> agent, <code>bridge</code> for the <code>filter</code> agent, and <code>feedback</code> for the <code>sink</code> agent.</p>
+<p>The name of an agent can be always be overridden by the <code>-n</code> command line option, which allows to specify a custom name for the agent. This is useful, for example, when you want to run multiple instances of the same agent with different settings.</p>
+<p>Now, since the OTA loading of the plugin happens <strong>after</strong> the agent has loaded its settings, the agent name <strong>must be specified</strong> with the <code>-n</code> CLI option, otherwise would simply launch as general purpose agent with default names.</p>
+<p>For example, if the <code>mads.ini</code> file contains the <code>[my_datasource]</code> section as above, the agent must be launched as:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> source <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-s</span> tcp://mads-broker.local:9093 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-n</span> my_datasource</span></code></pre></div>
+</section>
+<section id="dealing-with-architectures" class="level2">
+<h2 class="anchored" data-anchor-id="dealing-with-architectures">Dealing with architectures</h2>
+<p>When the plugin is provided as an attachment, the broker will send a copy of the file to the agent, which will save it to a temporary folder and load it dynamically. This means that the plugin must be compatible with the architecture of the device running the agent.</p>
+<p>Now suppose that we want to run the same plugin on different devices, some of which are ARM-based and some are x86-based. If the plugin is compiled for a specific architecture, it will not work on the other architecture.</p>
+<p>The solution follows these steps:</p>
+<ul>
+<li><p>compile two plugin versions, one for each architecture, and copy both files on the broker filesystem. Call them, for example, <code>my_datasource_arm.plugin</code> and <code>my_datasource_x86.plugin</code></p></li>
+<li><p>in the <code>mads.ini</code> file, define two sections, one for each architecture with different names:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb4-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[my_datasource_arm]</span></span>
+<span id="cb4-2"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">attachment </span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> "/path/to/my_datasource_arm.plugin"</span></span>
+<span id="cb4-3"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[my_datasource_x86]</span></span>
+<span id="cb4-4"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">attachment </span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> "/path/to/my_datasource_x86.plugin"</span></span></code></pre></div></li>
+<li><p>when launching the agent, specify the correct section name with the <code>-n</code> option, depending on the architecture of the device running the agent:</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> source <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-s</span> tcp://mads-broker.local:9093 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-n</span> my_datasource_arm</span></code></pre></div></li>
+</ul>
+<p>Note that, when compiling a plugin, the <code>CMakeLists.txt</code> file in the plugin project has an option to append an architecture suffix to the generated plugin file: if you configure the project as:</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cmake</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-Bbuild</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-DPLUGIN_SUFFIX</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>arm <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-DCMAKE_INSTALL_PREFIX</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$(</span><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-p</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<p>then the plugin will be compiled as <code>my_datasource_arm.plugin</code> (assuming the plugin name is <code>my_datasource</code>). Of course, versions for non-native architectures must be cross-compiled or compiled in a virtual machine or on the target device itself.</p>
+</section>
+<section id="command-line-vs.-attachment" class="level2">
+<h2 class="anchored" data-anchor-id="command-line-vs.-attachment">Command line vs.&nbsp;attachment</h2>
+<p>Note that command line options always override the settings in the <code>mads.ini</code> file, so if you also specify the plugin name, the broker attachment will be ignored. For example, the following command will not load the plugin from the broker, but will use the one specified on the command line (on the local filesystem):</p>
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> source <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-s</span> tcp://mads-broker.local:9093 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-n</span> my_datasource my_datasource.plugin</span></code></pre></div>
+</section>
+</section>
+<section id="python-agent" class="level1">
+<h1>Python agent</h1>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This feature is only available from MADS v1.3.1 onwards.</p>
+</div>
+</div>
+<p>The <code>attachment</code> feature can be also exploited by the <code>python_agent</code> monolithic agent. In this case, the <code>attachment</code> option must be the path of a valid and MADS-compatible Python module in the broker filesystem, and the remote agent will receive a copy of that file and load it upon launch. Note that the virtual environment still needs to be set up on the remote agents, exactly as if the agent was loading the Python module from the local filesystem.</p>
+<p>Note that by default, attachments are saved as temporary files with the <code>.plugin</code> extension, which would normally prevent the Python agent from loading them. For this reason, the INI file also supports an <code>attachment_ext</code> option, which specifies the extension of the attachment file. For example:</p>
+<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb8-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[my_python_agent]</span></span>
+<span id="cb8-2"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">attachment </span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> "/path/to/my_python_agent.py"</span></span>
+<span id="cb8-3"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">attachment_ext </span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> "py" # WARNING: NO LEADING DOT!</span></span></code></pre></div>
+<p>The <code>attachment_ext</code> option <strong>is mandatory</strong> unless you are giving a plugin file with the <code>.plugin</code> extension, which is the default. It must not contain the leading dot, so for example if you want to load a Python module called <code>my_python_agent.py</code>, you must specify <code>attachment_ext = "py"</code>.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>plugin</category>
+  <category>OTA</category>
+  <category>over-the-air</category>
+  <category>intermediate</category>
+  <guid>https://mads-net.github.io/guides/OTA_plugins.html</guid>
+  <pubDate>Sun, 06 Jul 2025 22:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Parallel computing with MADS</title>
+  <dc:creator>Paolo Bosetti</dc:creator>
+  <link>https://mads-net.github.io/guides/worker.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="motivation" class="level1">
+<h1>Motivation</h1>
+<p>Sometimes, we want to explore a large parameter space, and run multiple time-demanding simulations over a grid of points in the parameter space. This is the case for example when we want to run a sensitivity analysis, or when we want to explore the effect of different parameters on the model output and perhaps find the optimal set of parameters for a given objective function.</p>
+<p>If we have at hand a number of machines with multiple cores, we can effectively scale the problem by running each simulation on a different machine, or on a different core of the same machine. This is particularly useful when the simulations are independent and can be run in parallel.</p>
+</section>
+<section id="mads-solution" class="level1">
+<h1>MADS solution</h1>
+<p>MADS has two special agents, <code>dealer</code> and <code>worker</code>, that allow to distribute many different computations to a set of identical workers, in round-robin fashion. This is useful when you have many independent tasks that can be run in parallel, such as running multiple simulations or processing large datasets.</p>
+<p>This configuration exploits ZeroMQ’s feature called <a href="https://zguide.zeromq.org/docs/chapter2/#Messaging-Patterns">“PUSH-PULL”</a> to distribute tasks among workers. The <code>dealer</code> agent acts as a task distributor, while the <code>worker</code> agents are responsible for executing the tasks. Once a <code>worker</code> completes a task, it sends the result back to the MADS net — which can then process or store the results as needed — and becomes available again for new tasks.</p>
+<p>The scheme is illustrated in Figure Figure&nbsp;1. In this installation, the network has a broker, a logger (connected to the MongoDB database), and a generic source plugin, which is expected to generate the computational load, i.e., a sequence of <strong>input tasks</strong> (as JSON object). The source plugin can be freely implemented (monolithic, plugin, or even a python agent).</p>
+<p>A special agent, called <code>dealer</code>, which is part of standard MADS distribution, is also connected to the broker. It also provides connection to the workers on an additional port, by default 9093 (blue arrows in Figure&nbsp;1).</p>
+<div class="cell" data-fig-width="6" data-fig-height="3" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-net" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-net-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="576" height="288" viewbox="0.00 0.00 484.24 273.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 269)">
+<title>Dealer-worker</title>
+<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-269 480.24,-269 480.24,4 -4,4"></polygon>
+<!-- broker -->
+<g id="node1" class="node">
+<title>broker</title>
+<polygon fill="#ffffff" stroke="black" points="145,-138 91,-138 91,-102 145,-102 145,-138"></polygon>
+<text text-anchor="middle" x="118" y="-115.8" font-family="Times,serif" font-size="14.00">broker</text>
+</g>
+<!-- dealer -->
+<g id="node3" class="node">
+<title>dealer</title>
+<polygon fill="#f0f0f0" stroke="black" points="236,-168 182,-168 182,-132 236,-132 236,-168"></polygon>
+<text text-anchor="middle" x="209" y="-145.8" font-family="Times,serif" font-size="14.00">dealer</text>
+</g>
+<!-- broker&#45;&gt;dealer -->
+<g id="edge6" class="edge">
+<title>broker-&gt;dealer</title>
+<path fill="none" stroke="black" d="M145.22,-128.84C153.73,-131.71 163.32,-134.94 172.4,-138"></path>
+<polygon fill="black" stroke="black" points="171.37,-141.35 181.97,-141.22 173.61,-134.71 171.37,-141.35"></polygon>
+</g>
+<!-- logger -->
+<g id="node10" class="node">
+<title>logger</title>
+<polygon fill="#ffffff" stroke="black" points="236,-36 182,-36 182,0 236,0 236,-36"></polygon>
+<text text-anchor="middle" x="209" y="-13.8" font-family="Times,serif" font-size="14.00">logger</text>
+</g>
+<!-- broker&#45;&gt;logger -->
+<g id="edge15" class="edge">
+<title>broker-&gt;logger</title>
+<path fill="none" stroke="black" d="M127.78,-101.99C135.65,-86.99 148.21,-65.65 163,-50 166.28,-46.52 170,-43.19 173.84,-40.07"></path>
+<polygon fill="black" stroke="black" points="175.99,-42.83 181.84,-34 171.76,-37.26 175.99,-42.83"></polygon>
+</g>
+<!-- source -->
+<g id="node2" class="node">
+<title>source</title>
+<polygon fill="#ffffff" stroke="black" points="54,-138 0,-138 0,-102 54,-102 54,-138"></polygon>
+<text text-anchor="middle" x="27" y="-115.8" font-family="Times,serif" font-size="14.00">source</text>
+</g>
+<!-- source&#45;&gt;broker -->
+<g id="edge5" class="edge">
+<title>source-&gt;broker</title>
+<path fill="none" stroke="black" d="M54.22,-120C62.55,-120 71.91,-120 80.82,-120"></path>
+<polygon fill="black" stroke="black" points="80.97,-123.5 90.97,-120 80.97,-116.5 80.97,-123.5"></polygon>
+</g>
+<!-- w1 -->
+<g id="node5" class="node">
+<title>w1</title>
+<polygon fill="#f0f0f0" stroke="black" points="380.44,-265 314.14,-265 314.14,-229 380.44,-229 380.44,-265"></polygon>
+<text text-anchor="middle" x="347.29" y="-242.8" font-family="Times,serif" font-size="14.00">worker 1</text>
+</g>
+<!-- dealer&#45;&gt;w1 -->
+<g id="edge7" class="edge">
+<title>dealer-&gt;w1</title>
+<path fill="none" stroke="blue" d="M233.1,-168.26C239.78,-173.43 247.13,-179.01 254,-184 272.31,-197.31 293.1,-211.57 310.3,-223.15"></path>
+<polygon fill="blue" stroke="blue" points="308.69,-226.28 318.94,-228.95 312.59,-220.47 308.69,-226.28"></polygon>
+</g>
+<!-- w2 -->
+<g id="node6" class="node">
+<title>w2</title>
+<polygon fill="#f0f0f0" stroke="black" points="380.44,-103 314.14,-103 314.14,-67 380.44,-67 380.44,-103"></polygon>
+<text text-anchor="middle" x="347.29" y="-80.8" font-family="Times,serif" font-size="14.00">worker 2</text>
+</g>
+<!-- dealer&#45;&gt;w2 -->
+<g id="edge8" class="edge">
+<title>dealer-&gt;w2</title>
+<path fill="none" stroke="blue" d="M236.28,-137.47C255.64,-128.24 282.35,-115.49 304.61,-104.88"></path>
+<polygon fill="blue" stroke="blue" points="306.32,-107.94 313.84,-100.48 303.31,-101.62 306.32,-107.94"></polygon>
+</g>
+<!-- w3 -->
+<g id="node7" class="node">
+<title>w3</title>
+<polygon fill="#f0f0f0" stroke="black" points="380.44,-157 314.14,-157 314.14,-121 380.44,-121 380.44,-157"></polygon>
+<text text-anchor="middle" x="347.29" y="-134.8" font-family="Times,serif" font-size="14.00">worker 3</text>
+</g>
+<!-- dealer&#45;&gt;w3 -->
+<g id="edge9" class="edge">
+<title>dealer-&gt;w3</title>
+<path fill="none" stroke="blue" d="M236.28,-147.88C255.38,-146.34 281.64,-144.22 303.71,-142.44"></path>
+<polygon fill="blue" stroke="blue" points="304.16,-145.91 313.84,-141.62 303.59,-138.93 304.16,-145.91"></polygon>
+</g>
+<!-- w4 -->
+<g id="node8" class="node">
+<title>w4</title>
+<polygon fill="#f0f0f0" stroke="black" points="380.44,-211 314.14,-211 314.14,-175 380.44,-175 380.44,-211"></polygon>
+<text text-anchor="middle" x="347.29" y="-188.8" font-family="Times,serif" font-size="14.00">worker 4</text>
+</g>
+<!-- dealer&#45;&gt;w4 -->
+<g id="edge10" class="edge">
+<title>dealer-&gt;w4</title>
+<path fill="none" stroke="blue" d="M236.28,-158.29C255.46,-164.34 281.88,-172.68 304.01,-179.66"></path>
+<polygon fill="blue" stroke="blue" points="303.25,-183.09 313.84,-182.76 305.36,-176.42 303.25,-183.09"></polygon>
+</g>
+<!-- mongo -->
+<g id="node4" class="node">
+<title>mongo</title>
+<path fill="#ffffff" stroke="black" d="M385.19,-32.73C385.19,-34.53 368.2,-36 347.29,-36 326.38,-36 309.4,-34.53 309.4,-32.73 309.4,-32.73 309.4,-3.27 309.4,-3.27 309.4,-1.47 326.38,0 347.29,0 368.2,0 385.19,-1.47 385.19,-3.27 385.19,-3.27 385.19,-32.73 385.19,-32.73"></path>
+<path fill="none" stroke="black" d="M385.19,-32.73C385.19,-30.92 368.2,-29.45 347.29,-29.45 326.38,-29.45 309.4,-30.92 309.4,-32.73"></path>
+<text text-anchor="middle" x="347.29" y="-13.8" font-family="Times,serif" font-size="14.00">MongoDB</text>
+</g>
+<!-- w1&#45;&gt;broker -->
+<g id="edge11" class="edge">
+<title>w1-&gt;broker</title>
+<path fill="none" stroke="black" d="M314.13,-242.48C279.56,-236.55 223.93,-223.84 182,-199 161.18,-186.67 144.5,-164.68 133.55,-147.03"></path>
+<polygon fill="black" stroke="black" points="136.47,-145.09 128.35,-138.27 130.45,-148.66 136.47,-145.09"></polygon>
+</g>
+<!-- p -->
+<g id="node9" class="node">
+<title>p</title>
+<polygon fill="#ffffff" stroke="black" points="434.24,-153 476.24,-153 476.24,-177 434.24,-177 422.24,-165 434.24,-153"></polygon>
+<text text-anchor="middle" x="449.24" y="-160.8" font-family="Times,serif" font-size="14.00">Plugin</text>
+</g>
+<!-- w1&#45;&gt;p -->
+<g id="edge1" class="edge">
+<title>w1-&gt;p</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M373.56,-228.99C377.51,-226.04 381.52,-222.98 385.24,-220 400.1,-208.12 416.25,-194 428.47,-183.04"></path>
+</g>
+<!-- w2&#45;&gt;broker -->
+<g id="edge12" class="edge">
+<title>w2-&gt;broker</title>
+<path fill="none" stroke="black" d="M313.96,-89.98C271.93,-96.45 198.75,-107.72 155,-114.46"></path>
+<polygon fill="black" stroke="black" points="154.42,-111 145.07,-115.99 155.49,-117.92 154.42,-111"></polygon>
+</g>
+<!-- w2&#45;&gt;p -->
+<g id="edge2" class="edge">
+<title>w2-&gt;p</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M373.51,-103.07C377.47,-106.01 381.49,-109.06 385.24,-112 399.64,-123.29 415.39,-136.54 427.54,-146.97"></path>
+</g>
+<!-- w3&#45;&gt;broker -->
+<g id="edge13" class="edge">
+<title>w3-&gt;broker</title>
+<path fill="none" stroke="black" d="M314.07,-133.3C292.14,-129.67 262.41,-125.25 236,-123 208.96,-120.7 178.29,-119.98 155.14,-119.82"></path>
+<polygon fill="black" stroke="black" points="155.08,-116.32 145.07,-119.79 155.06,-123.32 155.08,-116.32"></polygon>
+</g>
+<!-- w3&#45;&gt;p -->
+<g id="edge3" class="edge">
+<title>w3-&gt;p</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M380.47,-147.37C393.94,-150.87 409.39,-154.89 422.13,-158.21"></path>
+</g>
+<!-- w4&#45;&gt;broker -->
+<g id="edge14" class="edge">
+<title>w4-&gt;broker</title>
+<path fill="none" stroke="black" d="M313.91,-195.68C279.65,-197.21 224.72,-195.89 182,-177 166.06,-169.96 151.42,-157.28 140.27,-145.66"></path>
+<polygon fill="black" stroke="black" points="142.81,-143.25 133.47,-138.25 137.65,-147.99 142.81,-143.25"></polygon>
+</g>
+<!-- w4&#45;&gt;p -->
+<g id="edge4" class="edge">
+<title>w4-&gt;p</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M380.47,-183.99C393.94,-180.21 409.39,-175.88 422.13,-172.31"></path>
+</g>
+<!-- logger&#45;&gt;mongo -->
+<g id="edge16" class="edge">
+<title>logger-&gt;mongo</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M236.28,-18C254.09,-18 278.14,-18 299.21,-18"></path>
+<polygon fill="black" stroke="black" points="299.28,-21.5 309.28,-18 299.28,-14.5 299.28,-21.5"></polygon>
+<text text-anchor="middle" x="272.67" y="-22.2" font-family="Times,serif" font-size="14.00">BSON</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-net-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Dealer-Worker
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>A variable number of <code>worker</code> agents (also part of MADS distribution) are then connected to the <code>dealer</code> with a PUSH-PULL ZeroMQ socket, and also act as source agents towards the broker.</p>
+<p>Workers are plugin-based agents, and typically all load the same plugin file (preferably obtained OTA).</p>
+<p>As soon as the broker receives a new task from <code>source</code>, it dispatches it to the <code>dealer</code>, which then forwards it to the next available <code>worker</code>. The <code>worker</code> executes the task and sends the result back to the broker, which can then routes the results to any subscribed agent (e.g.&nbsp;the <code>logger</code>).</p>
+</section>
+<section id="resource-scaling" class="level1">
+<h1>Resource scaling</h1>
+<p>The worker instances in Figure&nbsp;1 can be fun on the same machine/device, or on different machine, in a way that is totally irrelevant and transparent to the MADS network. The only requirement is that the <code>dealer</code> and the <code>worker</code> agents are connected to the same broker, and that the <code>worker</code> agents are able to connect to the <code>dealer</code> on the port 9093 (or any other port specified in the configuration).</p>
+<p>Of course, if the number of machines for running the workers becomes large enough, it would be impractical to manually install and load the workers on tens or hundreds of machines. In this case, it is possible to use a <em>container orchestration system</em> such as <strong>Kubernetes</strong> to automatically deploy and manage the worker instances.</p>
+<p>In this case, we have a Kubernetes deployment that defines a containerized list of MADS worker agents, each then loading the computation plugin via OTA from the broker. Once the Kubernetes cluster is set up, scaling it is just a matter of adding more machines to the same cluster and dynamically request the desired number of replicas.</p>
+<section id="example-deployment" class="level2">
+<h2 class="anchored" data-anchor-id="example-deployment">Example deployment</h2>
+<p>Kubernetes deployments are YAML files that declare the configuration for each instance. a workable example is:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">apiVersion</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> apps/v1</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">kind</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> Deployment</span></span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">metadata</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span></span>
+<span id="cb1-4"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">name</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> worker</span></span>
+<span id="cb1-5"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">namespace</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> default</span></span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">spec</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span></span>
+<span id="cb1-7"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">replicas</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span></span>
+<span id="cb1-8"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">selector</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span></span>
+<span id="cb1-9"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">    </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matchLabels</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span></span>
+<span id="cb1-10"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">      </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">app</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> worker</span></span>
+<span id="cb1-11"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">template</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span></span>
+<span id="cb1-12"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">    </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">metadata</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span></span>
+<span id="cb1-13"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">      </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labels</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span></span>
+<span id="cb1-14"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">        </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">app</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> worker</span></span>
+<span id="cb1-15"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">    </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">spec</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span></span>
+<span id="cb1-16"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">      </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">containers</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span></span>
+<span id="cb1-17"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">        </span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">-</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">name</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> worker</span></span>
+<span id="cb1-18"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">          </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">image</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"p4010/mads:latest"</span></span>
+<span id="cb1-19"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">          </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">args</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"worker"</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">,</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"-s"</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">,</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tcp://198.19.249.3:9092"</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">,</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"-n"</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">,</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"test_worker_arm64"</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">]</span></span>
+<span id="cb1-20"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">          </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">resources</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span></span>
+<span id="cb1-21"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">            </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">limits</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span></span>
+<span id="cb1-22"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cpu</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> 200m</span></span>
+<span id="cb1-23"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">memory</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> 500Mi</span></span>
+<span id="cb1-24"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">            </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">requests</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span></span>
+<span id="cb1-25"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cpu</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> 100m</span></span>
+<span id="cb1-26"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">memory</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> 200Mi</span></span>
+<span id="cb1-27"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">          </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ports</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span></span>
+<span id="cb1-28"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">            </span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">-</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">containerPort</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9091</span></span>
+<span id="cb1-29"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">name</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> zmq-in</span></span>
+<span id="cb1-30"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">            </span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">-</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">containerPort</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9092</span></span>
+<span id="cb1-31"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">name</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> zmq-ini</span></span>
+<span id="cb1-32"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">            </span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">-</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">containerPort</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> </span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9093</span></span>
+<span id="cb1-33"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">name</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">:</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;"> zmq-deal</span></span></code></pre></div>
+<p>This is defining each worker as an instance of the <code>p4010/mads:latest</code> Docker image, which is the official MADS image on Docker Hub. The <code>args</code> field specifies the command line arguments to pass to the worker agent, including the broker address and the worker name. In this case, we are assuming that Kubernetes runs on an ARM64 architecture, and the worker name is set to <code>test_worker_arm64</code> (see <a href="../guides/OTA_plugins.html">OTA Plugins</a> for more details on the worker name).</p>
+<p>With this configuration saved as `<code>manifest.yml</code>, we can deploy the workers to the Kubernetes cluster with the following command:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">kubectl</span> apply <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-f</span> manifest.yml</span></code></pre></div>
+<p>This will start 5 replicas of the same worker instance, each loading the plugin OTA from the broker. If we want (and can) scale up the number of workers, we can do it transparently without disrupting any operation:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">kubectl</span> scale deployments/worker <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--replicas</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>100</span></code></pre></div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The maximum number of replicas shall be less or equal to the <strong>total number of cores in the Kubernetes cluster</strong>. If you try to scale up beyond that, CPU resources will be further subdivided among the workers, and each worker will get less CPU time, which may lead to performance degradation.</p>
+</div>
+</div>
+<p>When we are done, we can scale down the number of workers to zero, or delete the deployment altogether:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">kubectl</span> delete deployments worker</span></code></pre></div>
+</section>
+<section id="keeping-track-of-completed-tasks" class="level2">
+<h2 class="anchored" data-anchor-id="keeping-track-of-completed-tasks">Keeping track of completed tasks</h2>
+<p>The number of submitted and completed tasks can be easily monitored with a Python agent:</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> json</span>
+<span id="cb5-2">agent_type <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"sink"</span></span>
+<span id="cb5-3"></span>
+<span id="cb5-4"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> setup():</span>
+<span id="cb5-5">  <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"[Python] Setting up sink..."</span>)</span>
+<span id="cb5-6">  <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"[Python] Parameters: "</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> json.dumps(params))</span>
+<span id="cb5-7">  state[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"submitted"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb5-8">  state[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"accepted"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb5-9"> </span>
+<span id="cb5-10"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> deal_with_data():</span>
+<span id="cb5-11">  <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> topic <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"dealer"</span>:</span>
+<span id="cb5-12">    state[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"submitted"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb5-13">  <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> topic <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"test_worker"</span>:</span>
+<span id="cb5-14">    state[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"accepted"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb5-15">  <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">\33</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">[2K[Python] Submitted: "</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>(state[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"submitted"</span>]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">", Accepted: "</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>(state[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"accepted"</span>]) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">", Pending: "</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>(state[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"submitted"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> state[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"accepted"</span>]), end<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">\r</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span></code></pre></div>
+<p>Save this as <code>counter.py</code> in the folder <code>usr/local/scripts</code> under the MADS prefix directory (given by <code>mads -p</code>), add the following section to the INI file:</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb6-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">[counter]</span></span>
+<span id="cb6-2"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">sub_topic </span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> ["dealer", "test_worker"]</span></span>
+<span id="cb6-3"><span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">python_module </span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> "counter"</span></span></code></pre></div>
+<p>then run the agent with the command:</p>
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">mads</span> python <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-n</span> counter</span></code></pre></div>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>plugin</category>
+  <category>parallel computing</category>
+  <category>advanced</category>
+  <category>kubernetes</category>
+  <category>docker</category>
+  <guid>https://mads-net.github.io/guides/worker.html</guid>
+  <pubDate>Sun, 06 Jul 2025 22:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Services</title>
   <dc:creator>Paolo Bosetti</dc:creator>
@@ -1566,971 +2531,6 @@ font-style: inherit;">-s</span> tcp://mads-broker.local:9092 my_plugin.plugin</s
   <category>OS</category>
   <category>Linux</category>
   <guid>https://mads-net.github.io/guides/zeroconf.html</guid>
-  <pubDate>Sun, 01 Jun 2025 22:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>OTA Plugins</title>
-  <dc:creator>Paolo Bosetti</dc:creator>
-  <link>https://mads-net.github.io/guides/OTA_plugins.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="motivation" class="level1">
-<h1>Motivation</h1>
-<p>Suppose that you have a MADS network made by a relatively large number of devices, each running one or more agents. You want to update the plugins loaded by the agents. If you have only a few devices (say 2–3), you can manually copy the plugin files to each device. But if you have many devices, this is not practical and it is also error prone, because you need to keep track of which devices have been updated and which haven’t.</p>
-<p>This use case is where the idea of being able to load plugins OTA comes from. The broker can provide the plugin files to the agents, which can then load them dynamically. This allows you to update the plugins without having to manually copy the files to each device: only the broker needs to have the plugin files, and the agents will load them automatically. <strong>There is only one copy of each plugin, and no risk of mismatching versions</strong>.</p>
-</section>
-<section id="how-it-works" class="level1">
-<h1>How it works</h1>
-<p>Upon launch, each agent needs to load its settings file. By default, the agent assumes that it is running on the same device of the broker, so it tries and load the <code>mads.ini</code> file from the MADS prefix directory (equivalent to <code>$(mads -p)/etc</code>). If the agent is running on a different device, it must load the settings <strong>from the broker</strong>. This is done by providing the <code>-s</code> command line option to the agent, which specifies the broker address and port that provides the settings file (typ. port 9093). For example:</p>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">mads</span> source <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-s</span> tcp://mads-broker.local:9093 my_datasource.plugin</span></code></pre></div>
-<p>When the <code>-s</code> option contains a TCP URI address, the agent opens a special ZeroMQ communication channel to the broker, requesting for settings. To this request, the broker replies with a copy of the <code>mads.ini</code> file <strong>as loaded by the broker itself</strong>.</p>
-<p>Starting from MADS 1.3.0, the <code>mads.ini</code> file can contain, for each section, a new option called <code>attachment</code>. When this option is provided for an agent, the broker attaches to the INI file copy a binary attachment, read form the file path specified in the option. For example, the following <code>mads.ini</code> file:</p>
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb2-1"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">[my_datasource]</span></span>
-<span id="cb2-2"><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">attachment </span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;"> "/path/to/my_datasource.plugin"</span></span></code></pre></div>
-<p>will cause the broker to attach the file <code>/path/to/my_datasource.plugin</code> to the <code>mads.ini</code> file copy sent to the agent. The agent will then save the attached plugin to a temporary folder and load it dynamically.</p>
-</section>
-<section id="implementation-details" class="level1">
-<h1>Implementation details</h1>
-<p>There are a number of things to keep in mind when using this feature:</p>
-<ul>
-<li>how to define the <strong>plugin and the agent name</strong></li>
-<li>how to deal with plugins compiled for <strong>different architectures</strong></li>
-<li>what happens if a plugin is provided as attachment <strong>and also</strong> on the command line</li>
-</ul>
-<section id="plugin-and-agent-names" class="level2">
-<h2 class="anchored" data-anchor-id="plugin-and-agent-names">Plugin and agent names</h2>
-<p>In MADS, there are three agents able to load plugins: <code>source</code>, <code>filter</code>, and <code>sink</code>. As for any agent, the INI section to be loaded is defined by the <em>agent name</em>. In turn, the latter is defined as:</p>
-<ul>
-<li>the name of the agent executable for monolithic plugins</li>
-<li>the name of the plugin for <code>source</code>, <code>filter</code>, and <code>sink</code></li>
-</ul>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>In reality, there is also the <code>worker</code> agent (see <a href="../guides/worker.html">here</a>), which behaves as a filter agent but it is designed for a 1 dealer / n worker scenario for parallel computing, where a single dealer agent dispatches a list of computations to a number of identical workers in a round-robin fashion. The agent name for a worker is <strong>mandatory</strong> (no default).</p>
-</div>
-</div>
-<p>Also, note that <code>source</code>, <code>filter</code>, and <code>sink</code> agents can be called <strong>without a plugin</strong>: in this case, they run as general-purpose agents that deal with input and output data (as valid JSON strings) via <strong>pipes</strong>. When this happen, the agent names are <code>publish</code> for the <code>source</code> agent, <code>bridge</code> for the <code>filter</code> agent, and <code>feedback</code> for the <code>sink</code> agent.</p>
-<p>The name of an agent can be always be overridden by the <code>-n</code> command line option, which allows to specify a custom name for the agent. This is useful, for example, when you want to run multiple instances of the same agent with different settings.</p>
-<p>Now, since the OTA loading of the plugin happens <strong>after</strong> the agent has loaded its settings, the agent name <strong>must be specified</strong> with the <code>-n</code> CLI option, otherwise would simply launch as general purpose agent with default names.</p>
-<p>For example, if the <code>mads.ini</code> file contains the <code>[my_datasource]</code> section as above, the agent must be launched as:</p>
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">mads</span> source <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-s</span> tcp://mads-broker.local:9093 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-n</span> my_datasource</span></code></pre></div>
-</section>
-<section id="dealing-with-architectures" class="level2">
-<h2 class="anchored" data-anchor-id="dealing-with-architectures">Dealing with architectures</h2>
-<p>When the plugin is provided as an attachment, the broker will send a copy of the file to the agent, which will save it to a temporary folder and load it dynamically. This means that the plugin must be compatible with the architecture of the device running the agent.</p>
-<p>Now suppose that we want to run the same plugin on different devices, some of which are ARM-based and some are x86-based. If the plugin is compiled for a specific architecture, it will not work on the other architecture.</p>
-<p>The solution follows these steps:</p>
-<ul>
-<li><p>compile two plugin versions, one for each architecture, and copy both files on the broker filesystem. Call them, for example, <code>my_datasource_arm.plugin</code> and <code>my_datasource_x86.plugin</code></p></li>
-<li><p>in the <code>mads.ini</code> file, define two sections, one for each architecture with different names:</p>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb4-1"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">[my_datasource_arm]</span></span>
-<span id="cb4-2"><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">attachment </span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;"> "/path/to/my_datasource_arm.plugin"</span></span>
-<span id="cb4-3"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">[my_datasource_x86]</span></span>
-<span id="cb4-4"><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">attachment </span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;"> "/path/to/my_datasource_x86.plugin"</span></span></code></pre></div></li>
-<li><p>when launching the agent, specify the correct section name with the <code>-n</code> option, depending on the architecture of the device running the agent:</p>
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">mads</span> source <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-s</span> tcp://mads-broker.local:9093 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-n</span> my_datasource_arm</span></code></pre></div></li>
-</ul>
-<p>Note that, when compiling a plugin, the <code>CMakeLists.txt</code> file in the plugin project has an option to append an architecture suffix to the generated plugin file: if you configure the project as:</p>
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">cmake</span> <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-Bbuild</span> <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-DPLUGIN_SUFFIX</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>arm <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-DCMAKE_INSTALL_PREFIX</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">$(</span><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">mads</span> <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-p</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-<p>then the plugin will be compiled as <code>my_datasource_arm.plugin</code> (assuming the plugin name is <code>my_datasource</code>). Of course, versions for non-native architectures must be cross-compiled or compiled in a virtual machine or on the target device itself.</p>
-</section>
-<section id="command-line-vs.-attachment" class="level2">
-<h2 class="anchored" data-anchor-id="command-line-vs.-attachment">Command line vs.&nbsp;attachment</h2>
-<p>Note that command line options always override the settings in the <code>mads.ini</code> file, so if you also specify the plugin name, the broker attachment will be ignored. For example, the following command will not load the plugin from the broker, but will use the one specified on the command line (on the local filesystem):</p>
-<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">mads</span> source <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-s</span> tcp://mads-broker.local:9093 <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-n</span> my_datasource my_datasource.plugin</span></code></pre></div>
-</section>
-</section>
-<section id="python-agent" class="level1">
-<h1>Python agent</h1>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This feature is only available from MADS v1.3.1 onwards.</p>
-</div>
-</div>
-<p>The <code>attachment</code> feature can be also exploited by the <code>python_agent</code> monolithic agent. In this case, the <code>attachment</code> option must be the path of a valid and MADS-compatible Python module in the broker filesystem, and the remote agent will receive a copy of that file and load it upon launch. Note that the virtual environment still needs to be set up on the remote agents, exactly as if the agent was loading the Python module from the local filesystem.</p>
-<p>Note that by default, attachments are saved as temporary files with the <code>.plugin</code> extension, which would normally prevent the Python agent from loading them. For this reason, the INI file also supports an <code>attachment_ext</code> option, which specifies the extension of the attachment file. For example:</p>
-<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb8-1"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">[my_python_agent]</span></span>
-<span id="cb8-2"><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">attachment </span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;"> "/path/to/my_python_agent.py"</span></span>
-<span id="cb8-3"><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">attachment_ext </span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;"> "py" # WARNING: NO LEADING DOT!</span></span></code></pre></div>
-<p>The <code>attachment_ext</code> option <strong>is mandatory</strong> unless you are giving a plugin file with the <code>.plugin</code> extension, which is the default. It must not contain the leading dot, so for example if you want to load a Python module called <code>my_python_agent.py</code>, you must specify <code>attachment_ext = "py"</code>.</p>
-
-
-</section>
-
- ]]></description>
-  <category>plugin</category>
-  <category>OTA</category>
-  <category>over-the-air</category>
-  <category>intermediate</category>
-  <guid>https://mads-net.github.io/guides/OTA_plugins.html</guid>
-  <pubDate>Sun, 01 Jun 2025 22:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Parallel computing with MADS</title>
-  <dc:creator>Paolo Bosetti</dc:creator>
-  <link>https://mads-net.github.io/guides/worker.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="motivation" class="level1">
-<h1>Motivation</h1>
-<p>Sometimes, we want to explore a large parameter space, and run multiple time-demanding simulations over a grid of points in the parameter space. This is the case for example when we want to run a sensitivity analysis, or when we want to explore the effect of different parameters on the model output and perhaps find the optimal set of parameters for a given objective function.</p>
-<p>If we have at hand a number of machines with multiple cores, we can effectively scale the problem by running each simulation on a different machine, or on a different core of the same machine. This is particularly useful when the simulations are independent and can be run in parallel.</p>
-</section>
-<section id="mads-solution" class="level1">
-<h1>MADS solution</h1>
-<p>MADS has two special agents, <code>dealer</code> and <code>worker</code>, that allow to distribute many different computations to a set of identical workers, in round-robin fashion. This is useful when you have many independent tasks that can be run in parallel, such as running multiple simulations or processing large datasets.</p>
-<p>This configuration exploits ZeroMQ’s feature called <a href="https://zguide.zeromq.org/docs/chapter2/#Messaging-Patterns">“PUSH-PULL”</a> to distribute tasks among workers. The <code>dealer</code> agent acts as a task distributor, while the <code>worker</code> agents are responsible for executing the tasks. Once a <code>worker</code> completes a task, it sends the result back to the MADS net — which can then process or store the results as needed — and becomes available again for new tasks.</p>
-<p>The scheme is illustrated in Figure Figure&nbsp;1. In this installation, the network has a broker, a logger (connected to the MongoDB database), and a generic source plugin, which is expected to generate the computational load, i.e., a sequence of <strong>input tasks</strong> (as JSON object). The source plugin can be freely implemented (monolithic, plugin, or even a python agent).</p>
-<p>A special agent, called <code>dealer</code>, which is part of standard MADS distribution, is also connected to the broker. It also provides connection to the workers on an additional port, by default 9093 (blue arrows in Figure&nbsp;1).</p>
-<div class="cell" data-fig-width="6" data-fig-height="3" data-layout-align="default">
-<div class="cell-output-display">
-<div id="fig-net" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-net-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div>
-<svg width="576" height="288" viewbox="0.00 0.00 484.24 273.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 269)">
-<title>Dealer-worker</title>
-<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-269 480.24,-269 480.24,4 -4,4"></polygon>
-<!-- broker -->
-<g id="node1" class="node">
-<title>broker</title>
-<polygon fill="#ffffff" stroke="black" points="145,-138 91,-138 91,-102 145,-102 145,-138"></polygon>
-<text text-anchor="middle" x="118" y="-115.8" font-family="Times,serif" font-size="14.00">broker</text>
-</g>
-<!-- dealer -->
-<g id="node3" class="node">
-<title>dealer</title>
-<polygon fill="#f0f0f0" stroke="black" points="236,-168 182,-168 182,-132 236,-132 236,-168"></polygon>
-<text text-anchor="middle" x="209" y="-145.8" font-family="Times,serif" font-size="14.00">dealer</text>
-</g>
-<!-- broker&#45;&gt;dealer -->
-<g id="edge6" class="edge">
-<title>broker-&gt;dealer</title>
-<path fill="none" stroke="black" d="M145.22,-128.84C153.73,-131.71 163.32,-134.94 172.4,-138"></path>
-<polygon fill="black" stroke="black" points="171.37,-141.35 181.97,-141.22 173.61,-134.71 171.37,-141.35"></polygon>
-</g>
-<!-- logger -->
-<g id="node10" class="node">
-<title>logger</title>
-<polygon fill="#ffffff" stroke="black" points="236,-36 182,-36 182,0 236,0 236,-36"></polygon>
-<text text-anchor="middle" x="209" y="-13.8" font-family="Times,serif" font-size="14.00">logger</text>
-</g>
-<!-- broker&#45;&gt;logger -->
-<g id="edge15" class="edge">
-<title>broker-&gt;logger</title>
-<path fill="none" stroke="black" d="M127.78,-101.99C135.65,-86.99 148.21,-65.65 163,-50 166.28,-46.52 170,-43.19 173.84,-40.07"></path>
-<polygon fill="black" stroke="black" points="175.99,-42.83 181.84,-34 171.76,-37.26 175.99,-42.83"></polygon>
-</g>
-<!-- source -->
-<g id="node2" class="node">
-<title>source</title>
-<polygon fill="#ffffff" stroke="black" points="54,-138 0,-138 0,-102 54,-102 54,-138"></polygon>
-<text text-anchor="middle" x="27" y="-115.8" font-family="Times,serif" font-size="14.00">source</text>
-</g>
-<!-- source&#45;&gt;broker -->
-<g id="edge5" class="edge">
-<title>source-&gt;broker</title>
-<path fill="none" stroke="black" d="M54.22,-120C62.55,-120 71.91,-120 80.82,-120"></path>
-<polygon fill="black" stroke="black" points="80.97,-123.5 90.97,-120 80.97,-116.5 80.97,-123.5"></polygon>
-</g>
-<!-- w1 -->
-<g id="node5" class="node">
-<title>w1</title>
-<polygon fill="#f0f0f0" stroke="black" points="380.44,-265 314.14,-265 314.14,-229 380.44,-229 380.44,-265"></polygon>
-<text text-anchor="middle" x="347.29" y="-242.8" font-family="Times,serif" font-size="14.00">worker 1</text>
-</g>
-<!-- dealer&#45;&gt;w1 -->
-<g id="edge7" class="edge">
-<title>dealer-&gt;w1</title>
-<path fill="none" stroke="blue" d="M233.1,-168.26C239.78,-173.43 247.13,-179.01 254,-184 272.31,-197.31 293.1,-211.57 310.3,-223.15"></path>
-<polygon fill="blue" stroke="blue" points="308.69,-226.28 318.94,-228.95 312.59,-220.47 308.69,-226.28"></polygon>
-</g>
-<!-- w2 -->
-<g id="node6" class="node">
-<title>w2</title>
-<polygon fill="#f0f0f0" stroke="black" points="380.44,-103 314.14,-103 314.14,-67 380.44,-67 380.44,-103"></polygon>
-<text text-anchor="middle" x="347.29" y="-80.8" font-family="Times,serif" font-size="14.00">worker 2</text>
-</g>
-<!-- dealer&#45;&gt;w2 -->
-<g id="edge8" class="edge">
-<title>dealer-&gt;w2</title>
-<path fill="none" stroke="blue" d="M236.28,-137.47C255.64,-128.24 282.35,-115.49 304.61,-104.88"></path>
-<polygon fill="blue" stroke="blue" points="306.32,-107.94 313.84,-100.48 303.31,-101.62 306.32,-107.94"></polygon>
-</g>
-<!-- w3 -->
-<g id="node7" class="node">
-<title>w3</title>
-<polygon fill="#f0f0f0" stroke="black" points="380.44,-157 314.14,-157 314.14,-121 380.44,-121 380.44,-157"></polygon>
-<text text-anchor="middle" x="347.29" y="-134.8" font-family="Times,serif" font-size="14.00">worker 3</text>
-</g>
-<!-- dealer&#45;&gt;w3 -->
-<g id="edge9" class="edge">
-<title>dealer-&gt;w3</title>
-<path fill="none" stroke="blue" d="M236.28,-147.88C255.38,-146.34 281.64,-144.22 303.71,-142.44"></path>
-<polygon fill="blue" stroke="blue" points="304.16,-145.91 313.84,-141.62 303.59,-138.93 304.16,-145.91"></polygon>
-</g>
-<!-- w4 -->
-<g id="node8" class="node">
-<title>w4</title>
-<polygon fill="#f0f0f0" stroke="black" points="380.44,-211 314.14,-211 314.14,-175 380.44,-175 380.44,-211"></polygon>
-<text text-anchor="middle" x="347.29" y="-188.8" font-family="Times,serif" font-size="14.00">worker 4</text>
-</g>
-<!-- dealer&#45;&gt;w4 -->
-<g id="edge10" class="edge">
-<title>dealer-&gt;w4</title>
-<path fill="none" stroke="blue" d="M236.28,-158.29C255.46,-164.34 281.88,-172.68 304.01,-179.66"></path>
-<polygon fill="blue" stroke="blue" points="303.25,-183.09 313.84,-182.76 305.36,-176.42 303.25,-183.09"></polygon>
-</g>
-<!-- mongo -->
-<g id="node4" class="node">
-<title>mongo</title>
-<path fill="#ffffff" stroke="black" d="M385.19,-32.73C385.19,-34.53 368.2,-36 347.29,-36 326.38,-36 309.4,-34.53 309.4,-32.73 309.4,-32.73 309.4,-3.27 309.4,-3.27 309.4,-1.47 326.38,0 347.29,0 368.2,0 385.19,-1.47 385.19,-3.27 385.19,-3.27 385.19,-32.73 385.19,-32.73"></path>
-<path fill="none" stroke="black" d="M385.19,-32.73C385.19,-30.92 368.2,-29.45 347.29,-29.45 326.38,-29.45 309.4,-30.92 309.4,-32.73"></path>
-<text text-anchor="middle" x="347.29" y="-13.8" font-family="Times,serif" font-size="14.00">MongoDB</text>
-</g>
-<!-- w1&#45;&gt;broker -->
-<g id="edge11" class="edge">
-<title>w1-&gt;broker</title>
-<path fill="none" stroke="black" d="M314.13,-242.48C279.56,-236.55 223.93,-223.84 182,-199 161.18,-186.67 144.5,-164.68 133.55,-147.03"></path>
-<polygon fill="black" stroke="black" points="136.47,-145.09 128.35,-138.27 130.45,-148.66 136.47,-145.09"></polygon>
-</g>
-<!-- p -->
-<g id="node9" class="node">
-<title>p</title>
-<polygon fill="#ffffff" stroke="black" points="434.24,-153 476.24,-153 476.24,-177 434.24,-177 422.24,-165 434.24,-153"></polygon>
-<text text-anchor="middle" x="449.24" y="-160.8" font-family="Times,serif" font-size="14.00">Plugin</text>
-</g>
-<!-- w1&#45;&gt;p -->
-<g id="edge1" class="edge">
-<title>w1-&gt;p</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M373.56,-228.99C377.51,-226.04 381.52,-222.98 385.24,-220 400.1,-208.12 416.25,-194 428.47,-183.04"></path>
-</g>
-<!-- w2&#45;&gt;broker -->
-<g id="edge12" class="edge">
-<title>w2-&gt;broker</title>
-<path fill="none" stroke="black" d="M313.96,-89.98C271.93,-96.45 198.75,-107.72 155,-114.46"></path>
-<polygon fill="black" stroke="black" points="154.42,-111 145.07,-115.99 155.49,-117.92 154.42,-111"></polygon>
-</g>
-<!-- w2&#45;&gt;p -->
-<g id="edge2" class="edge">
-<title>w2-&gt;p</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M373.51,-103.07C377.47,-106.01 381.49,-109.06 385.24,-112 399.64,-123.29 415.39,-136.54 427.54,-146.97"></path>
-</g>
-<!-- w3&#45;&gt;broker -->
-<g id="edge13" class="edge">
-<title>w3-&gt;broker</title>
-<path fill="none" stroke="black" d="M314.07,-133.3C292.14,-129.67 262.41,-125.25 236,-123 208.96,-120.7 178.29,-119.98 155.14,-119.82"></path>
-<polygon fill="black" stroke="black" points="155.08,-116.32 145.07,-119.79 155.06,-123.32 155.08,-116.32"></polygon>
-</g>
-<!-- w3&#45;&gt;p -->
-<g id="edge3" class="edge">
-<title>w3-&gt;p</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M380.47,-147.37C393.94,-150.87 409.39,-154.89 422.13,-158.21"></path>
-</g>
-<!-- w4&#45;&gt;broker -->
-<g id="edge14" class="edge">
-<title>w4-&gt;broker</title>
-<path fill="none" stroke="black" d="M313.91,-195.68C279.65,-197.21 224.72,-195.89 182,-177 166.06,-169.96 151.42,-157.28 140.27,-145.66"></path>
-<polygon fill="black" stroke="black" points="142.81,-143.25 133.47,-138.25 137.65,-147.99 142.81,-143.25"></polygon>
-</g>
-<!-- w4&#45;&gt;p -->
-<g id="edge4" class="edge">
-<title>w4-&gt;p</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M380.47,-183.99C393.94,-180.21 409.39,-175.88 422.13,-172.31"></path>
-</g>
-<!-- logger&#45;&gt;mongo -->
-<g id="edge16" class="edge">
-<title>logger-&gt;mongo</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M236.28,-18C254.09,-18 278.14,-18 299.21,-18"></path>
-<polygon fill="black" stroke="black" points="299.28,-21.5 309.28,-18 299.28,-14.5 299.28,-21.5"></polygon>
-<text text-anchor="middle" x="272.67" y="-22.2" font-family="Times,serif" font-size="14.00">BSON</text>
-</g>
-</g>
-</svg>
-</div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-net-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Dealer-Worker
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>A variable number of <code>worker</code> agents (also part of MADS distribution) are then connected to the <code>dealer</code> with a PUSH-PULL ZeroMQ socket, and also act as source agents towards the broker.</p>
-<p>Workers are plugin-based agents, and typically all load the same plugin file (preferably obtained OTA).</p>
-<p>As soon as the broker receives a new task from <code>source</code>, it dispatches it to the <code>dealer</code>, which then forwards it to the next available <code>worker</code>. The <code>worker</code> executes the task and sends the result back to the broker, which can then routes the results to any subscribed agent (e.g.&nbsp;the <code>logger</code>).</p>
-</section>
-<section id="resource-scaling" class="level1">
-<h1>Resource scaling</h1>
-<p>The worker instances in Figure&nbsp;1 can be fun on the same machine/device, or on different machine, in a way that is totally irrelevant and transparent to the MADS network. The only requirement is that the <code>dealer</code> and the <code>worker</code> agents are connected to the same broker, and that the <code>worker</code> agents are able to connect to the <code>dealer</code> on the port 9093 (or any other port specified in the configuration).</p>
-<p>Of course, if the number of machines for running the workers becomes large enough, it would be impractical to manually install and load the workers on tens or hundreds of machines. In this case, it is possible to use a <em>container orchestration system</em> such as <strong>Kubernetes</strong> to automatically deploy and manage the worker instances.</p>
-<p>In this case, we have a Kubernetes deployment that defines a containerized list of MADS worker agents, each then loading the computation plugin via OTA from the broker. Once the Kubernetes cluster is set up, scaling it is just a matter of adding more machines to the same cluster and dynamically request the desired number of replicas.</p>
-<section id="example-deployment" class="level2">
-<h2 class="anchored" data-anchor-id="example-deployment">Example deployment</h2>
-<p>Kubernetes deployments are YAML files that declare the configuration for each instance. a workable example is:</p>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">apiVersion</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> apps/v1</span></span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">kind</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> Deployment</span></span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">metadata</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span></span>
-<span id="cb1-4"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">name</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> worker</span></span>
-<span id="cb1-5"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">namespace</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> default</span></span>
-<span id="cb1-6"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">spec</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span></span>
-<span id="cb1-7"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">replicas</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span></span>
-<span id="cb1-8"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">selector</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span></span>
-<span id="cb1-9"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">    </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">matchLabels</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span></span>
-<span id="cb1-10"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">      </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">app</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> worker</span></span>
-<span id="cb1-11"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">template</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span></span>
-<span id="cb1-12"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">    </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">metadata</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span></span>
-<span id="cb1-13"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">      </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">labels</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span></span>
-<span id="cb1-14"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">        </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">app</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> worker</span></span>
-<span id="cb1-15"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">    </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">spec</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span></span>
-<span id="cb1-16"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">      </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">containers</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span></span>
-<span id="cb1-17"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">        </span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">-</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">name</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> worker</span></span>
-<span id="cb1-18"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">          </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">image</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"p4010/mads:latest"</span></span>
-<span id="cb1-19"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">          </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">args</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">[</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"worker"</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">,</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"-s"</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">,</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"tcp://198.19.249.3:9092"</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">,</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"-n"</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">,</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"test_worker_arm64"</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">]</span></span>
-<span id="cb1-20"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">          </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">resources</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span></span>
-<span id="cb1-21"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">            </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">limits</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span></span>
-<span id="cb1-22"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">cpu</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> 200m</span></span>
-<span id="cb1-23"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">memory</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> 500Mi</span></span>
-<span id="cb1-24"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">            </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">requests</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span></span>
-<span id="cb1-25"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">cpu</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> 100m</span></span>
-<span id="cb1-26"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">memory</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> 200Mi</span></span>
-<span id="cb1-27"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">          </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ports</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span></span>
-<span id="cb1-28"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">            </span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">-</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">containerPort</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">9091</span></span>
-<span id="cb1-29"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">name</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> zmq-in</span></span>
-<span id="cb1-30"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">            </span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">-</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">containerPort</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">9092</span></span>
-<span id="cb1-31"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">name</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> zmq-ini</span></span>
-<span id="cb1-32"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">            </span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">-</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">containerPort</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> </span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">9093</span></span>
-<span id="cb1-33"><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">              </span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">name</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">:</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;"> zmq-deal</span></span></code></pre></div>
-<p>This is defining each worker as an instance of the <code>p4010/mads:latest</code> Docker image, which is the official MADS image on Docker Hub. The <code>args</code> field specifies the command line arguments to pass to the worker agent, including the broker address and the worker name. In this case, we are assuming that Kubernetes runs on an ARM64 architecture, and the worker name is set to <code>test_worker_arm64</code> (see <a href="../guides/OTA_plugins.html">OTA Plugins</a> for more details on the worker name).</p>
-<p>With this configuration saved as `<code>manifest.yml</code>, we can deploy the workers to the Kubernetes cluster with the following command:</p>
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">kubectl</span> apply <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-f</span> manifest.yml</span></code></pre></div>
-<p>This will start 5 replicas of the same worker instance, each loading the plugin OTA from the broker. If we want (and can) scale up the number of workers, we can do it transparently without disrupting any operation:</p>
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">kubectl</span> scale deployments/worker <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">--replicas</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>100</span></code></pre></div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The maximum number of replicas shall be less or equal to the <strong>total number of cores in the Kubernetes cluster</strong>. If you try to scale up beyond that, CPU resources will be further subdivided among the workers, and each worker will get less CPU time, which may lead to performance degradation.</p>
-</div>
-</div>
-<p>When we are done, we can scale down the number of workers to zero, or delete the deployment altogether:</p>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">kubectl</span> delete deployments worker</span></code></pre></div>
-</section>
-<section id="keeping-track-of-completed-tasks" class="level2">
-<h2 class="anchored" data-anchor-id="keeping-track-of-completed-tasks">Keeping track of completed tasks</h2>
-<p>The number of submitted and completed tasks can be easily monitored with a Python agent:</p>
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> json</span>
-<span id="cb5-2">agent_type <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"sink"</span></span>
-<span id="cb5-3"></span>
-<span id="cb5-4"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> setup():</span>
-<span id="cb5-5">  <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"[Python] Setting up sink..."</span>)</span>
-<span id="cb5-6">  <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"[Python] Parameters: "</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> json.dumps(params))</span>
-<span id="cb5-7">  state[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"submitted"</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span></span>
-<span id="cb5-8">  state[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"accepted"</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span></span>
-<span id="cb5-9"> </span>
-<span id="cb5-10"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> deal_with_data():</span>
-<span id="cb5-11">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> topic <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"dealer"</span>:</span>
-<span id="cb5-12">    state[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"submitted"</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span>
-<span id="cb5-13">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> topic <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"test_worker"</span>:</span>
-<span id="cb5-14">    state[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"accepted"</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span>
-<span id="cb5-15">  <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span><span class="ch" style="color: #20794D;
-background-color: null;
-font-style: inherit;">\33</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">[2K[Python] Submitted: "</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">str</span>(state[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"submitted"</span>]) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">", Accepted: "</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">str</span>(state[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"accepted"</span>]) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">", Pending: "</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">str</span>(state[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"submitted"</span>] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> state[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"accepted"</span>]), end<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span><span class="ch" style="color: #20794D;
-background-color: null;
-font-style: inherit;">\r</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span>)</span></code></pre></div>
-<p>Save this as <code>counter.py</code> in the folder <code>usr/local/scripts</code> under the MADS prefix directory (given by <code>mads -p</code>), add the following section to the INI file:</p>
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb6-1"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">[counter]</span></span>
-<span id="cb6-2"><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">sub_topic </span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;"> ["dealer", "test_worker"]</span></span>
-<span id="cb6-3"><span class="dt" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">python_module </span><span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;"> "counter"</span></span></code></pre></div>
-<p>then run the agent with the command:</p>
-<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><span class="ex" style="color: null;
-background-color: null;
-font-style: inherit;">mads</span> python <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">-n</span> counter</span></code></pre></div>
-
-
-</section>
-</section>
-
- ]]></description>
-  <category>plugin</category>
-  <category>parallel computing</category>
-  <category>advanced</category>
-  <category>kubernetes</category>
-  <category>docker</category>
-  <guid>https://mads-net.github.io/guides/worker.html</guid>
   <pubDate>Sun, 01 Jun 2025 22:00:00 GMT</pubDate>
 </item>
 </channel>

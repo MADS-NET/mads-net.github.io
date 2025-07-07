@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://mads-net.github.io/guides/OTA_plugins.html</loc>
-    <lastmod>2025-07-07T13:30:50.855Z</lastmod>
+    <lastmod>2025-07-07T14:29:03.420Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/zeroconf.html</loc>
@@ -46,6 +46,6 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/worker.html</loc>
-    <lastmod>2025-07-07T14:27:35.590Z</lastmod>
+    <lastmod>2025-07-07T14:28:55.737Z</lastmod>
   </url>
 </urlset>
