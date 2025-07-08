@@ -1,8 +1,8 @@
 ---
 title: "MADS Intro"
 subtitle: "A framework for distributed agents"
-author: P. Bosetti
-institute: University of Trento
+author: "Paolo Bosetti"
+institute: "University of Trento"
 date: 2025-07-07
 date-format: "YYYY-MMM-DD"
 draft: false
@@ -28,8 +28,9 @@ format:
     link-external-icon: true
     lang: en-EN
 abstract: |
-  A brief asbtract of the presentation.
+  A high level introduction to the MADS Framework.
 ---
+
 
 # What is it?
 
@@ -72,7 +73,6 @@ To maximize flexibility and scalability, MADS networks are **broker-based**
 * agents can filter messages by **topics**
 * agents can be added/removed dynamically
 * agents can act as source (blue), filter (green), or sink (orange)
-
 
 :::
 

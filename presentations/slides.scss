@@ -1,7 +1,7 @@
 /*-- scss:defaults --*/
 
 $presentation-font-size-root: 30px;
-$presentation-heading-color: #D18800;
+$presentation-heading-color: #DA6A15;
 $code-block-font-size: 0.75em;
 $body-bg: white;
 $body-color: #777777;
@@ -9,18 +9,22 @@ $body-color: #777777;
 /*-- scss:rules --*/
 
 .reveal a {
-  line-height: 1.3em;
-  color: #D18800;
+  color: complement($presentation-heading-color, $space: null);
   text-decoration: underline;
+}
+
+.reveal a:hover {
+  color: scale-color($presentation-heading-color, $lightness: +20%);
+  text-decoration: none;
 }
 
 .reveal p.subtitle {
   font-size: 150%;
-  color: #D18800;
+  color: $presentation-heading-color;
 }
 
 .reveal strong {
-  color: #D18800;
+  color: $presentation-heading-color;
 }
 
 .reveal aside{
@@ -81,13 +85,13 @@ $body-color: #777777;
 .reveal .title {
   border-bottom: 6px;
   border-bottom-style: solid;
-  border-bottom-color: #D18800;  
+  border-bottom-color: $presentation-heading-color;  
 }
 
 .reveal h2 {
   border-bottom: 4px;
   border-bottom-style: solid;
-  border-bottom-color: #D18800;
+  border-bottom-color: $presentation-heading-color;
 }
 
 .reveal .math {
