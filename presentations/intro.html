@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en-EN"><head>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-de070a7b0ab54f8780927367ac907214.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.7.30">
+
+  <meta name="author" content="P. Bosetti">
+  <title>MADS – MADS Intro</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-05f47e9b8630a11754765482f2de6729.css">
+  <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">MADS Intro</h1>
+  <p class="subtitle">A framework for distributed agents</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+P. Bosetti 
+</div>
+        <p class="quarto-title-affiliation">
+            University of Trento
+          </p>
+    </div>
+</div>
+
+  <p class="date">2025-Jul-07</p>
+</section>
+<section>
+<section id="what-is-it" class="title-slide slide level1 center">
+<h1>What is it?</h1>
+<p>MADS stands for <em>Multi-Agent Distributed Network</em></p>
+</section>
+<section id="contents" class="slide level2">
+<h2>Contents</h2>
+<ul>
+<li>Terminology</li>
+<li>Basic Usage</li>
+<li>Linux services</li>
+<li>Plugins</li>
+<li>Parallel computing</li>
+</ul>
+</section></section>
+<section>
+<section id="terminology" class="title-slide slide level1 center">
+<h1>Terminology</h1>
+
+</section>
+<section id="lets-get-understood" class="slide level2">
+<h2>Let’s get understood…</h2>
+<ul>
+<li><strong>Agent</strong>: an entity that can perceive its environment and act upon it.</li>
+<li><strong>Network</strong>: a set of agents, possibly distributed over different devices or machines, and exchanging information via ZeroMQ/TCP connections</li>
+</ul>
+<p>MADS aims at being as transparent as possible w.r.t. the underlying network.</p>
+<p>The same MADS network could run</p>
+<ul>
+<li>on a single machine (via loopback connections)</li>
+<li>as well as on multiple machines (via TCP connections), one agent per machine</li>
+</ul>
+<p>And everything in between…</p>
+</section>
+<section id="mads-network-topology" class="slide level2">
+<h2>MADS Network Topology</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>To maximize flexibility and scalability, MADS networks are <strong>broker-based</strong></p>
+<ul>
+<li>only IP/hostname of broker is needed</li>
+<li>broker does message dispatching</li>
+<li>agents can filter messages by <strong>topics</strong></li>
+<li>agents can be added/removed dynamically</li>
+<li>agents can act as source (blue), filter (green), or sink (orange)</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="480" height="384" viewbox="0.00 0.00 226.71 188.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
+<title>G</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-184 222.71,-184 222.71,4 -4,4"></polygon>
+<!-- broker -->
+<g id="node1" class="node">
+<title>broker</title>
+<polygon fill="lightgrey" stroke="black" points="136.73,-108 81.98,-108 81.98,-72 136.73,-72 136.73,-108"></polygon>
+<text text-anchor="middle" x="109.36" y="-85.8" font-family="Times,serif" font-size="14.00">Broker</text>
+</g>
+<!-- a4 -->
+<g id="node5" class="node">
+<title>a4</title>
+<polygon fill="lightgreen" stroke="black" points="215.57,-108 155.14,-108 155.14,-72 215.57,-72 215.57,-108"></polygon>
+<text text-anchor="middle" x="185.36" y="-85.8" font-family="Times,serif" font-size="14.00">Agent 4</text>
+</g>
+<!-- broker&#45;&gt;a4 -->
+<g id="edge5" class="edge">
+<title>broker-&gt;a4</title>
+<path fill="none" stroke="black" d="M136.97,-102.49C141.31,-103.34 145.66,-103.65 150.01,-103.43"></path>
+<polygon fill="black" stroke="black" points="155.11,-102.94 150.35,-105.66 152.62,-103.18 150.14,-103.42 150.14,-103.42 150.14,-103.42 152.62,-103.18 149.92,-101.18 155.11,-102.94 155.11,-102.94"></polygon>
+</g>
+<!-- a5 -->
+<g id="node6" class="node">
+<title>a5</title>
+<polygon fill="orange" stroke="black" points="60.57,-36 0.14,-36 0.14,0 60.57,0 60.57,-36"></polygon>
+<text text-anchor="middle" x="30.36" y="-13.8" font-family="Times,serif" font-size="14.00">Agent 5</text>
+</g>
+<!-- broker&#45;&gt;a5 -->
+<g id="edge6" class="edge">
+<title>broker-&gt;a5</title>
+<path fill="none" stroke="black" d="M89.83,-71.7C78.83,-61.95 65.02,-49.71 53.48,-39.49"></path>
+<polygon fill="black" stroke="black" points="49.66,-36.1 54.89,-37.74 51.53,-37.76 53.4,-39.42 53.4,-39.42 53.4,-39.42 51.53,-37.76 51.91,-41.1 49.66,-36.1 49.66,-36.1"></polygon>
+</g>
+<!-- a6 -->
+<g id="node7" class="node">
+<title>a6</title>
+<polygon fill="orange" stroke="black" points="139.57,-36 79.14,-36 79.14,0 139.57,0 139.57,-36"></polygon>
+<text text-anchor="middle" x="109.36" y="-13.8" font-family="Times,serif" font-size="14.00">Agent 6</text>
+</g>
+<!-- broker&#45;&gt;a6 -->
+<g id="edge7" class="edge">
+<title>broker-&gt;a6</title>
+<path fill="none" stroke="black" d="M109.36,-71.7C109.36,-62.46 109.36,-50.98 109.36,-41.11"></path>
+<polygon fill="black" stroke="black" points="109.36,-36.1 111.61,-41.1 109.36,-38.6 109.36,-41.1 109.36,-41.1 109.36,-41.1 109.36,-38.6 107.11,-41.1 109.36,-36.1 109.36,-36.1"></polygon>
+</g>
+<!-- a7 -->
+<g id="node8" class="node">
+<title>a7</title>
+<polygon fill="orange" stroke="black" points="218.57,-36 158.14,-36 158.14,0 218.57,0 218.57,-36"></polygon>
+<text text-anchor="middle" x="188.36" y="-13.8" font-family="Times,serif" font-size="14.00">Agent 7</text>
+</g>
+<!-- broker&#45;&gt;a7 -->
+<g id="edge8" class="edge">
+<title>broker-&gt;a7</title>
+<path fill="none" stroke="black" d="M128.89,-71.7C139.89,-61.95 153.69,-49.71 165.23,-39.49"></path>
+<polygon fill="black" stroke="black" points="169.05,-36.1 166.8,-41.1 167.18,-37.76 165.31,-39.42 165.31,-39.42 165.31,-39.42 167.18,-37.76 163.82,-37.74 169.05,-36.1 169.05,-36.1"></polygon>
+</g>
+<!-- a1 -->
+<g id="node2" class="node">
+<title>a1</title>
+<polygon fill="lightblue" stroke="black" points="60.57,-180 0.14,-180 0.14,-144 60.57,-144 60.57,-180"></polygon>
+<text text-anchor="middle" x="30.36" y="-157.8" font-family="Times,serif" font-size="14.00">Agent 1</text>
+</g>
+<!-- a1&#45;&gt;broker -->
+<g id="edge1" class="edge">
+<title>a1-&gt;broker</title>
+<path fill="none" stroke="black" d="M49.89,-143.7C60.89,-133.95 74.69,-121.71 86.23,-111.49"></path>
+<polygon fill="black" stroke="black" points="90.05,-108.1 87.8,-113.1 88.18,-109.76 86.31,-111.42 86.31,-111.42 86.31,-111.42 88.18,-109.76 84.82,-109.74 90.05,-108.1 90.05,-108.1"></polygon>
+</g>
+<!-- a2 -->
+<g id="node3" class="node">
+<title>a2</title>
+<polygon fill="lightblue" stroke="black" points="139.57,-180 79.14,-180 79.14,-144 139.57,-144 139.57,-180"></polygon>
+<text text-anchor="middle" x="109.36" y="-157.8" font-family="Times,serif" font-size="14.00">Agent 2</text>
+</g>
+<!-- a2&#45;&gt;broker -->
+<g id="edge2" class="edge">
+<title>a2-&gt;broker</title>
+<path fill="none" stroke="black" d="M109.36,-143.7C109.36,-134.46 109.36,-122.98 109.36,-113.11"></path>
+<polygon fill="black" stroke="black" points="109.36,-108.1 111.61,-113.1 109.36,-110.6 109.36,-113.1 109.36,-113.1 109.36,-113.1 109.36,-110.6 107.11,-113.1 109.36,-108.1 109.36,-108.1"></polygon>
+</g>
+<!-- a3 -->
+<g id="node4" class="node">
+<title>a3</title>
+<polygon fill="lightblue" stroke="black" points="218.57,-180 158.14,-180 158.14,-144 218.57,-144 218.57,-180"></polygon>
+<text text-anchor="middle" x="188.36" y="-157.8" font-family="Times,serif" font-size="14.00">Agent 3</text>
+</g>
+<!-- a3&#45;&gt;broker -->
+<g id="edge3" class="edge">
+<title>a3-&gt;broker</title>
+<path fill="none" stroke="black" d="M168.83,-143.7C157.83,-133.95 144.02,-121.71 132.48,-111.49"></path>
+<polygon fill="black" stroke="black" points="128.66,-108.1 133.89,-109.74 130.53,-109.76 132.4,-111.42 132.4,-111.42 132.4,-111.42 130.53,-109.76 130.91,-113.1 128.66,-108.1 128.66,-108.1"></polygon>
+</g>
+<!-- a4&#45;&gt;broker -->
+<g id="edge4" class="edge">
+<title>a4-&gt;broker</title>
+<path fill="none" stroke="black" d="M155.11,-77.06C150.77,-76.43 146.42,-76.33 142.07,-76.76"></path>
+<polygon fill="black" stroke="black" points="136.97,-77.51 141.59,-74.56 139.44,-77.15 141.91,-76.78 141.91,-76.78 141.91,-76.78 139.44,-77.15 142.24,-79.01 136.97,-77.51 136.97,-77.51"></polygon>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+
+<aside><div>
+<p>Also see the guide page on <a href="../guides/structure.html">MADS network topology</a></p>
+</div></aside></section>
+<section id="its-a-zeromq-network" class="slide level2">
+<h2>It’s a ZeroMQ network</h2>
+<p>MADS uses <a href="https://zeromq.org/" target="_blank">ZeroMQ</a> as the underlying communication layer:</p>
+<ul>
+<li>connections are established via TCP (XPUB-XSUB)</li>
+<li>order of connection does not matter</li>
+<li>disconnection/reconnection is handled automatically</li>
+<li>minimum overhead w.r.t. other protocols (e.g., HTTP, gRPC, REST)</li>
+<li>application-layer protocol is agnostic to the underlying transport, and left to the user</li>
+<li>MADS is designed to be simple, so data on the wire is presented as JSON compressed with <a href="https://github.com/google/snappy" target="_blank">snappy</a></li>
+<li>MADS is designed to be scalable: you can have hundreds of agents, the limiting factor being network bandwidth</li>
+</ul>
+</section>
+<section id="agents" class="slide level2">
+<h2>Agents</h2>
+<div class="columns">
+<div class="column" style="width:70%;">
+<p>Agents are the building blocks of a MADS network. They can be:</p>
+<ul>
+<li><strong>Sources</strong>: produce data and send it to the network</li>
+<li><strong>Filters</strong>: process data received from the network and send it to other agents</li>
+<li><strong>Sinks</strong>: consume data from the network and perform actions based on it</li>
+</ul>
+<p>Agents can be implemented in any programming language that supports ZeroMQ, but MADS provides C++ API that abstracts ZeroMQ intricacies.</p>
+</div><div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/1dbc1935-6542-4ee3-822f-135cff4ba62c/df0z2x5-e5118bcf-4bc7-44af-9fa1-da6c72d70ad5.png/v1/fill/w_320,h_984/the_matrix__agent_smith___transparent__by_speedcam_df0z2x5-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTg0IiwicGF0aCI6IlwvZlwvMWRiYzE5MzUtNjU0Mi00ZWUzLTgyMmYtMTM1Y2ZmNGJhNjJjXC9kZjB6Mng1LWU1MTE4YmNmLTRiYzctNDRhZi05ZmExLWRhNmM3MmQ3MGFkNS5wbmciLCJ3aWR0aCI6Ijw9MzIwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.s-TgyPYqUeR_t3lGSxGlMsfwobw5YbRul4DMUjykf_Y" height="500"></p>
+<figcaption>Agent Smith</figcaption>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="agents-1" class="slide level2">
+<h2>Agents</h2>
+<div class="columns">
+<div class="column" style="width:70%;">
+<p>Using MADS API, agents can be implemented as:</p>
+<ul>
+<li><strong>monolithic</strong>: a single executable that contains all the logic</li>
+<li><strong>plugin-based</strong>: a general purpose executable that loads plugins dynamically, allowing for modularity and extensibility; the user only has to develop the plugin with minimal boilerplate code and API knowledge</li>
+<li><strong>Python modules</strong>: MADS agent can load at runtime Python modules that provide a proper interface (2-3 functions)</li>
+</ul>
+
+</div><div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/1dbc1935-6542-4ee3-822f-135cff4ba62c/df0z2x5-e5118bcf-4bc7-44af-9fa1-da6c72d70ad5.png/v1/fill/w_320,h_984/the_matrix__agent_smith___transparent__by_speedcam_df0z2x5-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTg0IiwicGF0aCI6IlwvZlwvMWRiYzE5MzUtNjU0Mi00ZWUzLTgyMmYtMTM1Y2ZmNGJhNjJjXC9kZjB6Mng1LWU1MTE4YmNmLTRiYzctNDRhZi05ZmExLWRhNmM3MmQ3MGFkNS5wbmciLCJ3aWR0aCI6Ijw9MzIwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.s-TgyPYqUeR_t3lGSxGlMsfwobw5YbRul4DMUjykf_Y" height="500"></p>
+<figcaption>Agent Smith</figcaption>
+</figure>
+</div>
+</div></div>
+<aside><div>
+<p>Plugins are actually shared C++ libraries, compiled with minimal dependencies</p>
+</div></aside></section>
+<section id="implementation" class="slide level2">
+<h2>Implementation</h2>
+<ul>
+<li>MADS is implemented in C++17 and provides an API to create agents and connect them to the network</li>
+<li>It can be compiled on Linux, macOS, and Windows</li>
+<li>Compilation is rather tedious and has a number of dependencies, but:
+<ul>
+<li><a href="https://github.com/pbosetti/MADS/releases" target="blank_">installers</a> are available for Linux, MacOS, and Windows</li>
+<li>a <a href="https://hub.docker.com/repository/docker/p4010/mads" target="blank_">Docker image</a> is available for easy setup</li>
+</ul></li>
+<li>Developing custom agents as plugins is much easier, as it requires only a few functions to be implemented</li>
+<li>Example plugins are available <a href="https://github.com/mads-net" target="blank_">on GitHub</a></li>
+<li>The main MADS command can generate a plugin template</li>
+</ul>
+</section></section>
+<section>
+<section id="basic-usage" class="title-slide slide level1 center">
+<h1>Basic usage</h1>
+<p>How do we use it in practice?</p>
+</section>
+<section id="main-command-mads" class="slide level2">
+<h2>Main command: <code>mads</code></h2>
+<ul>
+<li><p>The standard installers provide a main command: <code>mads</code></p></li>
+<li><p>Inline help is available with <code>mads --help</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a></a><span class="op">&gt;</span> mads <span class="ex">--help</span></span>
+<span id="cb1-2"><a></a><span class="ex">Mads</span> command line interface version 1.3.1</span>
+<span id="cb1-3"><a></a><span class="ex">Usage:</span></span>
+<span id="cb1-4"><a></a>  <span class="ex">mads</span> <span class="pp">[</span><span class="ss">OPTION...</span><span class="pp">]</span></span>
+<span id="cb1-5"><a></a></span>
+<span id="cb1-6"><a></a>  <span class="ex">-i,</span> <span class="at">--info</span>     Print information on MADS installation</span>
+<span id="cb1-7"><a></a>  <span class="ex">-p,</span> <span class="at">--prefix</span>   Print MADS install prefix</span>
+<span id="cb1-8"><a></a>      <span class="ex">--plugins</span>  List plugins in default plugins directory</span>
+<span id="cb1-9"><a></a>  <span class="ex">-v,</span> <span class="at">--version</span>  Print version</span>
+<span id="cb1-10"><a></a>  <span class="ex">-h,</span> <span class="at">--help</span>     Print help</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Options <code>-i</code> and <code>-p</code> are useful to check the installation</p></li>
+</ul>
+</section>
+<section id="mads-subcommands" class="slide level2">
+<h2>Mads subcommands</h2>
+<ul>
+<li>The list of available <code>mads</code> sub commands can be obtained as:</li>
+</ul>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a></a><span class="op">&gt;</span> mads</span>
+<span id="cb2-2"><a></a><span class="ex">Available</span> mads subcommands:</span>
+<span id="cb2-3"><a></a>   <span class="ex">filter</span> <span class="er">(</span><span class="ex">wraps</span> mads-filter<span class="kw">)</span></span>
+<span id="cb2-4"><a></a>   <span class="ex">worker</span> <span class="er">(</span><span class="ex">wraps</span> mads-worker<span class="kw">)</span></span>
+<span id="cb2-5"><a></a>  <span class="bu">command</span> <span class="er">(</span><span class="ex">wraps</span> mads-command<span class="kw">)</span></span>
+<span id="cb2-6"><a></a>    <span class="ex">image</span> <span class="er">(</span><span class="ex">wraps</span> mads-image<span class="kw">)</span></span>
+<span id="cb2-7"><a></a> <span class="ex">feedback</span> <span class="er">(</span><span class="ex">wraps</span> mads-feedback<span class="kw">)</span></span>
+<span id="cb2-8"><a></a>  <span class="ex">logging</span> <span class="er">(</span><span class="ex">wraps</span> mads-logging<span class="kw">)</span></span>
+<span id="cb2-9"><a></a>   <span class="ex">plugin</span> <span class="er">(</span><span class="ex">wraps</span> mads-plugin<span class="kw">)</span></span>
+<span id="cb2-10"><a></a>   <span class="bu">source</span> <span class="er">(</span><span class="ex">wraps</span> mads-source<span class="kw">)</span></span>
+<span id="cb2-11"><a></a>   <span class="ex">bridge</span> <span class="er">(</span><span class="ex">wraps</span> mads-bridge<span class="kw">)</span></span>
+<span id="cb2-12"><a></a>     <span class="ex">sink</span> <span class="er">(</span><span class="ex">wraps</span> mads-sink<span class="kw">)</span></span>
+<span id="cb2-13"><a></a>   <span class="ex">dealer</span> <span class="er">(</span><span class="ex">wraps</span> mads-dealer<span class="kw">)</span></span>
+<span id="cb2-14"><a></a>   <span class="ex">python</span> <span class="er">(</span><span class="ex">wraps</span> mads-python<span class="kw">)</span></span>
+<span id="cb2-15"><a></a>   <span class="ex">logger</span> <span class="er">(</span><span class="ex">wraps</span> mads-logger<span class="kw">)</span></span>
+<span id="cb2-16"><a></a>   <span class="ex">broker</span> <span class="er">(</span><span class="ex">wraps</span> mads-broker<span class="kw">)</span></span>
+<span id="cb2-17"><a></a>      <span class="ex">ini</span> <span class="er">(</span><span class="ex">internal</span><span class="kw">)</span></span>
+<span id="cb2-18"><a></a>  <span class="ex">service</span> <span class="er">(</span><span class="ex">internal</span><span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div><div class="column">
+<ul>
+<li>On MacOS and Linux, commands are available as e.g.&nbsp;<code>mads source</code> or <code>mads-source</code></li>
+<li>On Windows, commands are available as e.g.&nbsp;<code>mads-source</code> only</li>
+<li><em>internal</em> commands are implemented by the <code>mads</code> executable</li>
+<li>Man pages are available (e.g.&nbsp;<code>man mads-source</code>)</li>
+</ul>
+</div></div>
+</section>
+<section id="launching-the-broker" class="slide level2">
+<h2>Launching the <code>broker</code></h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a></a><span class="op">&gt;</span> mads <span class="ex">broker</span></span>
+<span id="cb3-2"><a></a><span class="ex">Reading</span> settings from /Users/p4010/usr/local/etc/mads.ini <span class="pp">[</span><span class="ss">broker</span><span class="pp">]</span></span>
+<span id="cb3-3"><a></a><span class="ex">Binding</span> broker frontend <span class="er">(</span><span class="ex">XSUB</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9090</span>
+<span id="cb3-4"><a></a><span class="ex">Binding</span> broker backend <span class="er">(</span><span class="ex">XPUB</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9091</span>
+<span id="cb3-5"><a></a><span class="ex">Binding</span> broker shared settings <span class="er">(</span><span class="ex">REP</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9092</span>
+<span id="cb3-6"><a></a><span class="ex">Timecode</span> FPS: 25</span>
+<span id="cb3-7"><a></a><span class="ex">Settings</span> are provided via tcp://127.0.0.1:9092</span>
+<span id="cb3-8"><a></a><span class="ex">CTRL-C</span> to immediate exit</span>
+<span id="cb3-9"><a></a><span class="ex">Type</span> P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Line 2 and 7 report a fundamental aspect: the <strong>centralized settings file</strong></li>
+<li>Settings for all agents are stored in a <a href="https://toml.io" target="_blank">TOML</a> file, which is dispatched by the broker to the agents upon launch</li>
+<li>Each agent is launched with the settings URL (e.g.&nbsp;<code>tcp://127.0.0.1:9092</code>) as a command line argument</li>
+</ul>
+</section>
+<section id="running-an-agent" class="slide level2">
+<h2>Running an agent</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li>To run an agent on a device different from the one running the broker, we need to specify the broker address</li>
+<li>We see relevant agent settings (loaded from broker):
+<ul>
+<li>pub topic: messages are tagged with <code>publish</code></li>
+<li>compression: JSON compressed with snappy</li>
+<li>timecode: all messages generated in the same 40ms share the same timecode</li>
+<li>timecode offset: clock difference with broker</li>
+</ul></li>
+</ul>
+</div><div class="column">
+<script src="https://asciinema.org/a/r863FgQkPSVjruW9J2KdKK57Z.js" id="asciicast-r863FgQkPSVjruW9J2KdKK57Z" data-idle-time-limit="1" data-speed="3" async="true">
+</script>
+</div></div>
+
+<aside><div>
+<p>Click on the white triangle <i class="bi-play " style="" role="img" aria-hidden="true"></i> to start the clip 😉</p>
+</div></aside></section>
+<section id="logger" class="slide level2">
+<h2>Logger</h2>
+<ul>
+<li>MADS provides an agent called <code>logger</code> for logging messages</li>
+<li>The <code>logger</code> is designed to store data into a <a href="https://mongodb.com" target="_blank">MongoDB</a> database</li>
+<li>MongoDB is <strong>schemaless</strong>, so it can store any JSON data published to the MADS network</li>
+<li>Each agent publishes on a given <strong>topic</strong> (e.g.&nbsp;<code>publish</code>)</li>
+<li>For each topic, a corresponding table is created in the database, and each message is stored as a document in that table</li>
+<li><a href="https://www.mongodb.com/docs/manual/aggregation/" target="_blank">MongoDB aggregations</a> can offload some computational load and make data easier to fetch</li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>A MongoDB instance can be easily started with Docker:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a></a><span class="op">&gt;</span> docker <span class="ex">run</span> <span class="at">-d</span> <span class="at">--name</span> mads-mongo <span class="at">-p</span> 27017:27017 <span class="at">-v</span> <span class="va">${PWD}</span>/db:/data/db mongo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="services" class="title-slide slide level1 center">
+<h1>Services</h1>
+<p>Automate it!</p>
+</section>
+<section id="mads-services" class="slide level2">
+<h2>MADS services</h2>
+<p>On Linux machine only, MADS provides a service file generator that can be used to run MADS agents as system services, <strong>automatically active on boot</strong></p>
+<p>Procedure:</p>
+<ol type="1">
+<li>define the proper launch command, e.g.&nbsp;<code>mads source -s tcp://mads-broker.local:9092 -n my_datasource</code></li>
+<li>run <code>mads service my_datasource source -s tcp://mads-broker.local:9092 -n my_datasource</code>; this prints a possible <code>systemctl</code> file for a service called <code>my_datasource.service</code></li>
+<li>if it looks correct, run the same command as <code>sudo</code>: this installs the service on the system dir</li>
+<li>enable the service: <code>sudo systemctl enable my_datasource.service</code></li>
+</ol>
+
+<aside><div>
+<p>Also see the <a href="../guides/services.html">guide page</a></p>
+</div></aside></section></section>
+<section>
+<section id="plugins" class="title-slide slide level1 center">
+<h1>Plugins</h1>
+<p>Or, please, make it easy!</p>
+</section>
+<section id="motivation" class="slide level2">
+<h2>Motivation</h2>
+<ul>
+<li>MADS is designed to be simple, but it can be complex to implement agents</li>
+<li>Implementing an agent (monolithic) requires knowledge of the MADS API, ZeroMQ</li>
+<li>Compiling the agent takes time and requires a proper development environment, especially on Windows</li>
+<li>We wanted to let users focus on the <strong>agent logic</strong>, not on the boilerplate code</li>
+<li>At the same time, we wanted to keep the advantages of C++ (performance, low-level control, etc.), without <em>forcing</em> users to revert to scripting interfaces just because the whole C++ framework is too complex</li>
+</ul>
+<p><strong>Solution</strong>: MADS plugins</p>
+</section>
+<section id="mads-plugins" class="slide level2">
+<h2>MADS plugins</h2>
+<ul>
+<li>A plugin is a shared library that implements a specific agent logic</li>
+<li>Plugins are loaded dynamically by the MADS general purpose executables:
+<ul>
+<li><code>mads source</code>: provides information to the network (e.g.&nbsp;by reading sensors)</li>
+<li><code>mads filter</code>: processes data received from the network and sends it to other agents</li>
+<li><code>mads sink</code>: consumes data from the network and performs actions based on it (e.g.&nbsp;by writing to a file)</li>
+</ul></li>
+<li>The specific agent logic is implemented in the plugin, which is a C++ class that inherits from a base class</li>
+<li>MADS provides the <code>mads plugin</code> command to create a plugin template</li>
+</ul>
+
+<aside><div>
+<p>Also see the <a href="../guides/plugins.html">guide page</a> for more details on plugins</p>
+</div></aside></section>
+<section id="running-mads-plugin" class="slide level2">
+<h2>Running <code>mads plugin</code></h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li>The <code>mads plugin</code> command creates a plugin template in the current directory</li>
+<li>The template contains a <code>CMakeLists.txt</code> file and a <code>src</code> directory with the plugin source code</li>
+<li>The template has minimal dependencies:
+<ul>
+<li>A C++17 compliant compiler (VS 2017 or later, GCC 7 or later, Clang 5 or later)</li>
+<li>CMake 3.15 or later</li>
+<li>Any other dependency must be added to <code>CMakeLists.txt</code></li>
+</ul></li>
+<li>CMake can be configured to install the plugin in the MADS plugins directory, so that the plugin is automatically found</li>
+</ul>
+</div><div class="column">
+<script src="https://asciinema.org/a/Q1bGhLFXUmMXfgElGEHY9A6jg.js" id="asciicast-Q1bGhLFXUmMXfgElGEHY9A6jg" data-idle-time-limit="1" data-speed="3" async="true">
+</script>
+</div></div>
+</section>
+<section id="plugin-class-details" class="slide level2">
+<h2>Plugin class details</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb5-1"><a></a><span class="kw">class</span> My_sourcePlugin <span class="op">:</span> <span class="kw">public</span> Source<span class="op">&lt;</span>json<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb5-2"><a></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb5-3"><a></a>  <span class="co">// Implement the actual functionality here</span></span>
+<span id="cb5-4"><a></a>  <span class="dt">return_type</span> get_output<span class="op">(</span>json <span class="op">&amp;</span>out<span class="op">,</span></span>
+<span id="cb5-5"><a></a>                         <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">unsigned</span> <span class="dt">char</span><span class="op">&gt;</span> <span class="op">*</span>blob <span class="op">=</span> <span class="kw">nullptr</span><span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb5-6"><a></a>    <span class="co">// Your logic to fill 'out' with data</span></span>
+<span id="cb5-7"><a></a>    <span class="co">// optionally use 'blob' for binary content</span></span>
+<span id="cb5-8"><a></a>  <span class="op">}</span></span>
+<span id="cb5-9"><a></a></span>
+<span id="cb5-10"><a></a>  <span class="co">// Run only once upon start</span></span>
+<span id="cb5-11"><a></a>  <span class="dt">void</span> set_params<span class="op">(</span><span class="dt">void</span> <span class="at">const</span> <span class="op">*</span>params<span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb5-12"><a></a>    <span class="co">// Optional: handle parameters passed to the plugin</span></span>
+<span id="cb5-13"><a></a>    <span class="co">// This can be used to configure the plugin at runtime</span></span>
+<span id="cb5-14"><a></a>  <span class="op">}</span></span>
+<span id="cb5-15"><a></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb5-16"><a></a>  <span class="co">// custom fields here</span></span>
+<span id="cb5-17"><a></a><span class="op">};</span></span>
+<span id="cb5-18"><a></a><span class="co">// Macro that does the magic of allowing dlopen to work</span></span>
+<span id="cb5-19"><a></a>INSTALL_SOURCE_DRIVER<span class="op">(</span>My_sourcePlugin<span class="op">,</span> json<span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="plugin-class-details-1" class="slide level2">
+<h2>Plugin class details</h2>
+<ul>
+<li>Implementing a plugin does not require knowledge of the MADS API</li>
+<li>Only two methods (three methods for filter plugins) need to be implemented</li>
+<li>Any third party library is left to the user:
+<ul>
+<li>add necessary <code>find_package</code> calls in <code>CMakeLists.txt</code></li>
+<li>link the library to the plugin</li>
+<li>include the necessary headers in the plugin source code</li>
+</ul></li>
+<li>The plugin source code also has a template <code>main()</code> function: beside each plugin, a one-shot executable is provided (and compiled) that can be used to test the plugin logic without the need of a MADS network</li>
+</ul>
+
+<aside><div>
+<p><strong>Note</strong>: the <code>CMakeLists.txt</code> provides an <code>add_plugin(name SRCS &lt;source lists&gt; LIBS &lt;libraries list&gt;)</code> macro that simplifies the process of creating a plugin target</p>
+</div></aside></section>
+<section id="ota-plugins" class="slide level2">
+<h2>OTA plugins</h2>
+<ul>
+<li><p>Plugins can be loaded <strong>Over-The-Air</strong> (OTA) by the <code>mads source</code>, <code>mads filter</code>, and <code>mads sink</code> commands</p></li>
+<li><p>If the INI file contains an entry like this:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource toml number-lines code-with-copy"><code class="sourceCode toml"><span id="cb6-1"><a></a><span class="kw">[my_source]</span></span>
+<span id="cb6-2"><a></a><span class="dt">attachment</span> <span class="op">=</span> <span class="st">"/path/to/my_source.plugin"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>then that file (on the broker filesystem!) is sent to <code>my_source</code> agents when they connect to the broker</p></li>
+<li><p>This allows to have all plugins in a single location, and to update them without having to manually copy them to each agent machine</p></li>
+</ul>
+</section></section>
+<section>
+<section id="parallel-computing" class="title-slide slide level1 center">
+<h1>Parallel computing</h1>
+<p>MADS can be also use for dispatching parallel computations on HPC clusters</p>
+</section>
+<section id="the-dealer-worker-model" class="slide level2">
+<h2>The <em>dealer-worker</em> model</h2>
+<p>Suppose that you want to explore a large domain of parameters for a simulation to perform <strong>sensitivity analysis</strong> or <strong>parameters optimization</strong>:</p>
+<div class="columns">
+<div class="column">
+<ul>
+<li>ZeroMQ provides a special <em>PUSH-PULL</em> communication model between a single <strong>dealer</strong> and multiple, identical <strong>workers</strong></li>
+<li>The <strong>dealer</strong> distributes tasks to the <strong>workers</strong> in a round-robin fashion</li>
+<li>Each <strong>worker</strong> processes the task and sends the result back to the broker</li>
+<li>In a possible implementation, a <strong>source</strong> provides the grid of parameters combination and a <strong>logger</strong> agent store the results</li>
+</ul>
+</div><div class="column">
+<div class="cell" data-fig-width="6" data-fig-height="5" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="576" height="480" viewbox="0.00 0.00 484.24 273.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 269)">
+<title>Dealer-worker</title>
+<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-269 480.24,-269 480.24,4 -4,4"></polygon>
+<!-- broker -->
+<g id="node1" class="node">
+<title>broker</title>
+<polygon fill="#ffffff" stroke="black" points="145,-138 91,-138 91,-102 145,-102 145,-138"></polygon>
+<text text-anchor="middle" x="118" y="-115.8" font-family="Times,serif" font-size="14.00">broker</text>
+</g>
+<!-- dealer -->
+<g id="node3" class="node">
+<title>dealer</title>
+<polygon fill="#f0f0f0" stroke="black" points="236,-168 182,-168 182,-132 236,-132 236,-168"></polygon>
+<text text-anchor="middle" x="209" y="-145.8" font-family="Times,serif" font-size="14.00">dealer</text>
+</g>
+<!-- broker&#45;&gt;dealer -->
+<g id="edge6" class="edge">
+<title>broker-&gt;dealer</title>
+<path fill="none" stroke="black" d="M145.22,-128.84C153.73,-131.71 163.32,-134.94 172.4,-138"></path>
+<polygon fill="black" stroke="black" points="171.37,-141.35 181.97,-141.22 173.61,-134.71 171.37,-141.35"></polygon>
+</g>
+<!-- logger -->
+<g id="node10" class="node">
+<title>logger</title>
+<polygon fill="#ffffff" stroke="black" points="236,-36 182,-36 182,0 236,0 236,-36"></polygon>
+<text text-anchor="middle" x="209" y="-13.8" font-family="Times,serif" font-size="14.00">logger</text>
+</g>
+<!-- broker&#45;&gt;logger -->
+<g id="edge15" class="edge">
+<title>broker-&gt;logger</title>
+<path fill="none" stroke="black" d="M127.78,-101.99C135.65,-86.99 148.21,-65.65 163,-50 166.28,-46.52 170,-43.19 173.84,-40.07"></path>
+<polygon fill="black" stroke="black" points="175.99,-42.83 181.84,-34 171.76,-37.26 175.99,-42.83"></polygon>
+</g>
+<!-- source -->
+<g id="node2" class="node">
+<title>source</title>
+<polygon fill="#ffffff" stroke="black" points="54,-138 0,-138 0,-102 54,-102 54,-138"></polygon>
+<text text-anchor="middle" x="27" y="-115.8" font-family="Times,serif" font-size="14.00">source</text>
+</g>
+<!-- source&#45;&gt;broker -->
+<g id="edge5" class="edge">
+<title>source-&gt;broker</title>
+<path fill="none" stroke="black" d="M54.22,-120C62.55,-120 71.91,-120 80.82,-120"></path>
+<polygon fill="black" stroke="black" points="80.97,-123.5 90.97,-120 80.97,-116.5 80.97,-123.5"></polygon>
+</g>
+<!-- w1 -->
+<g id="node5" class="node">
+<title>w1</title>
+<polygon fill="#f0f0f0" stroke="black" points="380.44,-265 314.14,-265 314.14,-229 380.44,-229 380.44,-265"></polygon>
+<text text-anchor="middle" x="347.29" y="-242.8" font-family="Times,serif" font-size="14.00">worker 1</text>
+</g>
+<!-- dealer&#45;&gt;w1 -->
+<g id="edge7" class="edge">
+<title>dealer-&gt;w1</title>
+<path fill="none" stroke="blue" d="M233.1,-168.26C239.78,-173.43 247.13,-179.01 254,-184 272.31,-197.31 293.1,-211.57 310.3,-223.15"></path>
+<polygon fill="blue" stroke="blue" points="308.69,-226.28 318.94,-228.95 312.59,-220.47 308.69,-226.28"></polygon>
+</g>
+<!-- w2 -->
+<g id="node6" class="node">
+<title>w2</title>
+<polygon fill="#f0f0f0" stroke="black" points="380.44,-103 314.14,-103 314.14,-67 380.44,-67 380.44,-103"></polygon>
+<text text-anchor="middle" x="347.29" y="-80.8" font-family="Times,serif" font-size="14.00">worker 2</text>
+</g>
+<!-- dealer&#45;&gt;w2 -->
+<g id="edge8" class="edge">
+<title>dealer-&gt;w2</title>
+<path fill="none" stroke="blue" d="M236.28,-137.47C255.64,-128.24 282.35,-115.49 304.61,-104.88"></path>
+<polygon fill="blue" stroke="blue" points="306.32,-107.94 313.84,-100.48 303.31,-101.62 306.32,-107.94"></polygon>
+</g>
+<!-- w3 -->
+<g id="node7" class="node">
+<title>w3</title>
+<polygon fill="#f0f0f0" stroke="black" points="380.44,-157 314.14,-157 314.14,-121 380.44,-121 380.44,-157"></polygon>
+<text text-anchor="middle" x="347.29" y="-134.8" font-family="Times,serif" font-size="14.00">worker 3</text>
+</g>
+<!-- dealer&#45;&gt;w3 -->
+<g id="edge9" class="edge">
+<title>dealer-&gt;w3</title>
+<path fill="none" stroke="blue" d="M236.28,-147.88C255.38,-146.34 281.64,-144.22 303.71,-142.44"></path>
+<polygon fill="blue" stroke="blue" points="304.16,-145.91 313.84,-141.62 303.59,-138.93 304.16,-145.91"></polygon>
+</g>
+<!-- w4 -->
+<g id="node8" class="node">
+<title>w4</title>
+<polygon fill="#f0f0f0" stroke="black" points="380.44,-211 314.14,-211 314.14,-175 380.44,-175 380.44,-211"></polygon>
+<text text-anchor="middle" x="347.29" y="-188.8" font-family="Times,serif" font-size="14.00">worker 4</text>
+</g>
+<!-- dealer&#45;&gt;w4 -->
+<g id="edge10" class="edge">
+<title>dealer-&gt;w4</title>
+<path fill="none" stroke="blue" d="M236.28,-158.29C255.46,-164.34 281.88,-172.68 304.01,-179.66"></path>
+<polygon fill="blue" stroke="blue" points="303.25,-183.09 313.84,-182.76 305.36,-176.42 303.25,-183.09"></polygon>
+</g>
+<!-- mongo -->
+<g id="node4" class="node">
+<title>mongo</title>
+<path fill="#ffffff" stroke="black" d="M385.19,-32.73C385.19,-34.53 368.2,-36 347.29,-36 326.38,-36 309.4,-34.53 309.4,-32.73 309.4,-32.73 309.4,-3.27 309.4,-3.27 309.4,-1.47 326.38,0 347.29,0 368.2,0 385.19,-1.47 385.19,-3.27 385.19,-3.27 385.19,-32.73 385.19,-32.73"></path>
+<path fill="none" stroke="black" d="M385.19,-32.73C385.19,-30.92 368.2,-29.45 347.29,-29.45 326.38,-29.45 309.4,-30.92 309.4,-32.73"></path>
+<text text-anchor="middle" x="347.29" y="-13.8" font-family="Times,serif" font-size="14.00">MongoDB</text>
+</g>
+<!-- w1&#45;&gt;broker -->
+<g id="edge11" class="edge">
+<title>w1-&gt;broker</title>
+<path fill="none" stroke="black" d="M314.13,-242.48C279.56,-236.55 223.93,-223.84 182,-199 161.18,-186.67 144.5,-164.68 133.55,-147.03"></path>
+<polygon fill="black" stroke="black" points="136.47,-145.09 128.35,-138.27 130.45,-148.66 136.47,-145.09"></polygon>
+</g>
+<!-- p -->
+<g id="node9" class="node">
+<title>p</title>
+<polygon fill="#ffffff" stroke="black" points="434.24,-153 476.24,-153 476.24,-177 434.24,-177 422.24,-165 434.24,-153"></polygon>
+<text text-anchor="middle" x="449.24" y="-160.8" font-family="Times,serif" font-size="14.00">Plugin</text>
+</g>
+<!-- w1&#45;&gt;p -->
+<g id="edge1" class="edge">
+<title>w1-&gt;p</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M373.56,-228.99C377.51,-226.04 381.52,-222.98 385.24,-220 400.1,-208.12 416.25,-194 428.47,-183.04"></path>
+</g>
+<!-- w2&#45;&gt;broker -->
+<g id="edge12" class="edge">
+<title>w2-&gt;broker</title>
+<path fill="none" stroke="black" d="M313.96,-89.98C271.93,-96.45 198.75,-107.72 155,-114.46"></path>
+<polygon fill="black" stroke="black" points="154.42,-111 145.07,-115.99 155.49,-117.92 154.42,-111"></polygon>
+</g>
+<!-- w2&#45;&gt;p -->
+<g id="edge2" class="edge">
+<title>w2-&gt;p</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M373.51,-103.07C377.47,-106.01 381.49,-109.06 385.24,-112 399.64,-123.29 415.39,-136.54 427.54,-146.97"></path>
+</g>
+<!-- w3&#45;&gt;broker -->
+<g id="edge13" class="edge">
+<title>w3-&gt;broker</title>
+<path fill="none" stroke="black" d="M314.07,-133.3C292.14,-129.67 262.41,-125.25 236,-123 208.96,-120.7 178.29,-119.98 155.14,-119.82"></path>
+<polygon fill="black" stroke="black" points="155.08,-116.32 145.07,-119.79 155.06,-123.32 155.08,-116.32"></polygon>
+</g>
+<!-- w3&#45;&gt;p -->
+<g id="edge3" class="edge">
+<title>w3-&gt;p</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M380.47,-147.37C393.94,-150.87 409.39,-154.89 422.13,-158.21"></path>
+</g>
+<!-- w4&#45;&gt;broker -->
+<g id="edge14" class="edge">
+<title>w4-&gt;broker</title>
+<path fill="none" stroke="black" d="M313.91,-195.68C279.65,-197.21 224.72,-195.89 182,-177 166.06,-169.96 151.42,-157.28 140.27,-145.66"></path>
+<polygon fill="black" stroke="black" points="142.81,-143.25 133.47,-138.25 137.65,-147.99 142.81,-143.25"></polygon>
+</g>
+<!-- w4&#45;&gt;p -->
+<g id="edge4" class="edge">
+<title>w4-&gt;p</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M380.47,-183.99C393.94,-180.21 409.39,-175.88 422.13,-172.31"></path>
+</g>
+<!-- logger&#45;&gt;mongo -->
+<g id="edge16" class="edge">
+<title>logger-&gt;mongo</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M236.28,-18C254.09,-18 278.14,-18 299.21,-18"></path>
+<polygon fill="black" stroke="black" points="299.28,-21.5 309.28,-18 299.28,-14.5 299.28,-21.5"></polygon>
+<text text-anchor="middle" x="272.67" y="-22.2" font-family="Times,serif" font-size="14.00">BSON</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+
+<aside><div>
+<p>Also see <a href="../guides/worker.html">the guide page</a></p>
+</div></aside></section>
+<section id="the-mads-implementation" class="slide level2">
+<h2>The MADS implementation</h2>
+<p>In MADS, there are two special agents for this purpose: <code>dealer</code> and <code>worker</code></p>
+<ul>
+<li><code>dealer</code>: receives the computational payloads (simulation input) from a suitable source agent, and dispatches them to the workers</li>
+<li><code>worker</code>: receives the computational payloads and uses a custom plugin to process them (of type <em>filter</em>), then sends the results back to the broker</li>
+</ul>
+<p>Ideally, the worker plugin is launched in <span class="math inline">\(n\)</span> instances on a Kubernetes cluster; each instance loads the computational plugin OTA from the broker</p>
+</section></section>
+<section id="contacts" class="title-slide slide level1 center">
+<h1>Contacts</h1>
+<ul>
+<li><i class="bi-github " style="" role="img" aria-hidden="true"></i> MADS homepage: <a href="https://github.com/pbosetti/MADS" class="uri">https://github.com/pbosetti/MADS</a></li>
+<li><i class="bi-github " style="" role="img" aria-hidden="true"></i> MADS Plugins: <a href="https://github.com/MADS-net" class="uri">https://github.com/MADS-net</a></li>
+<li><i class="bi-envelope " style="" role="img" aria-hidden="true"></i> Developer: <script type="text/javascript">
+<!--
+h='&#x75;&#110;&#x69;&#116;&#110;&#46;&#x69;&#116;';a='&#64;';n='&#112;&#x61;&#x6f;&#108;&#x6f;&#46;&#98;&#x6f;&#x73;&#x65;&#116;&#116;&#x69;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\/'+'a'+'>');
+// -->
+</script><noscript>paolo.bosetti at unitn dot it</noscript></li>
+</ul>
+
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="https://avatars.githubusercontent.com/u/177097168?s=200&amp;v=4" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>MADS — <a href="https://mads-net.github.io">https://mads-net.github.io</a></p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': true,
+'pdfSeparateFragments': true,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 720,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
+              }
+            }
+            return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/mads-net\.github\.io");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+                // default icon
+                link.classList.add("external");
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+            let selectedAnnoteEl;
+            const selectorForAnnotation = ( cell, annotation) => {
+              let cellAttr = 'data-code-cell="' + cell + '"';
+              let lineAttr = 'data-code-annotation="' +  annotation + '"';
+              const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+              return selector;
+            }
+            const selectCodeLines = (annoteEl) => {
+              const doc = window.document;
+              const targetCell = annoteEl.getAttribute("data-target-cell");
+              const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+              const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+              const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+              const lineIds = lines.map((line) => {
+                return targetCell + "-" + line;
+              })
+              let top = null;
+              let height = null;
+              let parent = null;
+              if (lineIds.length > 0) {
+                  //compute the position of the single el (top and bottom and make a div)
+                  const el = window.document.getElementById(lineIds[0]);
+                  top = el.offsetTop;
+                  height = el.offsetHeight;
+                  parent = el.parentElement.parentElement;
+                if (lineIds.length > 1) {
+                  const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+                  const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+                  height = bottom - top;
+                }
+                if (top !== null && height !== null && parent !== null) {
+                  // cook up a div (if necessary) and position it 
+                  let div = window.document.getElementById("code-annotation-line-highlight");
+                  if (div === null) {
+                    div = window.document.createElement("div");
+                    div.setAttribute("id", "code-annotation-line-highlight");
+                    div.style.position = 'absolute';
+                    parent.appendChild(div);
+                  }
+                  div.style.top = top - 2 + "px";
+                  div.style.height = height + 4 + "px";
+                  div.style.left = 0;
+                  let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+                  if (gutterDiv === null) {
+                    gutterDiv = window.document.createElement("div");
+                    gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                    gutterDiv.style.position = 'absolute';
+                    const codeCell = window.document.getElementById(targetCell);
+                    const gutter = codeCell.querySelector('.code-annotation-gutter');
+                    gutter.appendChild(gutterDiv);
+                  }
+                  gutterDiv.style.top = top - 2 + "px";
+                  gutterDiv.style.height = height + 4 + "px";
+                }
+                selectedAnnoteEl = annoteEl;
+              }
+            };
+            const unselectCodeLines = () => {
+              const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+              elementsIds.forEach((elId) => {
+                const div = window.document.getElementById(elId);
+                if (div) {
+                  div.remove();
+                }
+              });
+              selectedAnnoteEl = undefined;
+            };
+              // Handle positioning of the toggle
+          window.addEventListener(
+            "resize",
+            throttle(() => {
+              elRect = undefined;
+              if (selectedAnnoteEl) {
+                selectCodeLines(selectedAnnoteEl);
+              }
+            }, 10)
+          );
+          function throttle(fn, ms) {
+          let throttle = false;
+          let timer;
+            return (...args) => {
+              if(!throttle) { // first call gets through
+                  fn.apply(this, args);
+                  throttle = true;
+              } else { // all the others get throttled
+                  if(timer) clearTimeout(timer); // cancel #2
+                  timer = setTimeout(() => {
+                    fn.apply(this, args);
+                    timer = throttle = false;
+                  }, ms);
+              }
+            };
+          }
+            // Attach click handler to the DT
+            const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+            for (const annoteDlNode of annoteDls) {
+              annoteDlNode.addEventListener('click', (event) => {
+                const clickedEl = event.target;
+                if (clickedEl !== selectedAnnoteEl) {
+                  unselectCodeLines();
+                  const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+                  if (activeEl) {
+                    activeEl.classList.remove('code-annotation-active');
+                  }
+                  selectCodeLines(clickedEl);
+                  clickedEl.classList.add('code-annotation-active');
+                } else {
+                  // Unselect the line
+                  unselectCodeLines();
+                  clickedEl.classList.remove('code-annotation-active');
+                }
+              });
+            }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

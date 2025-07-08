@@ -133,11 +133,158 @@
     "text": "Why services\nAgents are typically expected to run on boot: as soon as the machine or device starts, you want the agent to become immediately available. To do that, MADS offers a solution for quickly create a service for a given combination of MADS command and arguments.\n\n\n\n\n\n\nWarning\n\n\n\nAt the moment, this functionality is only available on Linux (Ubuntu or Debian). There are no immediate plans to extend it to MacOS or Windows.\n\n\n\n\nWhat is a service\nOn Ubuntu or Debian Linux, a service is a INI file located in /etc/systemd/system that details a command to be executed on boot and its requirements. Once you have the service file installed, e.g. as /etc/systemd/system/my_service.service, you can:\n\nEnable/disable the service: sudo systemctl enable|disable my_service. If the service is disabled, It does not starts automatically.\nStart the service manually: sudo systemctl start my_service\nStop the service manually: sudo systemctl stop my_service\nEnquire the service status: sudo systemctl status my_service\n\nSo, if the service is enabled, it starts automatically on boot; if it is disabled, you can still start it with the systemctl start command.\n\n\nHow to create a MADS service\nSuppose that you knwo that the following command launches properly an agent:\nmads source -i in0_01 arduino.plugin\nNow you want turn this command into a service. Just put mads service &lt;service_name in forn t of that command line, e.g.:\nmads service arduino source -i in0_01 arduino.plugin\nwhere mads service arduino means “create a service file called mads-arduino” (mads- is added automatically), and source -i in0_01 arduino.plugin is the proper command line for the mads command.\nYou should get an output like:\n#  __  __    _    ____  ____\n# |  \\/  |  / \\  |  _ \\/ ___|\n# | |\\/| | / _ \\ | | | \\___ \\\n# | |  | |/ ___ \\| |_| |___) |\n# |_|  |_/_/   \\_\\____/|____/\n#\n# Linux Systemd service file for mads-arduino, a mads-source agent\n# Notice that the settings file will be read from\n# /usr/local/etc/mads.ini\n#\n# Save this file to /etc/systemd/system/mads-arduino.service\n# Or run \"sudo mads service publish source publish.plugin \"\n# then run \"sudo systemctl enable mads-arduino.service\"\n\n[Unit]\nDescription=mads-arduino\nAfter=network.target\nStartLimitIntervalSec=0\n\n[Service]\nType=simple\nRestart=always\nRestartSec=1\nUser=root\nExecStart=/usr/local/bin/mads-source -i in0_01 arduino.plugin\n\n[Install]\nWantedBy=multi-user.target\nAs instructed in the comments, you shall check if everything looks fine, and if so, install the service file in the proper directory by simply re-executing the same command with sudo :\nsudo mads service arduino source -i in0_01 arduino.plugin\nA longer and more flexible path is to save the file locally, edit it to taste, then manually copy/move it to /etc/systemd/system:\nmads service arduino source -i in0_01 arduino.plugin &gt; mads-arduino.service\n# edit the file to taste\nsudo cp mads-arduino.service /usr/systemd/system/\n\n\n\n\n\n\nTip\n\n\n\nThe fist way is the suggested one, unless you really need to adjust the service file (and you know what you are doing).\n\n\nFinally, enable the service with sudo systemctl enable mads-arduino.service.\nNote that enabling the service does not makes it start: to do so, you either have to reboot the machine or to manually start with sudo systemctl start mads-arduino.service."
   },
   {
-    "objectID": "guides.html",
-    "href": "guides.html",
-    "title": "Guides",
+    "objectID": "presentations/intro.html#contents",
+    "href": "presentations/intro.html#contents",
+    "title": "MADS Intro",
+    "section": "Contents",
+    "text": "Contents\n\nTerminology\nBasic Usage\nLinux services\nPlugins\nParallel computing"
+  },
+  {
+    "objectID": "presentations/intro.html#lets-get-understood",
+    "href": "presentations/intro.html#lets-get-understood",
+    "title": "MADS Intro",
+    "section": "Let’s get understood…",
+    "text": "Let’s get understood…\n\nAgent: an entity that can perceive its environment and act upon it.\nNetwork: a set of agents, possibly distributed over different devices or machines, and exchanging information via ZeroMQ/TCP connections\n\nMADS aims at being as transparent as possible w.r.t. the underlying network.\nThe same MADS network could run\n\non a single machine (via loopback connections)\nas well as on multiple machines (via TCP connections), one agent per machine\n\nAnd everything in between…"
+  },
+  {
+    "objectID": "presentations/intro.html#mads-network-topology",
+    "href": "presentations/intro.html#mads-network-topology",
+    "title": "MADS Intro",
+    "section": "MADS Network Topology",
+    "text": "MADS Network Topology\n\n\nTo maximize flexibility and scalability, MADS networks are broker-based\n\nonly IP/hostname of broker is needed\nbroker does message dispatching\nagents can filter messages by topics\nagents can be added/removed dynamically\nagents can act as source (blue), filter (green), or sink (orange)\n\n\n\n\n\n\n\n\n\nG\n\n\n\nbroker\n\nBroker\n\n\n\na4\n\nAgent 4\n\n\n\nbroker-&gt;a4\n\n\n\n\n\na5\n\nAgent 5\n\n\n\nbroker-&gt;a5\n\n\n\n\n\na6\n\nAgent 6\n\n\n\nbroker-&gt;a6\n\n\n\n\n\na7\n\nAgent 7\n\n\n\nbroker-&gt;a7\n\n\n\n\n\na1\n\nAgent 1\n\n\n\na1-&gt;broker\n\n\n\n\n\na2\n\nAgent 2\n\n\n\na2-&gt;broker\n\n\n\n\n\na3\n\nAgent 3\n\n\n\na3-&gt;broker\n\n\n\n\n\na4-&gt;broker\n\n\n\n\n\n\n\n\n\n\n\n\n\nAlso see the guide page on MADS network topology"
+  },
+  {
+    "objectID": "presentations/intro.html#its-a-zeromq-network",
+    "href": "presentations/intro.html#its-a-zeromq-network",
+    "title": "MADS Intro",
+    "section": "It’s a ZeroMQ network",
+    "text": "It’s a ZeroMQ network\nMADS uses ZeroMQ as the underlying communication layer:\n\nconnections are established via TCP (XPUB-XSUB)\norder of connection does not matter\ndisconnection/reconnection is handled automatically\nminimum overhead w.r.t. other protocols (e.g., HTTP, gRPC, REST)\napplication-layer protocol is agnostic to the underlying transport, and left to the user\nMADS is designed to be simple, so data on the wire is presented as JSON compressed with snappy\nMADS is designed to be scalable: you can have hundreds of agents, the limiting factor being network bandwidth"
+  },
+  {
+    "objectID": "presentations/intro.html#agents",
+    "href": "presentations/intro.html#agents",
+    "title": "MADS Intro",
+    "section": "Agents",
+    "text": "Agents\n\n\nAgents are the building blocks of a MADS network. They can be:\n\nSources: produce data and send it to the network\nFilters: process data received from the network and send it to other agents\nSinks: consume data from the network and perform actions based on it\n\nAgents can be implemented in any programming language that supports ZeroMQ, but MADS provides C++ API that abstracts ZeroMQ intricacies.\n\n\n\n\nAgent Smith"
+  },
+  {
+    "objectID": "presentations/intro.html#agents-1",
+    "href": "presentations/intro.html#agents-1",
+    "title": "MADS Intro",
+    "section": "Agents",
+    "text": "Agents\n\n\nUsing MADS API, agents can be implemented as:\n\nmonolithic: a single executable that contains all the logic\nplugin-based: a general purpose executable that loads plugins dynamically, allowing for modularity and extensibility; the user only has to develop the plugin with minimal boilerplate code and API knowledge\nPython modules: MADS agent can load at runtime Python modules that provide a proper interface (2-3 functions)\n\n\n\n\n\n\nAgent Smith\n\n\n\n\nPlugins are actually shared C++ libraries, compiled with minimal dependencies"
+  },
+  {
+    "objectID": "presentations/intro.html#implementation",
+    "href": "presentations/intro.html#implementation",
+    "title": "MADS Intro",
+    "section": "Implementation",
+    "text": "Implementation\n\nMADS is implemented in C++17 and provides an API to create agents and connect them to the network\nIt can be compiled on Linux, macOS, and Windows\nCompilation is rather tedious and has a number of dependencies, but:\n\ninstallers are available for Linux, MacOS, and Windows\na Docker image is available for easy setup\n\nDeveloping custom agents as plugins is much easier, as it requires only a few functions to be implemented\nExample plugins are available on GitHub\nThe main MADS command can generate a plugin template"
+  },
+  {
+    "objectID": "presentations/intro.html#main-command-mads",
+    "href": "presentations/intro.html#main-command-mads",
+    "title": "MADS Intro",
+    "section": "Main command: mads",
+    "text": "Main command: mads\n\nThe standard installers provide a main command: mads\nInline help is available with mads --help:\n&gt; mads --help\nMads command line interface version 1.3.1\nUsage:\n  mads [OPTION...]\n\n  -i, --info     Print information on MADS installation\n  -p, --prefix   Print MADS install prefix\n      --plugins  List plugins in default plugins directory\n  -v, --version  Print version\n  -h, --help     Print help\nOptions -i and -p are useful to check the installation"
+  },
+  {
+    "objectID": "presentations/intro.html#mads-subcommands",
+    "href": "presentations/intro.html#mads-subcommands",
+    "title": "MADS Intro",
+    "section": "Mads subcommands",
+    "text": "Mads subcommands\n\nThe list of available mads sub commands can be obtained as:\n\n\n\n&gt; mads\nAvailable mads subcommands:\n   filter (wraps mads-filter)\n   worker (wraps mads-worker)\n  command (wraps mads-command)\n    image (wraps mads-image)\n feedback (wraps mads-feedback)\n  logging (wraps mads-logging)\n   plugin (wraps mads-plugin)\n   source (wraps mads-source)\n   bridge (wraps mads-bridge)\n     sink (wraps mads-sink)\n   dealer (wraps mads-dealer)\n   python (wraps mads-python)\n   logger (wraps mads-logger)\n   broker (wraps mads-broker)\n      ini (internal)\n  service (internal)\n\n\nOn MacOS and Linux, commands are available as e.g. mads source or mads-source\nOn Windows, commands are available as e.g. mads-source only\ninternal commands are implemented by the mads executable\nMan pages are available (e.g. man mads-source)"
+  },
+  {
+    "objectID": "presentations/intro.html#launching-the-broker",
+    "href": "presentations/intro.html#launching-the-broker",
+    "title": "MADS Intro",
+    "section": "Launching the broker",
+    "text": "Launching the broker\n&gt; mads broker\nReading settings from /Users/p4010/usr/local/etc/mads.ini [broker]\nBinding broker frontend (XSUB) at tcp://*:9090\nBinding broker backend (XPUB) at tcp://*:9091\nBinding broker shared settings (REP) at tcp://*:9092\nTimecode FPS: 25\nSettings are provided via tcp://127.0.0.1:9092\nCTRL-C to immediate exit\nType P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings\n\nLine 2 and 7 report a fundamental aspect: the centralized settings file\nSettings for all agents are stored in a TOML file, which is dispatched by the broker to the agents upon launch\nEach agent is launched with the settings URL (e.g. tcp://127.0.0.1:9092) as a command line argument"
+  },
+  {
+    "objectID": "presentations/intro.html#running-an-agent",
+    "href": "presentations/intro.html#running-an-agent",
+    "title": "MADS Intro",
+    "section": "Running an agent",
+    "text": "Running an agent\n\n\n\nTo run an agent on a device different from the one running the broker, we need to specify the broker address\nWe see relevant agent settings (loaded from broker):\n\npub topic: messages are tagged with publish\ncompression: JSON compressed with snappy\ntimecode: all messages generated in the same 40ms share the same timecode\ntimecode offset: clock difference with broker\n\n\n\n\n\n\n\nClick on the white triangle  to start the clip 😉"
+  },
+  {
+    "objectID": "presentations/intro.html#logger",
+    "href": "presentations/intro.html#logger",
+    "title": "MADS Intro",
+    "section": "Logger",
+    "text": "Logger\n\nMADS provides an agent called logger for logging messages\nThe logger is designed to store data into a MongoDB database\nMongoDB is schemaless, so it can store any JSON data published to the MADS network\nEach agent publishes on a given topic (e.g. publish)\nFor each topic, a corresponding table is created in the database, and each message is stored as a document in that table\nMongoDB aggregations can offload some computational load and make data easier to fetch\n\n\n\n\n\n\n\nNote\n\n\nA MongoDB instance can be easily started with Docker:\n&gt; docker run -d --name mads-mongo -p 27017:27017 -v ${PWD}/db:/data/db mongo"
+  },
+  {
+    "objectID": "presentations/intro.html#mads-services",
+    "href": "presentations/intro.html#mads-services",
+    "title": "MADS Intro",
+    "section": "MADS services",
+    "text": "MADS services\nOn Linux machine only, MADS provides a service file generator that can be used to run MADS agents as system services, automatically active on boot\nProcedure:\n\ndefine the proper launch command, e.g. mads source -s tcp://mads-broker.local:9092 -n my_datasource\nrun mads service my_datasource source -s tcp://mads-broker.local:9092 -n my_datasource; this prints a possible systemctl file for a service called my_datasource.service\nif it looks correct, run the same command as sudo: this installs the service on the system dir\nenable the service: sudo systemctl enable my_datasource.service\n\n\n\nAlso see the guide page"
+  },
+  {
+    "objectID": "presentations/intro.html#motivation",
+    "href": "presentations/intro.html#motivation",
+    "title": "MADS Intro",
+    "section": "Motivation",
+    "text": "Motivation\n\nMADS is designed to be simple, but it can be complex to implement agents\nImplementing an agent (monolithic) requires knowledge of the MADS API, ZeroMQ\nCompiling the agent takes time and requires a proper development environment, especially on Windows\nWe wanted to let users focus on the agent logic, not on the boilerplate code\nAt the same time, we wanted to keep the advantages of C++ (performance, low-level control, etc.), without forcing users to revert to scripting interfaces just because the whole C++ framework is too complex\n\nSolution: MADS plugins"
+  },
+  {
+    "objectID": "presentations/intro.html#mads-plugins",
+    "href": "presentations/intro.html#mads-plugins",
+    "title": "MADS Intro",
+    "section": "MADS plugins",
+    "text": "MADS plugins\n\nA plugin is a shared library that implements a specific agent logic\nPlugins are loaded dynamically by the MADS general purpose executables:\n\nmads source: provides information to the network (e.g. by reading sensors)\nmads filter: processes data received from the network and sends it to other agents\nmads sink: consumes data from the network and performs actions based on it (e.g. by writing to a file)\n\nThe specific agent logic is implemented in the plugin, which is a C++ class that inherits from a base class\nMADS provides the mads plugin command to create a plugin template\n\n\n\nAlso see the guide page for more details on plugins"
+  },
+  {
+    "objectID": "presentations/intro.html#running-mads-plugin",
+    "href": "presentations/intro.html#running-mads-plugin",
+    "title": "MADS Intro",
+    "section": "Running mads plugin",
+    "text": "Running mads plugin\n\n\n\nThe mads plugin command creates a plugin template in the current directory\nThe template contains a CMakeLists.txt file and a src directory with the plugin source code\nThe template has minimal dependencies:\n\nA C++17 compliant compiler (VS 2017 or later, GCC 7 or later, Clang 5 or later)\nCMake 3.15 or later\nAny other dependency must be added to CMakeLists.txt\n\nCMake can be configured to install the plugin in the MADS plugins directory, so that the plugin is automatically found"
+  },
+  {
+    "objectID": "presentations/intro.html#plugin-class-details",
+    "href": "presentations/intro.html#plugin-class-details",
+    "title": "MADS Intro",
+    "section": "Plugin class details",
+    "text": "Plugin class details\nclass My_sourcePlugin : public Source&lt;json&gt; {\npublic:\n  // Implement the actual functionality here\n  return_type get_output(json &out,\n                         std::vector&lt;unsigned char&gt; *blob = nullptr) override {\n    // Your logic to fill 'out' with data\n    // optionally use 'blob' for binary content\n  }\n\n  // Run only once upon start\n  void set_params(void const *params) override {\n    // Optional: handle parameters passed to the plugin\n    // This can be used to configure the plugin at runtime\n  }\nprivate:\n  // custom fields here\n};\n// Macro that does the magic of allowing dlopen to work\nINSTALL_SOURCE_DRIVER(My_sourcePlugin, json)"
+  },
+  {
+    "objectID": "presentations/intro.html#plugin-class-details-1",
+    "href": "presentations/intro.html#plugin-class-details-1",
+    "title": "MADS Intro",
+    "section": "Plugin class details",
+    "text": "Plugin class details\n\nImplementing a plugin does not require knowledge of the MADS API\nOnly two methods (three methods for filter plugins) need to be implemented\nAny third party library is left to the user:\n\nadd necessary find_package calls in CMakeLists.txt\nlink the library to the plugin\ninclude the necessary headers in the plugin source code\n\nThe plugin source code also has a template main() function: beside each plugin, a one-shot executable is provided (and compiled) that can be used to test the plugin logic without the need of a MADS network\n\n\n\nNote: the CMakeLists.txt provides an add_plugin(name SRCS &lt;source lists&gt; LIBS &lt;libraries list&gt;) macro that simplifies the process of creating a plugin target"
+  },
+  {
+    "objectID": "presentations/intro.html#ota-plugins",
+    "href": "presentations/intro.html#ota-plugins",
+    "title": "MADS Intro",
+    "section": "OTA plugins",
+    "text": "OTA plugins\n\nPlugins can be loaded Over-The-Air (OTA) by the mads source, mads filter, and mads sink commands\nIf the INI file contains an entry like this:\n[my_source]\nattachment = \"/path/to/my_source.plugin\"\nthen that file (on the broker filesystem!) is sent to my_source agents when they connect to the broker\nThis allows to have all plugins in a single location, and to update them without having to manually copy them to each agent machine"
+  },
+  {
+    "objectID": "presentations/intro.html#the-dealer-worker-model",
+    "href": "presentations/intro.html#the-dealer-worker-model",
+    "title": "MADS Intro",
+    "section": "The dealer-worker model",
+    "text": "The dealer-worker model\nSuppose that you want to explore a large domain of parameters for a simulation to perform sensitivity analysis or parameters optimization:\n\n\n\nZeroMQ provides a special PUSH-PULL communication model between a single dealer and multiple, identical workers\nThe dealer distributes tasks to the workers in a round-robin fashion\nEach worker processes the task and sends the result back to the broker\nIn a possible implementation, a source provides the grid of parameters combination and a logger agent store the results\n\n\n\n\n\n\n\n\n\nDealer-worker\n\n\n\nbroker\n\nbroker\n\n\n\ndealer\n\ndealer\n\n\n\nbroker-&gt;dealer\n\n\n\n\n\nlogger\n\nlogger\n\n\n\nbroker-&gt;logger\n\n\n\n\n\nsource\n\nsource\n\n\n\nsource-&gt;broker\n\n\n\n\n\nw1\n\nworker 1\n\n\n\ndealer-&gt;w1\n\n\n\n\n\nw2\n\nworker 2\n\n\n\ndealer-&gt;w2\n\n\n\n\n\nw3\n\nworker 3\n\n\n\ndealer-&gt;w3\n\n\n\n\n\nw4\n\nworker 4\n\n\n\ndealer-&gt;w4\n\n\n\n\n\nmongo\n\n\nMongoDB\n\n\n\nw1-&gt;broker\n\n\n\n\n\np\n\nPlugin\n\n\n\nw1-&gt;p\n\n\n\n\nw2-&gt;broker\n\n\n\n\n\nw2-&gt;p\n\n\n\n\nw3-&gt;broker\n\n\n\n\n\nw3-&gt;p\n\n\n\n\nw4-&gt;broker\n\n\n\n\n\nw4-&gt;p\n\n\n\n\nlogger-&gt;mongo\n\n\nBSON\n\n\n\n\n\n\n\n\n\n\n\nAlso see the guide page"
+  },
+  {
+    "objectID": "presentations/intro.html#the-mads-implementation",
+    "href": "presentations/intro.html#the-mads-implementation",
+    "title": "MADS Intro",
+    "section": "The MADS implementation",
+    "text": "The MADS implementation\nIn MADS, there are two special agents for this purpose: dealer and worker\n\ndealer: receives the computational payloads (simulation input) from a suitable source agent, and dispatches them to the workers\nworker: receives the computational payloads and uses a custom plugin to process them (of type filter), then sends the results back to the broker\n\nIdeally, the worker plugin is launched in \\(n\\) instances on a Kubernetes cluster; each instance loads the computational plugin OTA from the broker"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
     "section": "",
-    "text": "Spotlight\n\n\n\nBe sure to start with MADS structure guide.\nIf you want to contribute, head on to the contribution guide.\n\n\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\nDescription\n\n\n\nCategories\n\n\n\nReading Time\n\n\n\n\n\n\n\n\nJul 7, 2025\n\n\nOTA Plugins\n\n\nPaolo Bosetti\n\n\nMADS Version 1.3.0 introduces the possibility to load plugins Over-The-Air (OTA): plugin files can be provided to agents by the broker. This allows to centralize the management of plugins and to update them without the need to manually copy compiled plugins to the devices running the agents. \n\n\nplugin, OTA, over-the-air, intermediate\n\n\n7 min\n\n\n\n\n\n\nJul 7, 2025\n\n\nParallel computing with MADS\n\n\nPaolo Bosetti\n\n\nMADS has two special agents, dealer and worker, thatallow to distribute many different computations to a set of identical workers, in round-robin fashion. \n\n\nplugin, parallel computing, advanced, kubernetes, docker\n\n\n7 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nServices\n\n\nPaolo Bosetti\n\n\nOnce tested, agents can be turned into linux services, so that they start automatically on boot. \n\n\nintermediate, OS, setup, easy\n\n\n3 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nPlugins\n\n\nPaolo Bosetti\n\n\nMADS supports agents implemented as plugins in C++17. This guide explains how to create a plugin. \n\n\nadvanced, plugin, development, c++\n\n\n4 min\n\n\n\n\n\n\nJun 4, 2025\n\n\nNetwork structure\n\n\nPaolo Bosetti\n\n\nIllustrate a typical MADS network structure and its requirements. \n\n\ntemplate, basics, easy\n\n\n5 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nHow to contribute\n\n\nPaolo Bosetti\n\n\nWe explain how to contribute to the MADS guides collection. \n\n\nhow-to, easy\n\n\n7 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nContainerized MADS\n\n\nPaolo Bosetti\n\n\nThe base agents for setting up a MADS network are available as a ontainerized environment. \n\n\ndocker, easy, OS, setup\n\n\n2 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nPython Agent\n\n\nPaolo Bosetti\n\n\nThe python_agent repo on GitHub provides a MADS agent with an embedded python3 interpreter for developing MADS sgents in Python \n\n\npython, agent, easy\n\n\n4 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nZeroConf (aka Avahi) network discovery\n\n\nPaolo Bosetti\n\n\nUsing hostnames rather than IP addresses is easier and much more robust. In this guide, we learn how to setup a Linux box for advertising its address by using the Avahi protocol/service. \n\n\nnetworking, IP, configuration, OS, Linux\n\n\n2 min\n\n\n\n\n\n\nNo matching items"
+    "text": "MADS-Net"
   },
   {
     "objectID": "index.html",
@@ -147,11 +294,11 @@
     "text": "What is it\nMADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.\nIt is made by a main set of executables available in the MADS tools collection repo, which also provides installers for Linux, MacOS and Windows.\nThe MADS tools collection includes a broker and a set of general purpose agents that can act as sources, filters, or sinks. The actual operations performed by agents can be customized either via scripting languages (using simple popen interface), or by implementing dedicated plugins in C++.\nSome of the available plugins are:\n\narduino_plugin: reads from a serial connected arduino\nhpe2D_plugin: performs human pose estimation from a camera stream\nmqtt_plugin: acts as a bridge with an MQTT network\nsay_plugin: Text-to-speech of incoming messages\nble_plugin: Bluetooth Low Energy source plugin\ntui_plugin: Terminal User Interface for sending metadata commands to MADS network\nlua_plugin: Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)\n\nThere are also additional monolithic agents:\n\npython_agent: Interfacing Python3 scripts to the MADS network (useful for prototyping and rapid development)\n\nLook into the guides section for more information on how to use the MADS tools collection."
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "guides.html",
+    "href": "guides.html",
+    "title": "Guides",
     "section": "",
-    "text": "MADS-Net"
+    "text": "Spotlight\n\n\n\nBe sure to start with MADS structure guide.\nIf you want to contribute, head on to the contribution guide.\n\n\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\nDescription\n\n\n\nCategories\n\n\n\nReading Time\n\n\n\n\n\n\n\n\nJul 7, 2025\n\n\nOTA Plugins\n\n\nPaolo Bosetti\n\n\nMADS Version 1.3.0 introduces the possibility to load plugins Over-The-Air (OTA): plugin files can be provided to agents by the broker. This allows to centralize the management of plugins and to update them without the need to manually copy compiled plugins to the devices running the agents. \n\n\nplugin, OTA, over-the-air, intermediate\n\n\n7 min\n\n\n\n\n\n\nJul 7, 2025\n\n\nParallel computing with MADS\n\n\nPaolo Bosetti\n\n\nMADS has two special agents, dealer and worker, thatallow to distribute many different computations to a set of identical workers, in round-robin fashion. \n\n\nplugin, parallel computing, advanced, kubernetes, docker\n\n\n7 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nServices\n\n\nPaolo Bosetti\n\n\nOnce tested, agents can be turned into linux services, so that they start automatically on boot. \n\n\nintermediate, OS, setup, easy\n\n\n3 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nPlugins\n\n\nPaolo Bosetti\n\n\nMADS supports agents implemented as plugins in C++17. This guide explains how to create a plugin. \n\n\nadvanced, plugin, development, c++\n\n\n4 min\n\n\n\n\n\n\nJun 4, 2025\n\n\nNetwork structure\n\n\nPaolo Bosetti\n\n\nIllustrate a typical MADS network structure and its requirements. \n\n\ntemplate, basics, easy\n\n\n5 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nHow to contribute\n\n\nPaolo Bosetti\n\n\nWe explain how to contribute to the MADS guides collection. \n\n\nhow-to, easy\n\n\n7 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nContainerized MADS\n\n\nPaolo Bosetti\n\n\nThe base agents for setting up a MADS network are available as a ontainerized environment. \n\n\ndocker, easy, OS, setup\n\n\n2 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nPython Agent\n\n\nPaolo Bosetti\n\n\nThe python_agent repo on GitHub provides a MADS agent with an embedded python3 interpreter for developing MADS sgents in Python \n\n\npython, agent, easy\n\n\n4 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nZeroConf (aka Avahi) network discovery\n\n\nPaolo Bosetti\n\n\nUsing hostnames rather than IP addresses is easier and much more robust. In this guide, we learn how to setup a Linux box for advertising its address by using the Avahi protocol/service. \n\n\nnetworking, IP, configuration, OS, Linux\n\n\n2 min\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "guides/plugins.html",
