@@ -1,0 +1,519 @@
+---
+title: "MADS Intro"
+subtitle: "A framework for distributed agents"
+author: P. Bosetti
+institute: University of Trento
+date: 2025-07-07
+date-format: "YYYY-MMM-DD"
+draft: false
+categories: [intro, meeting]
+format: 
+  revealjs:
+    width: 1280
+    height: 720
+    margin: 0.1
+    slide-number: true
+    code-line-numbers: true
+    code-annotations: below
+    preview-links: auto
+    theme: [default, slides.scss]
+    chalkboard: true
+    footer: "MADS --- [https://mads-net.github.io](https://mads-net.github.io)"
+    fig-width: 5
+    fig-height: 4
+    fig-dpi: 300
+    touch: true
+    email-obfuscation: javascript
+    pdf-separate-fragments: true
+    link-external-icon: true
+    lang: en-EN
+abstract: |
+  A brief asbtract of the presentation.
+---
+
+# What is it?
+
+MADS stands for *Multi-Agent Distributed Network*
+
+## Contents
+
+* Terminology
+* Basic Usage
+* Linux services
+* Plugins
+* Parallel computing
+
+
+# Terminology
+
+## Let's get understood...
+
+- **Agent**: an entity that can perceive its environment and act upon it.
+- **Network**: a set of agents, possibly distributed over different devices or machines, and exchanging information via ZeroMQ/TCP connections
+
+MADS aims at being as transparent as possible w.r.t. the underlying network. 
+
+The same MADS network could run 
+
+* on a single machine (via loopback connections) 
+* as well as on multiple machines (via TCP connections), one agent per machine
+
+And everything in between...
+
+
+## MADS Network Topology
+
+::: columns
+::: {.column width="50%"}
+To maximize flexibility and scalability, MADS networks are **broker-based**
+
+* only IP/hostname of broker is needed
+* broker does message dispatching
+* agents can filter messages by **topics**
+* agents can be added/removed dynamically
+* agents can act as source (blue), filter (green), or sink (orange)
+
+
+:::
+
+::: {.column width="50%"}
+
+```{dot}
+digraph G {
+  node [shape=box, style=filled];
+  edge [arrowhead=vee, arrowsize=0.5];
+  bgcolor="#ffffff"
+  
+  broker [label="Broker"];
+  a1 [label="Agent 1", fillcolor=lightblue];
+  a2 [label="Agent 2", fillcolor=lightblue];
+  a3 [label="Agent 3", fillcolor=lightblue];
+  a4 [label="Agent 4", fillcolor=lightgreen];
+  a5 [label="Agent 5", fillcolor=orange];
+  a6 [label="Agent 6", fillcolor=orange];
+  a7 [label="Agent 7", fillcolor=orange];
+  
+  { rank=same; broker; a4; }
+  
+  a1 -> broker;
+  a2 -> broker;
+  a3 -> broker;
+  a4 -> broker;
+  broker -> a4
+  broker -> a5
+  broker -> a6
+  broker -> a7
+}
+```
+
+:::
+:::
+
+:::aside
+Also see the guide page on [MADS network topology](/guides/structure.qmd)
+:::
+
+## It's a ZeroMQ network
+
+MADS uses [ZeroMQ](https://zeromq.org/){target="_blank"} as the underlying communication layer:
+
+* connections are established via TCP (XPUB-XSUB)
+* order of connection does not matter
+* disconnection/reconnection is handled automatically
+* minimum overhead w.r.t. other protocols (e.g., HTTP, gRPC, REST)
+* application-layer protocol is agnostic to the underlying transport, and left to the user
+* MADS is designed to be simple, so data on the wire is presented as JSON compressed with [snappy](https://github.com/google/snappy){target="_blank"}
+* MADS is designed to be scalable: you can have hundreds of agents, the limiting factor being network bandwidth
+
+
+## Agents
+
+:::columns
+:::{.column width="70%"}
+Agents are the building blocks of a MADS network. They can be:
+
+- **Sources**: produce data and send it to the network
+- **Filters**: process data received from the network and send it to other agents
+- **Sinks**: consume data from the network and perform actions based on it
+
+Agents can be implemented in any programming language that supports ZeroMQ, but MADS provides C++ API that abstracts ZeroMQ intricacies.
+:::
+
+:::{.column width="30%"}
+![Agent Smith](https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/1dbc1935-6542-4ee3-822f-135cff4ba62c/df0z2x5-e5118bcf-4bc7-44af-9fa1-da6c72d70ad5.png/v1/fill/w_320,h_984/the_matrix__agent_smith___transparent__by_speedcam_df0z2x5-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTg0IiwicGF0aCI6IlwvZlwvMWRiYzE5MzUtNjU0Mi00ZWUzLTgyMmYtMTM1Y2ZmNGJhNjJjXC9kZjB6Mng1LWU1MTE4YmNmLTRiYzctNDRhZi05ZmExLWRhNmM3MmQ3MGFkNS5wbmciLCJ3aWR0aCI6Ijw9MzIwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.s-TgyPYqUeR_t3lGSxGlMsfwobw5YbRul4DMUjykf_Y){height=500px}
+:::
+:::
+
+
+## Agents
+
+:::columns
+:::{.column width="70%"}
+Using MADS API, agents can be implemented as:
+
+* **monolithic**: a single executable that contains all the logic
+* **plugin-based**: a general purpose executable that loads plugins dynamically, allowing for modularity and extensibility; the user only has to develop the plugin with minimal boilerplate code and API knowledge
+* **Python modules**: MADS agent can load at runtime Python modules that provide a proper interface (2-3 functions)
+
+:::aside
+Plugins are actually shared C++ libraries, compiled with minimal dependencies
+:::
+
+:::
+
+:::{.column width="30%"}
+![Agent Smith](https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/1dbc1935-6542-4ee3-822f-135cff4ba62c/df0z2x5-e5118bcf-4bc7-44af-9fa1-da6c72d70ad5.png/v1/fill/w_320,h_984/the_matrix__agent_smith___transparent__by_speedcam_df0z2x5-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTg0IiwicGF0aCI6IlwvZlwvMWRiYzE5MzUtNjU0Mi00ZWUzLTgyMmYtMTM1Y2ZmNGJhNjJjXC9kZjB6Mng1LWU1MTE4YmNmLTRiYzctNDRhZi05ZmExLWRhNmM3MmQ3MGFkNS5wbmciLCJ3aWR0aCI6Ijw9MzIwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.s-TgyPYqUeR_t3lGSxGlMsfwobw5YbRul4DMUjykf_Y){height=500px}
+:::
+:::
+
+
+## Implementation
+
+* MADS is implemented in C++17 and provides an API to create agents and connect them to the network
+* It can be compiled on Linux, macOS, and Windows
+* Compilation is rather tedious and has a number of dependencies, but:
+  - [installers](https://github.com/pbosetti/MADS/releases){target="blank_"} are available for Linux, MacOS, and Windows
+  - a [Docker image](https://hub.docker.com/repository/docker/p4010/mads){target="blank_"} is available for easy setup 
+* Developing custom agents as plugins is much easier, as it requires only a few functions to be implemented
+* Example plugins are available [on GitHub](https://github.com/mads-net){target="blank_"}
+* The main MADS command can generate a plugin template
+
+
+# Basic usage
+
+How do we use it in practice?
+
+
+## Main command: `mads`
+
+* The standard installers provide a main command: `mads`
+* Inline help is available with `mads --help`:
+  ```sh
+  > mads --help
+  Mads command line interface version 1.3.1
+  Usage:
+    mads [OPTION...]
+  
+    -i, --info     Print information on MADS installation
+    -p, --prefix   Print MADS install prefix
+        --plugins  List plugins in default plugins directory
+    -v, --version  Print version
+    -h, --help     Print help
+  ```
+
+* Options `-i` and `-p` are useful to check the installation
+
+
+## Mads subcommands
+
+* The list of available `mads` sub commands can be obtained as:
+
+:::columns
+:::column
+```sh
+> mads
+Available mads subcommands:
+   filter (wraps mads-filter)
+   worker (wraps mads-worker)
+  command (wraps mads-command)
+    image (wraps mads-image)
+ feedback (wraps mads-feedback)
+  logging (wraps mads-logging)
+   plugin (wraps mads-plugin)
+   source (wraps mads-source)
+   bridge (wraps mads-bridge)
+     sink (wraps mads-sink)
+   dealer (wraps mads-dealer)
+   python (wraps mads-python)
+   logger (wraps mads-logger)
+   broker (wraps mads-broker)
+      ini (internal)
+  service (internal)
+```
+:::
+
+:::column
+* On MacOS and Linux, commands are available as e.g. `mads source` or `mads-source`
+* On Windows, commands are available as e.g. `mads-source` only
+* *internal* commands are implemented by the `mads` executable
+* Man pages are available (e.g. `man mads-source`)
+:::
+:::
+
+  
+## Launching the `broker`
+
+```sh
+> mads broker
+Reading settings from /Users/p4010/usr/local/etc/mads.ini [broker]
+Binding broker frontend (XSUB) at tcp://*:9090
+Binding broker backend (XPUB) at tcp://*:9091
+Binding broker shared settings (REP) at tcp://*:9092
+Timecode FPS: 25
+Settings are provided via tcp://127.0.0.1:9092
+CTRL-C to immediate exit
+Type P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings
+```
+
+* Line 2 and 7 report a fundamental aspect: the **centralized settings file**
+* Settings for all agents are stored in a [TOML](https://toml.io){target="_blank"} file, which is dispatched by the broker to the agents upon launch
+* Each agent is launched with the settings URL (e.g. `tcp://127.0.0.1:9092`) as a command line argument
+
+
+## Running an agent
+
+:::columns
+:::column
+* To run an agent on a device different from the one running the broker, we need to specify the broker address
+* We see relevant agent settings (loaded from broker):
+  - pub topic: messages are tagged with `publish`
+  - compression: JSON compressed with snappy
+  - timecode: all messages generated in the same 40ms share the same timecode
+  - timecode offset: clock difference with broker
+:::
+
+:::column
+<script 
+  src="https://asciinema.org/a/r863FgQkPSVjruW9J2KdKK57Z.js" 
+  id="asciicast-r863FgQkPSVjruW9J2KdKK57Z"
+  data-idle-time-limit=1
+  data-speed=3
+  async="true" >
+</script>
+:::
+
+:::
+
+::: aside
+Click on the white triangle {{< bi play >}} to start the clip 😉
+:::
+
+
+## Logger
+
+* MADS provides an agent called `logger` for logging messages
+* The `logger` is designed to store data into a [MongoDB](https://mongodb.com){target="_blank"} database
+* MongoDB is **schemaless**, so it can store any JSON data published to the MADS network
+* Each agent publishes on a given **topic** (e.g. `publish`)
+* For each topic, a corresponding table is created in the database, and each message is stored as a document in that table
+* [MongoDB aggregations](https://www.mongodb.com/docs/manual/aggregation/){target="_blank"} can offload some computational load and make data easier to fetch
+
+:::callout-note
+A MongoDB instance can be easily started with Docker:
+```sh
+> docker run -d --name mads-mongo -p 27017:27017 -v ${PWD}/db:/data/db mongo
+```
+:::
+
+
+# Services
+
+Automate it!
+
+## MADS services
+
+On Linux machine only, MADS provides a service file generator that can be used to run MADS agents as system services, **automatically active on boot**
+
+Procedure:
+
+1. define the proper launch command, e.g. `mads source -s tcp://mads-broker.local:9092 -n my_datasource`
+2. run `mads service my_datasource source -s tcp://mads-broker.local:9092 -n my_datasource`; this prints a possible `systemctl` file for a service called `my_datasource.service`
+3. if it looks correct, run the same command as `sudo`: this installs the service on the system dir
+4. enable the service: `sudo systemctl enable my_datasource.service`
+
+:::aside
+Also see the [guide page](/guides/services.qmd)
+:::
+
+
+# Plugins
+
+Or, please, make it easy!
+
+
+## Motivation
+
+* MADS is designed to be simple, but it can be complex to implement agents
+* Implementing an agent (monolithic) requires knowledge of the MADS API, ZeroMQ
+* Compiling the agent takes time and requires a proper development environment, especially on Windows
+* We wanted to let users focus on the **agent logic**, not on the boilerplate code
+* At the same time, we wanted to keep the advantages of C++ (performance, low-level control, etc.), without *forcing* users to revert to scripting interfaces just because the whole C++ framework is too complex
+
+**Solution**: MADS plugins
+
+
+## MADS plugins
+
+* A plugin is a shared library that implements a specific agent logic
+* Plugins are loaded dynamically by the MADS general purpose executables:
+  - `mads source`: provides information to the network (e.g. by reading sensors)
+  - `mads filter`: processes data received from the network and sends it to other agents
+  - `mads sink`: consumes data from the network and performs actions based on it (e.g. by writing to a file)
+* The specific agent logic is implemented in the plugin, which is a C++ class that inherits from a base class
+* MADS provides the `mads plugin` command to create a plugin template
+
+:::aside
+Also see the [guide page](/guides/plugins.qmd) for more details on plugins
+:::
+
+
+
+## Running `mads plugin`
+
+:::columns
+:::column
+* The `mads plugin` command creates a plugin template in the current directory
+* The template contains a `CMakeLists.txt` file and a `src` directory with the plugin source code
+* The template has minimal dependencies:
+  - A C++17 compliant compiler (VS 2017 or later, GCC 7 or later, Clang 5 or later)
+  - CMake 3.15 or later
+  - Any other dependency must be added to `CMakeLists.txt`
+* CMake can be configured to install the plugin in the MADS plugins directory, so that the plugin is automatically found
+:::
+
+:::column
+<script 
+  src="https://asciinema.org/a/Q1bGhLFXUmMXfgElGEHY9A6jg.js" 
+  id="asciicast-Q1bGhLFXUmMXfgElGEHY9A6jg"
+  data-idle-time-limit=1
+  data-speed=3
+  async="true" >
+</script>
+:::
+:::
+
+
+## Plugin class details
+
+```c++
+class My_sourcePlugin : public Source<json> {
+public:
+  // Implement the actual functionality here
+  return_type get_output(json &out,
+                         std::vector<unsigned char> *blob = nullptr) override {
+    // Your logic to fill 'out' with data
+    // optionally use 'blob' for binary content
+  }
+
+  // Run only once upon start
+  void set_params(void const *params) override {
+    // Optional: handle parameters passed to the plugin
+    // This can be used to configure the plugin at runtime
+  }
+private:
+  // custom fields here
+};
+// Macro that does the magic of allowing dlopen to work
+INSTALL_SOURCE_DRIVER(My_sourcePlugin, json)
+```
+
+## Plugin class details
+
+* Implementing a plugin does not require knowledge of the MADS API
+* Only two methods (three methods for filter plugins) need to be implemented
+* Any third party library is left to the user:
+  - add necessary `find_package` calls in `CMakeLists.txt`
+  - link the library to the plugin
+  - include the necessary headers in the plugin source code
+* The plugin source code also has a template `main()` function: beside each plugin, a one-shot executable is provided (and compiled) that can be used to test the plugin logic without the need of a MADS network
+
+:::aside
+**Note**: the `CMakeLists.txt` provides an `add_plugin(name SRCS <source lists> LIBS <libraries list>)` macro that simplifies the process of creating a plugin target
+:::
+
+
+## OTA plugins
+
+* Plugins can be loaded **Over-The-Air** (OTA) by the `mads source`, `mads filter`, and `mads sink` commands
+* If the INI file contains an entry like this:
+  ```toml
+  [my_source]
+  attachment = "/path/to/my_source.plugin"
+  ```
+  then that file (on the broker filesystem!) is sent to `my_source` agents when they connect to the broker
+* This allows to have all plugins in a single location, and to update them without having to manually copy them to each agent machine
+
+
+# Parallel computing
+
+MADS can be also use for dispatching parallel computations on HPC clusters
+
+
+## The *dealer-worker* model
+
+Suppose that you want to explore a large domain of parameters for a simulation to perform **sensitivity analysis** or **parameters optimization**:
+
+:::columns
+
+:::column
+
+* ZeroMQ provides a special *PUSH-PULL* communication model between a single **dealer** and multiple, identical **workers**
+* The **dealer** distributes tasks to the **workers** in a round-robin fashion
+* Each **worker** processes the task and sends the result back to the broker
+* In a possible implementation, a **source** provides the grid of parameters combination and a **logger** agent store the results
+
+:::
+
+:::column
+```{dot}
+//| fig-width: 6
+//| fig-height: 5
+digraph "Dealer-worker" {
+  rankdir=LR
+  bgcolor="#ffffff00"
+  node[shape="rect", style=filled, fillcolor="#ffffff"]
+
+  broker
+  source
+  dealer [label="dealer", shape=box, fillcolor="#f0f0f0"]
+  mongo [label="MongoDB", shape=cylinder]
+  
+  w1 [label="worker 1", shape=box, fillcolor="#f0f0f0"]
+  w2 [label="worker 2", shape=box, fillcolor="#f0f0f0"]
+  w3 [label="worker 3", shape=box, fillcolor="#f0f0f0"]
+  w4 [label="worker 4", shape=box, fillcolor="#f0f0f0"]
+  
+  p[label="Plugin", shape=cds, orientation=180]
+  
+  w1 -> p[arrowhead=none, style=dashed]
+  w2 -> p[arrowhead=none, style=dashed]
+  w3 -> p[arrowhead=none, style=dashed]
+  w4 -> p[arrowhead=none, style=dashed]
+
+  source -> broker
+  broker -> dealer
+  dealer -> w1[color="blue"]
+  dealer -> w2[color="blue"]
+  dealer -> w3[color="blue"]
+  dealer -> w4[color="blue"]
+  
+  w1 -> broker
+  w2 -> broker
+  w3 -> broker
+  w4 -> broker
+  
+  broker->logger
+  logger->mongo[label="BSON", style=dashed]
+}
+```
+:::
+:::
+
+:::aside
+Also see [the guide page](/guides/worker.qmd) 
+:::
+
+## The MADS implementation
+
+In MADS, there are two special agents for this purpose: `dealer` and `worker`
+
+* `dealer`: receives the computational payloads (simulation input) from a suitable source agent, and dispatches them to the workers
+* `worker`: receives the computational payloads and uses a custom plugin to process them (of type *filter*), then sends the results back to the broker
+
+Ideally, the worker plugin is launched in $n$ instances on a Kubernetes cluster; each instance loads the computational plugin OTA from the broker
+
+# Contacts
+
+* {{< bi github >}} MADS homepage: <https://github.com/pbosetti/MADS>
+* {{< bi github >}} MADS Plugins: <https://github.com/MADS-net>
+* {{< bi envelope >}} Developer: [paolo.bosetti@unitn.it](mailto:paolo.bosetti@unitn.it)

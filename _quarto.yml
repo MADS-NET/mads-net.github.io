@@ -10,6 +10,10 @@ website:
     left:
       - href: guides.qmd
         text: "Guides"
+      - text: "Presentations"
+        menu:
+          - href: presentations/intro.qmd
+            text: "MADS Intro"
     right:
       - about.qmd
 
