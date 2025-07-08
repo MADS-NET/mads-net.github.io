@@ -33,7 +33,7 @@ abstract: |
 
 # What is it?
 
-MADS stands for *Multi-Agent Distributed Network*
+MADS stands for *Multi-Agent Distributed System*
 
 ## Contents
 
