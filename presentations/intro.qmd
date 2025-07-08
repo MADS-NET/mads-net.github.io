@@ -80,7 +80,7 @@ To maximize flexibility and scalability, MADS networks are **broker-based**
 
 ```{dot}
 digraph G {
-  node [shape=box, style=filled];
+  node [shape=box, style=filled, fontname="Arial", fontsize=10];
   edge [arrowhead=vee, arrowsize=0.5];
   bgcolor="#ffffff"
   
@@ -461,7 +461,8 @@ Suppose that you want to explore a large domain of parameters for a simulation t
 digraph "Dealer-worker" {
   rankdir=LR
   bgcolor="#ffffff00"
-  node[shape="rect", style=filled, fillcolor="#ffffff"]
+  node[shape="rect", style=filled, fillcolor="#ffffff", fontname="Arial", fontsize=10]
+  edge[fontname="Arial", fontsize=10]
 
   broker
   source
