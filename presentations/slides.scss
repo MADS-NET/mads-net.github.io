@@ -5,17 +5,23 @@ $presentation-heading-color: #DA6A15;
 $code-block-font-size: 0.75em;
 $body-bg: white;
 $body-color: #777777;
+$link-color: complement($presentation-heading-color, $space: null);
+$link-hover-color: scale-color($presentation-heading-color, $lightness: +20%);
+$math-color: #4223c1;
+$code-color: #23c142;
 
 /*-- scss:rules --*/
 
 .reveal a {
-  color: complement($presentation-heading-color, $space: null);
+  color: $link-color;
   text-decoration: underline;
+  text-decoration-color: $link-hover-color;
 }
 
 .reveal a:hover {
-  color: scale-color($presentation-heading-color, $lightness: +20%);
-  text-decoration: none;
+  color: $link-hover-color;
+  text-decoration: underline;
+  text-decoration-color: $link-color;
 }
 
 .reveal p.subtitle {
@@ -88,6 +94,10 @@ $body-color: #777777;
   border-bottom-color: $presentation-heading-color;  
 }
 
+.reveal p.subtitle {
+  color: complement($presentation-heading-color, $space: null);  
+}
+
 .reveal h2 {
   border-bottom: 4px;
   border-bottom-style: solid;
@@ -95,11 +105,12 @@ $body-color: #777777;
 }
 
 .reveal .math {
-  color: #000088;
+  color: $math-color;
 }
 
 .reveal code {
-  font-size: 90%;
+  color: $code-color;
+  font-size: 95%;
 }
 
 .reveal .cell-output-stdout {

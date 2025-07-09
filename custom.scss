@@ -1,8 +1,11 @@
 /*-- scss:defaults --*/
 $h2-font-size:          1.6rem !default;
 $headings-font-weight:  500 !default;
-$link-color: #DA6A15;
-$link-hover-color: shade-color($link-color, 30%);
+$headings-color: #DA6A15;
+$link-color: complement($headings-color, $space: null);
+$link-hover-color: scale-color($headings-color, $lightness: +20%);
+$math-color: #4223c1;
+$code-color: #23c142;
 
 
 /*-- scss:rules --*/
@@ -16,15 +19,23 @@ h1.title {
   font-weight: $headings-font-weight*2;
 }
 
-a {
-  color: $link-color;
-  text-decoration: underline;
+.navbar {
+  --bs-navbar-padding-y: 0px !important;
+  --bs-navbar-brand-padding-y: 0px !important;
 }
 
-a:hover {
+#quarto-content .level1 a {
+  color: $link-color;
+  text-decoration: underline;
+  text-decoration-color: $link-hover-color;
+}
+
+#quarto-content .level1 a:hover {
   color: $link-hover-color;
   text-decoration: underline;
+  text-decoration-color: $link-color;
 }
+
 
 .navbar-brand-container {
   max-width: 100%;
@@ -41,6 +52,16 @@ a:hover {
 
 .alert {
   margin: 10px;
+}
+
+.math {
+  color: $math-color;
+  font-size: 1.2em;
+}
+
+code {
+  color: $code-color;
+  font-size: 95%;
 }
 
 .rounded-corners {

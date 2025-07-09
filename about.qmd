@@ -1,6 +1,6 @@
 ---
-title: About 
-subtitle: About this project
+title: MADS 
+subtitle: Multi-Agent Distributed System
 format: html
 about:
   template: trestles
@@ -13,4 +13,24 @@ about:
       href: https://creativecommons.org/licenses/by-sa/4.0/
 ---
 
-# MADS-Net
+# Authors
+
+Main author
+
+:   Paolo Bosetti, University or Trento
+
+Contributors
+
+:   Anna-Carla Araujo, INSA Toulouse
+
+    Guillaume Cohen, INSA Toulouse
+
+Beta-testers
+
+:   Matteo Lancini, University of Brescia
+
+    Marco Ghidelli, University of Brescia
+
+    Nicola Abeni, University of Bresicia
+
+    Federico Paolucci, University of Perugia
