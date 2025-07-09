@@ -7,26 +7,7 @@ date: 2025-07-07
 date-format: "YYYY-MMM-DD"
 draft: false
 categories: [intro, meeting]
-format: 
-  revealjs:
-    width: 1280
-    height: 720
-    margin: 0.1
-    slide-number: true
-    code-line-numbers: true
-    code-annotations: below
-    preview-links: auto
-    theme: [default, slides.scss]
-    chalkboard: true
-    footer: "MADS --- [https://mads-net.github.io](https://mads-net.github.io)"
-    fig-width: 5
-    fig-height: 4
-    fig-dpi: 300
-    touch: true
-    email-obfuscation: javascript
-    pdf-separate-fragments: true
-    link-external-icon: true
-    lang: en-EN
+format: revealjs
 abstract: |
   A high level introduction to the MADS Framework.
 ---
@@ -47,7 +28,7 @@ MADS stands for *Multi-Agent Distributed System*
 
 # Terminology
 
-## Let's get understood...
+## {{< bi question-circle >}} Let's get understood...
 
 - **Agent**: an entity that can perceive its environment and act upon it.
 - **Network**: a set of agents, possibly distributed over different devices or machines, and exchanging information via ZeroMQ/TCP connections
@@ -62,7 +43,7 @@ The same MADS network could run
 And everything in between...
 
 
-## MADS Network Topology
+## {{< bi diagram-3 >}} MADS Network Topology
 
 ::: columns
 ::: {.column width="50%"}
@@ -72,7 +53,7 @@ To maximize flexibility and scalability, MADS networks are **broker-based**
 * broker does message dispatching
 * agents can filter messages by **topics**
 * agents can be added/removed dynamically
-* agents can act as source (blue), filter (green), or sink (orange)
+* agents can act as [source]{.bblue}, [filter]{.bgreen}, or **sink**
 
 :::
 
@@ -85,10 +66,10 @@ digraph G {
   bgcolor="#ffffff"
   
   broker [label="Broker"];
-  a1 [label="Agent 1", fillcolor=lightblue];
-  a2 [label="Agent 2", fillcolor=lightblue];
-  a3 [label="Agent 3", fillcolor=lightblue];
-  a4 [label="Agent 4", fillcolor=lightgreen];
+  a1 [label="Agent 1", fillcolor="#3e83d6", fontcolor=white];
+  a2 [label="Agent 2", fillcolor="#3e83d6", fontcolor=white];
+  a3 [label="Agent 3", fillcolor="#3e83d6", fontcolor=white];
+  a4 [label="Agent 4", fillcolor="#5cbd4d"];
   a5 [label="Agent 5", fillcolor=orange];
   a6 [label="Agent 6", fillcolor=orange];
   a7 [label="Agent 7", fillcolor=orange];
@@ -113,7 +94,7 @@ digraph G {
 Also see the guide page on [MADS network topology](/guides/structure.qmd)
 :::
 
-## It's a ZeroMQ network
+## {{< bi router >}} It's a ZeroMQ network
 
 MADS uses [ZeroMQ](https://zeromq.org/){target="_blank"} as the underlying communication layer:
 
@@ -126,7 +107,7 @@ MADS uses [ZeroMQ](https://zeromq.org/){target="_blank"} as the underlying commu
 * MADS is designed to be scalable: you can have hundreds of agents, the limiting factor being network bandwidth
 
 
-## Agents
+## {{< bi person-standing >}} Agents
 
 :::columns
 :::{.column width="70%"}
@@ -145,7 +126,7 @@ Agents can be implemented in any programming language that supports ZeroMQ, but 
 :::
 
 
-## Agents
+## {{< bi person-standing >}} Agents
 
 :::columns
 :::{.column width="70%"}
@@ -167,7 +148,7 @@ Plugins are actually shared C++ libraries, compiled with minimal dependencies
 :::
 
 
-## Implementation
+## {{< bi file-code >}} Implementation
 
 * MADS is implemented in C++17 and provides an API to create agents and connect them to the network
 * It can be compiled on Linux, macOS, and Windows
@@ -184,7 +165,7 @@ Plugins are actually shared C++ libraries, compiled with minimal dependencies
 How do we use it in practice?
 
 
-## Main command: `mads`
+## {{< bi terminal >}} Main command: `mads`
 
 * The standard installers provide a main command: `mads`
 * Inline help is available with `mads --help`:
@@ -204,7 +185,7 @@ How do we use it in practice?
 * Options `-i` and `-p` are useful to check the installation
 
 
-## Mads subcommands
+## {{< bi terminal >}} Mads subcommands
 
 * The list of available `mads` sub commands can be obtained as:
 
@@ -241,7 +222,7 @@ Available mads subcommands:
 :::
 
   
-## Launching the `broker`
+## {{< bi terminal >}} Launching the `broker`
 
 ```sh
 > mads broker
@@ -260,7 +241,7 @@ Type P to pause, R to resume, I for information, Q to clean quit, X to restart a
 * Each agent is launched with the settings URL (e.g. `tcp://127.0.0.1:9092`) as a command line argument
 
 
-## Running an agent
+## {{< bi terminal >}} Running an agent
 
 :::columns
 :::column
@@ -289,7 +270,7 @@ Click on the white triangle {{< bi play >}} to start the clip 😉
 :::
 
 
-## Logger
+## {{< bi save >}} Logger
 
 * MADS provides an agent called `logger` for logging messages
 * The `logger` is designed to store data into a [MongoDB](https://mongodb.com){target="_blank"} database
@@ -310,7 +291,7 @@ A MongoDB instance can be easily started with Docker:
 
 Automate it!
 
-## MADS services
+## {{< fa microchip >}} MADS services
 
 On Linux machine only, MADS provides a service file generator that can be used to run MADS agents as system services, **automatically active on boot**
 
@@ -331,7 +312,7 @@ Also see the [guide page](/guides/services.qmd)
 Or, please, make it easy!
 
 
-## Motivation
+## {{< bi question-circle >}} Motivation
 
 * MADS is designed to be simple, but it can be complex to implement agents
 * Implementing an agent (monolithic) requires knowledge of the MADS API, ZeroMQ
@@ -342,7 +323,7 @@ Or, please, make it easy!
 **Solution**: MADS plugins
 
 
-## MADS plugins
+## {{< bi plugin >}} MADS plugins
 
 * A plugin is a shared library that implements a specific agent logic
 * Plugins are loaded dynamically by the MADS general purpose executables:
@@ -358,7 +339,7 @@ Also see the [guide page](/guides/plugins.qmd) for more details on plugins
 
 
 
-## Running `mads plugin`
+## {{< bi terminal >}} Running `mads plugin`
 
 :::columns
 :::column
@@ -383,7 +364,7 @@ Also see the [guide page](/guides/plugins.qmd) for more details on plugins
 :::
 
 
-## Plugin class details
+## {{< bi file-code >}} Plugin class details
 
 ```c++
 class My_sourcePlugin : public Source<json> {
@@ -407,7 +388,7 @@ private:
 INSTALL_SOURCE_DRIVER(My_sourcePlugin, json)
 ```
 
-## Plugin class details
+## {{< bi file-code >}} Plugin class details
 
 * Implementing a plugin does not require knowledge of the MADS API
 * Only two methods (three methods for filter plugins) need to be implemented
@@ -422,7 +403,7 @@ INSTALL_SOURCE_DRIVER(My_sourcePlugin, json)
 :::
 
 
-## OTA plugins
+## {{< bi plugin >}} OTA plugins
 
 * Plugins can be loaded **Over-The-Air** (OTA) by the `mads source`, `mads filter`, and `mads sink` commands
 * If the INI file contains an entry like this:
@@ -439,7 +420,7 @@ INSTALL_SOURCE_DRIVER(My_sourcePlugin, json)
 MADS can be also use for dispatching parallel computations on HPC clusters
 
 
-## The *dealer-worker* model
+## {{< fa circle-nodes >}} The *dealer-worker* model
 
 Suppose that you want to explore a large domain of parameters for a simulation to perform **sensitivity analysis** or **parameters optimization**:
 
@@ -504,7 +485,7 @@ digraph "Dealer-worker" {
 Also see [the guide page](/guides/worker.qmd) 
 :::
 
-## The MADS implementation
+## {{< bi person-standing >}} The MADS implementation
 
 In MADS, there are two special agents for this purpose: `dealer` and `worker`
 

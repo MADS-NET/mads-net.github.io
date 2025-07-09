@@ -26,3 +26,22 @@ format:
       - flatly
       - brand
       - custom.scss
+  revealjs:
+    theme: [default, presentations/slides.scss]
+    width: 1280
+    height: 720
+    margin: 0.1
+    slide-number: true
+    code-line-numbers: true
+    code-annotations: below
+    preview-links: auto
+    chalkboard: true
+    footer: "MADS --- [https://mads-net.github.io](https://mads-net.github.io)"
+    fig-width: 5
+    fig-height: 4
+    fig-dpi: 300
+    touch: true
+    email-obfuscation: javascript
+    pdf-separate-fragments: true
+    link-external-icon: true
+    lang: en-EN

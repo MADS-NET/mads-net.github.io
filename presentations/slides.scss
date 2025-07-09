@@ -7,8 +7,10 @@ $body-bg: white;
 $body-color: #777777;
 $link-color: complement($presentation-heading-color, $space: null);
 $link-hover-color: scale-color($presentation-heading-color, $lightness: +20%);
+$my-blue: $link-color;
+$my-green: #23c142; 
 $math-color: #4223c1;
-$code-color: #23c142;
+$code-color: $my-green;
 
 /*-- scss:rules --*/
 
@@ -81,7 +83,8 @@ $code-color: #23c142;
 }
 
 .reveal h1:not(.title) {
-  background-image: linear-gradient(to right, $body-bg, #dddddd);
+  background-image: linear-gradient(to right, $body-bg, scale-color($link-color, $lightness: +50%));
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, .2);
   padding-left: 10px;
   padding-right: 10px;
   border-top-right-radius: 10px;
@@ -90,11 +93,13 @@ $code-color: #23c142;
 
 .reveal .title {
   border-bottom: 6px;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, .2);
   border-bottom-style: solid;
   border-bottom-color: $presentation-heading-color;  
 }
 
 .reveal p.subtitle {
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, .2);
   color: complement($presentation-heading-color, $space: null);  
 }
 
@@ -119,12 +124,12 @@ $code-color: #23c142;
 
 .reveal .bblue {
   font-weight: bold;
-  color: #000088;
+  color: $my-blue;
 }
 
 .reveal .bgreen {
   font-weight: bold;
-  color: #008800;
+  color: $my-green;
 }
 
 .reveal .ul {
