@@ -136,7 +136,7 @@
     "objectID": "presentations/intro.html#contents",
     "href": "presentations/intro.html#contents",
     "title": "MADS Intro",
-    "section": "Contents",
+    "section": " Contents",
     "text": "Contents\n\nTerminology\nBasic Usage\nLinux services\nPlugins\nParallel computing"
   },
   {
@@ -210,11 +210,25 @@
     "text": "Running an agent\n\n\n\nTo run an agent on a device different from the one running the broker, we need to specify the broker address\nWe see relevant agent settings (loaded from broker):\n\npub topic: messages are tagged with publish\ncompression: JSON compressed with snappy\ntimecode: all messages generated in the same 40ms share the same timecode\ntimecode offset: clock difference with broker\n\n\n\n\n\n\n\nClick on the white triangle  to start the clip 😉"
   },
   {
+    "objectID": "presentations/intro.html#logging-data",
+    "href": "presentations/intro.html#logging-data",
+    "title": "MADS Intro",
+    "section": " Logging data",
+    "text": "Logging data\n\nData flowing on the MADS network can be logged for later analysis\nMADS provides two official logging facilities:\n\na MongoDB logger\nan HDF5 logger\n\nRegardless the logging facility, each message is stored as a JSON document with some added common fields:\n\ntimecode: the time when the data was produced as a multiple of a fixed timestep (e.g. 40ms). Measured in seconds from last midnight (local time)\ntimestamp: an ISO 8601 timestamp of the data\nhostname: the hostname of the machine that produced the data"
+  },
+  {
     "objectID": "presentations/intro.html#logger",
     "href": "presentations/intro.html#logger",
     "title": "MADS Intro",
     "section": " Logger",
-    "text": "Logger\n\nMADS provides an agent called logger for logging messages\nThe logger is designed to store data into a MongoDB database\nMongoDB is schemaless, so it can store any JSON data published to the MADS network\nEach agent publishes on a given topic (e.g. publish)\nFor each topic, a corresponding table is created in the database, and each message is stored as a document in that table\nMongoDB aggregations can offload some computational load and make data easier to fetch\n\n\n\n\n\n\n\nNote\n\n\nA MongoDB instance can be easily started with Docker:\n&gt; docker run -d --name mads-mongo -p 27017:27017 -v ${PWD}/db:/data/db mongo"
+    "text": "Logger\n\nMADS provides an agent called logger for logging messages\nThe logger is designed to store data into a MongoDB database\nMongoDB is schemaless, so it can store any JSON data published to the MADS network\nEach agent publishes on a given topic (e.g. publish)\nFor each topic, a corresponding table is created in the database, and each message is stored as a document in that table\nEach document has additional fields: timecode (a fixed timestep in ms), timestamp (and ISO 8601 time), and hostname\nMongoDB aggregations can offload some computational load and make data easier to fetch\n\n\n\n\n\n\n\nNote\n\n\nA MongoDB instance can be easily started with Docker:\n&gt; docker run -d --name mads-mongo -p 27017:27017 -v ${PWD}/db:/data/db mongo"
+  },
+  {
+    "objectID": "presentations/intro.html#hdf5-logger",
+    "href": "presentations/intro.html#hdf5-logger",
+    "title": "MADS Intro",
+    "section": " HDF5 logger",
+    "text": "HDF5 logger\n\nAmong the official MADS plugins, there is also an HDF5 logger\nThe hdf5_writer.plugin is a MADS sink that stores data in an HDF5 file\nWithin the HDF5 file, each topic goes into a separate group\nmessages are queued, so a scalar becomes a vector, a vector becomes a table\nthe INI file must specify which data has to be saved, using a keypath syntax: \"key1.subkey2.subsubkey3\" corresponds to JSON fields data[\"key1\"][\"subkey2\"][\"subsubkey3\"]\ntimestamp, timecode, and hostname are automatically recorded into separate datasets\n\n\n\n\n\n\n\nNote\n\n\nThe plugin is available on https://github.com/MADS-Net/hdf5_plugin"
   },
   {
     "objectID": "presentations/intro.html#mads-services",
