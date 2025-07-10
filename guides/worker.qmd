@@ -16,7 +16,7 @@ format: html
 draft: false
 categories: [plugin, parallel computing, advanced, kubernetes, docker]
 abstract: |
-  MADS has two special agents, `dealer` and `worker`, thatallow to distribute many different computations to a set of identical workers, in round-robin fashion.
+  MADS has two special agents, `dealer` and `worker`, that allow to distribute many different computations to a set of identical workers, in round-robin fashion.
 ---
 
 # Motivation

@@ -17,7 +17,7 @@ abstract: |
 
 MADS stands for *Multi-Agent Distributed System*
 
-## Contents
+## {{< bi list >}} Contents
 
 * Terminology
 * Basic Usage
@@ -270,13 +270,27 @@ Click on the white triangle {{< bi play >}} to start the clip 😉
 :::
 
 
-## {{< bi save >}} Logger
+
+## {{< bi save >}} Logging data
+
+* Data flowing on the MADS network can be logged for later analysis
+* MADS provides two official logging facilities:
+  - a MongoDB logger
+  - an HDF5 logger
+* Regardless the logging facility, each message is stored as a JSON document with some added common fields:
+  - `timecode`: the time when the data was produced as a multiple of a fixed timestep (e.g. 40ms). Measured in seconds from last midnight (local time)
+  - `timestamp`: an ISO 8601 timestamp of the data
+  - `hostname`: the hostname of the machine that produced the data
+
+
+## {{< bi database >}} Logger
 
 * MADS provides an agent called `logger` for logging messages
 * The `logger` is designed to store data into a [MongoDB](https://mongodb.com){target="_blank"} database
 * MongoDB is **schemaless**, so it can store any JSON data published to the MADS network
 * Each agent publishes on a given **topic** (e.g. `publish`)
 * For each topic, a corresponding table is created in the database, and each message is stored as a document in that table
+* Each document has additional fields: `timecode` (a fixed timestep in ms), `timestamp` (and ISO 8601 time), and `hostname`
 * [MongoDB aggregations](https://www.mongodb.com/docs/manual/aggregation/){target="_blank"} can offload some computational load and make data easier to fetch
 
 :::callout-note
@@ -284,6 +298,19 @@ A MongoDB instance can be easily started with Docker:
 ```sh
 > docker run -d --name mads-mongo -p 27017:27017 -v ${PWD}/db:/data/db mongo
 ```
+:::
+
+## {{< bi archive >}} HDF5 logger
+
+* Among the official MADS plugins, there is also an [HDF5](https://www.hdfgroup.org/solutions/hdf5/) logger
+* The `hdf5_writer.plugin` is a MADS sink that stores data in an HDF5 file
+* Within the HDF5 file, each topic goes into a separate **group**
+* messages are queued, so a scalar becomes a vector, a vector becomes a table
+* the INI file must specify which data has to be saved, using a **keypath** syntax: `"key1.subkey2.subsubkey3"` corresponds to JSON fields `data["key1"]["subkey2"]["subsubkey3"]`
+* `timestamp`, `timecode`, and `hostname` are automatically recorded into separate datasets
+
+:::callout-note
+The plugin is available on <https://github.com/MADS-Net/hdf5_plugin>{target="_blank"}
 :::
 
 
@@ -413,6 +440,7 @@ INSTALL_SOURCE_DRIVER(My_sourcePlugin, json)
   ```
   then that file (on the broker filesystem!) is sent to `my_source` agents when they connect to the broker
 * This allows to have all plugins in a single location, and to update them without having to manually copy them to each agent machine
+
 
 
 # Parallel computing
