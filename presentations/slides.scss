@@ -147,3 +147,10 @@ $code-color: $my-green;
 .sourceCode {
   font-size: 90%;
 }
+
+.reveal div.callout.callout-style-default {
+  border-right: 1px solid #dee2e6;
+  border-top: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+  border-radius: 10px;
+}
