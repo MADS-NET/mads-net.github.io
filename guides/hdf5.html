@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-06-06">
+<meta name="dcterms.date" content="2025-07-11">
 
-<title>Plugins – MADS</title>
+<title>HDF5 Logger – MADS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -165,12 +165,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-are-plugins" id="toc-what-are-plugins" class="nav-link active" data-scroll-target="#what-are-plugins">What are plugins</a></li>
-  <li><a href="#behaviors-of-plugins" id="toc-behaviors-of-plugins" class="nav-link" data-scroll-target="#behaviors-of-plugins">Behaviors of plugins</a></li>
-  <li><a href="#how-to-create-a-plugin" id="toc-how-to-create-a-plugin" class="nav-link" data-scroll-target="#how-to-create-a-plugin">How to create a plugin</a></li>
-  <li><a href="#how-to-configure-and-build" id="toc-how-to-configure-and-build" class="nav-link" data-scroll-target="#how-to-configure-and-build">How to configure and build</a>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation">Motivation</a></li>
+  <li><a href="#the-hdf5-sink-plugin" id="toc-the-hdf5-sink-plugin" class="nav-link" data-scroll-target="#the-hdf5-sink-plugin">The HDF5 Sink Plugin</a>
   <ul class="collapse">
-  <li><a href="#how-to-install-the-plugin" id="toc-how-to-install-the-plugin" class="nav-link" data-scroll-target="#how-to-install-the-plugin">How to install the plugin</a></li>
+  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
+  <li><a href="#configuration" id="toc-configuration" class="nav-link" data-scroll-target="#configuration">Configuration</a></li>
+  <li><a href="#execution" id="toc-execution" class="nav-link" data-scroll-target="#execution">Execution</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -180,12 +180,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Plugins</h1>
+<h1 class="title">HDF5 Logger</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">advanced</div>
-    <div class="quarto-category">plugin</div>
-    <div class="quarto-category">development</div>
-    <div class="quarto-category">c++</div>
+    <div class="quarto-category">sink</div>
+    <div class="quarto-category">hdf5</div>
+    <div class="quarto-category">logging</div>
+    <div class="quarto-category">data</div>
   </div>
   </div>
 
@@ -210,7 +210,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 6, 2025</p>
+      <p class="date">July 11, 2025</p>
     </div>
   </div>
   
@@ -226,7 +226,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>MADS supports agents implemented as plugins in C++17. This guide explains how to create a plugin.</p>
+    <p>MADS comes packaged with a logging facility to MongoDB database. For some applications, a file-based logging system is more appropriate. This guide explains how to use the HDF5 logger, which is a file-based sink for MADS using the hierarchical data format.</p>
   </div>
 </div>
 
@@ -234,76 +234,145 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="what-are-plugins" class="level1">
-<h1>What are plugins</h1>
-<p>Originally, MADS only allowed to develop monolitic agents: this required to write the whole executable code, including the management of command line arguments and loading of serrings from the INI file (either local or loaded from the broker). This solution is still possible (see <a href="monolithic_agents.html">the guide</a>) and allows maximum flexibility, but it requires a good knowledse of the MADS innards and is more tedious and error prone.</p>
-<p>For this reason, we developed the plugin support: the common functionality of an agent are already available, and only the data management operations need to be implemented.</p>
-</section>
-<section id="behaviors-of-plugins" class="level1">
-<h1>Behaviors of plugins</h1>
-<p>Remember that there are three <a href="structure.html#the-agents"><em>behaviors</em> for plugins</a>:</p>
+<section id="motivation" class="level1">
+<h1>Motivation</h1>
+<p>By default, MADS enable capturing data produced in the network to a MongoDB database, one topic per table. This is very effective and has some advantages:</p>
 <ul>
-<li>source: puts data into the MADS network</li>
-<li>filter: transforms data</li>
-<li>sink: consumes data</li>
+<li><strong>concurrency</strong>: it is possible to access the database while the data acquisition is still running, even from multiple clients</li>
+<li><strong>persistence</strong>: the data is stored in a database, which is designed to handle large amounts of data and provide fast access; MongoDB datapases can also be <strong>replicated</strong> and sharded, which allows for high availability, scalability, and resiliency</li>
+<li><strong>querying</strong>: the data can be queried using the MongoDB query language, which is powerful and flexible; MongoDB <strong>aggregations</strong> can be defined as read-only tables, which can offload the processing from the client side and allow for complex data analysis</li>
+<li><strong>visualization</strong>: the data can be visualized using tools like MongoDB Compass, which provides a graphical interface to explore the data</li>
 </ul>
-<p>As a consequences, there are three MADS subcommands to load a plugin, depending on its behavior: <code>mads source</code>, <code>mads filter</code>, and <code>mads sink</code>. They all take a mandatory argument that is the name or the path to a proper <em>plugin file</em>.</p>
-<p>A plugin file is a compiled dynamic library with the extension <code>.plugin</code>. The <em>behavior</em> of a plugin is rigid: a <em>source</em> plugin cannot be loaded by a <em>filter</em> agent.</p>
+<p>On the other hand, for simpler tasks this can prove an overkill. Furthermore, if forces the user to learn the MongoDB query language, which is not always necessary. For these reasons, MADS provides a file-based logging system, which is simpler to use and does not require a database.</p>
+<p>Since data generted by MADS can have a complex and schema-free structure, a simple table-oriented logging is not sufficient, unless we would revert to multiple flat-files, which can turn too messy pretty quickly. For this reason, MADS uses the <a href="https://www.hdfgroup.org/solutions/hdf5/">HDF5</a> format, which is a hierarchical data format that allows for storing complex data structures in a single file. HDF5 is widely used in scientific computing and data analysis, and it is supported by many libraries and tools.</p>
+<p>A common use for HDF5 is to store and retrieve data used for training machine learning models, given that the format has a good support within Python and other scripting languages (as GNU-R) used for data analysis.</p>
 </section>
-<section id="how-to-create-a-plugin" class="level1">
-<h1>How to create a plugin</h1>
-<p>The <code>mads</code> command provides an utility to generate a template for a new plugin:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> mads <span class="ex">plugin</span> <span class="at">-h</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Usage:</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">plugin</span> <span class="pp">[</span><span class="ss">OPTION...</span><span class="pp">]</span> name</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-t,</span> <span class="at">--type</span> arg         Type of the plugin</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-d,</span> <span class="at">--dir</span> arg          Directory of the plugin</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-i,</span> <span class="at">--install-dir</span> arg  Directory where to install the plugin</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-o,</span> <span class="at">--overwrite</span>        Overwrite existing files</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-v,</span> <span class="at">--version</span>          Print version</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-h,</span> <span class="at">--help</span>             Print usage</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Suppose that you want to create a source plugin named <code>my_plugin</code>: then the command shall be <code>mads plugin -t source -d my_source my_source</code>. This will create a CMake stub project in the folder <code>my_source</code> that, once compiled, will produce a <code>my_source.plugin</code> library, setting CMake to install that file in the default MADS prefix path, as given by <code>mads -p</code>. The command line option <code>-i</code> can be used to override that path.</p>
-</section>
-<section id="how-to-configure-and-build" class="level1">
-<h1>How to configure and build</h1>
-<p>As suggested by the command output:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> my_source</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># make your changes</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>These steps are iterative, and probably need to tweak with the <code>CMakeLists.txt</code> file for adding third party libraries and other source/header files. The last command produces in the <code>build</code> folder two notable files:</p>
-<ul>
-<li><code>my_source.plugin</code>: the plugin proper;</li>
-<li><code>my_source</code>: an executable generated by conditionally enabling the <code>&nbsp;main</code> function at the end of the <code>my_source.cpp</code> file.</li>
-</ul>
-<p>The second file can be used for checking that the plogin properly deals with the data, without the need of a MADS network available (broker etc.). Indeed, that executable does not even connect to the broker. Launch it as:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">build/my_source</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>During development, you want to use this executable quite often to test what you are doing. You also have to tune the <code>main</code> function so that the dummy data are properly defined.</p>
-<p>When the bare executable works, you can try to load the plugin with the proper agent: provided that the broker is running and the <code>mads.ini</code> file contains a proper <code>[my_source]</code> section, you load the plugin as:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source build/my_source.plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The agent name is the name of the plugin (i.e.&nbsp;<code>my_source</code>). If you need to override that name — for example, because you want to have different <em>identical</em> agents that load <em>different</em> settings — then you can use the <code>-n</code> command line option and match the proper <code>mads.ini</code> section.</p>
-<div class="callout callout-style-default callout-important callout-titled">
+<section id="the-hdf5-sink-plugin" class="level1">
+<h1>The HDF5 Sink Plugin</h1>
+<section id="installation" class="level2">
+<h2 class="anchored" data-anchor-id="installation">Installation</h2>
+<p>While the MongoDB logger agent (<code>mads logger</code>) comes pre-packaged with MADS, the HDF5 logger is a plugin that needs to be compiled and installed separately. To install it, run the following commands <strong>on the machine where you want the logs to be saved</strong>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--depth</span> 1 https://github.com/MADS-Net/hdf5_plugin.git</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hdf5_plugin</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-DCMAKE_INSTALL_PREFIX</span><span class="op">=</span><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">--target</span> install</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Important
+Building the HDF5 Plugin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>On MacOS, the plugin file <strong>can also be directly executed</strong>, so the <code>my_source</code> executable is not generated and the <code>my_source.plugin</code> can be both loaded from an agent or directly executed for testing.</p>
+<ul>
+<li>Follow the instructions on <a href="https://github.com/MADS-Net/hdf5_plugin" class="uri">https://github.com/MADS-Net/hdf5_plugin</a> when building on Windows.</li>
+<li>Some CMake versions on Linux cannot compile successfully the project when a parallel build is enabled (<code>-j</code> option). If you encounter issues, try to build the project without parallelization, at least for the first build when the HDF5 library is compiled.</li>
+</ul>
 </div>
 </div>
-<section id="how-to-install-the-plugin" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-install-the-plugin">How to install the plugin</h2>
-<p>Once the plugin is tested (both standalone and when loaded from an agent) it should be installed in the MADS tree. Remember that the command <code>mads -i</code> shows where plugins are expected to be installed (usually, <code>/usr/local/lib</code>). To install:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--install</span> build</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The you can launch it as agent with:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source my_source.plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>And when you are satisfield with the result, you can make it a service as explained <a href="services.html">here</a>.</p>
+<p>Confirm that the plugin has been installed correctly by running:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> <span class="at">--plugins</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>which shall also report the <code>hdf5_writer.plugin</code> entry.</p>
+</section>
+<section id="configuration" class="level2">
+<h2 class="anchored" data-anchor-id="configuration">Configuration</h2>
+<p>As any agent, the plugin needs a proper entry in the MADS configuration file <code>mads.ini</code>. The relevant configuration parameters are:</p>
+<ul>
+<li><code>sub_topic</code>: the array of topics that we want to log</li>
+<li><code>filename</code>: the full path name to the HDF5 file taht we want to create</li>
+<li><code>keypaths</code>: a dictionary of entries that we want to save (see below for details)</li>
+<li><code>keypath_separator</code>: the separator used to split the keypaths (default is <code>.</code>)</li>
+</ul>
+<p>Let’s consider an example. We want to log the data collected by an agent running the <a href="https://github.com/MADS-NET/arduino_plugin"><code>arduino_plugin</code></a>, which produces the following JSON data structure on the topic <code>arduino</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"data"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"AI1"</span><span class="fu">:</span> <span class="dv">52</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"AI2"</span><span class="fu">:</span> <span class="dv">44</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"AI3"</span><span class="fu">:</span> <span class="dv">58</span><span class="fu">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"AI4"</span><span class="fu">:</span> <span class="dv">45</span><span class="fu">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"AI5"</span><span class="fu">:</span> <span class="dv">165</span><span class="fu">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"DI1"</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"DI2"</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"DI3"</span><span class="fu">:</span> <span class="dv">1</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"hostname"</span><span class="fu">:</span> <span class="st">"mads-agent.local"</span><span class="fu">,</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"millis"</span><span class="fu">:</span> <span class="dv">150679</span><span class="fu">,</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"timecode"</span><span class="fu">:</span> <span class="fl">39198.68</span><span class="fu">,</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"timestamp"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"$date"</span><span class="fu">:</span> <span class="st">"2025-07-11T10:53:18.716+0200"</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The HDF5 logger always saves the field <code>timestamp</code>, <code>timecode</code>, and <code>hostname</code>. Everything else is optionally and must be specified on the INI file using <em>keypaths</em>. A keypath is a string representing the hierarchical path within the JSON structure. For example, the <code>["data"]["AI1"]</code> field can be accessed using the keypath <code>data.AI1</code>, where the field separator is the dot (<code>.</code>) by default, and can be changed using the <code>keypath_separator</code> parameter.</p>
+<p>A valid INI section would then be:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[hdf5_writer]</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"arduino"</span><span class="op">]</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="dt">filename</span> <span class="op">=</span> <span class="st">"/path/to/test.h5"</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">keypaths</span> <span class="op">=</span> <span class="op">{</span><span class="dt">"arduino"</span><span class="op"> =</span> <span class="op">[</span><span class="st">"data.AI1"</span><span class="op">,</span> <span class="st">"data.AI2"</span><span class="op">]}</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="dt">keypath_separator</span> <span class="op">=</span> <span class="st">"."</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Whereas, if we wanted to capture data from two different topics, we would do something like:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[hdf5_writer]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"arduino"</span><span class="op">,</span> <span class="st">"temp_sensor"</span><span class="op">]</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">filename</span> <span class="op">=</span> <span class="st">"/path/to/test.h5"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">keypaths</span> <span class="op">=</span> <span class="op">{</span><span class="dt">"arduino"</span><span class="op"> =</span> <span class="op">[</span><span class="st">"data.AI1"</span><span class="op">,</span> <span class="st">"data.AI2"</span><span class="op">], </span><span class="dt">"temp_sensor"</span><span class="op"> =</span> <span class="op">[</span><span class="st">"data.Temperature"</span><span class="op">,</span> <span class="st">"data.Humidity"</span><span class="op">]}</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="dt">keypath_separator</span> <span class="op">=</span> <span class="st">"."</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that the TOML standard used for <code>mads.ini</code> forbids newlines within a dictionary field, so that the <code>keypaths</code> field must be on a single line!</p>
+<p>As an alternative, you can split the dictionary using <em>sub-tables</em>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[hdf5_writer]</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"arduino"</span><span class="op">,</span> <span class="st">"temp_sensor"</span><span class="op">]</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">filename</span> <span class="op">=</span> <span class="st">"/path/to/test.h5"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="dt">keypath_separator</span> <span class="op">=</span> <span class="st">"."</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="kw">[hdf5_writer.keypaths]</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="dt">arduino</span> <span class="op">=</span> <span class="op">[</span><span class="st">"data.AI1"</span><span class="op">,</span> <span class="st">"data.AI2"</span><span class="op">]</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="dt">temp_sensor</span> <span class="op">=</span> <span class="op">[</span><span class="st">"data.Temperature"</span><span class="op">,</span> <span class="st">"data.Humidity"</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="execution" class="level2">
+<h2 class="anchored" data-anchor-id="execution">Execution</h2>
+<p>Now that the plugin is installed and configured, you can use it as a sink plugin:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> sink <span class="at">-s</span> tcp://broker.host:9092 hdf5_writer.plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Of course, if the plugin runs on the same broker machine, you can just use <code>mads sink hdf5_writer.plugin</code>. The initial output is something like:</p>
+<pre><code>Agent: hdf5_writer
+  Settings file:    tcp://localhost:9092
+  Pub endpoint:     tcp://localhost:9090
+  Pub topic:        hdf5_writer
+  Sub endpoint:     tcp://localhost:9091
+  Sub topics:       arduino topic2 control
+  Compression:      enabled
+  Timecode FPS:     25
+  Timecode offset:  0 s
+Searching for installed plugin in the default location /Users/p4010/usr/local/lib
+  Plugin:           /usr/local/lib/hdf5_writer.plugin (loaded as hdf5_writer)
+  File name         /tmp/hdf5_plugin/test.h5
+  Keypath sep.      .
+  Keypaths          arduino.timecode, arduino.timestamp, arduino.hostname, arduino.data.AI1, arduino.data.AI2, temp_sensor.timecode, temp_sensor.timestamp, temp_sensor.hostname, temp_sensor.data.Temperature, temp_sensor.data.Humidity (total: 10)
+Sink plugin started</code></pre>
+<p>The content of the HDF5 file can be quickly inspected using the <code>HDFView</code> GUI tool:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/HDFView.png" class="img-fluid figure-img"></p>
+<figcaption>An overview of the captured data</figcaption>
+</figure>
+</div>
+<p>As we see, within the HDF5 file data are collected into <strong>groups</strong> (folders), one for each topic, and <strong>datasets</strong> (tables), one for each keypath. The name of the dataset corresponds to the keypath:</p>
+<ul>
+<li>when the keypath produces a scalar, the dataset is a column vector (1-column table)</li>
+<li>when the keypath produces a vector, the dataset is a 2D table with one column per element of the vector</li>
+<li>timecode and timestamp are collected as vectors (same length of any other table)</li>
+<li>timecode is stored as a string according to ISO 8601 format, which is the default for MADS</li>
+</ul>
 
 
 </section>

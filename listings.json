@@ -2,6 +2,7 @@
   {
     "listing": "/guides.html",
     "items": [
+      "/guides/hdf5.html",
       "/guides/OTA_plugins.html",
       "/guides/worker.html",
       "/guides/services.html",

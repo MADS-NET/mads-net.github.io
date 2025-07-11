@@ -1,136 +1,178 @@
 [
   {
-    "objectID": "guides/OTA_plugins.html",
-    "href": "guides/OTA_plugins.html",
-    "title": "OTA Plugins",
+    "objectID": "guides/hdf5.html",
+    "href": "guides/hdf5.html",
+    "title": "HDF5 Logger",
     "section": "",
-    "text": "Suppose that you have a MADS network made by a relatively large number of devices, each running one or more agents. You want to update the plugins loaded by the agents. If you have only a few devices (say 2–3), you can manually copy the plugin files to each device. But if you have many devices, this is not practical and it is also error prone, because you need to keep track of which devices have been updated and which haven’t.\nThis use case is where the idea of being able to load plugins OTA comes from. The broker can provide the plugin files to the agents, which can then load them dynamically. This allows you to update the plugins without having to manually copy the files to each device: only the broker needs to have the plugin files, and the agents will load them automatically. There is only one copy of each plugin, and no risk of mismatching versions."
+    "text": "By default, MADS enable capturing data produced in the network to a MongoDB database, one topic per table. This is very effective and has some advantages:\n\nconcurrency: it is possible to access the database while the data acquisition is still running, even from multiple clients\npersistence: the data is stored in a database, which is designed to handle large amounts of data and provide fast access; MongoDB datapases can also be replicated and sharded, which allows for high availability, scalability, and resiliency\nquerying: the data can be queried using the MongoDB query language, which is powerful and flexible; MongoDB aggregations can be defined as read-only tables, which can offload the processing from the client side and allow for complex data analysis\nvisualization: the data can be visualized using tools like MongoDB Compass, which provides a graphical interface to explore the data\n\nOn the other hand, for simpler tasks this can prove an overkill. Furthermore, if forces the user to learn the MongoDB query language, which is not always necessary. For these reasons, MADS provides a file-based logging system, which is simpler to use and does not require a database.\nSince data generted by MADS can have a complex and schema-free structure, a simple table-oriented logging is not sufficient, unless we would revert to multiple flat-files, which can turn too messy pretty quickly. For this reason, MADS uses the HDF5 format, which is a hierarchical data format that allows for storing complex data structures in a single file. HDF5 is widely used in scientific computing and data analysis, and it is supported by many libraries and tools.\nA common use for HDF5 is to store and retrieve data used for training machine learning models, given that the format has a good support within Python and other scripting languages (as GNU-R) used for data analysis."
   },
   {
-    "objectID": "guides/OTA_plugins.html#plugin-and-agent-names",
-    "href": "guides/OTA_plugins.html#plugin-and-agent-names",
-    "title": "OTA Plugins",
-    "section": "Plugin and agent names",
-    "text": "Plugin and agent names\nIn MADS, there are three agents able to load plugins: source, filter, and sink. As for any agent, the INI section to be loaded is defined by the agent name. In turn, the latter is defined as:\n\nthe name of the agent executable for monolithic plugins\nthe name of the plugin for source, filter, and sink\n\n\n\n\n\n\n\nNote\n\n\n\nIn reality, there is also the worker agent (see here), which behaves as a filter agent but it is designed for a 1 dealer / n worker scenario for parallel computing, where a single dealer agent dispatches a list of computations to a number of identical workers in a round-robin fashion. The agent name for a worker is mandatory (no default).\n\n\nAlso, note that source, filter, and sink agents can be called without a plugin: in this case, they run as general-purpose agents that deal with input and output data (as valid JSON strings) via pipes. When this happen, the agent names are publish for the source agent, bridge for the filter agent, and feedback for the sink agent.\nThe name of an agent can be always be overridden by the -n command line option, which allows to specify a custom name for the agent. This is useful, for example, when you want to run multiple instances of the same agent with different settings.\nNow, since the OTA loading of the plugin happens after the agent has loaded its settings, the agent name must be specified with the -n CLI option, otherwise would simply launch as general purpose agent with default names.\nFor example, if the mads.ini file contains the [my_datasource] section as above, the agent must be launched as:\nmads source -s tcp://mads-broker.local:9093 -n my_datasource"
+    "objectID": "guides/hdf5.html#installation",
+    "href": "guides/hdf5.html#installation",
+    "title": "HDF5 Logger",
+    "section": "Installation",
+    "text": "Installation\nWhile the MongoDB logger agent (mads logger) comes pre-packaged with MADS, the HDF5 logger is a plugin that needs to be compiled and installed separately. To install it, run the following commands on the machine where you want the logs to be saved:\ngit clone --depth 1 https://github.com/MADS-Net/hdf5_plugin.git\ncd hdf5_plugin\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(mads -p)\ncmake --build build --target install\n\n\n\n\n\n\nBuilding the HDF5 Plugin\n\n\n\n\nFollow the instructions on https://github.com/MADS-Net/hdf5_plugin when building on Windows.\nSome CMake versions on Linux cannot compile successfully the project when a parallel build is enabled (-j option). If you encounter issues, try to build the project without parallelization, at least for the first build when the HDF5 library is compiled.\n\n\n\nConfirm that the plugin has been installed correctly by running:\nmads --plugins\nwhich shall also report the hdf5_writer.plugin entry."
   },
   {
-    "objectID": "guides/OTA_plugins.html#dealing-with-architectures",
-    "href": "guides/OTA_plugins.html#dealing-with-architectures",
-    "title": "OTA Plugins",
-    "section": "Dealing with architectures",
-    "text": "Dealing with architectures\nWhen the plugin is provided as an attachment, the broker will send a copy of the file to the agent, which will save it to a temporary folder and load it dynamically. This means that the plugin must be compatible with the architecture of the device running the agent.\nNow suppose that we want to run the same plugin on different devices, some of which are ARM-based and some are x86-based. If the plugin is compiled for a specific architecture, it will not work on the other architecture.\nThe solution follows these steps:\n\ncompile two plugin versions, one for each architecture, and copy both files on the broker filesystem. Call them, for example, my_datasource_arm.plugin and my_datasource_x86.plugin\nin the mads.ini file, define two sections, one for each architecture with different names:\n[my_datasource_arm]\nattachment = \"/path/to/my_datasource_arm.plugin\"\n[my_datasource_x86]\nattachment = \"/path/to/my_datasource_x86.plugin\"\nwhen launching the agent, specify the correct section name with the -n option, depending on the architecture of the device running the agent:\nmads source -s tcp://mads-broker.local:9093 -n my_datasource_arm\n\nNote that, when compiling a plugin, the CMakeLists.txt file in the plugin project has an option to append an architecture suffix to the generated plugin file: if you configure the project as:\ncmake -Bbuild -DPLUGIN_SUFFIX=arm -DCMAKE_INSTALL_PREFIX=$(mads -p)\nthen the plugin will be compiled as my_datasource_arm.plugin (assuming the plugin name is my_datasource). Of course, versions for non-native architectures must be cross-compiled or compiled in a virtual machine or on the target device itself."
+    "objectID": "guides/hdf5.html#configuration",
+    "href": "guides/hdf5.html#configuration",
+    "title": "HDF5 Logger",
+    "section": "Configuration",
+    "text": "Configuration\nAs any agent, the plugin needs a proper entry in the MADS configuration file mads.ini. The relevant configuration parameters are:\n\nsub_topic: the array of topics that we want to log\nfilename: the full path name to the HDF5 file taht we want to create\nkeypaths: a dictionary of entries that we want to save (see below for details)\nkeypath_separator: the separator used to split the keypaths (default is .)\n\nLet’s consider an example. We want to log the data collected by an agent running the arduino_plugin, which produces the following JSON data structure on the topic arduino:\n{\n  \"data\": {\n    \"AI1\": 52,\n    \"AI2\": 44,\n    \"AI3\": 58,\n    \"AI4\": 45,\n    \"AI5\": 165,\n    \"DI1\": 1,\n    \"DI2\": 1,\n    \"DI3\": 1\n  },\n  \"hostname\": \"mads-agent.local\",\n  \"millis\": 150679,\n  \"timecode\": 39198.68,\n  \"timestamp\": {\n    \"$date\": \"2025-07-11T10:53:18.716+0200\"\n  }\n}\nThe HDF5 logger always saves the field timestamp, timecode, and hostname. Everything else is optionally and must be specified on the INI file using keypaths. A keypath is a string representing the hierarchical path within the JSON structure. For example, the [\"data\"][\"AI1\"] field can be accessed using the keypath data.AI1, where the field separator is the dot (.) by default, and can be changed using the keypath_separator parameter.\nA valid INI section would then be:\n[hdf5_writer]\nsub_topic = [\"arduino\"]\nfilename = \"/path/to/test.h5\"\nkeypaths = {\"arduino\" = [\"data.AI1\", \"data.AI2\"]}\nkeypath_separator = \".\"\nWhereas, if we wanted to capture data from two different topics, we would do something like:\n[hdf5_writer]\nsub_topic = [\"arduino\", \"temp_sensor\"]\nfilename = \"/path/to/test.h5\"\nkeypaths = {\"arduino\" = [\"data.AI1\", \"data.AI2\"], \"temp_sensor\" = [\"data.Temperature\", \"data.Humidity\"]}\nkeypath_separator = \".\"\n\n\n\n\n\n\nWarning\n\n\n\nNote that the TOML standard used for mads.ini forbids newlines within a dictionary field, so that the keypaths field must be on a single line!\nAs an alternative, you can split the dictionary using sub-tables:\n[hdf5_writer]\nsub_topic = [\"arduino\", \"temp_sensor\"]\nfilename = \"/path/to/test.h5\"\nkeypath_separator = \".\"\n[hdf5_writer.keypaths]\narduino = [\"data.AI1\", \"data.AI2\"]\ntemp_sensor = [\"data.Temperature\", \"data.Humidity\"]"
   },
   {
-    "objectID": "guides/OTA_plugins.html#command-line-vs.-attachment",
-    "href": "guides/OTA_plugins.html#command-line-vs.-attachment",
-    "title": "OTA Plugins",
-    "section": "Command line vs. attachment",
-    "text": "Command line vs. attachment\nNote that command line options always override the settings in the mads.ini file, so if you also specify the plugin name, the broker attachment will be ignored. For example, the following command will not load the plugin from the broker, but will use the one specified on the command line (on the local filesystem):\nmads source -s tcp://mads-broker.local:9093 -n my_datasource my_datasource.plugin"
+    "objectID": "guides/hdf5.html#execution",
+    "href": "guides/hdf5.html#execution",
+    "title": "HDF5 Logger",
+    "section": "Execution",
+    "text": "Execution\nNow that the plugin is installed and configured, you can use it as a sink plugin:\nmads sink -s tcp://broker.host:9092 hdf5_writer.plugin\nOf course, if the plugin runs on the same broker machine, you can just use mads sink hdf5_writer.plugin. The initial output is something like:\nAgent: hdf5_writer\n  Settings file:    tcp://localhost:9092\n  Pub endpoint:     tcp://localhost:9090\n  Pub topic:        hdf5_writer\n  Sub endpoint:     tcp://localhost:9091\n  Sub topics:       arduino topic2 control\n  Compression:      enabled\n  Timecode FPS:     25\n  Timecode offset:  0 s\nSearching for installed plugin in the default location /Users/p4010/usr/local/lib\n  Plugin:           /usr/local/lib/hdf5_writer.plugin (loaded as hdf5_writer)\n  File name         /tmp/hdf5_plugin/test.h5\n  Keypath sep.      .\n  Keypaths          arduino.timecode, arduino.timestamp, arduino.hostname, arduino.data.AI1, arduino.data.AI2, temp_sensor.timecode, temp_sensor.timestamp, temp_sensor.hostname, temp_sensor.data.Temperature, temp_sensor.data.Humidity (total: 10)\nSink plugin started\nThe content of the HDF5 file can be quickly inspected using the HDFView GUI tool:\n\n\n\nAn overview of the captured data\n\n\nAs we see, within the HDF5 file data are collected into groups (folders), one for each topic, and datasets (tables), one for each keypath. The name of the dataset corresponds to the keypath:\n\nwhen the keypath produces a scalar, the dataset is a column vector (1-column table)\nwhen the keypath produces a vector, the dataset is a 2D table with one column per element of the vector\ntimecode and timestamp are collected as vectors (same length of any other table)\ntimecode is stored as a string according to ISO 8601 format, which is the default for MADS"
   },
   {
-    "objectID": "guides/zeroconf.html",
-    "href": "guides/zeroconf.html",
-    "title": "ZeroConf (aka Avahi) network discovery",
+    "objectID": "guides/worker.html",
+    "href": "guides/worker.html",
+    "title": "Parallel computing with MADS",
     "section": "",
-    "text": "Using IP addresses for accessing other machines is bad practice, for The IP address of a given machine can change unexpectedly — for example, because it has been assigned by a DHCP server from a dynamic pool of available IPs.\nMuch more preferable is to use hostnames, that map to IP addresses dynamically. On the other hand, This requires a DNS server properly configured and updated.\nZeroConf comes to the rescue: it is an open protocol where all nodes on the same network advertise their services (ports) and host names by broadcasting, and by sharing the same, default local domain: .local.\nThe name ZeroConf is a bit misleading, for actually there is a configuration step, although it’s minimal and simple. The configuration, additionally, is node local, decentralized, and there is no need for any central server."
+    "text": "Sometimes, we want to explore a large parameter space, and run multiple time-demanding simulations over a grid of points in the parameter space. This is the case for example when we want to run a sensitivity analysis, or when we want to explore the effect of different parameters on the model output and perhaps find the optimal set of parameters for a given objective function.\nIf we have at hand a number of machines with multiple cores, we can effectively scale the problem by running each simulation on a different machine, or on a different core of the same machine. This is particularly useful when the simulations are independent and can be run in parallel."
   },
   {
-    "objectID": "guides/zeroconf.html#install-the-needed-packages",
-    "href": "guides/zeroconf.html#install-the-needed-packages",
-    "title": "ZeroConf (aka Avahi) network discovery",
-    "section": "Install the needed packages",
-    "text": "Install the needed packages\nsudo apt update && sudo apt install avahi-utils avahi-daemon openssh-server"
+    "objectID": "guides/worker.html#example-deployment",
+    "href": "guides/worker.html#example-deployment",
+    "title": "Parallel computing with MADS",
+    "section": "Example deployment",
+    "text": "Example deployment\nKubernetes deployments are YAML files that declare the configuration for each instance. a workable example is:\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: worker\n  namespace: default\nspec:\n  replicas: 5\n  selector:\n    matchLabels:\n      app: worker\n  template:\n    metadata:\n      labels:\n        app: worker\n    spec:\n      containers:\n        - name: worker\n          image: \"p4010/mads:latest\"\n          args: [\"worker\", \"-s\", \"tcp://198.19.249.3:9092\", \"-n\", \"test_worker_arm64\"]\n          resources:\n            limits:\n              cpu: 200m\n              memory: 500Mi\n            requests:\n              cpu: 100m\n              memory: 200Mi\n          ports:\n            - containerPort: 9091\n              name: zmq-in\n            - containerPort: 9092\n              name: zmq-ini\n            - containerPort: 9093\n              name: zmq-deal\nThis is defining each worker as an instance of the p4010/mads:latest Docker image, which is the official MADS image on Docker Hub. The args field specifies the command line arguments to pass to the worker agent, including the broker address and the worker name. In this case, we are assuming that Kubernetes runs on an ARM64 architecture, and the worker name is set to test_worker_arm64 (see OTA Plugins for more details on the worker name).\nWith this configuration saved as `manifest.yml, we can deploy the workers to the Kubernetes cluster with the following command:\nkubectl apply -f manifest.yml\nThis will start 5 replicas of the same worker instance, each loading the plugin OTA from the broker. If we want (and can) scale up the number of workers, we can do it transparently without disrupting any operation:\nkubectl scale deployments/worker --replicas=100\n\n\n\n\n\n\nWarning\n\n\n\nThe maximum number of replicas shall be less or equal to the total number of cores in the Kubernetes cluster. If you try to scale up beyond that, CPU resources will be further subdivided among the workers, and each worker will get less CPU time, which may lead to performance degradation.\n\n\nWhen we are done, we can scale down the number of workers to zero, or delete the deployment altogether:\nkubectl delete deployments worker"
   },
   {
-    "objectID": "guides/zeroconf.html#configure-the-service",
-    "href": "guides/zeroconf.html#configure-the-service",
-    "title": "ZeroConf (aka Avahi) network discovery",
-    "section": "Configure the service",
-    "text": "Configure the service\nCreate a file named /stc/avahi/services/ssh.service with the following content:\n&lt;!-- See avahi.service(5) for more information about this configuration file --&gt;\n\n&lt;service-group&gt;\n\n  &lt;name replace-wildcards=\"yes\"&gt;%h&lt;/name&gt;\n\n  &lt;service&gt;\n    &lt;type&gt;_ssh._tcp&lt;/type&gt;\n    &lt;port&gt;22&lt;/port&gt;\n  &lt;/service&gt;\n\n&lt;/service-group&gt;\nThis is making the host accessible as %h.local, where %h is a wildcard for the current hostname, and also advertising the ssh servoice on TCP port 22.\nThe list of services advertised on the local network can be obtained with:\navahi-browse -a"
+    "objectID": "guides/worker.html#keeping-track-of-completed-tasks",
+    "href": "guides/worker.html#keeping-track-of-completed-tasks",
+    "title": "Parallel computing with MADS",
+    "section": "Keeping track of completed tasks",
+    "text": "Keeping track of completed tasks\nThe number of submitted and completed tasks can be easily monitored with a Python agent:\nimport json\nagent_type = \"sink\"\n\ndef setup():\n  print(\"[Python] Setting up sink...\")\n  print(\"[Python] Parameters: \" + json.dumps(params))\n  state[\"submitted\"] = 0\n  state[\"accepted\"] = 0\n \ndef deal_with_data():\n  if topic == \"dealer\":\n    state[\"submitted\"] += 1\n  if topic == \"test_worker\":\n    state[\"accepted\"] += 1\n  print(\"\\33[2K[Python] Submitted: \" + str(state[\"submitted\"]) + \", Accepted: \" + str(state[\"accepted\"]) + \", Pending: \" + str(state[\"submitted\"] - state[\"accepted\"]), end=\"\\r\")\nSave this as counter.py in the folder usr/local/scripts under the MADS prefix directory (given by mads -p), add the following section to the INI file:\n[counter]\nsub_topic = [\"dealer\", \"test_worker\"]\npython_module = \"counter\"\nthen run the agent with the command:\nmads python -n counter"
   },
   {
-    "objectID": "guides/zeroconf.html#apply-the-changes",
-    "href": "guides/zeroconf.html#apply-the-changes",
-    "title": "ZeroConf (aka Avahi) network discovery",
-    "section": "Apply the changes",
-    "text": "Apply the changes\nRemember to enable and start the service:\nsudo systemctl enable avahi-daemon\nsudo systemctl start avahi-daemon\nNow you can use &lt;hostname&gt;.local in place of its address: for example, when launching MADS agents, supposing the the broker is running on a device with hostname set to mads-broker, you can simply do:\nmads source -s tcp://mads-broker.local:9092 my_plugin.plugin"
-  },
-  {
-    "objectID": "guides/contribute.html",
-    "href": "guides/contribute.html",
-    "title": "How to contribute",
+    "objectID": "guides/structure.html",
+    "href": "guides/structure.html",
+    "title": "Network structure",
     "section": "",
-    "text": "These guides are prepared in Quarto format, which is a markdown-based format that allows for the creation of documents and websites with rich formatting and interactivity. The website structure is hosted on GitHub, and contributions can be made through pull requests."
+    "text": "The typical architecture of a MADS network can be represented as:\n\n\n\n\n\n\n\n\nMADS Network\n\n\n\np1\n\nPlugin 1\n\n\n\na1\n\nAgent 1\n(source)\n\n\n\np1-&gt;a1\n\n\n\n\nbroker\n\nbroker\n\n\n\na1-&gt;broker\n\n\n\n\n\np2\n\nPlugin 2\n\n\n\na2\n\nAgent 2\n(filter)\n\n\n\np2-&gt;a2\n\n\n\n\na2-&gt;broker\n\n\n\n\n\n\np3\n\nPlugin 3\n\n\n\na3\n\nAgent 3\n(sink)\n\n\n\np3-&gt;a3\n\n\n\n\na3-&gt;broker\n\n\n\n\n\na4\n\nMonolithic\nAgent (filter)\n\n\n\na4-&gt;broker\n\n\n\n\n\n\nmongo\n\n\nMongoDB\n\n\n\nlogger\n\nlogger\n\n\n\nbroker-&gt;logger\n\n\n\n\n\nlogger-&gt;mongo\n\n\nBSON\n\n\n\n\n\n\nFigure 1: MADS Network\n\n\n\n\n\n\n\n\n\n\n\nImportant\n\n\n\nRemember that the above schematic represent processes, regardless the physical machine on which they are being executed.\nFor example, the whole network could run on a single workstation, or it could be conversely distributed over multiple devices connected to the same IP network, each device running a single process/node.\n\n\nIn the figure Figure 1, the solid lines represent a ZeroMQ connection over TCP/IP, which uses compressed JSON as a data encoding protocol. Compression is preformed with the snappy library. The dashed line, conversely, represents the proprietary MongoDB protocol, with data serialized as BSON (Binary-JSON).\n\n\nWhat is the broker purpose?\nThe broker solves the issue of knowing multiple network addresses when you have a number of devices participating to the same distributed system.\nWith the aid of the broker, any separate device partaking to the MADS network only needs to know a single hostname/IP address: that of the machine running the broker.\n\n\n\n\n\n\nWarning\n\n\n\nThere can only be a single broker per network.\n\n\nRunning the broker is quite simple:\nmads broker\n\n\n\nAgents can be:\n\nmonolithic: implemented as a single executable inheriting the Mads::Agent C++ class.\nplug-in: a single executable that on runtime loads a proper plug-in (i.e. a dynamically loaded library)\n\nRegardless the type, agent can have three different behaviors:\n\nsource: they provide information to the network (e.g. by reading sensors)\nfilter: they operate and transform received information\nsink: they consume information received from the network (e.g. to store or visualize)\n\nThe MADS installer provides three general purpose agents, aptly named source, filter, and sink, that are designe do load proper plugins. The command mads plugin can be used to generate a suitable template for a new plugin to be developed."
   },
   {
-    "objectID": "guides/contribute.html#prerequisites",
-    "href": "guides/contribute.html#prerequisites",
-    "title": "How to contribute",
-    "section": "Prerequisites",
-    "text": "Prerequisites\n\nGit and a GitHub account\nAn IDE:\n\nRStudio (recommended)\nVisual Studio Code\n\nIf you opt for VS Code, you will need to install Quarto and the Quarto extension. RStudio comes with Quarto pre-packaged."
-  },
-  {
-    "objectID": "guides/contribute.html#forking-the-repository",
-    "href": "guides/contribute.html#forking-the-repository",
-    "title": "How to contribute",
-    "section": "Forking the repository",
-    "text": "Forking the repository\nTo contribute to the MADS guides collection, you need to fork the repository. This allows you to create your own copy of the repository where you can make changes without affecting the original project. To fork the repository, follow these steps:\n\ngo to https://github.com/MADS-Net/mads-net.github.io\nclick on the “Fork” button in the top right corner of the page\nselect your GitHub account as the destination for the fork\nwait for GitHub to create the forked repository in your account"
-  },
-  {
-    "objectID": "guides/contribute.html#authorizing-your-computer",
-    "href": "guides/contribute.html#authorizing-your-computer",
-    "title": "How to contribute",
-    "section": "Authorizing your computer",
-    "text": "Authorizing your computer\nThe best way to authorize your computer to work on GitHub repositories is to use the gh command line utility. You can get it from https://cli.github.com. Once installed, open a terminal and type:\ngh auth login\nthen follow instructions to authenticate your GitHub account. This will allow you to push changes to your forked repository and create pull requests. It is typically done once per computer."
-  },
-  {
-    "objectID": "guides/contribute.html#cloning-the-repository",
-    "href": "guides/contribute.html#cloning-the-repository",
-    "title": "How to contribute",
-    "section": "Cloning the repository",
-    "text": "Cloning the repository\nYou cannot edit the official repository, but you can freely edit your forked repository. To do this, you need to clone the repository to your local machine. This creates a local copy of the repository that you can work on. To clone the repository, follow these steps:\n\nopen your terminal or command prompt\nnavigate to the directory where you want to clone the repository\ntype the following:\n\ngh repo clone &lt;your-username&gt;/mads-net.github.io.git\nreplacing &lt;your-username&gt; with your GitHub username. This will create a folder named mads-net.github.io in your current directory, containing the cloned repository. Then open the mads_doc.Rproj file if you are using RStudio. If you are using VSCode, just open that folder."
-  },
-  {
-    "objectID": "guides/contribute.html#ensure-your-repository-is-up-to-date",
-    "href": "guides/contribute.html#ensure-your-repository-is-up-to-date",
-    "title": "How to contribute",
-    "section": "Ensure your repository is up to date",
-    "text": "Ensure your repository is up to date\nOther people could contribute to the guides while you are working on your own. To ensure that your repository is up to date and to minimize the risks for conflicts, you shall pull the latest changes from the original repository. To do this, follow these steps:\n# Navigate to the cloned repository folder\ncd mads-net.github.io\n# fetch any new changes from the original repository\ngit fetch upstream\n# merge the changes into your local repository\ngit merge upstream/main"
-  },
-  {
-    "objectID": "guides/contribute.html#create-a-new-guide",
-    "href": "guides/contribute.html#create-a-new-guide",
-    "title": "How to contribute",
-    "section": "Create a new guide",
-    "text": "Create a new guide\nTo create a new guide, you can use the guides/template.qmd file as a starting point. This file contains the basic structure and formatting for a guide. Make a copy of it with a suitable name.\nIf the guide you are working is complex and is probably going to require images and/or data files, you should put the guide in a separate folder. For example, if you are writing a guide on “Data Analysis”, you could create a folder named guides/data-analysis and put the data-analysis.qmd file inside it. Quarto will automatically add that file as a new guide in the Guides page listing. Images and supporting files can then be put in the same folder, and they will be automatically linked in the guide."
-  },
-  {
-    "objectID": "guides/contribute.html#edit-the-guide",
-    "href": "guides/contribute.html#edit-the-guide",
-    "title": "How to contribute",
-    "section": "Edit the guide",
-    "text": "Edit the guide\nThe guide YAML preamble is the first thing to edit. Ensure that you set the title, author, and date fields correctly. You can also set the categories field to categorize your guide, and the abstract field to provide a brief description of the guide.\nNote that the preamble has a draft: true field. This means that the guide will not be published until you set it to draft: false. This is useful to work on the guide without it being visible on the website or when previewing the website locally. A guide in draft mode will not be listed in the Guides page, but it will be accessible via its URL.\n\n\n\n\n\n\nNote\n\n\n\nIf you want that the guide is also available in PDF format, uncomment the preamble section for the format key. In this way, the guide will be available in both HTML and PDF formats.\n\n\nRefer to the Quarto documentation for more information on how to format the guide using Quarto markdown."
-  },
-  {
-    "objectID": "guides/contribute.html#preview-the-guide",
-    "href": "guides/contribute.html#preview-the-guide",
-    "title": "How to contribute",
-    "section": "Preview the guide",
-    "text": "Preview the guide\nTo preview the guide, you can use the quarto preview command. This will start a local web server and open the guide in your default web browser. To do this, follow these steps:\n# Navigate to the cloned repository folder\ncd mads-net.github.io\n# Start the local web server\nquarto preview\n\n\n\n\n\n\nAutomatic refresh\n\n\n\nThe local web server will automatically refresh the page whenever you save changes to the guide files. This allows you to see the changes in real-time without having to manually refresh the page.\nHowever, some changes (e.g. adding new files) are not always detected. In these cases, you can manually refresh the page in your browser to see the changes, and if it does not work, you can stop the server with Ctrl+C and restart it with quarto preview."
-  },
-  {
-    "objectID": "guides/contribute.html#publish-your-contribute",
-    "href": "guides/contribute.html#publish-your-contribute",
-    "title": "How to contribute",
-    "section": "Publish your contribute",
-    "text": "Publish your contribute\nWhenever you are content with your contributed guide, you can commit your work and push it to your forked repository. before doing that, however, ensure that there are no new contribution on the uspstream repository. Since you cannot pull changes on your repository if it has pending changes, you first stash your changes, i.e. you put them temporarily aside, reverting back to a clean state (the last commit, in synchron with upstream):\ngit stash\nNow you can pull the latest changes from the original repository:\n# Fetch any new changes from the original repository\ngit fetch upstream\n# Merge the changes into your local repository\ngit merge upstream/main\nAfter this, you can reapply your changes:\ngit stash pop\nIf there were new changes from upstream, and you have changed the same files, you might have to resolve conflicts. In this case, Git will show you the files with conflicts, and you will need to manually edit them to resolve the conflicts.\nA conflict is typically marked in the file with &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD, =======, and &gt;&gt;&gt;&gt;&gt;&gt;&gt; upstream/main. You need to choose which changes to keep, or merge them together, and then remove these markers. Once you are done, you can add the resolved files to the staging area, make a new commit and publish your changes on gitHub:\ngit add .\ngit commit -m \"Resolved conflicts and updated guide\"\ngit push origin main\nNow your forked repository will be ahead of the original, upstream, repository. This means that you have changes that are not yet in the original repository. So you can now create a pull request to the original repository. This will allow the maintainers of the MADS guides collection to review your changes and merge them into the main repository. To create a pull request, follow these steps:\n\ngo to your forked repository on GitHub\nclick on the “Pull requests” tab\nclick on the “New pull request” button\nselect the branch you want to merge into the original repository (usually main)\nreview the changes and add a title and description for the pull request (be informative!!!)\nclick on the “Create pull request” button\nwait for the maintainers to review your changes and merge them into the original repository"
-  },
-  {
-    "objectID": "guides/services.html",
-    "href": "guides/services.html",
-    "title": "Services",
+    "objectID": "guides/structure.html#the-broker",
+    "href": "guides/structure.html#the-broker",
+    "title": "Network structure",
     "section": "",
-    "text": "Why services\nAgents are typically expected to run on boot: as soon as the machine or device starts, you want the agent to become immediately available. To do that, MADS offers a solution for quickly create a service for a given combination of MADS command and arguments.\n\n\n\n\n\n\nWarning\n\n\n\nAt the moment, this functionality is only available on Linux (Ubuntu or Debian). There are no immediate plans to extend it to MacOS or Windows.\n\n\n\n\nWhat is a service\nOn Ubuntu or Debian Linux, a service is a INI file located in /etc/systemd/system that details a command to be executed on boot and its requirements. Once you have the service file installed, e.g. as /etc/systemd/system/my_service.service, you can:\n\nEnable/disable the service: sudo systemctl enable|disable my_service. If the service is disabled, It does not starts automatically.\nStart the service manually: sudo systemctl start my_service\nStop the service manually: sudo systemctl stop my_service\nEnquire the service status: sudo systemctl status my_service\n\nSo, if the service is enabled, it starts automatically on boot; if it is disabled, you can still start it with the systemctl start command.\n\n\nHow to create a MADS service\nSuppose that you knwo that the following command launches properly an agent:\nmads source -i in0_01 arduino.plugin\nNow you want turn this command into a service. Just put mads service &lt;service_name in forn t of that command line, e.g.:\nmads service arduino source -i in0_01 arduino.plugin\nwhere mads service arduino means “create a service file called mads-arduino” (mads- is added automatically), and source -i in0_01 arduino.plugin is the proper command line for the mads command.\nYou should get an output like:\n#  __  __    _    ____  ____\n# |  \\/  |  / \\  |  _ \\/ ___|\n# | |\\/| | / _ \\ | | | \\___ \\\n# | |  | |/ ___ \\| |_| |___) |\n# |_|  |_/_/   \\_\\____/|____/\n#\n# Linux Systemd service file for mads-arduino, a mads-source agent\n# Notice that the settings file will be read from\n# /usr/local/etc/mads.ini\n#\n# Save this file to /etc/systemd/system/mads-arduino.service\n# Or run \"sudo mads service publish source publish.plugin \"\n# then run \"sudo systemctl enable mads-arduino.service\"\n\n[Unit]\nDescription=mads-arduino\nAfter=network.target\nStartLimitIntervalSec=0\n\n[Service]\nType=simple\nRestart=always\nRestartSec=1\nUser=root\nExecStart=/usr/local/bin/mads-source -i in0_01 arduino.plugin\n\n[Install]\nWantedBy=multi-user.target\nAs instructed in the comments, you shall check if everything looks fine, and if so, install the service file in the proper directory by simply re-executing the same command with sudo :\nsudo mads service arduino source -i in0_01 arduino.plugin\nA longer and more flexible path is to save the file locally, edit it to taste, then manually copy/move it to /etc/systemd/system:\nmads service arduino source -i in0_01 arduino.plugin &gt; mads-arduino.service\n# edit the file to taste\nsudo cp mads-arduino.service /usr/systemd/system/\n\n\n\n\n\n\nTip\n\n\n\nThe fist way is the suggested one, unless you really need to adjust the service file (and you know what you are doing).\n\n\nFinally, enable the service with sudo systemctl enable mads-arduino.service.\nNote that enabling the service does not makes it start: to do so, you either have to reboot the machine or to manually start with sudo systemctl start mads-arduino.service."
+    "text": "What is the broker purpose?\nThe broker solves the issue of knowing multiple network addresses when you have a number of devices participating to the same distributed system.\nWith the aid of the broker, any separate device partaking to the MADS network only needs to know a single hostname/IP address: that of the machine running the broker.\n\n\n\n\n\n\nWarning\n\n\n\nThere can only be a single broker per network.\n\n\nRunning the broker is quite simple:\nmads broker"
+  },
+  {
+    "objectID": "guides/structure.html#the-agents",
+    "href": "guides/structure.html#the-agents",
+    "title": "Network structure",
+    "section": "",
+    "text": "Agents can be:\n\nmonolithic: implemented as a single executable inheriting the Mads::Agent C++ class.\nplug-in: a single executable that on runtime loads a proper plug-in (i.e. a dynamically loaded library)\n\nRegardless the type, agent can have three different behaviors:\n\nsource: they provide information to the network (e.g. by reading sensors)\nfilter: they operate and transform received information\nsink: they consume information received from the network (e.g. to store or visualize)\n\nThe MADS installer provides three general purpose agents, aptly named source, filter, and sink, that are designe do load proper plugins. The command mads plugin can be used to generate a suitable template for a new plugin to be developed."
+  },
+  {
+    "objectID": "guides/python_agent.html",
+    "href": "guides/python_agent.html",
+    "title": "Python Agent",
+    "section": "",
+    "text": "The Python3 MADS agent is available on https://github.com/MADS-net/python_agent.\n\n\nYou need to have python3 and python3-dev installed, or Python3 on Windows.\nAlso, you need to have installed the latest MADS version and the proper build toolkit:\n\non UNIX, this means cmake, clang, git\non Windows, this means Visual Studio 2022 (community edition is fine), git and cmake.\n\nThen proceed as follows depending on your platform.\n\n\npython3 -m venv .venv\nsource .venv/bin/activate\npip install numpy\n# also install other necessary Python libs\n\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build -j6\nsudo cmake --install build\nThe above is tested on MacOS and Ubuntu 22.04.\n\n\n\nRun the following from project root:\npython -m venv .venv\n.venv\\Scripts\\activate\npip install numpy\n# also install other necessary Python libs\nThen:\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build --config Release\nsudo cmake --install build\n\n\n\n\n\n\nEnable sudo on Windows\n\n\n\nFor sudo to work on Windows, you need to enable it on Settings &gt; System &gt; For Developers and set Enable sudo to On.\n\n\n\n\n\n\nThe new agent is installed as mads-python, so you can just type mads python -h (or mads-python -h on Windows) to know more:\n&gt; mads python -h\npython ver. 1.2.6\n\nUsage:\n  python [OPTION...]\n\n  -p, --period arg         Sampling period (default 100 ms)\n  -m, --module arg         Python module to load\n  -n, --name arg           Agent name (default to 'python')\n  -i, --agent-id arg       Agent ID to be added to JSON frames\n  -s, --settings arg       Settings file path/URI\n  -S, --save-settings arg  Save settings to ini file\n  -v, --version            Print version\n  -h, --help               Print usage\nTypically, to launch an agent named python_source, which gets its settings from a python_source section in mads.ini, and uses the Python module named source defined in the source.py file and that runs every 100 ms, the command is:\nmads python -n python_source -m source -p100\nwhere:\n\n-n python_source sets the agent name to python_source, and gets its settings from the same section in the mads.ini file\n-m source sets the Python module to source.py, which is searched for in the Python modules search paths, see below\n-p100 sets the sampling period to 100 ms\n\n\n\n\nThe Python modules are searched for in the following folders:\n\n./python\n./scripts\n../python\n../scripts\n../../python\n../../scripts\nINSTALL_PREFIX + /python\nINSTALL_PREFIX + /scripts\n\nplus any path listed in the mads.ini file under the search_path key (an array or a single string).\n\n\n\nThe following fields are typically used:\n[python_source]\nperiod = 200\nvenv = \"/path/to/.venv\"\npython_module = \"my_source\"\nsearch_paths = [\"/path/to/python/folder\"\n\n\n\n\n\n\nWarning\n\n\n\nThe section name must match the -m option argument when you launch the agent, so in the case aboxe you must use -m python_source.\n\n\nDuring development, you typically run the plugin interactively and using a python module that is under your home folder. In these conditions, you probably want to set the module name on the command line, such as mads python -n python_source -m my_module. This means that you must have the file my_module.py in the python or scripts subfolder of your current working directory.\nDuring deployment, you want to transform the agent in a service, so that you rely on the module to be loaded according to the  mads.ini file (from the python_module key), and the module is expected to be placed in &lt;INSTALL_PREFIX&gt;/python/my_module.py. Since INSTALL_PREFIX is usually /usr/local, this means that the file should be in /usr/local/python/my_module.py. Then you create a service as documented here.\n\n\n\nPython modules can be of type source, filter, or sink. The module type is defined by setting a top level variable like this, typically at the beginning of the script, just after the various imports:\nagent_type = \"sink\"\nAll the modules must implement a setup() function, which is expected to use the dictionary available in the module variable params (a dictionary) to do initial setup (opening ports or files, etc.)\nSource modules must implement a get_output() function, that produces the JSON string that will be published.\nFilter modules must implement a process() function, that is supposed to operate on the last received data dictionary (available as data, a module variable) and produce a JSON string that will be published.\nSink modules must implement a deal_with_data() function, that operates on the data dictionary, a module variable."
+  },
+  {
+    "objectID": "guides/python_agent.html#installing",
+    "href": "guides/python_agent.html#installing",
+    "title": "Python Agent",
+    "section": "",
+    "text": "You need to have python3 and python3-dev installed, or Python3 on Windows.\nAlso, you need to have installed the latest MADS version and the proper build toolkit:\n\non UNIX, this means cmake, clang, git\non Windows, this means Visual Studio 2022 (community edition is fine), git and cmake.\n\nThen proceed as follows depending on your platform.\n\n\npython3 -m venv .venv\nsource .venv/bin/activate\npip install numpy\n# also install other necessary Python libs\n\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build -j6\nsudo cmake --install build\nThe above is tested on MacOS and Ubuntu 22.04.\n\n\n\nRun the following from project root:\npython -m venv .venv\n.venv\\Scripts\\activate\npip install numpy\n# also install other necessary Python libs\nThen:\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build --config Release\nsudo cmake --install build\n\n\n\n\n\n\nEnable sudo on Windows\n\n\n\nFor sudo to work on Windows, you need to enable it on Settings &gt; System &gt; For Developers and set Enable sudo to On."
+  },
+  {
+    "objectID": "guides/python_agent.html#executing",
+    "href": "guides/python_agent.html#executing",
+    "title": "Python Agent",
+    "section": "",
+    "text": "The new agent is installed as mads-python, so you can just type mads python -h (or mads-python -h on Windows) to know more:\n&gt; mads python -h\npython ver. 1.2.6\n\nUsage:\n  python [OPTION...]\n\n  -p, --period arg         Sampling period (default 100 ms)\n  -m, --module arg         Python module to load\n  -n, --name arg           Agent name (default to 'python')\n  -i, --agent-id arg       Agent ID to be added to JSON frames\n  -s, --settings arg       Settings file path/URI\n  -S, --save-settings arg  Save settings to ini file\n  -v, --version            Print version\n  -h, --help               Print usage\nTypically, to launch an agent named python_source, which gets its settings from a python_source section in mads.ini, and uses the Python module named source defined in the source.py file and that runs every 100 ms, the command is:\nmads python -n python_source -m source -p100\nwhere:\n\n-n python_source sets the agent name to python_source, and gets its settings from the same section in the mads.ini file\n-m source sets the Python module to source.py, which is searched for in the Python modules search paths, see below\n-p100 sets the sampling period to 100 ms"
+  },
+  {
+    "objectID": "guides/python_agent.html#python-modules-search-paths",
+    "href": "guides/python_agent.html#python-modules-search-paths",
+    "title": "Python Agent",
+    "section": "",
+    "text": "The Python modules are searched for in the following folders:\n\n./python\n./scripts\n../python\n../scripts\n../../python\n../../scripts\nINSTALL_PREFIX + /python\nINSTALL_PREFIX + /scripts\n\nplus any path listed in the mads.ini file under the search_path key (an array or a single string)."
+  },
+  {
+    "objectID": "guides/python_agent.html#the-mads.ini-section",
+    "href": "guides/python_agent.html#the-mads.ini-section",
+    "title": "Python Agent",
+    "section": "",
+    "text": "The following fields are typically used:\n[python_source]\nperiod = 200\nvenv = \"/path/to/.venv\"\npython_module = \"my_source\"\nsearch_paths = [\"/path/to/python/folder\"\n\n\n\n\n\n\nWarning\n\n\n\nThe section name must match the -m option argument when you launch the agent, so in the case aboxe you must use -m python_source.\n\n\nDuring development, you typically run the plugin interactively and using a python module that is under your home folder. In these conditions, you probably want to set the module name on the command line, such as mads python -n python_source -m my_module. This means that you must have the file my_module.py in the python or scripts subfolder of your current working directory.\nDuring deployment, you want to transform the agent in a service, so that you rely on the module to be loaded according to the  mads.ini file (from the python_module key), and the module is expected to be placed in &lt;INSTALL_PREFIX&gt;/python/my_module.py. Since INSTALL_PREFIX is usually /usr/local, this means that the file should be in /usr/local/python/my_module.py. Then you create a service as documented here."
+  },
+  {
+    "objectID": "guides/python_agent.html#module-types",
+    "href": "guides/python_agent.html#module-types",
+    "title": "Python Agent",
+    "section": "",
+    "text": "Python modules can be of type source, filter, or sink. The module type is defined by setting a top level variable like this, typically at the beginning of the script, just after the various imports:\nagent_type = \"sink\"\nAll the modules must implement a setup() function, which is expected to use the dictionary available in the module variable params (a dictionary) to do initial setup (opening ports or files, etc.)\nSource modules must implement a get_output() function, that produces the JSON string that will be published.\nFilter modules must implement a process() function, that is supposed to operate on the last received data dictionary (available as data, a module variable) and produce a JSON string that will be published.\nSink modules must implement a deal_with_data() function, that operates on the data dictionary, a module variable."
+  },
+  {
+    "objectID": "guides/containerized.html",
+    "href": "guides/containerized.html",
+    "title": "Containerized MADS",
+    "section": "",
+    "text": "Setting up a MADS network requires a minimum of a broker, a MongoDB server, and the logger agent. This guide explains the easiest and more portable solution to have them up and running in minuts in a Docker environment."
+  },
+  {
+    "objectID": "guides/containerized.html#step-1.-clone-the-repo",
+    "href": "guides/containerized.html#step-1.-clone-the-repo",
+    "title": "Containerized MADS",
+    "section": "Step 1. Clone the repo",
+    "text": "Step 1. Clone the repo\nAll you need is in the MADS_container repository. You can clone it with the following command:\ngit clone --depth 1 https://github.com/MADS-NET/MADS_container.git"
+  },
+  {
+    "objectID": "guides/containerized.html#step-2.-run-the-containers",
+    "href": "guides/containerized.html#step-2.-run-the-containers",
+    "title": "Containerized MADS",
+    "section": "Step 2. Run the containers",
+    "text": "Step 2. Run the containers\nYou can now run the containers with the following command:\ndocker compose up -d\nThis starts the three containerized processes: MogoDB, the broker, and the logger agent.\n\n\n\n\n\n\nNote\n\n\n\nYou can stop the containers at any time with the command docker compose down.\n\n\nNow the broker and the database are also accessible as if they were processes running on your host machine."
+  },
+  {
+    "objectID": "guides/containerized.html#update-images",
+    "href": "guides/containerized.html#update-images",
+    "title": "Containerized MADS",
+    "section": "Update images",
+    "text": "Update images\nTo update the images to the latest version, do:\ndocker compose pull\nfrom project root (i.e. the same folder containing compose.yml)."
+  },
+  {
+    "objectID": "guides/plugins.html",
+    "href": "guides/plugins.html",
+    "title": "Plugins",
+    "section": "",
+    "text": "Originally, MADS only allowed to develop monolitic agents: this required to write the whole executable code, including the management of command line arguments and loading of serrings from the INI file (either local or loaded from the broker). This solution is still possible (see the guide) and allows maximum flexibility, but it requires a good knowledse of the MADS innards and is more tedious and error prone.\nFor this reason, we developed the plugin support: the common functionality of an agent are already available, and only the data management operations need to be implemented."
+  },
+  {
+    "objectID": "guides/plugins.html#how-to-install-the-plugin",
+    "href": "guides/plugins.html#how-to-install-the-plugin",
+    "title": "Plugins",
+    "section": "How to install the plugin",
+    "text": "How to install the plugin\nOnce the plugin is tested (both standalone and when loaded from an agent) it should be installed in the MADS tree. Remember that the command mads -i shows where plugins are expected to be installed (usually, /usr/local/lib). To install:\ncmake --install build\nThe you can launch it as agent with:\nmads source my_source.plugin\nAnd when you are satisfield with the result, you can make it a service as explained here."
+  },
+  {
+    "objectID": "guides.html",
+    "href": "guides.html",
+    "title": "Guides",
+    "section": "",
+    "text": "Spotlight\n\n\n\nBe sure to start with MADS structure guide.\nIf you want to contribute, head on to the contribution guide.\n\n\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\nDescription\n\n\n\nCategories\n\n\n\nReading Time\n\n\n\n\n\n\n\n\nJul 11, 2025\n\n\nHDF5 Logger\n\n\nPaolo Bosetti\n\n\nMADS comes packaged with a logging facility to MongoDB database. For some applications, a file-based logging system is more appropriate. This guide explains how to use the HDF5 logger, which is a file-based sink for MADS using the hierarchical data format. \n\n\nsink, hdf5, logging, data\n\n\n6 min\n\n\n\n\n\n\nJul 7, 2025\n\n\nOTA Plugins\n\n\nPaolo Bosetti\n\n\nMADS Version 1.3.0 introduces the possibility to load plugins Over-The-Air (OTA): plugin files can be provided to agents by the broker. This allows to centralize the management of plugins and to update them without the need to manually copy compiled plugins to the devices running the agents. \n\n\nplugin, OTA, over-the-air, intermediate\n\n\n7 min\n\n\n\n\n\n\nJul 7, 2025\n\n\nParallel computing with MADS\n\n\nPaolo Bosetti\n\n\nMADS has two special agents, dealer and worker, that allow to distribute many different computations to a set of identical workers, in round-robin fashion. \n\n\nplugin, parallel computing, advanced, kubernetes, docker\n\n\n7 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nServices\n\n\nPaolo Bosetti\n\n\nOnce tested, agents can be turned into linux services, so that they start automatically on boot. \n\n\nintermediate, OS, setup, easy\n\n\n3 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nPlugins\n\n\nPaolo Bosetti\n\n\nMADS supports agents implemented as plugins in C++17. This guide explains how to create a plugin. \n\n\nadvanced, plugin, development, c++\n\n\n4 min\n\n\n\n\n\n\nJun 4, 2025\n\n\nNetwork structure\n\n\nPaolo Bosetti\n\n\nIllustrate a typical MADS network structure and its requirements. \n\n\ntemplate, basics, easy\n\n\n5 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nHow to contribute\n\n\nPaolo Bosetti\n\n\nWe explain how to contribute to the MADS guides collection. \n\n\nhow-to, easy\n\n\n7 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nContainerized MADS\n\n\nPaolo Bosetti\n\n\nThe base agents for setting up a MADS network are available as a ontainerized environment. \n\n\ndocker, easy, OS, setup\n\n\n2 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nPython Agent\n\n\nPaolo Bosetti\n\n\nThe python_agent repo on GitHub provides a MADS agent with an embedded python3 interpreter for developing MADS sgents in Python \n\n\npython, agent, easy\n\n\n4 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nZeroConf (aka Avahi) network discovery\n\n\nPaolo Bosetti\n\n\nUsing hostnames rather than IP addresses is easier and much more robust. In this guide, we learn how to setup a Linux box for advertising its address by using the Avahi protocol/service. \n\n\nnetworking, IP, configuration, OS, Linux\n\n\n2 min\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "MADS: Multi-Agent Distributed System",
+    "section": "",
+    "text": "What is it\nMADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.\nIt is made by a main set of executables available in the MADS tools collection repo, which also provides installers for Linux, MacOS and Windows.\nThe MADS tools collection includes a broker and a set of general purpose agents that can act as sources, filters, or sinks. The actual operations performed by agents can be customized either via scripting languages (using simple popen interface), or by implementing dedicated plugins in C++.\nSome of the available plugins are:\n\narduino_plugin: reads from a serial connected arduino\nhpe2D_plugin: performs human pose estimation from a camera stream\nmqtt_plugin: acts as a bridge with an MQTT network\nsay_plugin: Text-to-speech of incoming messages\nble_plugin: Bluetooth Low Energy source plugin\ntui_plugin: Terminal User Interface for sending metadata commands to MADS network\nlua_plugin: Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)\nhdf5_plugin: a sink agent that logs data traffic into a HDF5 file\n\nThere are also additional monolithic agents:\n\npython_agent: Interfacing Python3 scripts to the MADS network (useful for prototyping and rapid development)\n\nLook into the guides section for more information on how to use the MADS tools collection."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "MADS",
+    "section": "",
+    "text": "Authors\n\nMain author\n\nPaolo Bosetti, University or Trento\n\nContributors\n\nAnna-Carla Araujo, INSA Toulouse\nGuillaume Cohen, INSA Toulouse\n\nBeta-testers\n\nMatteo Lancini, University of Brescia\nMarco Ghidelli, University of Brescia\nNicola Abeni, University of Bresicia\nFederico Paolucci, University of Perugia"
   },
   {
     "objectID": "presentations/intro.html#contents",
@@ -294,150 +336,136 @@
     "text": "The MADS implementation\nIn MADS, there are two special agents for this purpose: dealer and worker\n\ndealer: receives the computational payloads (simulation input) from a suitable source agent, and dispatches them to the workers\nworker: receives the computational payloads and uses a custom plugin to process them (of type filter), then sends the results back to the broker\n\nIdeally, the worker plugin is launched in \\(n\\) instances on a Kubernetes cluster; each instance loads the computational plugin OTA from the broker"
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "MADS",
+    "objectID": "guides/services.html",
+    "href": "guides/services.html",
+    "title": "Services",
     "section": "",
-    "text": "Authors\n\nMain author\n\nPaolo Bosetti, University or Trento\n\nContributors\n\nAnna-Carla Araujo, INSA Toulouse\nGuillaume Cohen, INSA Toulouse\n\nBeta-testers\n\nMatteo Lancini, University of Brescia\nMarco Ghidelli, University of Brescia\nNicola Abeni, University of Bresicia\nFederico Paolucci, University of Perugia"
+    "text": "Why services\nAgents are typically expected to run on boot: as soon as the machine or device starts, you want the agent to become immediately available. To do that, MADS offers a solution for quickly create a service for a given combination of MADS command and arguments.\n\n\n\n\n\n\nWarning\n\n\n\nAt the moment, this functionality is only available on Linux (Ubuntu or Debian). There are no immediate plans to extend it to MacOS or Windows.\n\n\n\n\nWhat is a service\nOn Ubuntu or Debian Linux, a service is a INI file located in /etc/systemd/system that details a command to be executed on boot and its requirements. Once you have the service file installed, e.g. as /etc/systemd/system/my_service.service, you can:\n\nEnable/disable the service: sudo systemctl enable|disable my_service. If the service is disabled, It does not starts automatically.\nStart the service manually: sudo systemctl start my_service\nStop the service manually: sudo systemctl stop my_service\nEnquire the service status: sudo systemctl status my_service\n\nSo, if the service is enabled, it starts automatically on boot; if it is disabled, you can still start it with the systemctl start command.\n\n\nHow to create a MADS service\nSuppose that you knwo that the following command launches properly an agent:\nmads source -i in0_01 arduino.plugin\nNow you want turn this command into a service. Just put mads service &lt;service_name in forn t of that command line, e.g.:\nmads service arduino source -i in0_01 arduino.plugin\nwhere mads service arduino means “create a service file called mads-arduino” (mads- is added automatically), and source -i in0_01 arduino.plugin is the proper command line for the mads command.\nYou should get an output like:\n#  __  __    _    ____  ____\n# |  \\/  |  / \\  |  _ \\/ ___|\n# | |\\/| | / _ \\ | | | \\___ \\\n# | |  | |/ ___ \\| |_| |___) |\n# |_|  |_/_/   \\_\\____/|____/\n#\n# Linux Systemd service file for mads-arduino, a mads-source agent\n# Notice that the settings file will be read from\n# /usr/local/etc/mads.ini\n#\n# Save this file to /etc/systemd/system/mads-arduino.service\n# Or run \"sudo mads service publish source publish.plugin \"\n# then run \"sudo systemctl enable mads-arduino.service\"\n\n[Unit]\nDescription=mads-arduino\nAfter=network.target\nStartLimitIntervalSec=0\n\n[Service]\nType=simple\nRestart=always\nRestartSec=1\nUser=root\nExecStart=/usr/local/bin/mads-source -i in0_01 arduino.plugin\n\n[Install]\nWantedBy=multi-user.target\nAs instructed in the comments, you shall check if everything looks fine, and if so, install the service file in the proper directory by simply re-executing the same command with sudo :\nsudo mads service arduino source -i in0_01 arduino.plugin\nA longer and more flexible path is to save the file locally, edit it to taste, then manually copy/move it to /etc/systemd/system:\nmads service arduino source -i in0_01 arduino.plugin &gt; mads-arduino.service\n# edit the file to taste\nsudo cp mads-arduino.service /usr/systemd/system/\n\n\n\n\n\n\nTip\n\n\n\nThe fist way is the suggested one, unless you really need to adjust the service file (and you know what you are doing).\n\n\nFinally, enable the service with sudo systemctl enable mads-arduino.service.\nNote that enabling the service does not makes it start: to do so, you either have to reboot the machine or to manually start with sudo systemctl start mads-arduino.service."
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "MADS: Multi-Agent Distributed System",
+    "objectID": "guides/contribute.html",
+    "href": "guides/contribute.html",
+    "title": "How to contribute",
     "section": "",
-    "text": "What is it\nMADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.\nIt is made by a main set of executables available in the MADS tools collection repo, which also provides installers for Linux, MacOS and Windows.\nThe MADS tools collection includes a broker and a set of general purpose agents that can act as sources, filters, or sinks. The actual operations performed by agents can be customized either via scripting languages (using simple popen interface), or by implementing dedicated plugins in C++.\nSome of the available plugins are:\n\narduino_plugin: reads from a serial connected arduino\nhpe2D_plugin: performs human pose estimation from a camera stream\nmqtt_plugin: acts as a bridge with an MQTT network\nsay_plugin: Text-to-speech of incoming messages\nble_plugin: Bluetooth Low Energy source plugin\ntui_plugin: Terminal User Interface for sending metadata commands to MADS network\nlua_plugin: Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)\n\nThere are also additional monolithic agents:\n\npython_agent: Interfacing Python3 scripts to the MADS network (useful for prototyping and rapid development)\n\nLook into the guides section for more information on how to use the MADS tools collection."
+    "text": "These guides are prepared in Quarto format, which is a markdown-based format that allows for the creation of documents and websites with rich formatting and interactivity. The website structure is hosted on GitHub, and contributions can be made through pull requests."
   },
   {
-    "objectID": "guides.html",
-    "href": "guides.html",
-    "title": "Guides",
+    "objectID": "guides/contribute.html#prerequisites",
+    "href": "guides/contribute.html#prerequisites",
+    "title": "How to contribute",
+    "section": "Prerequisites",
+    "text": "Prerequisites\n\nGit and a GitHub account\nAn IDE:\n\nRStudio (recommended)\nVisual Studio Code\n\nIf you opt for VS Code, you will need to install Quarto and the Quarto extension. RStudio comes with Quarto pre-packaged."
+  },
+  {
+    "objectID": "guides/contribute.html#forking-the-repository",
+    "href": "guides/contribute.html#forking-the-repository",
+    "title": "How to contribute",
+    "section": "Forking the repository",
+    "text": "Forking the repository\nTo contribute to the MADS guides collection, you need to fork the repository. This allows you to create your own copy of the repository where you can make changes without affecting the original project. To fork the repository, follow these steps:\n\ngo to https://github.com/MADS-Net/mads-net.github.io\nclick on the “Fork” button in the top right corner of the page\nselect your GitHub account as the destination for the fork\nwait for GitHub to create the forked repository in your account"
+  },
+  {
+    "objectID": "guides/contribute.html#authorizing-your-computer",
+    "href": "guides/contribute.html#authorizing-your-computer",
+    "title": "How to contribute",
+    "section": "Authorizing your computer",
+    "text": "Authorizing your computer\nThe best way to authorize your computer to work on GitHub repositories is to use the gh command line utility. You can get it from https://cli.github.com. Once installed, open a terminal and type:\ngh auth login\nthen follow instructions to authenticate your GitHub account. This will allow you to push changes to your forked repository and create pull requests. It is typically done once per computer."
+  },
+  {
+    "objectID": "guides/contribute.html#cloning-the-repository",
+    "href": "guides/contribute.html#cloning-the-repository",
+    "title": "How to contribute",
+    "section": "Cloning the repository",
+    "text": "Cloning the repository\nYou cannot edit the official repository, but you can freely edit your forked repository. To do this, you need to clone the repository to your local machine. This creates a local copy of the repository that you can work on. To clone the repository, follow these steps:\n\nopen your terminal or command prompt\nnavigate to the directory where you want to clone the repository\ntype the following:\n\ngh repo clone &lt;your-username&gt;/mads-net.github.io.git\nreplacing &lt;your-username&gt; with your GitHub username. This will create a folder named mads-net.github.io in your current directory, containing the cloned repository. Then open the mads_doc.Rproj file if you are using RStudio. If you are using VSCode, just open that folder."
+  },
+  {
+    "objectID": "guides/contribute.html#ensure-your-repository-is-up-to-date",
+    "href": "guides/contribute.html#ensure-your-repository-is-up-to-date",
+    "title": "How to contribute",
+    "section": "Ensure your repository is up to date",
+    "text": "Ensure your repository is up to date\nOther people could contribute to the guides while you are working on your own. To ensure that your repository is up to date and to minimize the risks for conflicts, you shall pull the latest changes from the original repository. To do this, follow these steps:\n# Navigate to the cloned repository folder\ncd mads-net.github.io\n# fetch any new changes from the original repository\ngit fetch upstream\n# merge the changes into your local repository\ngit merge upstream/main"
+  },
+  {
+    "objectID": "guides/contribute.html#create-a-new-guide",
+    "href": "guides/contribute.html#create-a-new-guide",
+    "title": "How to contribute",
+    "section": "Create a new guide",
+    "text": "Create a new guide\nTo create a new guide, you can use the guides/template.qmd file as a starting point. This file contains the basic structure and formatting for a guide. Make a copy of it with a suitable name.\nIf the guide you are working is complex and is probably going to require images and/or data files, you should put the guide in a separate folder. For example, if you are writing a guide on “Data Analysis”, you could create a folder named guides/data-analysis and put the data-analysis.qmd file inside it. Quarto will automatically add that file as a new guide in the Guides page listing. Images and supporting files can then be put in the same folder, and they will be automatically linked in the guide."
+  },
+  {
+    "objectID": "guides/contribute.html#edit-the-guide",
+    "href": "guides/contribute.html#edit-the-guide",
+    "title": "How to contribute",
+    "section": "Edit the guide",
+    "text": "Edit the guide\nThe guide YAML preamble is the first thing to edit. Ensure that you set the title, author, and date fields correctly. You can also set the categories field to categorize your guide, and the abstract field to provide a brief description of the guide.\nNote that the preamble has a draft: true field. This means that the guide will not be published until you set it to draft: false. This is useful to work on the guide without it being visible on the website or when previewing the website locally. A guide in draft mode will not be listed in the Guides page, but it will be accessible via its URL.\n\n\n\n\n\n\nNote\n\n\n\nIf you want that the guide is also available in PDF format, uncomment the preamble section for the format key. In this way, the guide will be available in both HTML and PDF formats.\n\n\nRefer to the Quarto documentation for more information on how to format the guide using Quarto markdown."
+  },
+  {
+    "objectID": "guides/contribute.html#preview-the-guide",
+    "href": "guides/contribute.html#preview-the-guide",
+    "title": "How to contribute",
+    "section": "Preview the guide",
+    "text": "Preview the guide\nTo preview the guide, you can use the quarto preview command. This will start a local web server and open the guide in your default web browser. To do this, follow these steps:\n# Navigate to the cloned repository folder\ncd mads-net.github.io\n# Start the local web server\nquarto preview\n\n\n\n\n\n\nAutomatic refresh\n\n\n\nThe local web server will automatically refresh the page whenever you save changes to the guide files. This allows you to see the changes in real-time without having to manually refresh the page.\nHowever, some changes (e.g. adding new files) are not always detected. In these cases, you can manually refresh the page in your browser to see the changes, and if it does not work, you can stop the server with Ctrl+C and restart it with quarto preview."
+  },
+  {
+    "objectID": "guides/contribute.html#publish-your-contribute",
+    "href": "guides/contribute.html#publish-your-contribute",
+    "title": "How to contribute",
+    "section": "Publish your contribute",
+    "text": "Publish your contribute\nWhenever you are content with your contributed guide, you can commit your work and push it to your forked repository. before doing that, however, ensure that there are no new contribution on the uspstream repository. Since you cannot pull changes on your repository if it has pending changes, you first stash your changes, i.e. you put them temporarily aside, reverting back to a clean state (the last commit, in synchron with upstream):\ngit stash\nNow you can pull the latest changes from the original repository:\n# Fetch any new changes from the original repository\ngit fetch upstream\n# Merge the changes into your local repository\ngit merge upstream/main\nAfter this, you can reapply your changes:\ngit stash pop\nIf there were new changes from upstream, and you have changed the same files, you might have to resolve conflicts. In this case, Git will show you the files with conflicts, and you will need to manually edit them to resolve the conflicts.\nA conflict is typically marked in the file with &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD, =======, and &gt;&gt;&gt;&gt;&gt;&gt;&gt; upstream/main. You need to choose which changes to keep, or merge them together, and then remove these markers. Once you are done, you can add the resolved files to the staging area, make a new commit and publish your changes on gitHub:\ngit add .\ngit commit -m \"Resolved conflicts and updated guide\"\ngit push origin main\nNow your forked repository will be ahead of the original, upstream, repository. This means that you have changes that are not yet in the original repository. So you can now create a pull request to the original repository. This will allow the maintainers of the MADS guides collection to review your changes and merge them into the main repository. To create a pull request, follow these steps:\n\ngo to your forked repository on GitHub\nclick on the “Pull requests” tab\nclick on the “New pull request” button\nselect the branch you want to merge into the original repository (usually main)\nreview the changes and add a title and description for the pull request (be informative!!!)\nclick on the “Create pull request” button\nwait for the maintainers to review your changes and merge them into the original repository"
+  },
+  {
+    "objectID": "guides/zeroconf.html",
+    "href": "guides/zeroconf.html",
+    "title": "ZeroConf (aka Avahi) network discovery",
     "section": "",
-    "text": "Spotlight\n\n\n\nBe sure to start with MADS structure guide.\nIf you want to contribute, head on to the contribution guide.\n\n\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\nDescription\n\n\n\nCategories\n\n\n\nReading Time\n\n\n\n\n\n\n\n\nJul 7, 2025\n\n\nOTA Plugins\n\n\nPaolo Bosetti\n\n\nMADS Version 1.3.0 introduces the possibility to load plugins Over-The-Air (OTA): plugin files can be provided to agents by the broker. This allows to centralize the management of plugins and to update them without the need to manually copy compiled plugins to the devices running the agents. \n\n\nplugin, OTA, over-the-air, intermediate\n\n\n7 min\n\n\n\n\n\n\nJul 7, 2025\n\n\nParallel computing with MADS\n\n\nPaolo Bosetti\n\n\nMADS has two special agents, dealer and worker, that allow to distribute many different computations to a set of identical workers, in round-robin fashion. \n\n\nplugin, parallel computing, advanced, kubernetes, docker\n\n\n7 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nServices\n\n\nPaolo Bosetti\n\n\nOnce tested, agents can be turned into linux services, so that they start automatically on boot. \n\n\nintermediate, OS, setup, easy\n\n\n3 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nPlugins\n\n\nPaolo Bosetti\n\n\nMADS supports agents implemented as plugins in C++17. This guide explains how to create a plugin. \n\n\nadvanced, plugin, development, c++\n\n\n4 min\n\n\n\n\n\n\nJun 4, 2025\n\n\nNetwork structure\n\n\nPaolo Bosetti\n\n\nIllustrate a typical MADS network structure and its requirements. \n\n\ntemplate, basics, easy\n\n\n5 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nHow to contribute\n\n\nPaolo Bosetti\n\n\nWe explain how to contribute to the MADS guides collection. \n\n\nhow-to, easy\n\n\n7 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nContainerized MADS\n\n\nPaolo Bosetti\n\n\nThe base agents for setting up a MADS network are available as a ontainerized environment. \n\n\ndocker, easy, OS, setup\n\n\n2 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nPython Agent\n\n\nPaolo Bosetti\n\n\nThe python_agent repo on GitHub provides a MADS agent with an embedded python3 interpreter for developing MADS sgents in Python \n\n\npython, agent, easy\n\n\n4 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nZeroConf (aka Avahi) network discovery\n\n\nPaolo Bosetti\n\n\nUsing hostnames rather than IP addresses is easier and much more robust. In this guide, we learn how to setup a Linux box for advertising its address by using the Avahi protocol/service. \n\n\nnetworking, IP, configuration, OS, Linux\n\n\n2 min\n\n\n\n\n\n\nNo matching items"
+    "text": "Using IP addresses for accessing other machines is bad practice, for The IP address of a given machine can change unexpectedly — for example, because it has been assigned by a DHCP server from a dynamic pool of available IPs.\nMuch more preferable is to use hostnames, that map to IP addresses dynamically. On the other hand, This requires a DNS server properly configured and updated.\nZeroConf comes to the rescue: it is an open protocol where all nodes on the same network advertise their services (ports) and host names by broadcasting, and by sharing the same, default local domain: .local.\nThe name ZeroConf is a bit misleading, for actually there is a configuration step, although it’s minimal and simple. The configuration, additionally, is node local, decentralized, and there is no need for any central server."
   },
   {
-    "objectID": "guides/plugins.html",
-    "href": "guides/plugins.html",
-    "title": "Plugins",
+    "objectID": "guides/zeroconf.html#install-the-needed-packages",
+    "href": "guides/zeroconf.html#install-the-needed-packages",
+    "title": "ZeroConf (aka Avahi) network discovery",
+    "section": "Install the needed packages",
+    "text": "Install the needed packages\nsudo apt update && sudo apt install avahi-utils avahi-daemon openssh-server"
+  },
+  {
+    "objectID": "guides/zeroconf.html#configure-the-service",
+    "href": "guides/zeroconf.html#configure-the-service",
+    "title": "ZeroConf (aka Avahi) network discovery",
+    "section": "Configure the service",
+    "text": "Configure the service\nCreate a file named /stc/avahi/services/ssh.service with the following content:\n&lt;!-- See avahi.service(5) for more information about this configuration file --&gt;\n\n&lt;service-group&gt;\n\n  &lt;name replace-wildcards=\"yes\"&gt;%h&lt;/name&gt;\n\n  &lt;service&gt;\n    &lt;type&gt;_ssh._tcp&lt;/type&gt;\n    &lt;port&gt;22&lt;/port&gt;\n  &lt;/service&gt;\n\n&lt;/service-group&gt;\nThis is making the host accessible as %h.local, where %h is a wildcard for the current hostname, and also advertising the ssh servoice on TCP port 22.\nThe list of services advertised on the local network can be obtained with:\navahi-browse -a"
+  },
+  {
+    "objectID": "guides/zeroconf.html#apply-the-changes",
+    "href": "guides/zeroconf.html#apply-the-changes",
+    "title": "ZeroConf (aka Avahi) network discovery",
+    "section": "Apply the changes",
+    "text": "Apply the changes\nRemember to enable and start the service:\nsudo systemctl enable avahi-daemon\nsudo systemctl start avahi-daemon\nNow you can use &lt;hostname&gt;.local in place of its address: for example, when launching MADS agents, supposing the the broker is running on a device with hostname set to mads-broker, you can simply do:\nmads source -s tcp://mads-broker.local:9092 my_plugin.plugin"
+  },
+  {
+    "objectID": "guides/OTA_plugins.html",
+    "href": "guides/OTA_plugins.html",
+    "title": "OTA Plugins",
     "section": "",
-    "text": "Originally, MADS only allowed to develop monolitic agents: this required to write the whole executable code, including the management of command line arguments and loading of serrings from the INI file (either local or loaded from the broker). This solution is still possible (see the guide) and allows maximum flexibility, but it requires a good knowledse of the MADS innards and is more tedious and error prone.\nFor this reason, we developed the plugin support: the common functionality of an agent are already available, and only the data management operations need to be implemented."
+    "text": "Suppose that you have a MADS network made by a relatively large number of devices, each running one or more agents. You want to update the plugins loaded by the agents. If you have only a few devices (say 2–3), you can manually copy the plugin files to each device. But if you have many devices, this is not practical and it is also error prone, because you need to keep track of which devices have been updated and which haven’t.\nThis use case is where the idea of being able to load plugins OTA comes from. The broker can provide the plugin files to the agents, which can then load them dynamically. This allows you to update the plugins without having to manually copy the files to each device: only the broker needs to have the plugin files, and the agents will load them automatically. There is only one copy of each plugin, and no risk of mismatching versions."
   },
   {
-    "objectID": "guides/plugins.html#how-to-install-the-plugin",
-    "href": "guides/plugins.html#how-to-install-the-plugin",
-    "title": "Plugins",
-    "section": "How to install the plugin",
-    "text": "How to install the plugin\nOnce the plugin is tested (both standalone and when loaded from an agent) it should be installed in the MADS tree. Remember that the command mads -i shows where plugins are expected to be installed (usually, /usr/local/lib). To install:\ncmake --install build\nThe you can launch it as agent with:\nmads source my_source.plugin\nAnd when you are satisfield with the result, you can make it a service as explained here."
+    "objectID": "guides/OTA_plugins.html#plugin-and-agent-names",
+    "href": "guides/OTA_plugins.html#plugin-and-agent-names",
+    "title": "OTA Plugins",
+    "section": "Plugin and agent names",
+    "text": "Plugin and agent names\nIn MADS, there are three agents able to load plugins: source, filter, and sink. As for any agent, the INI section to be loaded is defined by the agent name. In turn, the latter is defined as:\n\nthe name of the agent executable for monolithic plugins\nthe name of the plugin for source, filter, and sink\n\n\n\n\n\n\n\nNote\n\n\n\nIn reality, there is also the worker agent (see here), which behaves as a filter agent but it is designed for a 1 dealer / n worker scenario for parallel computing, where a single dealer agent dispatches a list of computations to a number of identical workers in a round-robin fashion. The agent name for a worker is mandatory (no default).\n\n\nAlso, note that source, filter, and sink agents can be called without a plugin: in this case, they run as general-purpose agents that deal with input and output data (as valid JSON strings) via pipes. When this happen, the agent names are publish for the source agent, bridge for the filter agent, and feedback for the sink agent.\nThe name of an agent can be always be overridden by the -n command line option, which allows to specify a custom name for the agent. This is useful, for example, when you want to run multiple instances of the same agent with different settings.\nNow, since the OTA loading of the plugin happens after the agent has loaded its settings, the agent name must be specified with the -n CLI option, otherwise would simply launch as general purpose agent with default names.\nFor example, if the mads.ini file contains the [my_datasource] section as above, the agent must be launched as:\nmads source -s tcp://mads-broker.local:9093 -n my_datasource"
   },
   {
-    "objectID": "guides/containerized.html",
-    "href": "guides/containerized.html",
-    "title": "Containerized MADS",
-    "section": "",
-    "text": "Setting up a MADS network requires a minimum of a broker, a MongoDB server, and the logger agent. This guide explains the easiest and more portable solution to have them up and running in minuts in a Docker environment."
+    "objectID": "guides/OTA_plugins.html#dealing-with-architectures",
+    "href": "guides/OTA_plugins.html#dealing-with-architectures",
+    "title": "OTA Plugins",
+    "section": "Dealing with architectures",
+    "text": "Dealing with architectures\nWhen the plugin is provided as an attachment, the broker will send a copy of the file to the agent, which will save it to a temporary folder and load it dynamically. This means that the plugin must be compatible with the architecture of the device running the agent.\nNow suppose that we want to run the same plugin on different devices, some of which are ARM-based and some are x86-based. If the plugin is compiled for a specific architecture, it will not work on the other architecture.\nThe solution follows these steps:\n\ncompile two plugin versions, one for each architecture, and copy both files on the broker filesystem. Call them, for example, my_datasource_arm.plugin and my_datasource_x86.plugin\nin the mads.ini file, define two sections, one for each architecture with different names:\n[my_datasource_arm]\nattachment = \"/path/to/my_datasource_arm.plugin\"\n[my_datasource_x86]\nattachment = \"/path/to/my_datasource_x86.plugin\"\nwhen launching the agent, specify the correct section name with the -n option, depending on the architecture of the device running the agent:\nmads source -s tcp://mads-broker.local:9093 -n my_datasource_arm\n\nNote that, when compiling a plugin, the CMakeLists.txt file in the plugin project has an option to append an architecture suffix to the generated plugin file: if you configure the project as:\ncmake -Bbuild -DPLUGIN_SUFFIX=arm -DCMAKE_INSTALL_PREFIX=$(mads -p)\nthen the plugin will be compiled as my_datasource_arm.plugin (assuming the plugin name is my_datasource). Of course, versions for non-native architectures must be cross-compiled or compiled in a virtual machine or on the target device itself."
   },
   {
-    "objectID": "guides/containerized.html#step-1.-clone-the-repo",
-    "href": "guides/containerized.html#step-1.-clone-the-repo",
-    "title": "Containerized MADS",
-    "section": "Step 1. Clone the repo",
-    "text": "Step 1. Clone the repo\nAll you need is in the MADS_container repository. You can clone it with the following command:\ngit clone --depth 1 https://github.com/MADS-NET/MADS_container.git"
-  },
-  {
-    "objectID": "guides/containerized.html#step-2.-run-the-containers",
-    "href": "guides/containerized.html#step-2.-run-the-containers",
-    "title": "Containerized MADS",
-    "section": "Step 2. Run the containers",
-    "text": "Step 2. Run the containers\nYou can now run the containers with the following command:\ndocker compose up -d\nThis starts the three containerized processes: MogoDB, the broker, and the logger agent.\n\n\n\n\n\n\nNote\n\n\n\nYou can stop the containers at any time with the command docker compose down.\n\n\nNow the broker and the database are also accessible as if they were processes running on your host machine."
-  },
-  {
-    "objectID": "guides/containerized.html#update-images",
-    "href": "guides/containerized.html#update-images",
-    "title": "Containerized MADS",
-    "section": "Update images",
-    "text": "Update images\nTo update the images to the latest version, do:\ndocker compose pull\nfrom project root (i.e. the same folder containing compose.yml)."
-  },
-  {
-    "objectID": "guides/python_agent.html",
-    "href": "guides/python_agent.html",
-    "title": "Python Agent",
-    "section": "",
-    "text": "The Python3 MADS agent is available on https://github.com/MADS-net/python_agent.\n\n\nYou need to have python3 and python3-dev installed, or Python3 on Windows.\nAlso, you need to have installed the latest MADS version and the proper build toolkit:\n\non UNIX, this means cmake, clang, git\non Windows, this means Visual Studio 2022 (community edition is fine), git and cmake.\n\nThen proceed as follows depending on your platform.\n\n\npython3 -m venv .venv\nsource .venv/bin/activate\npip install numpy\n# also install other necessary Python libs\n\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build -j6\nsudo cmake --install build\nThe above is tested on MacOS and Ubuntu 22.04.\n\n\n\nRun the following from project root:\npython -m venv .venv\n.venv\\Scripts\\activate\npip install numpy\n# also install other necessary Python libs\nThen:\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build --config Release\nsudo cmake --install build\n\n\n\n\n\n\nEnable sudo on Windows\n\n\n\nFor sudo to work on Windows, you need to enable it on Settings &gt; System &gt; For Developers and set Enable sudo to On.\n\n\n\n\n\n\nThe new agent is installed as mads-python, so you can just type mads python -h (or mads-python -h on Windows) to know more:\n&gt; mads python -h\npython ver. 1.2.6\n\nUsage:\n  python [OPTION...]\n\n  -p, --period arg         Sampling period (default 100 ms)\n  -m, --module arg         Python module to load\n  -n, --name arg           Agent name (default to 'python')\n  -i, --agent-id arg       Agent ID to be added to JSON frames\n  -s, --settings arg       Settings file path/URI\n  -S, --save-settings arg  Save settings to ini file\n  -v, --version            Print version\n  -h, --help               Print usage\nTypically, to launch an agent named python_source, which gets its settings from a python_source section in mads.ini, and uses the Python module named source defined in the source.py file and that runs every 100 ms, the command is:\nmads python -n python_source -m source -p100\nwhere:\n\n-n python_source sets the agent name to python_source, and gets its settings from the same section in the mads.ini file\n-m source sets the Python module to source.py, which is searched for in the Python modules search paths, see below\n-p100 sets the sampling period to 100 ms\n\n\n\n\nThe Python modules are searched for in the following folders:\n\n./python\n./scripts\n../python\n../scripts\n../../python\n../../scripts\nINSTALL_PREFIX + /python\nINSTALL_PREFIX + /scripts\n\nplus any path listed in the mads.ini file under the search_path key (an array or a single string).\n\n\n\nThe following fields are typically used:\n[python_source]\nperiod = 200\nvenv = \"/path/to/.venv\"\npython_module = \"my_source\"\nsearch_paths = [\"/path/to/python/folder\"\n\n\n\n\n\n\nWarning\n\n\n\nThe section name must match the -m option argument when you launch the agent, so in the case aboxe you must use -m python_source.\n\n\nDuring development, you typically run the plugin interactively and using a python module that is under your home folder. In these conditions, you probably want to set the module name on the command line, such as mads python -n python_source -m my_module. This means that you must have the file my_module.py in the python or scripts subfolder of your current working directory.\nDuring deployment, you want to transform the agent in a service, so that you rely on the module to be loaded according to the  mads.ini file (from the python_module key), and the module is expected to be placed in &lt;INSTALL_PREFIX&gt;/python/my_module.py. Since INSTALL_PREFIX is usually /usr/local, this means that the file should be in /usr/local/python/my_module.py. Then you create a service as documented here.\n\n\n\nPython modules can be of type source, filter, or sink. The module type is defined by setting a top level variable like this, typically at the beginning of the script, just after the various imports:\nagent_type = \"sink\"\nAll the modules must implement a setup() function, which is expected to use the dictionary available in the module variable params (a dictionary) to do initial setup (opening ports or files, etc.)\nSource modules must implement a get_output() function, that produces the JSON string that will be published.\nFilter modules must implement a process() function, that is supposed to operate on the last received data dictionary (available as data, a module variable) and produce a JSON string that will be published.\nSink modules must implement a deal_with_data() function, that operates on the data dictionary, a module variable."
-  },
-  {
-    "objectID": "guides/python_agent.html#installing",
-    "href": "guides/python_agent.html#installing",
-    "title": "Python Agent",
-    "section": "",
-    "text": "You need to have python3 and python3-dev installed, or Python3 on Windows.\nAlso, you need to have installed the latest MADS version and the proper build toolkit:\n\non UNIX, this means cmake, clang, git\non Windows, this means Visual Studio 2022 (community edition is fine), git and cmake.\n\nThen proceed as follows depending on your platform.\n\n\npython3 -m venv .venv\nsource .venv/bin/activate\npip install numpy\n# also install other necessary Python libs\n\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build -j6\nsudo cmake --install build\nThe above is tested on MacOS and Ubuntu 22.04.\n\n\n\nRun the following from project root:\npython -m venv .venv\n.venv\\Scripts\\activate\npip install numpy\n# also install other necessary Python libs\nThen:\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build --config Release\nsudo cmake --install build\n\n\n\n\n\n\nEnable sudo on Windows\n\n\n\nFor sudo to work on Windows, you need to enable it on Settings &gt; System &gt; For Developers and set Enable sudo to On."
-  },
-  {
-    "objectID": "guides/python_agent.html#executing",
-    "href": "guides/python_agent.html#executing",
-    "title": "Python Agent",
-    "section": "",
-    "text": "The new agent is installed as mads-python, so you can just type mads python -h (or mads-python -h on Windows) to know more:\n&gt; mads python -h\npython ver. 1.2.6\n\nUsage:\n  python [OPTION...]\n\n  -p, --period arg         Sampling period (default 100 ms)\n  -m, --module arg         Python module to load\n  -n, --name arg           Agent name (default to 'python')\n  -i, --agent-id arg       Agent ID to be added to JSON frames\n  -s, --settings arg       Settings file path/URI\n  -S, --save-settings arg  Save settings to ini file\n  -v, --version            Print version\n  -h, --help               Print usage\nTypically, to launch an agent named python_source, which gets its settings from a python_source section in mads.ini, and uses the Python module named source defined in the source.py file and that runs every 100 ms, the command is:\nmads python -n python_source -m source -p100\nwhere:\n\n-n python_source sets the agent name to python_source, and gets its settings from the same section in the mads.ini file\n-m source sets the Python module to source.py, which is searched for in the Python modules search paths, see below\n-p100 sets the sampling period to 100 ms"
-  },
-  {
-    "objectID": "guides/python_agent.html#python-modules-search-paths",
-    "href": "guides/python_agent.html#python-modules-search-paths",
-    "title": "Python Agent",
-    "section": "",
-    "text": "The Python modules are searched for in the following folders:\n\n./python\n./scripts\n../python\n../scripts\n../../python\n../../scripts\nINSTALL_PREFIX + /python\nINSTALL_PREFIX + /scripts\n\nplus any path listed in the mads.ini file under the search_path key (an array or a single string)."
-  },
-  {
-    "objectID": "guides/python_agent.html#the-mads.ini-section",
-    "href": "guides/python_agent.html#the-mads.ini-section",
-    "title": "Python Agent",
-    "section": "",
-    "text": "The following fields are typically used:\n[python_source]\nperiod = 200\nvenv = \"/path/to/.venv\"\npython_module = \"my_source\"\nsearch_paths = [\"/path/to/python/folder\"\n\n\n\n\n\n\nWarning\n\n\n\nThe section name must match the -m option argument when you launch the agent, so in the case aboxe you must use -m python_source.\n\n\nDuring development, you typically run the plugin interactively and using a python module that is under your home folder. In these conditions, you probably want to set the module name on the command line, such as mads python -n python_source -m my_module. This means that you must have the file my_module.py in the python or scripts subfolder of your current working directory.\nDuring deployment, you want to transform the agent in a service, so that you rely on the module to be loaded according to the  mads.ini file (from the python_module key), and the module is expected to be placed in &lt;INSTALL_PREFIX&gt;/python/my_module.py. Since INSTALL_PREFIX is usually /usr/local, this means that the file should be in /usr/local/python/my_module.py. Then you create a service as documented here."
-  },
-  {
-    "objectID": "guides/python_agent.html#module-types",
-    "href": "guides/python_agent.html#module-types",
-    "title": "Python Agent",
-    "section": "",
-    "text": "Python modules can be of type source, filter, or sink. The module type is defined by setting a top level variable like this, typically at the beginning of the script, just after the various imports:\nagent_type = \"sink\"\nAll the modules must implement a setup() function, which is expected to use the dictionary available in the module variable params (a dictionary) to do initial setup (opening ports or files, etc.)\nSource modules must implement a get_output() function, that produces the JSON string that will be published.\nFilter modules must implement a process() function, that is supposed to operate on the last received data dictionary (available as data, a module variable) and produce a JSON string that will be published.\nSink modules must implement a deal_with_data() function, that operates on the data dictionary, a module variable."
-  },
-  {
-    "objectID": "guides/structure.html",
-    "href": "guides/structure.html",
-    "title": "Network structure",
-    "section": "",
-    "text": "The typical architecture of a MADS network can be represented as:\n\n\n\n\n\n\n\n\nMADS Network\n\n\n\np1\n\nPlugin 1\n\n\n\na1\n\nAgent 1\n(source)\n\n\n\np1-&gt;a1\n\n\n\n\nbroker\n\nbroker\n\n\n\na1-&gt;broker\n\n\n\n\n\np2\n\nPlugin 2\n\n\n\na2\n\nAgent 2\n(filter)\n\n\n\np2-&gt;a2\n\n\n\n\na2-&gt;broker\n\n\n\n\n\n\np3\n\nPlugin 3\n\n\n\na3\n\nAgent 3\n(sink)\n\n\n\np3-&gt;a3\n\n\n\n\na3-&gt;broker\n\n\n\n\n\na4\n\nMonolithic\nAgent (filter)\n\n\n\na4-&gt;broker\n\n\n\n\n\n\nmongo\n\n\nMongoDB\n\n\n\nlogger\n\nlogger\n\n\n\nbroker-&gt;logger\n\n\n\n\n\nlogger-&gt;mongo\n\n\nBSON\n\n\n\n\n\n\nFigure 1: MADS Network\n\n\n\n\n\n\n\n\n\n\n\nImportant\n\n\n\nRemember that the above schematic represent processes, regardless the physical machine on which they are being executed.\nFor example, the whole network could run on a single workstation, or it could be conversely distributed over multiple devices connected to the same IP network, each device running a single process/node.\n\n\nIn the figure Figure 1, the solid lines represent a ZeroMQ connection over TCP/IP, which uses compressed JSON as a data encoding protocol. Compression is preformed with the snappy library. The dashed line, conversely, represents the proprietary MongoDB protocol, with data serialized as BSON (Binary-JSON).\n\n\nWhat is the broker purpose?\nThe broker solves the issue of knowing multiple network addresses when you have a number of devices participating to the same distributed system.\nWith the aid of the broker, any separate device partaking to the MADS network only needs to know a single hostname/IP address: that of the machine running the broker.\n\n\n\n\n\n\nWarning\n\n\n\nThere can only be a single broker per network.\n\n\nRunning the broker is quite simple:\nmads broker\n\n\n\nAgents can be:\n\nmonolithic: implemented as a single executable inheriting the Mads::Agent C++ class.\nplug-in: a single executable that on runtime loads a proper plug-in (i.e. a dynamically loaded library)\n\nRegardless the type, agent can have three different behaviors:\n\nsource: they provide information to the network (e.g. by reading sensors)\nfilter: they operate and transform received information\nsink: they consume information received from the network (e.g. to store or visualize)\n\nThe MADS installer provides three general purpose agents, aptly named source, filter, and sink, that are designe do load proper plugins. The command mads plugin can be used to generate a suitable template for a new plugin to be developed."
-  },
-  {
-    "objectID": "guides/structure.html#the-broker",
-    "href": "guides/structure.html#the-broker",
-    "title": "Network structure",
-    "section": "",
-    "text": "What is the broker purpose?\nThe broker solves the issue of knowing multiple network addresses when you have a number of devices participating to the same distributed system.\nWith the aid of the broker, any separate device partaking to the MADS network only needs to know a single hostname/IP address: that of the machine running the broker.\n\n\n\n\n\n\nWarning\n\n\n\nThere can only be a single broker per network.\n\n\nRunning the broker is quite simple:\nmads broker"
-  },
-  {
-    "objectID": "guides/structure.html#the-agents",
-    "href": "guides/structure.html#the-agents",
-    "title": "Network structure",
-    "section": "",
-    "text": "Agents can be:\n\nmonolithic: implemented as a single executable inheriting the Mads::Agent C++ class.\nplug-in: a single executable that on runtime loads a proper plug-in (i.e. a dynamically loaded library)\n\nRegardless the type, agent can have three different behaviors:\n\nsource: they provide information to the network (e.g. by reading sensors)\nfilter: they operate and transform received information\nsink: they consume information received from the network (e.g. to store or visualize)\n\nThe MADS installer provides three general purpose agents, aptly named source, filter, and sink, that are designe do load proper plugins. The command mads plugin can be used to generate a suitable template for a new plugin to be developed."
-  },
-  {
-    "objectID": "guides/worker.html",
-    "href": "guides/worker.html",
-    "title": "Parallel computing with MADS",
-    "section": "",
-    "text": "Sometimes, we want to explore a large parameter space, and run multiple time-demanding simulations over a grid of points in the parameter space. This is the case for example when we want to run a sensitivity analysis, or when we want to explore the effect of different parameters on the model output and perhaps find the optimal set of parameters for a given objective function.\nIf we have at hand a number of machines with multiple cores, we can effectively scale the problem by running each simulation on a different machine, or on a different core of the same machine. This is particularly useful when the simulations are independent and can be run in parallel."
-  },
-  {
-    "objectID": "guides/worker.html#example-deployment",
-    "href": "guides/worker.html#example-deployment",
-    "title": "Parallel computing with MADS",
-    "section": "Example deployment",
-    "text": "Example deployment\nKubernetes deployments are YAML files that declare the configuration for each instance. a workable example is:\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: worker\n  namespace: default\nspec:\n  replicas: 5\n  selector:\n    matchLabels:\n      app: worker\n  template:\n    metadata:\n      labels:\n        app: worker\n    spec:\n      containers:\n        - name: worker\n          image: \"p4010/mads:latest\"\n          args: [\"worker\", \"-s\", \"tcp://198.19.249.3:9092\", \"-n\", \"test_worker_arm64\"]\n          resources:\n            limits:\n              cpu: 200m\n              memory: 500Mi\n            requests:\n              cpu: 100m\n              memory: 200Mi\n          ports:\n            - containerPort: 9091\n              name: zmq-in\n            - containerPort: 9092\n              name: zmq-ini\n            - containerPort: 9093\n              name: zmq-deal\nThis is defining each worker as an instance of the p4010/mads:latest Docker image, which is the official MADS image on Docker Hub. The args field specifies the command line arguments to pass to the worker agent, including the broker address and the worker name. In this case, we are assuming that Kubernetes runs on an ARM64 architecture, and the worker name is set to test_worker_arm64 (see OTA Plugins for more details on the worker name).\nWith this configuration saved as `manifest.yml, we can deploy the workers to the Kubernetes cluster with the following command:\nkubectl apply -f manifest.yml\nThis will start 5 replicas of the same worker instance, each loading the plugin OTA from the broker. If we want (and can) scale up the number of workers, we can do it transparently without disrupting any operation:\nkubectl scale deployments/worker --replicas=100\n\n\n\n\n\n\nWarning\n\n\n\nThe maximum number of replicas shall be less or equal to the total number of cores in the Kubernetes cluster. If you try to scale up beyond that, CPU resources will be further subdivided among the workers, and each worker will get less CPU time, which may lead to performance degradation.\n\n\nWhen we are done, we can scale down the number of workers to zero, or delete the deployment altogether:\nkubectl delete deployments worker"
-  },
-  {
-    "objectID": "guides/worker.html#keeping-track-of-completed-tasks",
-    "href": "guides/worker.html#keeping-track-of-completed-tasks",
-    "title": "Parallel computing with MADS",
-    "section": "Keeping track of completed tasks",
-    "text": "Keeping track of completed tasks\nThe number of submitted and completed tasks can be easily monitored with a Python agent:\nimport json\nagent_type = \"sink\"\n\ndef setup():\n  print(\"[Python] Setting up sink...\")\n  print(\"[Python] Parameters: \" + json.dumps(params))\n  state[\"submitted\"] = 0\n  state[\"accepted\"] = 0\n \ndef deal_with_data():\n  if topic == \"dealer\":\n    state[\"submitted\"] += 1\n  if topic == \"test_worker\":\n    state[\"accepted\"] += 1\n  print(\"\\33[2K[Python] Submitted: \" + str(state[\"submitted\"]) + \", Accepted: \" + str(state[\"accepted\"]) + \", Pending: \" + str(state[\"submitted\"] - state[\"accepted\"]), end=\"\\r\")\nSave this as counter.py in the folder usr/local/scripts under the MADS prefix directory (given by mads -p), add the following section to the INI file:\n[counter]\nsub_topic = [\"dealer\", \"test_worker\"]\npython_module = \"counter\"\nthen run the agent with the command:\nmads python -n counter"
+    "objectID": "guides/OTA_plugins.html#command-line-vs.-attachment",
+    "href": "guides/OTA_plugins.html#command-line-vs.-attachment",
+    "title": "OTA Plugins",
+    "section": "Command line vs. attachment",
+    "text": "Command line vs. attachment\nNote that command line options always override the settings in the mads.ini file, so if you also specify the plugin name, the broker attachment will be ignored. For example, the following command will not load the plugin from the broker, but will use the one specified on the command line (on the local filesystem):\nmads source -s tcp://mads-broker.local:9093 -n my_datasource my_datasource.plugin"
   }
 ]
