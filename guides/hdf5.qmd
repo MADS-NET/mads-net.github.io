@@ -143,7 +143,7 @@ mads sink -s tcp://broker.host:9092 hdf5_writer.plugin
 
 Of course, if the plugin runs on the same broker machine, you can just use `mads sink hdf5_writer.plugin`. The initial output is something like:
 
-```
+```sh
 Agent: hdf5_writer
   Settings file:    tcp://localhost:9092
   Pub endpoint:     tcp://localhost:9090
@@ -171,3 +171,36 @@ As we see, within the HDF5 file data are collected into **groups** (folders), on
 * when the keypath produces a vector, the dataset is a 2D table with one column per element of the vector
 * timecode and timestamp are collected as vectors (same length of any other table)
 * timecode is stored as a string according to ISO 8601 format, which is the default for MADS
+
+The plugin CMake install command also installs three command-line tools to inspect the HDF5 file:
+
+* `h5ls`: lists the contents of an HDF5 file
+* `h5watch`: watches an HDF5 file for changes
+* `h5stat`: displays statistics about an HDF5 file
+
+So, for example, we can list the contents of the file using:
+
+```sh
+h5ls -r /path/to/test.h5
+```
+
+Which produces an output like:
+
+```sh
+/                        Group
+/arduino                 Group
+/arduino/data.AI1        Dataset {303/Inf}
+/arduino/data.AI2        Dataset {303/Inf}
+/arduino/hostname        Dataset {303/Inf}
+/arduino/timecode        Dataset {303/Inf}
+/arduino/timestamp       Dataset {303/Inf}
+```
+
+Where `{303/Inf}` indicates that the dataset has 303 elements and is not limited in size (i.e., it can grow indefinitely). The the `h5stat` command can be used to display statistics about the file, such as the number of datasets, groups, and attributes, as well as the size of the file.
+
+Finally, `h5watch` command can be used to monitor the file for changes, which is useful when the data acquisition is still running:
+
+```sh
+h5watch /path/to/test.h5/arduino/data.AI1
+# will watch for changes untile CTRL-C
+```
