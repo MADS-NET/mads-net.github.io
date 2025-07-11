@@ -36,6 +36,9 @@ h1.title {
   text-decoration-color: $link-color;
 }
 
+.dropdown-item:hover {
+  background-color: $link-color;
+}
 
 .navbar-brand-container {
   max-width: 100%;
@@ -44,6 +47,10 @@ h1.title {
 .navbar-title {
   font-size: $h3-font-size;
   font-weight: $headings-font-weight;
+}
+
+.active {
+  text-decoration: underline;
 }
 
 .navbar-logo {

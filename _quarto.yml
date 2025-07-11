@@ -6,10 +6,16 @@ website:
   description: "MADS - Multi-Agent Distributed System"
   site-url: "https://mads-net.github.io"
   draft-mode: unlinked
+  back-to-top-navigation: true
+  reader-mode: true
+  page-footer: 
+    left: "Paolo Bosetti, [BY-NC-SA4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)" 
   navbar:
     left:
       - href: guides.qmd
         text: "Guides"
+      - href: who_is_using.qmd
+        text: "Use cases"
       - text: "Presentations"
         menu:
           - href: presentations/intro.qmd
@@ -17,6 +23,14 @@ website:
     right:
       - href: about.qmd
         text: "About"
+      - icon: github
+        menu:
+          - text: Source Code
+            href:  https://github.com/pbosetti/mads
+          - text: Issues
+            href: https://github.com/pbosetti/MADS/issues
+          - text: Plugins
+            href:  https://github.com/MADS-Net
 
 format:
   html:
