@@ -10,14 +10,14 @@ categories: [intro, meeting]
 format: revealjs
 abstract: |
   A high level introduction to the MADS Framework.
-filters:
-  - github-corner
-github-corner:
-  url: "https://www.github.com/pbosetti/mads"
-  logo-color: "white"
-  background-color: "#1c84e5"
-  size: 150
-  position: "left"
+# filters:
+#   - github-corner
+# github-corner:
+#   url: "https://www.github.com/pbosetti/mads"
+#   logo-color: "white"
+#   background-color: "#1c84e5"
+#   size: 150
+#   position: "left"
 ---
 
 
