@@ -344,21 +344,21 @@ Warning
 <p>Now that the plugin is installed and configured, you can use it as a sink plugin:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> sink <span class="at">-s</span> tcp://broker.host:9092 hdf5_writer.plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Of course, if the plugin runs on the same broker machine, you can just use <code>mads sink hdf5_writer.plugin</code>. The initial output is something like:</p>
-<pre><code>Agent: hdf5_writer
-  Settings file:    tcp://localhost:9092
-  Pub endpoint:     tcp://localhost:9090
-  Pub topic:        hdf5_writer
-  Sub endpoint:     tcp://localhost:9091
-  Sub topics:       arduino topic2 control
-  Compression:      enabled
-  Timecode FPS:     25
-  Timecode offset:  0 s
-Searching for installed plugin in the default location /Users/p4010/usr/local/lib
-  Plugin:           /usr/local/lib/hdf5_writer.plugin (loaded as hdf5_writer)
-  File name         /tmp/hdf5_plugin/test.h5
-  Keypath sep.      .
-  Keypaths          arduino.timecode, arduino.timestamp, arduino.hostname, arduino.data.AI1, arduino.data.AI2, temp_sensor.timecode, temp_sensor.timestamp, temp_sensor.hostname, temp_sensor.data.Temperature, temp_sensor.data.Humidity (total: 10)
-Sink plugin started</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Agent:</span> hdf5_writer</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Settings</span> file:    tcp://localhost:9092</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Pub</span> endpoint:     tcp://localhost:9090</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Pub</span> topic:        hdf5_writer</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Sub</span> endpoint:     tcp://localhost:9091</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Sub</span> topics:       arduino topic2 control</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Compression:</span>      enabled</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Timecode</span> FPS:     25</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Timecode</span> offset:  0 s</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Searching</span> for installed plugin in the default location /Users/p4010/usr/local/lib</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Plugin:</span>           /usr/local/lib/hdf5_writer.plugin <span class="er">(</span><span class="ex">loaded</span> as hdf5_writer<span class="kw">)</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="ex">File</span> name         /tmp/hdf5_plugin/test.h5</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Keypath</span> sep.      .</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Keypaths</span>          arduino.timecode, arduino.timestamp, arduino.hostname, arduino.data.AI1, arduino.data.AI2, temp_sensor.timecode, temp_sensor.timestamp, temp_sensor.hostname, temp_sensor.data.Temperature, temp_sensor.data.Humidity <span class="er">(</span><span class="ex">total:</span> 10<span class="kw">)</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="ex">Sink</span> plugin started</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The content of the HDF5 file can be quickly inspected using the <code>HDFView</code> GUI tool:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -373,6 +373,26 @@ Sink plugin started</code></pre>
 <li>timecode and timestamp are collected as vectors (same length of any other table)</li>
 <li>timecode is stored as a string according to ISO 8601 format, which is the default for MADS</li>
 </ul>
+<p>The plugin CMake install command also installs three command-line tools to inspect the HDF5 file:</p>
+<ul>
+<li><code>h5ls</code>: lists the contents of an HDF5 file</li>
+<li><code>h5watch</code>: watches an HDF5 file for changes</li>
+<li><code>h5stat</code>: displays statistics about an HDF5 file</li>
+</ul>
+<p>So, for example, we can list the contents of the file using:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">h5ls</span> <span class="at">-r</span> /path/to/test.h5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Which produces an output like:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/</span>                        Group</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/arduino</span>                 Group</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">/arduino/data.AI1</span>        Dataset {303/Inf}</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="ex">/arduino/data.AI2</span>        Dataset {303/Inf}</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ex">/arduino/hostname</span>        Dataset {303/Inf}</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ex">/arduino/timecode</span>        Dataset {303/Inf}</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="ex">/arduino/timestamp</span>       Dataset {303/Inf}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Where <code>{303/Inf}</code> indicates that the dataset has 303 elements and is not limited in size (i.e., it can grow indefinitely). The the <code>h5stat</code> command can be used to display statistics about the file, such as the number of datasets, groups, and attributes, as well as the size of the file.</p>
+<p>Finally, <code>h5watch</code> command can be used to monitor the file for changes, which is useful when the data acquisition is still running:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">h5watch</span> /path/to/test.h5/arduino/data.AI1</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># will watch for changes untile CTRL-C</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 </section>
