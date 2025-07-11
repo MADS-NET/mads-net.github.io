@@ -5,15 +5,33 @@ affiliation: "\nUniversity of Trento, Italy"
 date: "06/02/2025"
 date--modified: today
 format: html
-draft: true
+draft: false
 ---
 
 # Research groups using MADS
 
+## University of Trento (Italy)
 
+Within the national research project "*Miroscic*", Paolo Bosetti has originally developed MADS as a way to orchestrate and manage the data acquired from a collection of heterogeneous sensors, including smart cameras, ToF cameras, and other IoT devices for ensuring safety of operators in industrial environments.
+
+The MADS architecture is currently being used by researchers in the [MiRO lab](https://www.miro.ing.unitn.it){taret="_blank"} for building the software stack of a **robotic walker** for rehabilitation of patients with neurological disorders. 
+
+## University of Brescia (Italy)
+
+Within the national research project "*Miroscic*", the group of **prof. Matteo Lancini** of the [MMTLab](https://www.unibs.it/it/misure-meccaniche-e-termiche){target="_blank"} of the University of Brescia is using MADS to develop the edge cameras and software that provides 3D estimate of human pose by using AI techniques. 
+
+## University or Perugia (Italy)
+
+Within the national research project "*Miroscic*", the group of **prof. Roberto Marsili** at the [Measurement Group](http://www.misure.unipg.it/#xl_xr_page_index){target="_blank"} of the University of Perugia is using MADS collect data from wearable sensors and RFID transponders.
+
+## INSA Toulouse (France)
+
+The group coordinated by **prof. Anna-Carla Araujo** at the INSA Toulouse, [SUMO group](https://ica.cnrs.fr/sumo-group/){target="_blank"} of Institut Clément Ader is using MADS to collect data from multiple sensors in a machining shopfloor, with the aim of measuring and improving energy efficiency of the production processes.
 
 
 
 
 # Teaching
 
+Starting from Academic Year 2025--26, a new experimental course named *Multi-Agent System for Smart
+Machining (MASSMa)* will be offered at the same time at the University of Trento and INSA Toulouse, under the [ECIU](https://eciu.eu){target="_blank"} umbrella. The course will be taught by **Paolo Bosetti** and **Anna-Carla Araujo**, and will use MADS as the main software platform for collecting field data from an industrial shopfloor. Students will also learn how to exploit those data to build process control models both in a classical way (SPC), and in a machine-learning approach.
