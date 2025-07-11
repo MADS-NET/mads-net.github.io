@@ -14,7 +14,7 @@ format: html
 #   pdf:
 #     toc: true
 draft: false
-categories: [sink, hdf5, logging, data]
+categories: [plugin, sink, hdf5, logging, data]
 abstract: |
   MADS comes packaged with a logging facility to MongoDB database. For some applications, a file-based logging system is more appropriate. This guide explains how to use the HDF5 logger, which is a file-based sink for MADS using the hierarchical data format.
 ---
@@ -95,7 +95,7 @@ Let's consider an example. We want to log the data collected by an agent running
 }
 ```
 
-The HDF5 logger always saves the field `timestamp`, `timecode`, and `hostname`. Everything else is optionally and must be specified on the INI file using *keypaths*. A keypath is a string representing the hierarchical path within the JSON structure. For example, the `["data"]["AI1"]` field can be accessed using the keypath `data.AI1`, where the field separator is the dot (`.`) by default, and can be changed using the `keypath_separator` parameter.
+The HDF5 logger always saves the field `timestamp`, `timecode`, and `hostname`. Everything else is optional and must be specified on the INI file using *keypaths*. A keypath is a string representing the hierarchical path within the JSON structure. For example, the `["data"]["AI1"]` field can be accessed using the keypath `data.AI1`, where the field separator is the dot (`.`) by default, and can be changed using the `keypath_separator` parameter.
 
 A valid INI section would then be:
 
