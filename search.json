@@ -270,7 +270,7 @@
     "href": "presentations/intro.html#hdf5-logger",
     "title": "MADS Intro",
     "section": " HDF5 logger",
-    "text": "HDF5 logger\n\nAmong the official MADS plugins, there is also an HDF5 logger\nThe hdf5_writer.plugin is a MADS sink that stores data in an HDF5 file\nWithin the HDF5 file, each topic goes into a separate group\nmessages are queued, so a scalar becomes a vector, a vector becomes a table\nthe INI file must specify which data has to be saved, using a keypath syntax: \"key1.subkey2.subsubkey3\" corresponds to JSON fields data[\"key1\"][\"subkey2\"][\"subsubkey3\"]\ntimestamp, timecode, and hostname are automatically recorded into separate datasets\n\n\n\n\n\n\n\nNote\n\n\nThe plugin is available on https://github.com/MADS-Net/hdf5_plugin"
+    "text": "HDF5 logger\n\nAmong the official MADS plugins, there is also an HDF5 logger\nThe hdf5_writer.plugin is a MADS sink that stores data in an HDF5 file\nWithin the HDF5 file, each topic goes into a separate group\nmessages are queued, so a scalar becomes a vector, a vector becomes a table\nthe INI file must specify which data has to be saved, using a keypath syntax: \"key1.subkey2.subsubkey3\" corresponds to JSON fields data[\"key1\"][\"subkey2\"][\"subsubkey3\"]\ntimestamp, timecode, and hostname are automatically recorded into separate datasets\n\n\n\n\n\n\n\nNote\n\n\nThe plugin is available on https://github.com/MADS-Net/hdf5_plugin\n\n\n\n\n\nAlso see the guide page for more details on the hdf5_writer.plugin"
   },
   {
     "objectID": "presentations/intro.html#mads-services",
