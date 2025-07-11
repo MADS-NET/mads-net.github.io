@@ -234,7 +234,7 @@ font-style: inherit;">}</span></span>
 <span id="cb3-18"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">}</span></span></code></pre></div>
-<p>The HDF5 logger always saves the field <code>timestamp</code>, <code>timecode</code>, and <code>hostname</code>. Everything else is optionally and must be specified on the INI file using <em>keypaths</em>. A keypath is a string representing the hierarchical path within the JSON structure. For example, the <code>["data"]["AI1"]</code> field can be accessed using the keypath <code>data.AI1</code>, where the field separator is the dot (<code>.</code>) by default, and can be changed using the <code>keypath_separator</code> parameter.</p>
+<p>The HDF5 logger always saves the field <code>timestamp</code>, <code>timecode</code>, and <code>hostname</code>. Everything else is optional and must be specified on the INI file using <em>keypaths</em>. A keypath is a string representing the hierarchical path within the JSON structure. For example, the <code>["data"]["AI1"]</code> field can be accessed using the keypath <code>data.AI1</code>, where the field separator is the dot (<code>.</code>) by default, and can be changed using the <code>keypath_separator</code> parameter.</p>
 <p>A valid INI section would then be:</p>
 <div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb4-1"><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -567,6 +567,7 @@ font-style: inherit;"># will watch for changes untile CTRL-C</span></span></code
 </section>
 
  ]]></description>
+  <category>plugin</category>
   <category>sink</category>
   <category>hdf5</category>
   <category>logging</category>
