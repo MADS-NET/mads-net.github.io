@@ -314,6 +314,10 @@ The plugin is available on <https://github.com/MADS-Net/hdf5_plugin>{target="_bl
 :::
 
 
+:::aside
+Also see the [guide page](/guides/hdf5.qmd) for more details on the `hdf5_writer.plugin`
+:::
+
 # Services
 
 Automate it!
@@ -527,3 +531,10 @@ Ideally, the worker plugin is launched in $n$ instances on a Kubernetes cluster;
 * {{< bi github >}} MADS homepage: <https://github.com/pbosetti/MADS>
 * {{< bi github >}} MADS Plugins: <https://github.com/MADS-net>
 * {{< bi envelope >}} Developer: [paolo.bosetti@unitn.it](mailto:paolo.bosetti@unitn.it)
+
+# Partners
+
+* University of Trento, Italy
+* INSA Toulouse, France
+* University of Brescia, Italy
+* University of Perugia, Italy
