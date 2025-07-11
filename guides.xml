@@ -566,7 +566,7 @@ font-style: inherit;"># will watch for changes untile CTRL-C</span></span></code
 </section>
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>plugin</category>
   <category>sink</category>
   <category>hdf5</category>
@@ -767,7 +767,7 @@ font-style: inherit;"> "py" # WARNING: NO LEADING DOT!</span></span></code></pre
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>plugin</category>
   <category>OTA</category>
   <category>over-the-air</category>
@@ -1531,7 +1531,7 @@ font-style: inherit;">-n</span> counter</span></code></pre></div>
 </section>
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>plugin</category>
   <category>parallel computing</category>
   <category>advanced</category>
@@ -1749,7 +1749,7 @@ Tip
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>intermediate</category>
   <category>OS</category>
   <category>setup</category>
@@ -1905,7 +1905,7 @@ font-style: inherit;">mads</span> source my_source.plugin</span></code></pre></d
 </section>
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>advanced</category>
   <category>plugin</category>
   <category>development</category>
@@ -2351,7 +2351,7 @@ Important
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>template</category>
   <category>basics</category>
   <category>easy</category>
@@ -2553,7 +2553,7 @@ font-style: inherit;">git</span> push origin main</span></code></pre></div>
 </section>
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>how-to</category>
   <category>easy</category>
   <guid>https://mads-net.github.io/guides/contribute.html</guid>
@@ -2628,7 +2628,7 @@ font-style: inherit;">docker</span> compose pull</span></code></pre></div>
 </section>
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>docker</category>
   <category>easy</category>
   <category>OS</category>
@@ -2971,7 +2971,7 @@ Note
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>python</category>
   <category>agent</category>
   <category>easy</category>
@@ -3088,7 +3088,7 @@ font-style: inherit;">-s</span> tcp://mads-broker.local:9092 my_plugin.plugin</s
 </section>
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>networking</category>
   <category>IP</category>
   <category>configuration</category>
