@@ -44,7 +44,7 @@ sudo apt update && sudo apt install avahi-utils avahi-daemon openssh-server
 
 ## Configure the service
 
-Create a file named `/stc/avahi/services/ssh.service` with the following content:
+Create a file named `/etc/avahi/services/ssh.service` with the following content:
 
 ```xml
 <!-- See avahi.service(5) for more information about this configuration file -->
