@@ -41,13 +41,13 @@ So, if the service is enabled, it starts automatically on boot; if it is disable
 
 # How to create a MADS service
 
-Suppose that you knwo that the following command launches properly an agent:
+Suppose that you know that the following command launches properly an agent:
 
 ```bash
 mads source -i in0_01 arduino.plugin
 ```
 
-Now you want turn this command into a service. Just put `mads service <service_name` in forn t of that command line, e.g.:
+Now you want turn this command into a service. Just put `mads service <service_name>` in front of that command line, e.g.:
 
 ```bash
 mads service arduino source -i in0_01 arduino.plugin
