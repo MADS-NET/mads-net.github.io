@@ -133,6 +133,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Guides</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="../why.html"> 
+<span class="menu-text">Why MADS?</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../who_is_using.html"> 
 <span class="menu-text">Use cases</span></a>
   </li>  
@@ -249,7 +253,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">July 16, 2025</p>
+      <p class="date-modified">July 29, 2025</p>
     </div>
   </div>
     
@@ -285,6 +289,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>will provide the help message for the MADS command line interface, as if you had run <code>mads -h</code> on your host machine.</p>
 <p>Note that <code>mads</code> command require a valid <code>mads.ini</code> file located in the <code>etc</code> folder of the <code>mads</code> prefix directory, which you can obtain by running the <code>mads -p</code> (i.e.&nbsp;<code>docker run --rm -it p4010/mads -p</code>). So you need to have a valid <code>mads.ini</code> file in a local folder and then mount that folder into the container with the <code>-v</code> option. For example, if you have a valid <code>mads.ini</code> file in the folder <code>/path/to/mads/etc</code>, you can run the broker command as follows:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-it</span> <span class="at">-v</span> /path/to/mads/etc/mads.ini:/usr/local/etc/mads.ini p4010/mads broker</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>you also want to <strong>map the ports</strong>, i.e.&nbsp;to expose to your host machine the ports opened by the container. The relevant <code>docker</code> option is <code>-p</code>, which maps a port on the host machine to a port on the container. For a typical MADS command, that would be:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-it</span> <span class="at">-v</span> /path/to/mads/etc/mads.ini:/usr/local/etc/mads.ini p4010/mads <span class="at">-p9090:9090</span> <span class="at">-p9092:9092</span> broker</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -296,7 +302,7 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <p>For brevity, you could define an alias on your shell:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">alias</span> dmads=<span class="st">"docker run --rm -it -v /path/to/etc/mads.ini:/usr/local/etc/mads.ini p4010/mads"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">alias</span> dmads=<span class="st">"docker run --rm -it -v /path/to/etc/mads.ini:/usr/local/etc/mads.ini -p9090:9090 -p9092:9092 p4010/mads"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>and then simply use <code>dmads</code> in place of <code>mads</code>.</p>
 </div>
 </div>
@@ -308,12 +314,12 @@ Note
 <section id="step-1.-clone-the-repo" class="level2">
 <h2 class="anchored" data-anchor-id="step-1.-clone-the-repo">Step 1. Clone the repo</h2>
 <p>All you need is in the <a href="https://github.com/MADS-NET/MADS_container">MADS_container</a> repository. You can clone it with the following command:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--depth</span> 1 https://github.com/MADS-NET/MADS_container.git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--depth</span> 1 https://github.com/MADS-NET/MADS_container.git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="step-2.-run-the-containers" class="level2">
 <h2 class="anchored" data-anchor-id="step-2.-run-the-containers">Step 2. Run the containers</h2>
 <p>You can now run the containers with the following command:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This starts the three containerized processes: MogoDB, the broker, and the logger agent.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -333,7 +339,7 @@ Note
 <section id="update-images" class="level2">
 <h2 class="anchored" data-anchor-id="update-images">Update images</h2>
 <p>To update the images to the latest version, do:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose pull</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose pull</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>from project root (i.e.&nbsp;the same folder containing <code>compose.yml</code>).</p>
 
 
