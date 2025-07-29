@@ -14,6 +14,8 @@ website:
     left:
       - href: guides.qmd
         text: "Guides"
+      - href: why.qmd
+        text: "Why MADS?"
       - href: who_is_using.qmd
         text: "Use cases"
       - text: "Presentations"

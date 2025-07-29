@@ -54,11 +54,17 @@ Note that `mads` command require a valid `mads.ini` file located in the `etc` fo
 docker run --rm -it -v /path/to/mads/etc/mads.ini:/usr/local/etc/mads.ini p4010/mads broker
 ```
 
+you also want to **map the ports**, i.e. to expose to your host machine the ports opened by the container. The relevant `docker` option is `-p`, which maps a port on the host machine to a port on the container. For a typical MADS command, that would be:
+
+```sh
+docker run --rm -it -v /path/to/mads/etc/mads.ini:/usr/local/etc/mads.ini p4010/mads -p9090:9090 -p9092:9092 broker
+```
+
 :::callout-note
 For brevity, you could define an alias on your shell:
 
 ```sh
-alias dmads="docker run --rm -it -v /path/to/etc/mads.ini:/usr/local/etc/mads.ini p4010/mads"
+alias dmads="docker run --rm -it -v /path/to/etc/mads.ini:/usr/local/etc/mads.ini -p9090:9090 -p9092:9092 p4010/mads"
 ```
 
 and then simply use `dmads` in place of `mads`.
