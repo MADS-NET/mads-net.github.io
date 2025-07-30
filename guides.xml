@@ -1745,6 +1745,16 @@ Tip
 </div>
 <p>Finally, enable the service with <code>sudo systemctl enable mads-arduino.service</code>.</p>
 <p>Note that enabling the service does not makes it start: to do so, you either have to reboot the machine or to manually start with <code>sudo systemctl start mads-arduino.service</code>.</p>
+</section>
+<section id="special-case-broker-service" class="level1">
+<h1>Special case: broker service</h1>
+<p>The broker launched as <code>mads broker</code> interacts with the console, waiting for keystrokes. This is not ideal for a service, and <strong>would increase the CPU load unnecessarily</strong>.</p>
+<p>To avoid this problem, the broker shall be called with the <code>-d</code> (daemon) option:</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sudo</span> mads service broker broker <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-d</span></span></code></pre></div>
 
 
 </section>

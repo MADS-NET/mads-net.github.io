@@ -202,6 +202,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#why-services" id="toc-why-services" class="nav-link active" data-scroll-target="#why-services">Why services</a></li>
   <li><a href="#what-is-a-service" id="toc-what-is-a-service" class="nav-link" data-scroll-target="#what-is-a-service">What is a service</a></li>
   <li><a href="#how-to-create-a-mads-service" id="toc-how-to-create-a-mads-service" class="nav-link" data-scroll-target="#how-to-create-a-mads-service">How to create a MADS service</a></li>
+  <li><a href="#special-case-broker-service" id="toc-special-case-broker-service" class="nav-link" data-scroll-target="#special-case-broker-service">Special case: broker service</a></li>
   </ul>
 </nav>
     </div>
@@ -247,7 +248,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">July 29, 2025</p>
+      <p class="date-modified">July 30, 2025</p>
     </div>
   </div>
     
@@ -349,6 +350,12 @@ Tip
 </div>
 <p>Finally, enable the service with <code>sudo systemctl enable mads-arduino.service</code>.</p>
 <p>Note that enabling the service does not makes it start: to do so, you either have to reboot the machine or to manually start with <code>sudo systemctl start mads-arduino.service</code>.</p>
+</section>
+<section id="special-case-broker-service" class="level1">
+<h1>Special case: broker service</h1>
+<p>The broker launched as <code>mads broker</code> interacts with the console, waiting for keystrokes. This is not ideal for a service, and <strong>would increase the CPU load unnecessarily</strong>.</p>
+<p>To avoid this problem, the broker shall be called with the <code>-d</code> (daemon) option:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mads service broker broker <span class="at">-d</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 </section>
