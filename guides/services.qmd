@@ -109,3 +109,15 @@ The fist way is the suggested one, unless you really need to adjust the service 
 Finally, enable the service with `sudo systemctl enable mads-arduino.service`.
 
 Note that enabling the service does not makes it start: to do so, you either have to reboot the machine or to manually start with `sudo systemctl start mads-arduino.service`.
+
+
+
+# Special case: broker service
+
+The broker launched as `mads broker` interacts with the console, waiting for keystrokes. This is not ideal for a service, and **would increase the CPU load unnecessarily**. 
+
+To avoid this problem, the broker shall be called with the `-d` (daemon) option:
+
+```bash
+sudo mads service broker broker -d
+```
