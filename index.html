@@ -9,7 +9,7 @@
 <meta name="author" content="Paolo Bosetti">
 <meta name="dcterms.date" content="2025-06-02">
 
-<title>MADS: Multi-Agent Distributed System – MADS</title>
+<title>MADS: Multi-Agent Distributed System</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -81,10 +81,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="https://avatars.githubusercontent.com/u/177097168?s=200&amp;v=4" alt="" class="navbar-logo">
-    </a>
-    <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">MADS</span>
+    <img src="./images/logo.png" alt="" class="navbar-logo">
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -169,7 +166,7 @@ ul.task-list li input[type="checkbox"] {
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -202,9 +199,17 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="what-is-it" class="level1">
+<section id="what-is-it" class="level1 page-columns page-full">
 <h1>What is it</h1>
-<p>MADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/logo.png" class="img-fluid figure-img"></p>
+<figcaption>Multi-Agent Distributed System</figcaption>
+</figure>
+</div>
+</div></div><p>MADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.</p>
 <p>It is made by a main set of executables available in the <a href="https://github.com/pbosetti/MADS">MADS tools collection</a> repo, which also provides installers for Linux, MacOS and Windows.</p>
 <p>The MADS tools collection includes a broker and a set of general purpose agents that can act as <strong>sources</strong>, <strong>filters</strong>, or <strong>sinks</strong>. The actual operations performed by agents can be customized either via scripting languages (using simple popen interface), or by implementing dedicated plugins in C++.</p>
 <p>Some of the available plugins are:</p>
