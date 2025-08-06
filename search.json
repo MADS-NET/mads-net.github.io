@@ -163,65 +163,65 @@
   {
     "objectID": "who_is_using.html",
     "href": "who_is_using.html",
-    "title": "Who is using MADS",
+    "title": "Who is using ",
     "section": "",
     "text": "Within the national research project “Miroscic”, Paolo Bosetti has originally developed MADS as a way to orchestrate and manage the data acquired from a collection of heterogeneous sensors, including smart cameras, ToF cameras, and other IoT devices for ensuring safety of operators in industrial environments.\nThe MADS architecture is currently being used by researchers in the MiRO lab for building the software stack of a robotic walker for rehabilitation of patients with neurological disorders.\n\n\n\nWithin the national research project “Miroscic”, the group of prof. Matteo Lancini of the MMTLab of the University of Brescia is using MADS to develop the edge cameras and software that provides 3D estimate of human pose by using AI techniques.\n\n\n\nWithin the national research project “Miroscic”, the group of prof. Roberto Marsili at the Measurement Group of the University of Perugia is using MADS collect data from wearable sensors and RFID transponders.\n\n\n\nThe group coordinated by prof. Anna-Carla Araujo at the INSA Toulouse, SUMO group of Institut Clément Ader is using MADS to collect data from multiple sensors in a machining shopfloor, with the aim of measuring and improving energy efficiency of the production processes."
   },
   {
     "objectID": "who_is_using.html#university-of-trento-italy",
     "href": "who_is_using.html#university-of-trento-italy",
-    "title": "Who is using MADS",
+    "title": "Who is using ",
     "section": "",
     "text": "Within the national research project “Miroscic”, Paolo Bosetti has originally developed MADS as a way to orchestrate and manage the data acquired from a collection of heterogeneous sensors, including smart cameras, ToF cameras, and other IoT devices for ensuring safety of operators in industrial environments.\nThe MADS architecture is currently being used by researchers in the MiRO lab for building the software stack of a robotic walker for rehabilitation of patients with neurological disorders."
   },
   {
     "objectID": "who_is_using.html#university-of-brescia-italy",
     "href": "who_is_using.html#university-of-brescia-italy",
-    "title": "Who is using MADS",
+    "title": "Who is using ",
     "section": "",
     "text": "Within the national research project “Miroscic”, the group of prof. Matteo Lancini of the MMTLab of the University of Brescia is using MADS to develop the edge cameras and software that provides 3D estimate of human pose by using AI techniques."
   },
   {
     "objectID": "who_is_using.html#university-or-perugia-italy",
     "href": "who_is_using.html#university-or-perugia-italy",
-    "title": "Who is using MADS",
+    "title": "Who is using ",
     "section": "",
     "text": "Within the national research project “Miroscic”, the group of prof. Roberto Marsili at the Measurement Group of the University of Perugia is using MADS collect data from wearable sensors and RFID transponders."
   },
   {
     "objectID": "who_is_using.html#insa-toulouse-france",
     "href": "who_is_using.html#insa-toulouse-france",
-    "title": "Who is using MADS",
+    "title": "Who is using ",
     "section": "",
     "text": "The group coordinated by prof. Anna-Carla Araujo at the INSA Toulouse, SUMO group of Institut Clément Ader is using MADS to collect data from multiple sensors in a machining shopfloor, with the aim of measuring and improving energy efficiency of the production processes."
   },
   {
     "objectID": "why.html",
     "href": "why.html",
-    "title": "Why MADS?",
+    "title": "Why ?",
     "section": "",
     "text": "Sure there are! ROS2 is a very popular framework for robotics, and it has a lot of features that MADS does not have. However, ROS2 is not as lightweight as MADS. If you need a full-fledged robotics framework, ROS2 is a great choice. If you need a lightweight framework, MADS has some advantages over ROS2. Of course, advantages come to a cost, and MADS is not as feature-rich (nor it is as mature) as ROS2.\nWe’ll see here the main differences between MADS and ROS2.\n\n\n\n\nMADS installers weight about 8 Mb (twice as much for MacOS dual architecture installer), and they have minimal dependencies on most platforms. By comparison, ROS2 installers are about 750 Mb. Installing and configuring a ROS2 workspace is a complex task, while MADS can be installed in a few seconds and it is ready to use.\nIf you know what you are doing, you can be up and running in a simple data collection MADS network in about one hour.\nWhat really makes the difference, though, is the learning curve:\n\n\n\n\n\n\n\n\n\nWhile ROS/ROS2 is a complex framework that requires a lot of time to grasp and master, MADS is a simple framework that can be learned in a few hours. The learning curve is much more gentle, and you can start using MADS for your projects in a very short time.\nAt the same time, ROS2 is much more mature and feature rich: there is a lot of pre-existing code, libraries, and tools that you can use to build your robotics applications. MADS is not as mature, and it does not have as many features, but it is lightweight and easy to use.\nThe plugin architecture of MADS allow to extend the framework with minimum knowledge and an API that virtually consists in no more than 5 methods. If performance is not critical, MADS agents can be written in Python.\n\n\n\nROS and ROS2 are typically not as easy to install and configure, and their reference platform is Ubuntu Linux. It is much more difficult to run ROS2 on Windows (without virtualization), almost impossible on MacOS, and it’s difficult on small systems as Raspberry Pi. MADS, on the other hand, is designed to be lightweight and easy to install on any platform, including Windows, MacOS, Linux, and small systems like Raspberry Pi.\nOn any system that is not supported by official installer, and that has a C++17 compiler (preferably clang), CMake, and git, MADS can be compiled in minutes / tens of minutes from source.\n\n\n\nBeing the MADS codebase smaller and simpler, it is also easier to adapt it and extend it to your needs. If you need a specific feature that is not available in MADS, you can easily implement it by yourself. The MADS community is small but growing, and we are always happy to help.\n\n\n\nMADS uses ZeroMQ as its communication layer, which is a lightweight and efficient messaging library. ZeroMQ is designed to be fast and scalable, and it is used by many other projects.\nWith respect to networking middleware used by ROS2 (DDS), ZeroMQ id much more flexible and can be adapted to different use cases and network topologies.\n\n\n\n\n\n\nIf you need hard real-time, MADS is probably not yet ready and will suffer of the lack of determinism of a TCP-based communication layer. But if a jitter in the range of milliseconds is acceptable, MADS can be used in real-time applications, preferably using PREEMPT-RT Linux kernels.\n\n\n\nMADS uses compressed JSON for data serialization. This choice has the advantage of being human-readable, easy to debug, and really flexible when it comes to adapting the data scheme to different choices taken during the development. On the other hand, serialization/deserialization is not extremely efficient and the used bandwidth is sub-optimal.\nOn the other hand, MADS supports binary attachments to any message: so if JSON-based communication performance is not enough, you can use a minimum JSON data packet with a binary attachment that encodes data in a more efficient way (e.g. by using protobufs or Cap’n’Proto)."
   },
   {
     "objectID": "why.html#advantages-over-ros2",
     "href": "why.html#advantages-over-ros2",
-    "title": "Why MADS?",
+    "title": "Why ?",
     "section": "",
     "text": "MADS installers weight about 8 Mb (twice as much for MacOS dual architecture installer), and they have minimal dependencies on most platforms. By comparison, ROS2 installers are about 750 Mb. Installing and configuring a ROS2 workspace is a complex task, while MADS can be installed in a few seconds and it is ready to use.\nIf you know what you are doing, you can be up and running in a simple data collection MADS network in about one hour.\nWhat really makes the difference, though, is the learning curve:\n\n\n\n\n\n\n\n\n\nWhile ROS/ROS2 is a complex framework that requires a lot of time to grasp and master, MADS is a simple framework that can be learned in a few hours. The learning curve is much more gentle, and you can start using MADS for your projects in a very short time.\nAt the same time, ROS2 is much more mature and feature rich: there is a lot of pre-existing code, libraries, and tools that you can use to build your robotics applications. MADS is not as mature, and it does not have as many features, but it is lightweight and easy to use.\nThe plugin architecture of MADS allow to extend the framework with minimum knowledge and an API that virtually consists in no more than 5 methods. If performance is not critical, MADS agents can be written in Python.\n\n\n\nROS and ROS2 are typically not as easy to install and configure, and their reference platform is Ubuntu Linux. It is much more difficult to run ROS2 on Windows (without virtualization), almost impossible on MacOS, and it’s difficult on small systems as Raspberry Pi. MADS, on the other hand, is designed to be lightweight and easy to install on any platform, including Windows, MacOS, Linux, and small systems like Raspberry Pi.\nOn any system that is not supported by official installer, and that has a C++17 compiler (preferably clang), CMake, and git, MADS can be compiled in minutes / tens of minutes from source.\n\n\n\nBeing the MADS codebase smaller and simpler, it is also easier to adapt it and extend it to your needs. If you need a specific feature that is not available in MADS, you can easily implement it by yourself. The MADS community is small but growing, and we are always happy to help.\n\n\n\nMADS uses ZeroMQ as its communication layer, which is a lightweight and efficient messaging library. ZeroMQ is designed to be fast and scalable, and it is used by many other projects.\nWith respect to networking middleware used by ROS2 (DDS), ZeroMQ id much more flexible and can be adapted to different use cases and network topologies."
   },
   {
     "objectID": "why.html#disadvantages-over-ros2",
     "href": "why.html#disadvantages-over-ros2",
-    "title": "Why MADS?",
+    "title": "Why ?",
     "section": "",
     "text": "If you need hard real-time, MADS is probably not yet ready and will suffer of the lack of determinism of a TCP-based communication layer. But if a jitter in the range of milliseconds is acceptable, MADS can be used in real-time applications, preferably using PREEMPT-RT Linux kernels.\n\n\n\nMADS uses compressed JSON for data serialization. This choice has the advantage of being human-readable, easy to debug, and really flexible when it comes to adapting the data scheme to different choices taken during the development. On the other hand, serialization/deserialization is not extremely efficient and the used bandwidth is sub-optimal.\nOn the other hand, MADS supports binary attachments to any message: so if JSON-based communication performance is not enough, you can use a minimum JSON data packet with a binary attachment that encodes data in a more efficient way (e.g. by using protobufs or Cap’n’Proto)."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "MADS: Multi-Agent Distributed System",
+    "title": ": Multi-Agent Distributed System",
     "section": "",
-    "text": "What is it\n\n\n\n\n\nMulti-Agent Distributed System\n\n\nMADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.\nIt is made by a main set of executables available in the MADS tools collection repo, which also provides installers for Linux, MacOS and Windows.\nThe MADS tools collection includes a broker and a set of general purpose agents that can act as sources, filters, or sinks. The actual operations performed by agents can be customized either via scripting languages (using simple popen interface), or by implementing dedicated plugins in C++.\nSome of the available plugins are:\n\narduino_plugin: reads from a serial connected arduino\nhpe2D_plugin: performs human pose estimation from a camera stream\nmqtt_plugin: acts as a bridge with an MQTT network\nsay_plugin: Text-to-speech of incoming messages\nble_plugin: Bluetooth Low Energy source plugin\ntui_plugin: Terminal User Interface for sending metadata commands to MADS network\nlua_plugin: Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)\nhdf5_plugin: a sink agent that logs data traffic into a HDF5 file\n\nThere are also additional monolithic agents:\n\npython_agent: Interfacing Python3 scripts to the MADS network (useful for prototyping and rapid development)\n\nLook into the guides section for more information on how to use the MADS tools collection.\n\n\n\n\n Back to top"
+    "text": "What is it\nMADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.\nIt is made by a main set of executables available in the MADS tools collection repo, which also provides installers for Linux, MacOS and Windows.\nThe MADS tools collection includes a broker and a set of general purpose agents that can act as sources, filters, or sinks. The actual operations performed by agents can be customized either via scripting languages (using simple popen interface), or by implementing dedicated plugins in C++.\nSome of the available plugins are:\n\narduino_plugin: reads from a serial connected arduino\nhpe2D_plugin: performs human pose estimation from a camera stream\nmqtt_plugin: acts as a bridge with an MQTT network\nsay_plugin: Text-to-speech of incoming messages\nble_plugin: Bluetooth Low Energy source plugin\ntui_plugin: Terminal User Interface for sending metadata commands to MADS network\nlua_plugin: Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)\nhdf5_plugin: a sink agent that logs data traffic into a HDF5 file\n\nThere are also additional monolithic agents:\n\npython_agent: Interfacing Python3 scripts to the MADS network (useful for prototyping and rapid development)\n\nLook into the guides section for more information on how to use the MADS tools collection.\n\n\n\n\n Back to top"
   },
   {
     "objectID": "about.html",
@@ -233,161 +233,161 @@
   {
     "objectID": "presentations/intro.html#contents",
     "href": "presentations/intro.html#contents",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Contents",
     "text": "Contents\n\nTerminology\nBasic Usage\nLinux services\nPlugins\nParallel computing"
   },
   {
     "objectID": "presentations/intro.html#lets-get-understood",
     "href": "presentations/intro.html#lets-get-understood",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Let’s get understood…",
     "text": "Let’s get understood…\n\nAgent: an entity that can perceive its environment and act upon it.\nNetwork: a set of agents, possibly distributed over different devices or machines, and exchanging information via ZeroMQ/TCP connections\n\nMADS aims at being as transparent as possible w.r.t. the underlying network.\nThe same MADS network could run\n\non a single machine (via loopback connections)\nas well as on multiple machines (via TCP connections), one agent per machine\n\nAnd everything in between…"
   },
   {
     "objectID": "presentations/intro.html#mads-network-topology",
     "href": "presentations/intro.html#mads-network-topology",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " MADS Network Topology",
     "text": "MADS Network Topology\n\n\nTo maximize flexibility and scalability, MADS networks are broker-based\n\nonly IP/hostname of broker is needed\nbroker does message dispatching\nagents can filter messages by topics\nagents can be added/removed dynamically\nagents can act as source, filter, or sink\n\n\n\n\n\n\n\n\n\nG\n\n\n\nbroker\n\nBroker\n\n\n\na4\n\nAgent 4\n\n\n\nbroker-&gt;a4\n\n\n\n\n\na5\n\nAgent 5\n\n\n\nbroker-&gt;a5\n\n\n\n\n\na6\n\nAgent 6\n\n\n\nbroker-&gt;a6\n\n\n\n\n\na7\n\nAgent 7\n\n\n\nbroker-&gt;a7\n\n\n\n\n\na1\n\nAgent 1\n\n\n\na1-&gt;broker\n\n\n\n\n\na2\n\nAgent 2\n\n\n\na2-&gt;broker\n\n\n\n\n\na3\n\nAgent 3\n\n\n\na3-&gt;broker\n\n\n\n\n\na4-&gt;broker\n\n\n\n\n\n\n\n\n\n\n\n\n\nAlso see the guide page on MADS network topology"
   },
   {
     "objectID": "presentations/intro.html#its-a-zeromq-network",
     "href": "presentations/intro.html#its-a-zeromq-network",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " It’s a ZeroMQ network",
     "text": "It’s a ZeroMQ network\nMADS uses ZeroMQ as the underlying communication layer:\n\nconnections are established via TCP (XPUB-XSUB)\norder of connection does not matter\ndisconnection/reconnection is handled automatically\nminimum overhead w.r.t. other protocols (e.g., HTTP, gRPC, REST)\napplication-layer protocol is agnostic to the underlying transport, and left to the user\nMADS is designed to be simple, so data on the wire is presented as JSON compressed with snappy\nMADS is designed to be scalable: you can have hundreds of agents, the limiting factor being network bandwidth"
   },
   {
     "objectID": "presentations/intro.html#agents",
     "href": "presentations/intro.html#agents",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Agents",
     "text": "Agents\n\n\nAgents are the building blocks of a MADS network. They can be:\n\nSources: produce data and send it to the network\nFilters: process data received from the network and send it to other agents\nSinks: consume data from the network and perform actions based on it\n\nAgents can be implemented in any programming language that supports ZeroMQ, but MADS provides C++ API that abstracts ZeroMQ intricacies.\n\n\n\n\nAgent Smith"
   },
   {
     "objectID": "presentations/intro.html#agents-1",
     "href": "presentations/intro.html#agents-1",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Agents",
     "text": "Agents\n\n\nUsing MADS API, agents can be implemented as:\n\nmonolithic: a single executable that contains all the logic\nplugin-based: a general purpose executable that loads plugins dynamically, allowing for modularity and extensibility; the user only has to develop the plugin with minimal boilerplate code and API knowledge\nPython modules: MADS agent can load at runtime Python modules that provide a proper interface (2-3 functions)\n\n\n\n\n\n\nAgent Smith\n\n\n\n\nPlugins are actually shared C++ libraries, compiled with minimal dependencies"
   },
   {
     "objectID": "presentations/intro.html#implementation",
     "href": "presentations/intro.html#implementation",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Implementation",
     "text": "Implementation\n\nMADS is implemented in C++17 and provides an API to create agents and connect them to the network\nIt can be compiled on Linux, macOS, and Windows\nCompilation is rather tedious and has a number of dependencies, but:\n\ninstallers are available for Linux, MacOS, and Windows\na Docker image is available for easy setup\n\nDeveloping custom agents as plugins is much easier, as it requires only a few functions to be implemented\nExample plugins are available on GitHub\nThe main MADS command can generate a plugin template"
   },
   {
     "objectID": "presentations/intro.html#main-command-mads",
     "href": "presentations/intro.html#main-command-mads",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Main command: mads",
     "text": "Main command: mads\n\nThe standard installers provide a main command: mads\nInline help is available with mads --help:\n&gt; mads --help\nMads command line interface version 1.3.1\nUsage:\n  mads [OPTION...]\n\n  -i, --info     Print information on MADS installation\n  -p, --prefix   Print MADS install prefix\n      --plugins  List plugins in default plugins directory\n  -v, --version  Print version\n  -h, --help     Print help\nOptions -i and -p are useful to check the installation"
   },
   {
     "objectID": "presentations/intro.html#mads-subcommands",
     "href": "presentations/intro.html#mads-subcommands",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Mads subcommands",
     "text": "Mads subcommands\n\nThe list of available mads sub commands can be obtained as:\n\n\n\n&gt; mads\nAvailable mads subcommands:\n   filter (wraps mads-filter)\n   worker (wraps mads-worker)\n  command (wraps mads-command)\n    image (wraps mads-image)\n feedback (wraps mads-feedback)\n  logging (wraps mads-logging)\n   plugin (wraps mads-plugin)\n   source (wraps mads-source)\n   bridge (wraps mads-bridge)\n     sink (wraps mads-sink)\n   dealer (wraps mads-dealer)\n   python (wraps mads-python)\n   logger (wraps mads-logger)\n   broker (wraps mads-broker)\n      ini (internal)\n  service (internal)\n\n\nOn MacOS and Linux, commands are available as e.g. mads source or mads-source\nOn Windows, commands are available as e.g. mads-source only\ninternal commands are implemented by the mads executable\nMan pages are available (e.g. man mads-source)"
   },
   {
     "objectID": "presentations/intro.html#launching-the-broker",
     "href": "presentations/intro.html#launching-the-broker",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Launching the broker",
     "text": "Launching the broker\n&gt; mads broker\nReading settings from /Users/p4010/usr/local/etc/mads.ini [broker]\nBinding broker frontend (XSUB) at tcp://*:9090\nBinding broker backend (XPUB) at tcp://*:9091\nBinding broker shared settings (REP) at tcp://*:9092\nTimecode FPS: 25\nSettings are provided via tcp://127.0.0.1:9092\nCTRL-C to immediate exit\nType P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings\n\nLine 2 and 7 report a fundamental aspect: the centralized settings file\nSettings for all agents are stored in a TOML file, which is dispatched by the broker to the agents upon launch\nEach agent is launched with the settings URL (e.g. tcp://127.0.0.1:9092) as a command line argument"
   },
   {
     "objectID": "presentations/intro.html#running-an-agent",
     "href": "presentations/intro.html#running-an-agent",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Running an agent",
     "text": "Running an agent\n\n\n\nTo run an agent on a device different from the one running the broker, we need to specify the broker address\nWe see relevant agent settings (loaded from broker):\n\npub topic: messages are tagged with publish\ncompression: JSON compressed with snappy\ntimecode: all messages generated in the same 40ms share the same timecode\ntimecode offset: clock difference with broker\n\n\n\n\n\n\n\nClick on the white triangle  to start the clip 😉"
   },
   {
     "objectID": "presentations/intro.html#logging-data",
     "href": "presentations/intro.html#logging-data",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Logging data",
     "text": "Logging data\n\nData flowing on the MADS network can be logged for later analysis\nMADS provides two official logging facilities:\n\na MongoDB logger\nan HDF5 logger\n\nRegardless the logging facility, each message is stored as a JSON document with some added common fields:\n\ntimecode: the time when the data was produced as a multiple of a fixed timestep (e.g. 40ms). Measured in seconds from last midnight (local time)\ntimestamp: an ISO 8601 timestamp of the data\nhostname: the hostname of the machine that produced the data"
   },
   {
     "objectID": "presentations/intro.html#logger",
     "href": "presentations/intro.html#logger",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Logger",
     "text": "Logger\n\nMADS provides an agent called logger for logging messages\nThe logger is designed to store data into a MongoDB database\nMongoDB is schemaless, so it can store any JSON data published to the MADS network\nEach agent publishes on a given topic (e.g. publish)\nFor each topic, a corresponding table is created in the database, and each message is stored as a document in that table\nEach document has additional fields: timecode (a fixed timestep in ms), timestamp (and ISO 8601 time), and hostname\nMongoDB aggregations can offload some computational load and make data easier to fetch\n\n\n\n\n\n\n\nNote\n\n\nA MongoDB instance can be easily started with Docker:\n&gt; docker run -d --name mads-mongo -p 27017:27017 -v ${PWD}/db:/data/db mongo"
   },
   {
     "objectID": "presentations/intro.html#hdf5-logger",
     "href": "presentations/intro.html#hdf5-logger",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " HDF5 logger",
     "text": "HDF5 logger\n\nAmong the official MADS plugins, there is also an HDF5 logger\nThe hdf5_writer.plugin is a MADS sink that stores data in an HDF5 file\nWithin the HDF5 file, each topic goes into a separate group\nmessages are queued, so a scalar becomes a vector, a vector becomes a table\nthe INI file must specify which data has to be saved, using a keypath syntax: \"key1.subkey2.subsubkey3\" corresponds to JSON fields data[\"key1\"][\"subkey2\"][\"subsubkey3\"]\ntimestamp, timecode, and hostname are automatically recorded into separate datasets\n\n\n\n\n\n\n\nNote\n\n\nThe plugin is available on https://github.com/MADS-Net/hdf5_plugin\n\n\n\n\n\nAlso see the guide page for more details on the hdf5_writer.plugin"
   },
   {
     "objectID": "presentations/intro.html#mads-services",
     "href": "presentations/intro.html#mads-services",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " MADS services",
     "text": "MADS services\nOn Linux machine only, MADS provides a service file generator that can be used to run MADS agents as system services, automatically active on boot\nProcedure:\n\ndefine the proper launch command, e.g. mads source -s tcp://mads-broker.local:9092 -n my_datasource\nrun mads service my_datasource source -s tcp://mads-broker.local:9092 -n my_datasource; this prints a possible systemctl file for a service called my_datasource.service\nif it looks correct, run the same command as sudo: this installs the service on the system dir\nenable the service: sudo systemctl enable my_datasource.service\n\n\n\nAlso see the guide page"
   },
   {
     "objectID": "presentations/intro.html#motivation",
     "href": "presentations/intro.html#motivation",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Motivation",
     "text": "Motivation\n\nMADS is designed to be simple, but it can be complex to implement agents\nImplementing an agent (monolithic) requires knowledge of the MADS API, ZeroMQ\nCompiling the agent takes time and requires a proper development environment, especially on Windows\nWe wanted to let users focus on the agent logic, not on the boilerplate code\nAt the same time, we wanted to keep the advantages of C++ (performance, low-level control, etc.), without forcing users to revert to scripting interfaces just because the whole C++ framework is too complex\n\nSolution: MADS plugins"
   },
   {
     "objectID": "presentations/intro.html#mads-plugins",
     "href": "presentations/intro.html#mads-plugins",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " MADS plugins",
     "text": "MADS plugins\n\nA plugin is a shared library that implements a specific agent logic\nPlugins are loaded dynamically by the MADS general purpose executables:\n\nmads source: provides information to the network (e.g. by reading sensors)\nmads filter: processes data received from the network and sends it to other agents\nmads sink: consumes data from the network and performs actions based on it (e.g. by writing to a file)\n\nThe specific agent logic is implemented in the plugin, which is a C++ class that inherits from a base class\nMADS provides the mads plugin command to create a plugin template\n\n\n\nAlso see the guide page for more details on plugins"
   },
   {
     "objectID": "presentations/intro.html#running-mads-plugin",
     "href": "presentations/intro.html#running-mads-plugin",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Running mads plugin",
     "text": "Running mads plugin\n\n\n\nThe mads plugin command creates a plugin template in the current directory\nThe template contains a CMakeLists.txt file and a src directory with the plugin source code\nThe template has minimal dependencies:\n\nA C++17 compliant compiler (VS 2017 or later, GCC 7 or later, Clang 5 or later)\nCMake 3.15 or later\nAny other dependency must be added to CMakeLists.txt\n\nCMake can be configured to install the plugin in the MADS plugins directory, so that the plugin is automatically found"
   },
   {
     "objectID": "presentations/intro.html#plugin-class-details",
     "href": "presentations/intro.html#plugin-class-details",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Plugin class details",
     "text": "Plugin class details\nclass My_sourcePlugin : public Source&lt;json&gt; {\npublic:\n  // Implement the actual functionality here\n  return_type get_output(json &out,\n                         std::vector&lt;unsigned char&gt; *blob = nullptr) override {\n    // Your logic to fill 'out' with data\n    // optionally use 'blob' for binary content\n  }\n\n  // Run only once upon start\n  void set_params(void const *params) override {\n    // Optional: handle parameters passed to the plugin\n    // This can be used to configure the plugin at runtime\n  }\nprivate:\n  // custom fields here\n};\n// Macro that does the magic of allowing dlopen to work\nINSTALL_SOURCE_DRIVER(My_sourcePlugin, json)"
   },
   {
     "objectID": "presentations/intro.html#plugin-class-details-1",
     "href": "presentations/intro.html#plugin-class-details-1",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " Plugin class details",
     "text": "Plugin class details\n\nImplementing a plugin does not require knowledge of the MADS API\nOnly two methods (three methods for filter plugins) need to be implemented\nAny third party library is left to the user:\n\nadd necessary find_package calls in CMakeLists.txt\nlink the library to the plugin\ninclude the necessary headers in the plugin source code\n\nThe plugin source code also has a template main() function: beside each plugin, a one-shot executable is provided (and compiled) that can be used to test the plugin logic without the need of a MADS network\n\n\n\nNote: the CMakeLists.txt provides an add_plugin(name SRCS &lt;source lists&gt; LIBS &lt;libraries list&gt;) macro that simplifies the process of creating a plugin target"
   },
   {
     "objectID": "presentations/intro.html#ota-plugins",
     "href": "presentations/intro.html#ota-plugins",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " OTA plugins",
     "text": "OTA plugins\n\nPlugins can be loaded Over-The-Air (OTA) by the mads source, mads filter, and mads sink commands\nIf the INI file contains an entry like this:\n[my_source]\nattachment = \"/path/to/my_source.plugin\"\nthen that file (on the broker filesystem!) is sent to my_source agents when they connect to the broker\nThis allows to have all plugins in a single location, and to update them without having to manually copy them to each agent machine"
   },
   {
     "objectID": "presentations/intro.html#the-dealer-worker-model",
     "href": "presentations/intro.html#the-dealer-worker-model",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " The dealer-worker model",
     "text": "The dealer-worker model\nSuppose that you want to explore a large domain of parameters for a simulation to perform sensitivity analysis or parameters optimization:\n\n\n\nZeroMQ provides a special PUSH-PULL communication model between a single dealer and multiple, identical workers\nThe dealer distributes tasks to the workers in a round-robin fashion\nEach worker processes the task and sends the result back to the broker\nIn a possible implementation, a source provides the grid of parameters combination and a logger agent store the results\n\n\n\n\n\n\n\n\n\nDealer-worker\n\n\n\nbroker\n\nbroker\n\n\n\ndealer\n\ndealer\n\n\n\nbroker-&gt;dealer\n\n\n\n\n\nlogger\n\nlogger\n\n\n\nbroker-&gt;logger\n\n\n\n\n\nsource\n\nsource\n\n\n\nsource-&gt;broker\n\n\n\n\n\nw1\n\nworker 1\n\n\n\ndealer-&gt;w1\n\n\n\n\n\nw2\n\nworker 2\n\n\n\ndealer-&gt;w2\n\n\n\n\n\nw3\n\nworker 3\n\n\n\ndealer-&gt;w3\n\n\n\n\n\nw4\n\nworker 4\n\n\n\ndealer-&gt;w4\n\n\n\n\n\nmongo\n\n\nMongoDB\n\n\n\nw1-&gt;broker\n\n\n\n\n\np\n\nPlugin\n\n\n\nw1-&gt;p\n\n\n\n\nw2-&gt;broker\n\n\n\n\n\nw2-&gt;p\n\n\n\n\nw3-&gt;broker\n\n\n\n\n\nw3-&gt;p\n\n\n\n\nw4-&gt;broker\n\n\n\n\n\nw4-&gt;p\n\n\n\n\nlogger-&gt;mongo\n\n\nBSON\n\n\n\n\n\n\n\n\n\n\n\nAlso see the guide page"
   },
   {
     "objectID": "presentations/intro.html#the-mads-implementation",
     "href": "presentations/intro.html#the-mads-implementation",
-    "title": "MADS Intro",
+    "title": " Intro",
     "section": " The MADS implementation",
     "text": "The MADS implementation\nIn MADS, there are two special agents for this purpose: dealer and worker\n\ndealer: receives the computational payloads (simulation input) from a suitable source agent, and dispatches them to the workers\nworker: receives the computational payloads and uses a custom plugin to process them (of type filter), then sends the results back to the broker\n\nIdeally, the worker plugin is launched in \\(n\\) instances on a Kubernetes cluster; each instance loads the computational plugin OTA from the broker"
   },

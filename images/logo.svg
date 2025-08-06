@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1100 375" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g id="Tavola-da-disegno1" serif:id="Tavola da disegno1" transform="matrix(-1,-8.38139e-17,-1.96188e-16,-0.75,1100,375)">
+        <rect x="0" y="0" width="1100" height="500" style="fill:none;"/>
+        <g transform="matrix(-1,1.11752e-16,2.61585e-16,-1.33333,1333,858.667)">
+            <g transform="matrix(1.18,0,-0.36397,1,175.753,0)">
+                <text x="233px" y="598.105px" style="font-family:'Impact', sans-serif;font-stretch:condensed;font-size:400px;fill:rgb(218,106,22);stroke:black;stroke-width:8.77px;">M</text>
+            </g>
+            <g transform="matrix(1.18,0,-0.36397,1,119.102,0)">
+                <text x="547.728px" y="598.105px" style="font-family:'Impact', sans-serif;font-stretch:condensed;font-size:400px;fill:rgb(62,131,214);stroke:black;stroke-width:8.77px;">A</text>
+            </g>
+            <g transform="matrix(1.18,0,-0.36397,1,80.2058,0)">
+                <text x="763.816px" y="598.105px" style="font-family:'Impact', sans-serif;font-stretch:condensed;font-size:400px;fill:rgb(218,106,22);stroke:black;stroke-width:8.77px;">D</text>
+            </g>
+            <g transform="matrix(1.18,0,-0.36397,1,37.4935,0)">
+                <g transform="matrix(400,0,0,400,1207.94,598.105)">
+                </g>
+                <text x="1001.11px" y="598.105px" style="font-family:'Impact', sans-serif;font-stretch:condensed;font-size:400px;fill:rgb(22,133,218);stroke:black;stroke-width:8.77px;">S</text>
+            </g>
+        </g>
+    </g>
+</svg>
