@@ -20,7 +20,7 @@ website:
       - text: "Presentations"
         menu:
           - href: presentations/intro.qmd
-            text: "MADS Intro"
+            text: "{{< logo >}} Intro"
     right:
       - href: about.qmd
         text: "About"

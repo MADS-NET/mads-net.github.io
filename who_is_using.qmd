@@ -1,5 +1,5 @@
 ---
-title: "Who is using MADS"
+title: "Who is using {{< logo >}}"
 author: "Paolo Bosetti"
 affiliation: "\nUniversity of Trento, Italy"
 date: "06/02/2025"

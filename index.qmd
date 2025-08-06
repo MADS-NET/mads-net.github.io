@@ -1,5 +1,5 @@
 ---
-title: "MADS: Multi-Agent Distributed System"
+title: "{{< logo >}}: Multi-Agent Distributed System"
 author: "Paolo Bosetti"
 affiliation: "\nUniversity of Trento, Italy"
 date: "06/02/2025"
@@ -9,9 +9,6 @@ format: html
 
 # What is it
 
-::: column-margin
-![Multi-Agent Distributed System](images/logo.png)
-:::
 
 MADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.
 
