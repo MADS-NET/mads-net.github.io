@@ -9,6 +9,10 @@ format: html
 
 # What is it
 
+::: column-margin
+![Multi-Agent Distributed System](images/logo.png)
+:::
+
 MADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.
 
 It is made by a main set of executables available in the [MADS tools collection](https://github.com/pbosetti/MADS) repo, which also provides installers for Linux, MacOS and Windows. 
