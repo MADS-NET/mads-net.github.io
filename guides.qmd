@@ -9,7 +9,7 @@ listing:
   contents: guides
   categories: true
   fields: [date, title, author, description, categories, reading-time]
-  feed: true
+  feed: false
   table-hover: true
 ---
 

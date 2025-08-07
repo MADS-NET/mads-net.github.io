@@ -6,6 +6,7 @@ institute: "University of Trento"
 date: 2025-07-07
 date-format: "YYYY-MMM-DD"
 draft: false
+logo: ../images/logo.png
 categories: [intro, meeting]
 format: revealjs
 abstract: |
@@ -23,7 +24,7 @@ abstract: |
 
 # What is it?
 
-{{<logo shadow=none>}} stands for *Multi-Agent Distributed System*
+{{<logo shadow="none">}} stands for *Multi-Agent Distributed System*
 
 ## {{< bi list >}} Contents
 
