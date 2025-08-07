@@ -13,8 +13,12 @@ return {
     if folder == "" then
       folder = "/images"
     end
+    local shadow = pandoc.utils.stringify(kwargs["shadow"])
+    if shadow == "" then
+      shadow = "drop-shadow(2px 2px 2px rgba(0,0,0,0.2))"
+    end
     
-    local style = 'style="height: ' .. height .. 'em; vertical-align: ' .. offset .. 'em; margin: 0; padding: 0;"'
+    local style = 'style="height: ' .. height .. 'em; vertical-align: ' .. offset .. 'em; margin: 0; padding: 0; filter: ' .. shadow .. ';"'
     return pandoc.RawBlock("html", '<img src="' .. folder .. '/' .. file .. '" ' .. style .. '>')
   end
 }

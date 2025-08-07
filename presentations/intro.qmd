@@ -23,7 +23,7 @@ abstract: |
 
 # What is it?
 
-{{<logo>}} stands for *Multi-Agent Distributed System*
+{{<logo shadow=none>}} stands for *Multi-Agent Distributed System*
 
 ## {{< bi list >}} Contents
 

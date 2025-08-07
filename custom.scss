@@ -19,6 +19,10 @@ h1.title {
   font-weight: $headings-font-weight*2;
 }
 
+h2#toc-title {
+  text-shadow: none;
+}
+
 .navbar {
   --bs-navbar-padding-y: 0px !important;
   --bs-navbar-brand-padding-y: 0px !important;
