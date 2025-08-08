@@ -2,6 +2,7 @@
   {
     "listing": "/guides.html",
     "items": [
+      "/guides/monolithic_agents.html",
       "/guides/hdf5.html",
       "/guides/OTA_plugins.html",
       "/guides/worker.html",

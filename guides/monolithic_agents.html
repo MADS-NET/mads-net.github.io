@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-06-06">
+<meta name="dcterms.date" content="2025-08-08">
 
 <title>Monolithic agents</title>
 <style>
@@ -69,7 +69,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<meta name="quarto:status" content="draft">
 
 
 </head>
@@ -77,7 +76,7 @@ ul.task-list li input[type="checkbox"] {
 <body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -162,7 +161,15 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#contents" id="toc-contents" class="nav-link active" data-scroll-target="#contents">Contents</a></li>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation">Motivation</a></li>
+  <li><a href="#development" id="toc-development" class="nav-link" data-scroll-target="#development">Development</a>
+  <ul class="collapse">
+  <li><a href="#build-system" id="toc-build-system" class="nav-link" data-scroll-target="#build-system">Build system</a></li>
+  <li><a href="#libraries" id="toc-libraries" class="nav-link" data-scroll-target="#libraries">Libraries</a></li>
+  <li><a href="#example-project" id="toc-example-project" class="nav-link" data-scroll-target="#example-project">Example project</a></li>
+  <li><a href="#coding" id="toc-coding" class="nav-link" data-scroll-target="#coding">Coding</a></li>
+  <li><a href="#main-loop" id="toc-main-loop" class="nav-link" data-scroll-target="#main-loop">Main loop</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -200,14 +207,14 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 6, 2025</p>
+      <p class="date">August 8, 2025</p>
     </div>
   </div>
   
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 7, 2025</p>
+      <p class="date-modified">August 8, 2025</p>
     </div>
   </div>
     
@@ -216,7 +223,7 @@ ul.task-list li input[type="checkbox"] {
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>How to develop a custom monolithic agent by explouting the MADS C++17 library.</p>
+    <p>How to develop a custom monolithic agent by exploiting the MADS C++17 library.</p>
   </div>
 </div>
 
@@ -224,23 +231,96 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
-<div class="callout callout-style-default callout-warning callout-titled">
+<section id="motivation" class="level1">
+<h1>Motivation</h1>
+<p>Sometimes, the constraints posed by the MADS plugin architecture won’t fit your use case. When you are using MADS plugins, in fact, you are limited to implement a source, a filter, or a sink. But if the behavior of you agent is not that clearly defined, then you need to build your own <strong>monolithic agent</strong>.</p>
+<p>Typically, this is the case when the agent behavior depends upon some state parameter. Suppose that your agent must behave as a source in some circumstances, then switch to a filter in others. Then you need to implement a monolithic agent.</p>
+</section>
+<section id="development" class="level1">
+<h1>Development</h1>
+<section id="build-system" class="level2">
+<h2 class="anchored" data-anchor-id="build-system">Build system</h2>
+<p>Unlike for MADS plugins, there is no command (yet) to create a monolithic agent temnplate, and you need to setup the build environment by your own. Use whatever you are comfortable with, although we recommend using CMake and clang compiler on Linux and MacOS, or Visual Studio 17 on Windows (Community Edition is fine).</p>
+</section>
+<section id="libraries" class="level2">
+<h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
+<p>From the MADS point-of-view, everything you need is already installed by the MADS installer. Simply setup your build system to search for headers and libraries in the MADS prefix directory, which you can find with <code>mads -p</code> command.</p>
+<p>You’ll need to link against the following libraries:</p>
+<ul>
+<li>On Unixes: <code>zmqpp-static zmq snappy</code></li>
+<li>On Windows: <code>zmqpp-static</code> <code>libzmq-v143-mt-s-4_3_6</code> <code>snappy</code> <code>Ws2_32</code> <code>bcrypt</code> <code>Secur32</code> <code>Crypt32</code> <code>Dnsapi</code> <code>IPHLPAPI</code></li>
+</ul>
+</section>
+<section id="example-project" class="level2">
+<h2 class="anchored" data-anchor-id="example-project">Example project</h2>
+<p>We suggest to use the <a href="https://github.com/MADS-NET/python_agent">python agent</a> as an example project: you can <code>git fork</code> it and start from there.</p>
+<p>In that project, you can safely get rid of:</p>
+<ul>
+<li>the <code>python</code> folder</li>
+<li>the <code>src/python_interpreter.hpp</code> class</li>
+<li>everything related to the <code>cppy3</code> library (and Python in general) in the <code>CMakeLists.txt</code> file.</li>
+</ul>
+<p>Finally, rename <code>src/main/python.cpp</code> to your liking (e.g.&nbsp;<code>agent.cpp</code>) and move on to the next section.</p>
+</section>
+<section id="coding" class="level2">
+<h2 class="anchored" data-anchor-id="coding">Coding</h2>
+<p>The file <code>src/main/agent.cpp</code> (or whatever name you choose th the last step above) is divided in the following sections:</p>
+<ul>
+<li><em>Parse command line options</em>: Uses the <code>cxxopts</code> library to define and parse the supported CLI options; customize as needed. Remember to execute the macro <code>SETUP_OPTIONS(options, Agent)</code>;</li>
+<li><em>Initialize agent</em>: this section is rather general, with the exception of the lines dealing with <strong>attachments</strong> (binary objects sent to the agent by the broker upon launch). If you don’t need attachments, you can remove this section altogether;</li>
+<li><em>CLI options override</em>: the call to <code>agent.init()</code> actually loads the settings from the broker, fetching the <code>mads.ini</code> section under <code>agent_name</code> and storing them in the <code>settings</code> JSON object. So in this section you can safely override those settings with command line options, if needed, and store them back in the <code>settings</code> object;</li>
+<li><em>Print info</em>: this section is optional, but it is a good practice to print some information about the agent, such as its name, version, and settings; info are printed on <code>stderr</code>, indented by two spaces;</li>
+<li><em>Main loop</em>: this is where most of the action happens, and see the next section for details;</li>
+<li><em>Cleanup</em>: free used resources, call <code>agent.register_event</code> to mark the exit in the database, and restart the agent if needed (i.e.&nbsp;if <code>agent.restart()</code> is <code>true</code>).</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+Remote control and agents restarting
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>To be done.</p>
+<p>The agent initialization calls <code>agent.enable_remote_control()</code>. This call makes the agent listen for a special set of commands sent by the broker, such as <code>restart</code> and <code>stop</code>, and <strong>requires</strong> a regular call to <code>agent.remote_control()</code> in the main loop. If you don’t need this feature, you can remove the call to <code>enable_remote_control()</code>.</p>
+<p>Note, though, that without that feature you won’t be able to setup the agent for a restart in the <strong>cleanup</strong> section, because <code>agent.restart()</code> will always return <code>false</code>. The agents ability to self-restart is <strong>crucial</strong>, since it allows to restart all the agents in a network <strong>and reload the INI settings automatically</strong> from the broker.</p>
+<p>In fact, when the <code>mads.ini</code> file on the broker machine is updated, the broker automatically reloads it and makes it available to any newly started agent, but agentts that are already running will not see the changes. So, if you want to change the settings of a running agent, you need to restart it, and this is what the remote control feature allows you to do. To restart all agents you can use the <a href="https://github.com/MADS-NET/tui_plugin">TUI plugin</a>, or <code>mads command restart</code> command.</p>
 </div>
 </div>
+</section>
+<section id="main-loop" class="level2">
+<h2 class="anchored" data-anchor-id="main-loop">Main loop</h2>
+<p>The main loop is implemented by calling the <code>agent.loop()</code> method. It takes two arguments:</p>
+<ul>
+<li>a C++17 lambda function, that grabs all the local context variables and has no arguments: <code>[&amp;]() { ... }</code> (mandatory);</li>
+<li>a <code>std::chrono::milliseconds</code> value, that defines the loop frequency (optional, typically read from settings and possibly overridden by a CLI option).</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To ensure performance and determinism, it is important to declare all objects used in the lambda <strong>before</strong> entering the loop.</p>
+</div>
+</div>
+<p>Within the lambda loop function, you have access to the following methods:</p>
+<ul>
+<li><code>agent.receive()</code>: to receive messages from the broker; it returns a <code>message_type</code> enum, that can be <code>none</code>, <code>json</code>, or <code>blob</code> (a binary buffer);</li>
+<li><code>agent.last_message()</code>: to get the last received message, which is a <code>zmqpp::message</code> object;</li>
+<li><code>agent.last_topic()</code>: to get the topic of the last received message, which is a <code>std::string</code>;</li>
+<li><code>agent.remote_control()</code>: you must call it to process any incoming remote control message;</li>
+<li><code>agent.publish()</code>: to publish a JSON message to the broker. If not specified as second argument, it uses the default publish topic of the agent.</li>
+</ul>
+<p>Look at the <code>agent.hpp</code> header file for the complete list of methods available in the <code>agent</code> class.</p>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
