@@ -4,7 +4,7 @@ author:
   - name: "Paolo Bosetti"
     affiliations: 
       - name: "University of Trento"
-date: 06/06/2025
+date: 08/08/2025
 date-modified: today
 format: html
 # or uncomment the following line to also create PDF format
@@ -13,15 +13,83 @@ format: html
 #     toc: true
 #   pdf:
 #     toc: true
-draft: true
+draft: false
 categories: [advanced, development, c++]
 abstract: |
-  How to develop a custom monolithic agent by explouting the MADS C++17 library.
+  How to develop a custom monolithic agent by exploiting the MADS C++17 library.
 ---
 
-# Contents
+# Motivation
+
+Sometimes, the constraints posed by the MADS plugin architecture won't fit your use case. When you are using MADS plugins, in fact, you are limited to implement a source, a filter, or a sink. But if the behavior of you agent is not that clearly defined, then you need to build your own **monolithic agent**. 
+
+Typically, this is the case when the agent behavior depends upon some state parameter. Suppose that your agent must behave as a source in some circumstances, then switch to a filter in others. Then you need to implement a monolithic agent.
 
 
-::: callout-warning
-To be done.
+# Development
+
+## Build system
+
+Unlike for MADS plugins, there is no command (yet) to create a monolithic agent temnplate, and you need to setup the build environment by your own. Use whatever you are comfortable with, although we recommend using CMake and clang compiler on Linux and MacOS, or Visual Studio 17 on Windows (Community Edition is fine).
+
+## Libraries
+
+From the MADS point-of-view, everything you need is already installed by the MADS installer. Simply setup your build system to search for headers and libraries in the MADS prefix directory, which you can find with `mads -p` command.
+
+You'll need to link against the following libraries:
+
+* On Unixes: `zmqpp-static zmq snappy`
+* On Windows: `zmqpp-static` `libzmq-v143-mt-s-4_3_6` `snappy` `Ws2_32` `bcrypt` `Secur32` `Crypt32` `Dnsapi` `IPHLPAPI`
+
+## Example project
+
+We suggest to use the [python agent](https://github.com/MADS-NET/python_agent) as an example project: you can `git fork` it and start from there. 
+
+In that project, you can safely get rid of:
+
+* the `python` folder
+* the `src/python_interpreter.hpp` class
+* everything related to the `cppy3` library (and Python in general) in the `CMakeLists.txt` file.
+
+Finally, rename `src/main/python.cpp` to your liking (e.g. `agent.cpp`) and move on to the next section.
+
+## Coding
+
+The file `src/main/agent.cpp` (or whatever name you choose th the last step above) is divided in the following sections:
+
+* *Parse command line options*: Uses the `cxxopts` library to define and parse the supported CLI options; customize as needed. Remember to execute the macro `SETUP_OPTIONS(options, Agent)`;
+* *Initialize agent*: this section is rather general, with the exception of the lines dealing with **attachments** (binary objects sent to the agent by the broker upon launch). If you don't need attachments, you can remove this section altogether;
+* *CLI options override*: the call to `agent.init()` actually loads the settings from the broker, fetching the `mads.ini` section under `agent_name` and storing them in the `settings` JSON object. So in this section you can safely override those settings with command line options, if needed, and store them back in the `settings` object;
+* *Print info*: this section is optional, but it is a good practice to print some information about the agent, such as its name, version, and settings; info are printed on `stderr`, indented by two spaces;
+* *Main loop*: this is where most of the action happens, and see the next section for details;
+* *Cleanup*: free used resources, call `agent.register_event` to mark the exit in the database, and restart the agent if needed (i.e. if `agent.restart()` is `true`).
+
+::: callout-important
+# Remote control and agents restarting
+The agent initialization calls `agent.enable_remote_control()`. This call makes the agent listen for a special set of commands sent by the broker, such as `restart` and `stop`, and **requires** a regular call to `agent.remote_control()` in the main loop. If you don't need this feature, you can remove the call to `enable_remote_control()`.
+
+Note, though, that without that feature you won't be able to setup the agent for a restart in the **cleanup** section, because `agent.restart()` will always return `false`. The agents ability to self-restart is **crucial**, since it allows to restart all the agents in a network **and reload the INI settings automatically** from the broker.
+
+In fact, when the `mads.ini` file on the broker machine is updated, the broker automatically reloads it and makes it available to any newly started agent, but agentts that are already running will not see the changes. So, if you want to change the settings of a running agent, you need to restart it, and this is what the remote control feature allows you to do. To restart all agents you can use the [TUI plugin](https://github.com/MADS-NET/tui_plugin), or `mads command restart` command.
 :::
+
+## Main loop
+
+The main loop is implemented by calling the `agent.loop()` method. It takes two arguments:
+
+* a C++17 lambda function, that grabs all the local context variables and has no arguments: `[&]() { ... }` (mandatory);
+* a `std::chrono::milliseconds` value, that defines the loop frequency (optional, typically read from settings and possibly overridden by a CLI option).
+
+::: callout-important
+To ensure performance and determinism, it is important to declare all objects used in the lambda **before** entering the loop.
+:::
+
+Within the lambda loop function, you have access to the following methods:
+
+* `agent.receive()`: to receive messages from the broker; it returns a `message_type` enum, that can be `none`, `json`, or `blob` (a binary buffer);
+* `agent.last_message()`: to get the last received message, which is a `zmqpp::message` object;
+* `agent.last_topic()`: to get the topic of the last received message, which is a `std::string`;
+* `agent.remote_control()`: you must call it to process any incoming remote control message;
+* `agent.publish()`: to publish a JSON message to the broker. If not specified as second argument, it uses the default publish topic of the agent.
+
+Look at the `agent.hpp` header file for the complete list of methods available in the `agent` class.
