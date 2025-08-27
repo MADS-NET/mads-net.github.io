@@ -22,8 +22,10 @@ website:
           - href: presentations/intro.qmd
             text: "{{< logo >}} Intro"
     right:
+      - href: https://git.new/MADS
+        text: "{{< bi cloud-arrow-down-fill >}} Get MADS"
       - href: about.qmd
-        text: "About"
+        text: "{{< bi question-circle-fill >}} About"
       - icon: github
         menu:
           - text: Source Code

@@ -7,8 +7,14 @@ date--modified: today
 format: html
 ---
 
-# What is it
 
+::: callout-important
+{{< bi info-circle >}} Always get the latest MADS installer on: [git.new/MADS](https://git.new/MADS)
+
+See [this guide](/guides/install.html) for installation instructions.
+:::
+
+# What is it
 
 MADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.
 
@@ -20,12 +26,13 @@ Some of the available plugins are:
 
 * [arduino_plugin](https://github.com/MADS-NET/arduino_plugin): reads from a serial connected arduino
 * [hpe2D_plugin](https://github.com/MADS-NET/hpe2d_plugin): performs human pose estimation from a camera stream
-* [mqtt_plugin](https://github.com/MADS-NET/mqtt_plugin): acts as a bridge with an MQTT network
+* [mqtt_plugin](https://github.com/MADS-NET/mqtt_plugin): acts as a bridge with an MQTT network via two agents: `mqtt2mads.plugin` (source) and `mads2mqtt.plugin` (sink)
 * [say_plugin](https://github.com/MADS-NET/say_plugin): Text-to-speech of incoming messages
 * [ble_plugin](https://github.com/MADS-NET/ble_plugin): Bluetooth Low Energy source plugin
 * [tui_plugin](https://github.com/MADS-NET/tui_plugin): Terminal User Interface for sending metadata commands to MADS network
 * [lua_plugin](https://github.com/MADS-NET/lua_plugin): Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)
 * [hdf5_plugin](https://github.com/MADS-NET/hdf5_plugin): a sink agent that logs data traffic into a HDF5 file
+* [rpio_plugin](https://github.com/MADS-NET/rpio_plugin): source and sink agents for Raspberry Pi GPIO pins (using `libgpiod` v1.6)
 
 There are also additional monolithic agents:
 
