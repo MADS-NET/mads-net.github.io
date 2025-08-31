@@ -286,6 +286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This command takes a JSON messages and routes it to the MADS network. If the message is not a valid JSON, nothing gets published. The command can be used one-shot by reading the massage on the command line with the <code>-m</code> option:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> bridge <span class="at">-t</span> test_topic <span class="at">-m</span> <span class="st">'{"key": "value"}'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This publishes the message <code>{"key": "value"}</code> to the topic <code>test_topic</code> and returns immediately.</p>
+<script src="https://asciinema.org/a/jjbmwYcZcPyTZiyz5W0UsKnae.js" id="asciicast-jjbmwYcZcPyTZiyz5W0UsKnae" async="true" data-idle-time-limit="1"></script>
 <p>Alternatively — if the <code>-m</code> option is not provided — the message can be read from the standard input. This can be done either interactively, or by piping to this command from another language. Either case, the command reads a single message terminated by the new line character <code>\n</code>, publishes it to the specified topic, and then waits for another message. The loop stops when a literal <code>exit\n</code> is read.</p>
 <p>As an option, a message can be sent to a different topic by prependint the topic name followed by a colon <code>:</code> to the JSON message. For example, the message <code>special_topic:{"key": "value"}\n</code> is sent to the topic <code>special_topic</code> instead of the default <code>test_topic</code>.</p>
 <div class="callout callout-style-default callout-important callout-titled">
@@ -350,7 +351,21 @@ When to use <code>mads bridge</code> vs <code>mads source</code>
 <li><code>mads sink</code> subscribes to a topic on the MADS broker and writes received messages to STDOUT</li>
 <li><code>mads filter</code> subscribes to a topic on the MADS broker, and for each received message, it writes it to STDOUT and reads a message from STDIN to publish it back to the MADS broker</li>
 </ul>
-<p>With these three commands, by using the pipe operations as in the above example, it is possible to create agents in arguably any programming language, including shell scripts or direct shell interaction.</p>
+<p>With these three commands, by using the pipe operations as in the above example, it is possible to create agents in arguably any programming language, including shell scripts or direct shell interaction, as in the following clip:</p>
+<script src="https://asciinema.org/a/Tk5HreU9d3zQhF9N5p2H5hfsp.js" id="asciicast-Tk5HreU9d3zQhF9N5p2H5hfsp" data-idle-time-limit="1" async="true"></script>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+How <code>mads filter</code> works
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that the <code>mads filter</code> expect to receive a message from the MADS network, which it writes to STDOUT, and then it waits for a message from STDIN to publish it back to the MADS network. This means that if you use <code>mads filter</code> in a pipe, you need to ensure that the preceding command in the pipe is capable of providing input to <code>mads filter</code>. If the preceding command does not provide input, <code>mads filter</code> will block indefinitely waiting for input. The same holds if you are using it interactively: you need to provide a message to <code>mads filter</code> after it receives one from the MADS network.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -378,7 +393,7 @@ Warning
 <section id="the-terminal-user-interface-tui" class="level1">
 <h1>The Terminal User Interface (TUI)</h1>
 <p>MADS provides a <a href="https://github.com/MADS-NET/tui_plugin">Terminal User Interface (TUI)</a> that allows to interact with the network in a more user-friendly way. The TUI is implemented as a special source plugin called <code>tui</code>, which can be loaded with the <code>mads source</code> command:</p>
-<script src="https://asciinema.org/a/0qSqCYeisTw8uGGi3yC5GEnN4.js" id="asciicast-0qSqCYeisTw8uGGi3yC5GEnN4" data-idle-time-limit="1" data-speed="3" async="true">
+<script src="https://asciinema.org/a/0qSqCYeisTw8uGGi3yC5GEnN4.js" id="asciicast-0qSqCYeisTw8uGGi3yC5GEnN4" data-idle-time-limit="1" async="true">
 </script>
 <p>In particular, the TUI allows to insert in the MongoDB database custom messages that allow to identify and section the logged data.</p>
 <p>In particular, you can mark a description, a user and an operator and some custom tags. The <code>mark in</code> button marks the beginning of a section, to be closed with <code>mark out</code>; in between these sectioning marks, a simple <code>mark</code> can be used to identify a notable moment.</p>
