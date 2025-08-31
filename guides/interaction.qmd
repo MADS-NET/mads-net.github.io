@@ -1,0 +1,133 @@
+---
+title: "Interacting with MADS"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 08/30/2025
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [easy, operations]
+abstract: |
+  This guide illustrates the various ways to interact with MADS by publishing one-shot JSON messages to the MADS broker.
+---
+
+# Introduction
+
+It is possible to directly interact with a MADS network by sending one-shot JSON messages to the MADS broker. This can be done in three different ways:
+
+* by sending a single JSON payload with customized content, often useful for **debugging purpose**
+* by sending special control commands, allowing to pause or resume the MongoDB logging or to restart all agents, thus **forcing the re-load of the configuration files**
+* by using a Terminal User Interface (TUI), which provides a more user-friendly way to interact with MADS, allowing to send control commands and custom messages
+
+# Sending custom messages
+
+This can be done in two different ways: with the `mads bridge` command or with one if the plugin loaders commands (`mads source|filter|sink`).
+
+## Using `mads bridge`
+
+This command takes a JSON messages and routes it to the MADS network. If the message is not a valid JSON, nothing gets published. The command can be used one-shot by reading the massage on the command line with the `-m` option:
+
+```bash
+mads bridge -t test_topic -m '{"key": "value"}'
+```
+
+This publishes the message `{"key": "value"}` to the topic `test_topic` and returns immediately.
+
+Alternatively --- if the `-m` option is not provided --- the message can be read from the standard input. This can be done either interactively, or by piping to this command from another language. Either case, the command reads a single message terminated by the new line character `\n`, publishes it to the specified topic, and then waits for another message. The loop stops when a literal `exit\n` is read.
+
+As an option, a message can be sent to a different topic by prependint the topic name followed by a colon `:` to the JSON message. For example, the message `special_topic:{"key": "value"}\n` is sent to the topic `special_topic` instead of the default `test_topic`. 
+
+::: callout-important
+Since the newline character `\n` is used to terminate the message, the JSON payload cannot contain newline characters.
+:::
+
+As an example, the following is a Python script that uses the `mads bridge` command to send 10 messages in a sequence:
+
+```python
+# open the bridge as a subprocess
+if len(sys.argv) > 1:
+  process = subprocess.Popen('mads-broker', stdin=subprocess.PIPE)
+else:
+  print("Usage: python3 stress.py topic")
+  sys.exit(1)
+
+i = 0
+# Write to the subprocess' standard input
+while i < 10:
+  json_data = {
+    "script": __file__,
+    "id": i,
+    "date": time.strftime("%Y-%m-%d %H:%M:%S")
+  }
+  process.stdin.write(json.dumps(json_data).encode())
+  process.stdin.write(b'\n')  # newline character
+  process.stdin.flush()       # flush the buffer
+  time.sleep(0.2)
+  i += 1
+
+# Close the subprocess' by sending the magic word "exit"
+process.stdin.write(b'exit\n')
+process.stdin.close()
+process.wait()
+```
+
+::: callout-note
+# When to use `mads bridge` vs `mads source`
+
+The interactive mode of `mads bridge` is actually a legacy functionality that predates the plugin loaders commands (see next section). Those are now preferred and provide more flexibility and better integration with the MADS ecosystem. However, `mads bridge` remains available for backward compatibility and for quick debugging tasks, especially **for sending a single message** with the `-m` option.
+:::
+
+
+## Using plugin loaders
+
+The plugin loaders commands (`mads source`, `mads filter`, and `mads sink`) are the agents that are typically used to load a source plugin. However, if no plugin is given as argument, they acts on STDIN and STDOUT to route messages to and from the MADS network.
+
+If no plugin is provided on the command line:
+
+* `mads source` reads messages from STDIN and publishes them to the MADS broker
+* `mads sink` subscribes to a topic on the MADS broker and writes received messages to STDOUT
+* `mads filter` subscribes to a topic on the MADS broker, and for each received message, it writes it to STDOUT and reads a message from STDIN to publish it back to the MADS broker
+
+With these three commands, by using the pipe operations as in the above example, it is possible to create agents in arguably any programming language, including shell scripts or direct shell interaction.
+
+::: callout-warning
+Interacting via pipes is less efficient than using a dedicated plugin, as each message is handled by a separate process. This can be a bottleneck when dealing with high-frequency messages.
+
+For this reason, writing dedicated plugins is the proper way to extend MADS for production use cases.
+:::
+
+
+# Sending control commands
+
+MADS supports a few special commands that can be sent to the broker to control the behavior of the network. These commands are:
+
+* `mads command <stop|restart>` to stop or restart all agents; the restart command forces all agents to re-load their configuration files, so it comes handy when the configuration has been changed on the broker and the agents need to be updated;
+* `mads logging <on|off>` to enable or disable the logging to MongoDB via the `mads logger` agent; this is useful when performing tests and you want to avoid polluting the database with test data.
+
+
+
+# The Terminal User Interface (TUI)
+
+MADS provides a [Terminal User Interface (TUI)](https://github.com/MADS-NET/tui_plugin) that allows to interact with the network in a more user-friendly way. The TUI is implemented as a special source plugin called `tui`, which can be loaded with the `mads source` command:
+
+<script 
+  src="https://asciinema.org/a/0qSqCYeisTw8uGGi3yC5GEnN4.js" 
+  id="asciicast-0qSqCYeisTw8uGGi3yC5GEnN4"
+  data-idle-time-limit=1
+  data-speed=3
+  async="true" >
+</script>
+
+In particular, the TUI allows to insert in the MongoDB database custom messages that allow to identify and section the logged data.
+
+In particular, you can mark a description, a user and an operator and some custom tags. The `mark in` button marks the beginning of a section, to be closed with `mark out`; in between these sectioning marks, a simple `mark` can be used to identify a notable moment.
+
+Finally, the `Stop` and `Restart` buttons can be used to send the corresponding control commands to the broker (for stopping or restarting all agents, respectively), while the `Logging Enable/Disable` toggle can be used to enable or disable the logging to MongoDB (first select the operation and then click on the `Logging` button).
