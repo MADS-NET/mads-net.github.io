@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-06-06">
+<meta name="dcterms.date" content="2025-08-30">
 
-<title>MongoDB</title>
+<title>Interacting with MADS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -70,7 +105,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<meta name="quarto:status" content="draft">
 
 
 </head>
@@ -78,7 +112,7 @@ ul.task-list li input[type="checkbox"] {
 <body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -167,7 +201,14 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#contents" id="toc-contents" class="nav-link active" data-scroll-target="#contents">Contents</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#sending-custom-messages" id="toc-sending-custom-messages" class="nav-link" data-scroll-target="#sending-custom-messages">Sending custom messages</a>
+  <ul class="collapse">
+  <li><a href="#using-mads-bridge" id="toc-using-mads-bridge" class="nav-link" data-scroll-target="#using-mads-bridge">Using <code>mads bridge</code></a></li>
+  <li><a href="#using-plugin-loaders" id="toc-using-plugin-loaders" class="nav-link" data-scroll-target="#using-plugin-loaders">Using plugin loaders</a></li>
+  </ul></li>
+  <li><a href="#sending-control-commands" id="toc-sending-control-commands" class="nav-link" data-scroll-target="#sending-control-commands">Sending control commands</a></li>
+  <li><a href="#the-terminal-user-interface-tui" id="toc-the-terminal-user-interface-tui" class="nav-link" data-scroll-target="#the-terminal-user-interface-tui">The Terminal User Interface (TUI)</a></li>
   </ul>
 </nav>
     </div>
@@ -176,12 +217,10 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">MongoDB</h1>
+<h1 class="title">Interacting with MADS</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">intermediate</div>
-    <div class="quarto-category">javascript</div>
-    <div class="quarto-category">database</div>
-    <div class="quarto-category">analysis</div>
+    <div class="quarto-category">easy</div>
+    <div class="quarto-category">operations</div>
   </div>
   </div>
 
@@ -206,7 +245,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 6, 2025</p>
+      <p class="date">August 30, 2025</p>
     </div>
   </div>
   
@@ -222,7 +261,7 @@ ul.task-list li input[type="checkbox"] {
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>How to use data collected in the MongoDB database.</p>
+    <p>This guide illustrates the various ways to interact with MADS by publishing one-shot JSON messages to the MADS broker.</p>
   </div>
 </div>
 
@@ -230,8 +269,88 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>It is possible to directly interact with a MADS network by sending one-shot JSON messages to the MADS broker. This can be done in three different ways:</p>
+<ul>
+<li>by sending a single JSON payload with customized content, often useful for <strong>debugging purpose</strong></li>
+<li>by sending special control commands, allowing to pause or resume the MongoDB logging or to restart all agents, thus <strong>forcing the re-load of the configuration files</strong></li>
+<li>by using a Terminal User Interface (TUI), which provides a more user-friendly way to interact with MADS, allowing to send control commands and custom messages</li>
+</ul>
+</section>
+<section id="sending-custom-messages" class="level1">
+<h1>Sending custom messages</h1>
+<p>This can be done in two different ways: with the <code>mads bridge</code> command or with one if the plugin loaders commands (<code>mads source|filter|sink</code>).</p>
+<section id="using-mads-bridge" class="level2">
+<h2 class="anchored" data-anchor-id="using-mads-bridge">Using <code>mads bridge</code></h2>
+<p>This command takes a JSON messages and routes it to the MADS network. If the message is not a valid JSON, nothing gets published. The command can be used one-shot by reading the massage on the command line with the <code>-m</code> option:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> bridge <span class="at">-t</span> test_topic <span class="at">-m</span> <span class="st">'{"key": "value"}'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This publishes the message <code>{"key": "value"}</code> to the topic <code>test_topic</code> and returns immediately.</p>
+<p>Alternatively — if the <code>-m</code> option is not provided — the message can be read from the standard input. This can be done either interactively, or by piping to this command from another language. Either case, the command reads a single message terminated by the new line character <code>\n</code>, publishes it to the specified topic, and then waits for another message. The loop stops when a literal <code>exit\n</code> is read.</p>
+<p>As an option, a message can be sent to a different topic by prependint the topic name followed by a colon <code>:</code> to the JSON message. For example, the message <code>special_topic:{"key": "value"}\n</code> is sent to the topic <code>special_topic</code> instead of the default <code>test_topic</code>.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Since the newline character <code>\n</code> is used to terminate the message, the JSON payload cannot contain newline characters.</p>
+</div>
+</div>
+<p>As an example, the following is a Python script that uses the <code>mads bridge</code> command to send 10 messages in a sequence:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open the bridge as a subprocess</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">len</span>(sys.argv) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  process <span class="op">=</span> subprocess.Popen(<span class="st">'mads-broker'</span>, stdin<span class="op">=</span>subprocess.PIPE)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="st">"Usage: python3 stress.py topic"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  sys.exit(<span class="dv">1</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>i <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Write to the subprocess' standard input</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> i <span class="op">&lt;</span> <span class="dv">10</span>:</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  json_data <span class="op">=</span> {</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"script"</span>: <span class="va">__file__</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"id"</span>: i,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"date"</span>: time.strftime(<span class="st">"%Y-%m-</span><span class="sc">%d</span><span class="st"> %H:%M:%S"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  process.stdin.write(json.dumps(json_data).encode())</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  process.stdin.write(<span class="st">b'</span><span class="ch">\n</span><span class="st">'</span>)  <span class="co"># newline character</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  process.stdin.flush()       <span class="co"># flush the buffer</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  time.sleep(<span class="fl">0.2</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  i <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Close the subprocess' by sending the magic word "exit"</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>process.stdin.write(<span class="st">b'exit</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>process.stdin.close()</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>process.wait()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+When to use <code>mads bridge</code> vs <code>mads source</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The interactive mode of <code>mads bridge</code> is actually a legacy functionality that predates the plugin loaders commands (see next section). Those are now preferred and provide more flexibility and better integration with the MADS ecosystem. However, <code>mads bridge</code> remains available for backward compatibility and for quick debugging tasks, especially <strong>for sending a single message</strong> with the <code>-m</code> option.</p>
+</div>
+</div>
+</section>
+<section id="using-plugin-loaders" class="level2">
+<h2 class="anchored" data-anchor-id="using-plugin-loaders">Using plugin loaders</h2>
+<p>The plugin loaders commands (<code>mads source</code>, <code>mads filter</code>, and <code>mads sink</code>) are the agents that are typically used to load a source plugin. However, if no plugin is given as argument, they acts on STDIN and STDOUT to route messages to and from the MADS network.</p>
+<p>If no plugin is provided on the command line:</p>
+<ul>
+<li><code>mads source</code> reads messages from STDIN and publishes them to the MADS broker</li>
+<li><code>mads sink</code> subscribes to a topic on the MADS broker and writes received messages to STDOUT</li>
+<li><code>mads filter</code> subscribes to a topic on the MADS broker, and for each received message, it writes it to STDOUT and reads a message from STDIN to publish it back to the MADS broker</li>
+</ul>
+<p>With these three commands, by using the pipe operations as in the above example, it is possible to create agents in arguably any programming language, including shell scripts or direct shell interaction.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -242,9 +361,28 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>To be done.</p>
+<p>Interacting via pipes is less efficient than using a dedicated plugin, as each message is handled by a separate process. This can be a bottleneck when dealing with high-frequency messages.</p>
+<p>For this reason, writing dedicated plugins is the proper way to extend MADS for production use cases.</p>
 </div>
 </div>
+</section>
+</section>
+<section id="sending-control-commands" class="level1">
+<h1>Sending control commands</h1>
+<p>MADS supports a few special commands that can be sent to the broker to control the behavior of the network. These commands are:</p>
+<ul>
+<li><code>mads command &lt;stop|restart&gt;</code> to stop or restart all agents; the restart command forces all agents to re-load their configuration files, so it comes handy when the configuration has been changed on the broker and the agents need to be updated;</li>
+<li><code>mads logging &lt;on|off&gt;</code> to enable or disable the logging to MongoDB via the <code>mads logger</code> agent; this is useful when performing tests and you want to avoid polluting the database with test data.</li>
+</ul>
+</section>
+<section id="the-terminal-user-interface-tui" class="level1">
+<h1>The Terminal User Interface (TUI)</h1>
+<p>MADS provides a <a href="https://github.com/MADS-NET/tui_plugin">Terminal User Interface (TUI)</a> that allows to interact with the network in a more user-friendly way. The TUI is implemented as a special source plugin called <code>tui</code>, which can be loaded with the <code>mads source</code> command:</p>
+<script src="https://asciinema.org/a/0qSqCYeisTw8uGGi3yC5GEnN4.js" id="asciicast-0qSqCYeisTw8uGGi3yC5GEnN4" data-idle-time-limit="1" data-speed="3" async="true">
+</script>
+<p>In particular, the TUI allows to insert in the MongoDB database custom messages that allow to identify and section the logged data.</p>
+<p>In particular, you can mark a description, a user and an operator and some custom tags. The <code>mark in</code> button marks the beginning of a section, to be closed with <code>mark out</code>; in between these sectioning marks, a simple <code>mark</code> can be used to identify a notable moment.</p>
+<p>Finally, the <code>Stop</code> and <code>Restart</code> buttons can be used to send the corresponding control commands to the broker (for stopping or restarting all agents, respectively), while the <code>Logging Enable/Disable</code> toggle can be used to enable or disable the logging to MongoDB (first select the operation and then click on the <code>Logging</code> button).</p>
 
 
 </section>
