@@ -287,6 +287,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> bridge <span class="at">-t</span> test_topic <span class="at">-m</span> <span class="st">'{"key": "value"}'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This publishes the message <code>{"key": "value"}</code> to the topic <code>test_topic</code> and returns immediately.</p>
 <script src="https://asciinema.org/a/jjbmwYcZcPyTZiyz5W0UsKnae.js" id="asciicast-jjbmwYcZcPyTZiyz5W0UsKnae" async="true" data-idle-time-limit="1"></script>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Remember: if the broker runs on another machine, you need to specify its <strong>settings address</strong> with the <code>-s</code> option (see <a href="structure.html">this guide</a>).</p>
+</div>
+</div>
 <p>Alternatively — if the <code>-m</code> option is not provided — the message can be read from the standard input. This can be done either interactively, or by piping to this command from another language. Either case, the command reads a single message terminated by the new line character <code>\n</code>, publishes it to the specified topic, and then waits for another message. The loop stops when a literal <code>exit\n</code> is read.</p>
 <p>As an option, a message can be sent to a different topic by prependint the topic name followed by a colon <code>:</code> to the JSON message. For example, the message <code>special_topic:{"key": "value"}\n</code> is sent to the topic <code>special_topic</code> instead of the default <code>test_topic</code>.</p>
 <div class="callout callout-style-default callout-important callout-titled">
