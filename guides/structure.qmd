@@ -99,7 +99,7 @@ Regardless the type, agent can have three different behaviors:
 The MADS installer provides three general purpose agents, aptly named `source`, `filter`, and `sink`, that are designe do load proper plugins. The command `mads plugin` can be used to generate a suitable template for a new plugin to be developed.
 
 
-# Layout and requirements
+## Network layout
 
 At the bare minimum, a MADS network requires:
 

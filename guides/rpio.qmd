@@ -1,0 +1,161 @@
+---
+title: "Raspberry Pi IO"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 06/02/2025
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [intermediate, RaspberryPi, IO, plugin]
+abstract: |
+  The `rpio.plugin` allows low-latency interaction with Raspberry Pi GPIO pins via `libgpiod` library.
+---
+
+# Intro
+
+Raspberry Pi boards have a 40-pin GPIO header that can provide useful input-output to switches, relais, LEDs and similar digital I/O devices. The `libgpiod` library allows direct access to all GPIO pins, which can be set as outputs or inputs. In the latter case, pins can be read synchronously (polling) or asynchronously (on events, i.e. whenever there is a change of state).
+
+The [`rpio_plugin`](https://github.com/MADS-NET/rpio_plugin) provides a way for interacting with GPIO pins through MADS messages.
+
+# Getting the plugin
+
+## Requirements
+
+First of all, the plugin is designed for the Raspberry Pi. It might work (but it has not been tested) on any Linux system where the `libgpiod` library is available and that has a GPIO chip and header.
+
+The library `libgpiod` can be installed with `sudo apt install libgpiod-dev`.
+
+::: callout-important
+Note that there are two **incompatible** versions of `libgpiod` currently diffused: version 1.6.x and version 2.x (aka `libgpiod2`). At the time of writing this guide, RaspbianOS only comes with the version 1.6 and version 2 is not yet available.
+
+The `rpio_plugin` is designed to build with version 1.6.x and it **won't compile** on systems that have the version 2 installed.
+:::
+
+## Compilation
+
+To obtain the plugin proceed as usual: clone it, compile, and install:
+
+```bash
+git clone -d 1 https://github.com/MADS-NET/rpio_plugin.git
+cd rpio_plugin
+cmake -Bbuild
+cmake --build build -j5
+[sudo] cmake --install build # use sudo if needed
+```
+
+This produces and installs two different plugins: 
+
+* `rpio_in.plugin`, which is used to read pins values and to publish them on the MADS network;
+* `rpio_out.plugin`, which is used to set pin levels upon receiving the proper JSON command from the MADS network.
+
+Remember that the install command copies these plugins to the MADS library directory, i.e. `$(mads -p)/usr/local/lib` (if that is outside your home folder, you have to use `sudo`).
+
+# Using the plugin
+
+## For setting pin values
+
+First of all, add a proper configuration to `mads.ini`:
+
+```ini
+[rpio_out]
+sub_topic = ["gpio"]
+chip_path = "/dev/gpiochip0"
+```
+
+where `chip_path` is the device path of the GPIO device, typically `/dev/gpiochip0` on a Raspberry Pi, but it might be different on other device. Check for the proper device with `gpiodetect` and `gpioinfo` shell commands.
+
+Then, the agent will wait for messages published on the topic `gpio` with a JSON like the following:
+
+```json
+{
+  "pins": {
+    "10": 1,
+    "12": 0
+  }
+}
+```
+
+which will set pin 10 to `HIGH` and pin 12 to `LOW`, leaving any other pin unchanged.
+
+
+## For reading pin values
+
+Reading pins is a tad more complicated and can be performed in two different ways.
+
+### Synchronous read
+
+This means reading pin values immediately or --- since the agent runs in a loop --- repeatedly at a given time step. The `mads.ini` configuration is something like:
+
+```ini
+[rpio_in]
+chip_path = "/dev/gpiochip0"
+pub_topic = "gpio"
+offsets = [5, 15, 10, 12]
+pulldown = true
+event_mode = "none"
+period = 500          # in milliseconds
+```
+
+This will publish a message with the observed values for pins 5, 15, 10, and 12 every 500 milliseconds, with possibly repeated values (when there is no level change). Use `pulldown = true` if you want floating pins to be forced low, or `pulldown = false` to be forced high.
+
+### Asynchronous read
+
+Synchronous read is fine if you want to log a time-sequence of pin values, especially when they change frequently. But if you want to read the value of a pin connected to a device like a switch or a push button, that would uselessly flood the network with repeated messages.
+
+In these cases, an asynchronous read is much more preferable. This works by waiting for level change and only publishing a message when it happens. The proper `mads.ini` section is:
+
+```ini
+[rpio_in]
+chip_path = "/dev/gpiochip0"
+pub_topic = "gpio"
+offsets = [5, 15, 10, 12]
+pulldown = true        # as explained above
+event_mode = "rising"  # options: none, rising, falling, both
+period = 500           # in milliseconds
+polling_timeout = 100  # in milliseconds
+```
+
+This will wait for a transition from low to high on any of the selected pins; when (and only when!) a transition is detected, it will publish the corresponding message. The `period` setting means that it won't publish any message more often that 500 ms; the `polling_timeout` indicates how long the process wait for a level change before returning a no-change condition, which corresponds to no message being sent and a `retry` condition in the plugin loop. Making that timeout shorted results in a plugin that is more responsive to signals (e.g. CTRL-C).
+
+::: callout-tip
+It is currently not possible to have the same agent reading different pins in different ways or with different `event_mode`s. If you really find yourself in that condition, you shall run different agents loading the same `rpio_in.plugin` with different names, and have different sections in the `mads.ini` file. For example:
+
+```ini
+[rpio_in_sync]
+chip_path = "/dev/gpiochip0"
+pub_topic = "gpio"
+offsets = [5, 15]
+pulldown = true        # as explained above
+event_mode = "none"    # options: none, rising, falling, both
+period = 100           # in milliseconds
+
+[rpio_in_async]
+chip_path = "/dev/gpiochip0"
+pub_topic = "gpio"
+offsets = [10, 12]
+pulldown = true        # as explained above
+event_mode = "rising"  # options: none, rising, falling, both
+period = 500           # in milliseconds
+polling_timeout = 100  # in milliseconds
+```
+
+and then launch two agents with different names. In the first terminal run the **synchronous** agent, reading from pins 5 and 15 every 100 milliseconds:
+
+```bash
+mads source rpio_in.plugin -n rpio_in_sync
+```
+
+On another terminal run the **asynchronous** agent, reading only rising level changes on pins 10 and 12:
+
+```bash
+mads source rpio_in.plugin -n rpio_in_async
+```
+:::

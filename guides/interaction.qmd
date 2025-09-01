@@ -41,6 +41,12 @@ mads bridge -t test_topic -m '{"key": "value"}'
 
 This publishes the message `{"key": "value"}` to the topic `test_topic` and returns immediately.
 
+<script src="https://asciinema.org/a/jjbmwYcZcPyTZiyz5W0UsKnae.js" id="asciicast-jjbmwYcZcPyTZiyz5W0UsKnae" async="true" data-idle-time-limit=1></script>
+
+::: callout-important
+Remember: if the broker runs on another machine, you need to specify its **settings address** with the `-s` option (see [this guide](structure.html#network-layout)).
+:::
+
 Alternatively --- if the `-m` option is not provided --- the message can be read from the standard input. This can be done either interactively, or by piping to this command from another language. Either case, the command reads a single message terminated by the new line character `\n`, publishes it to the specified topic, and then waits for another message. The loop stops when a literal `exit\n` is read.
 
 As an option, a message can be sent to a different topic by prependint the topic name followed by a colon `:` to the JSON message. For example, the message `special_topic:{"key": "value"}\n` is sent to the topic `special_topic` instead of the default `test_topic`. 
@@ -96,7 +102,16 @@ If no plugin is provided on the command line:
 * `mads sink` subscribes to a topic on the MADS broker and writes received messages to STDOUT
 * `mads filter` subscribes to a topic on the MADS broker, and for each received message, it writes it to STDOUT and reads a message from STDIN to publish it back to the MADS broker
 
-With these three commands, by using the pipe operations as in the above example, it is possible to create agents in arguably any programming language, including shell scripts or direct shell interaction.
+With these three commands, by using the pipe operations as in the above example, it is possible to create agents in arguably any programming language, including shell scripts or direct shell interaction, as in the following clip:
+
+<script src="https://asciinema.org/a/Tk5HreU9d3zQhF9N5p2H5hfsp.js" id="asciicast-Tk5HreU9d3zQhF9N5p2H5hfsp" data-idle-time-limit=1
+  async="true"></script>
+  
+::: callout-note
+# How `mads filter` works
+
+Note that the `mads filter` expect to receive a message from the MADS network, which it writes to STDOUT, and then it waits for a message from STDIN to publish it back to the MADS network. This means that if you use `mads filter` in a pipe, you need to ensure that the preceding command in the pipe is capable of providing input to `mads filter`. If the preceding command does not provide input, `mads filter` will block indefinitely waiting for input. The same holds if you are using it interactively: you need to provide a message to `mads filter` after it receives one from the MADS network.
+:::
 
 ::: callout-warning
 Interacting via pipes is less efficient than using a dedicated plugin, as each message is handled by a separate process. This can be a bottleneck when dealing with high-frequency messages.
@@ -122,7 +137,6 @@ MADS provides a [Terminal User Interface (TUI)](https://github.com/MADS-NET/tui_
   src="https://asciinema.org/a/0qSqCYeisTw8uGGi3yC5GEnN4.js" 
   id="asciicast-0qSqCYeisTw8uGGi3yC5GEnN4"
   data-idle-time-limit=1
-  data-speed=3
   async="true" >
 </script>
 
