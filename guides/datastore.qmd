@@ -1,0 +1,119 @@
+---
+title: "Agents persistency with Datastore"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 09/03/2025
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: ls
+categories: [plugin, C++, intermediate]
+abstract: |
+  MADS Version 1.3.5 introduces the `Datastore` class for plugins. This class allows storing persistent information at device level.
+---
+
+# The problem
+
+MADS agents load their setting from the centralized `mads.ini` file provided by the broker. Those settings are of course *read-only*, i.e., it is not possible for an agent to *update* its settings.
+
+This limitation is *by design*. In fact, allowing a single agent to update the setting file would possibly result in unwanted side effect: what happens if the update contains errors? what happens if there are multiple agents sharing the same name (and thus the same INI section) but having different `agent_id`? Forcing read-only settings is a way for **ensuring robustness in operations**.
+
+Nevertheless, there are cases where an agent needs to permanently and locally store **own** information that has to be persistent upon the agent's restarts. For example, suppose that you have an **agent providing IMU (inertial unit) measurements** with respect to an initial reference orientation. In this case, you want the agent to calibrate it's initial attitude upon the very first launch, and then **use the same calibration** even when the agent restarts or the device reboots, until explicitly forced to re-calibrate. To build on the previously cited use case, the same agent running on different devices, you want to store the calibration **locally**, to ensure that each instance of the same agent always loads its own calibration.
+
+In this scenario, you need **persistent data storage**, and that is what the `Datastore` C++ class provides.
+
+# The solution
+
+## The `Datastore` class
+
+It is a C++ header-only class, provided by the [plugin base project and classes](https://github.com/pbosetti/mads_plugin). This project is automatically fetched for you whenever you compile a new plugin, and provides the base code, on top of which plugins are built. In particular, it provides the base classes `Source`, `Filter`, and `Sink`, that are inherited by actual plugin classes. 
+
+The source code of this project is downloaded into `build/_deps/plugin-src` in each plugin project directory.
+
+Starting from version 1.3.5, the code in `build/_deps/plugin-src/src` also provides a `datastore.hpp` class implementation. It is a relatively simple class for persistently store a `nlohmann::json` object on a text file in a local temporary folder (your OS temp dir as provided by C++ `std::filesystem::temp_directory_path()`). The class has the following notable methods:
+
+* `void prepare(std::string name)`: to be called once, it prepares a datastore file: if it exists, the file is read and parsed as a `nlohmann::json` object internally stored; if it does not exist, it is created (in the OS temp dir) and the internal storage set to an empty `nlohmann::json` object. If the `name` lacks the `.json` extension, that is automatically added.
+* `void save()`: force dumping the current internal storage in the associated file. **It is automatically called when the datastore is destructed** (for example upon regular exit).
+* `nlohmann::json & operator[](const std::string &key)`: access the object at `key` from the internal storage (both for reading and writing).
+* `nlohmann::json & data()`: provides access to the internal storage.
+* `std::string path()`: provides the full path of the storage file
+
+
+##  The plugin template
+
+The command `mads plugin` is used to generate a plugin template. With v1.3.5, it gains the `-s|--datastore` option, which enables some example calls to the `Datastore` class. For example, by issuing:
+
+```bash
+mads plugin -d test_plugin -s test
+```
+
+the template for a blank new plugin called `test.plugin` is created in the `test_plugin` directory, **with usage examples for `Datastore`**. With the `-s`flag, the `src/test.cpp` file has the following additions:
+
+1. The `Datastore` class is included with `#include <datastore.hpp>`
+2. The private instance member variable `Datastore _datastore` is added to the `TestPlugin` class
+3. in `set_params()`, the line `_datastore.prepare(kind());` prepares the datastore to a file named as the plugin (`kind()` method) with the `.json` extension. If that file exists, it loads its content
+4. some comment lines suggest how to use the `_datastore` object
+5. the `info()` method returns the full path of the storage file.
+
+So, recalling the calibration use case referred above, the `set_params()` method would:
+
+1. prepare the datastore;
+2. check if the datastore contains the calibration: `if (_datastore["calibration"].empty())`
+  * if there's no calibration, perform the necessary calibration ops, then save the result as `_datastore["calibration"] = _calib_json;`
+  * if the calibration is present, load it as `_calib_json = _datastore["calibration"];`
+3. when the agent regularly exits, the `_datastore` object is destroyed and its `save()` method is automatically invoked, ensuring persistency
+
+::: callout-tip
+Although there's no need to explicitly save the datastore, forcing a save right after completing the calibration ensures that the calibration is saved even if there's later a crash.
+:::
+
+::: callout-note
+The JSON file location is in the temporary directory, which is OS dependent. Within that directory, plugin datastoires are saved in the `mads` subdirectory with the provided name (by default, the string returned by `kind()`).
+
+If the map returned by `info()` contains a pair as `{"Datastore", _datastore.path()}`, then the datastore full path is printed in the settings table when loading the plugin with `mads source|filter|sink`.
+:::
+
+::: callout-warning
+If the JSON file loaded by the datastore is wrongly formatted, the `prepare()` method will fail throwing an exception. 
+Catch that exception within `set_params()` if you can recover form the error (e.g. by performing a new calibration); or let the agent crash otherwise.
+:::
+
+
+## Existing plugins
+
+To use the ` Datastore` class to an existing plugin you have to update the fetched dependency. Open the plugin's `CMakeLists.txt` and change the following (note the only change at **line 3**):
+
+```{.cmake code-line-numbers=true}
+FetchContent_Populate(plugin 
+  GIT_REPOSITORY https://github.com/pbosetti/mads_plugin.git
+  GIT_TAG        HEAD
+  GIT_SHALLOW    TRUE
+  SUBBUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-subbuild
+  SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-src
+  BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-build
+)
+```
+
+to:
+
+```{.cmake code-line-numbers=true}
+FetchContent_Populate(plugin 
+  GIT_REPOSITORY https://github.com/pbosetti/mads_plugin.git
+  GIT_TAG        v1.3.5
+  GIT_SHALLOW    TRUE
+  SUBBUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-subbuild
+  SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-src
+  BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-build
+)
+```
+
+This will force git fetching of the v1.3.5 of the plugin system.
+
+Then, just use the ` Datastore` class as above outlined (it's source is already available in the headers search path).

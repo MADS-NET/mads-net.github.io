@@ -121,19 +121,10 @@ To help you find out the proper address, you can use the `-n list` broker option
 
 ```bash
 > mads broker -n list
-Reading settings from /Users/p4010/usr/local/etc/mads.ini [broker]
-Using network interface list
 Available network adapters:
 [       lo0] - 127.0.0.1
 [       en0] - 192.168.1.220
 [ bridge100] - 198.19.249.3
-Binding broker frontend (XSUB) at tcp://*:9090
-Binding broker backend (XPUB) at tcp://*:9091
-Binding broker shared settings (REP) at tcp://*:9092
-Timecode FPS: 25
-Settings are provided via tcp://127.0.0.1:9092
-CTRL-C to immediate exit
-Type P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings
 ```
 
 This shows that the host has three network interfaces. The public one is probably `en0` (your names may vary). Now quit the broker and relaunch it as:
