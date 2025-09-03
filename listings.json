@@ -2,6 +2,7 @@
   {
     "listing": "/guides.html",
     "items": [
+      "/guides/datastore.html",
       "/guides/interaction.html",
       "/guides/install.html",
       "/guides/monolithic_agents.html",
