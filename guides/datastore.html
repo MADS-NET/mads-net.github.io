@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-06-04">
+<meta name="dcterms.date" content="2025-09-03">
 
-<title>Network structure</title>
+<title>Agents persistency with Datastore</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -201,13 +201,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#architecture" id="toc-architecture" class="nav-link active" data-scroll-target="#architecture">Architecture</a>
+  <li><a href="#the-problem" id="toc-the-problem" class="nav-link active" data-scroll-target="#the-problem">The problem</a></li>
+  <li><a href="#the-solution" id="toc-the-solution" class="nav-link" data-scroll-target="#the-solution">The solution</a>
   <ul class="collapse">
-  <li><a href="#the-broker" id="toc-the-broker" class="nav-link" data-scroll-target="#the-broker">The broker</a></li>
-  <li><a href="#the-agents" id="toc-the-agents" class="nav-link" data-scroll-target="#the-agents">The agents</a></li>
-  <li><a href="#network-layout" id="toc-network-layout" class="nav-link" data-scroll-target="#network-layout">Network layout</a></li>
+  <li><a href="#the-datastore-class" id="toc-the-datastore-class" class="nav-link" data-scroll-target="#the-datastore-class">The <code>Datastore</code> class</a></li>
+  <li><a href="#the-plugin-template" id="toc-the-plugin-template" class="nav-link" data-scroll-target="#the-plugin-template">The plugin template</a></li>
+  <li><a href="#existing-plugins" id="toc-existing-plugins" class="nav-link" data-scroll-target="#existing-plugins">Existing plugins</a></li>
   </ul></li>
-  <li><a href="#where-to-go-next" id="toc-where-to-go-next" class="nav-link" data-scroll-target="#where-to-go-next">Where to go next</a></li>
   </ul>
 </nav>
     </div>
@@ -216,11 +216,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Network structure</h1>
+<h1 class="title">Agents persistency with Datastore</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">template</div>
-    <div class="quarto-category">basics</div>
-    <div class="quarto-category">easy</div>
+    <div class="quarto-category">plugin</div>
+    <div class="quarto-category">C++</div>
+    <div class="quarto-category">intermediate</div>
   </div>
   </div>
 
@@ -245,7 +245,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 4, 2025</p>
+      <p class="date">September 3, 2025</p>
     </div>
   </div>
   
@@ -261,7 +261,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>Illustrate a typical MADS network structure and its requirements.</p>
+    <p>MADS Version 1.3.5 introduces the <code>Datastore</code> class for plugins. This class allows storing persistent information at device level.</p>
   </div>
 </div>
 
@@ -269,210 +269,65 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="architecture" class="level1">
-<h1>Architecture</h1>
-<p>The typical architecture of a MADS network can be represented as:</p>
-<div class="cell" data-fig-width="6" data-fig-height="3" data-layout-align="default">
-<div class="cell-output-display">
-<div id="fig-net" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-net-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div>
-<svg width="576" height="288" viewbox="0.00 0.00 529.55 229.60" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 225.6)">
-<title>MADS Network</title>
-<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-225.6 525.55,-225.6 525.55,4 -4,4"></polygon>
-<!-- p1 -->
-<g id="node1" class="node">
-<title>p1</title>
-<polygon fill="#ffffff" stroke="black" points="51.1,-212.8 -0.03,-212.8 -0.03,-188.8 51.1,-188.8 63.1,-200.8 51.1,-212.8"></polygon>
-<text text-anchor="middle" x="31.53" y="-196.6" font-family="Times,serif" font-size="14.00">Plugin 1</text>
-</g>
-<!-- a1 -->
-<g id="node2" class="node">
-<title>a1</title>
-<polygon fill="#ffffff" stroke="black" points="176.05,-221.4 114.33,-221.4 114.33,-180.2 176.05,-180.2 176.05,-221.4"></polygon>
-<text text-anchor="middle" x="145.19" y="-205" font-family="Times,serif" font-size="14.00">Agent 1</text>
-<text text-anchor="middle" x="145.19" y="-188.2" font-family="Times,serif" font-size="14.00">(source)</text>
-</g>
-<!-- p1&#45;&gt;a1 -->
-<g id="edge1" class="edge">
-<title>p1-&gt;a1</title>
-<path fill="none" stroke="black" d="M63.34,-200.8C79.22,-200.8 98.5,-200.8 114.25,-200.8"></path>
-</g>
-<!-- broker -->
-<g id="node9" class="node">
-<title>broker</title>
-<polygon fill="#ffffff" stroke="black" points="281.31,-119.8 227.31,-119.8 227.31,-83.8 281.31,-83.8 281.31,-119.8"></polygon>
-<text text-anchor="middle" x="254.31" y="-97.6" font-family="Times,serif" font-size="14.00">broker</text>
-</g>
-<!-- a1&#45;&gt;broker -->
-<g id="edge4" class="edge">
-<title>a1-&gt;broker</title>
-<path fill="none" stroke="black" d="M176.32,-181.71C181.14,-178.26 185.97,-174.56 190.31,-170.8 205.34,-157.78 220.41,-141.41 232.05,-127.89"></path>
-<polygon fill="black" stroke="black" points="235.03,-129.78 238.82,-119.89 229.69,-125.26 235.03,-129.78"></polygon>
-</g>
-<!-- p2 -->
-<g id="node3" class="node">
-<title>p2</title>
-<polygon fill="#ffffff" stroke="black" points="51.1,-152.8 -0.03,-152.8 -0.03,-128.8 51.1,-128.8 63.1,-140.8 51.1,-152.8"></polygon>
-<text text-anchor="middle" x="31.53" y="-136.6" font-family="Times,serif" font-size="14.00">Plugin 2</text>
-</g>
-<!-- a2 -->
-<g id="node4" class="node">
-<title>a2</title>
-<polygon fill="#ffffff" stroke="black" points="175.4,-161.4 114.97,-161.4 114.97,-120.2 175.4,-120.2 175.4,-161.4"></polygon>
-<text text-anchor="middle" x="145.19" y="-145" font-family="Times,serif" font-size="14.00">Agent 2</text>
-<text text-anchor="middle" x="145.19" y="-128.2" font-family="Times,serif" font-size="14.00">(filter)</text>
-</g>
-<!-- p2&#45;&gt;a2 -->
-<g id="edge2" class="edge">
-<title>p2-&gt;a2</title>
-<path fill="none" stroke="black" d="M63.34,-140.8C79.35,-140.8 98.82,-140.8 114.64,-140.8"></path>
-</g>
-<!-- a2&#45;&gt;broker -->
-<g id="edge5" class="edge">
-<title>a2-&gt;broker</title>
-<path fill="none" stroke="black" d="M184.86,-126.72C195.46,-122.86 206.91,-118.69 217.36,-114.89"></path>
-<polygon fill="black" stroke="black" points="183.66,-123.43 175.46,-130.14 186.05,-130.01 183.66,-123.43"></polygon>
-<polygon fill="black" stroke="black" points="218.8,-118.09 227,-111.38 216.41,-111.51 218.8,-118.09"></polygon>
-</g>
-<!-- p3 -->
-<g id="node5" class="node">
-<title>p3</title>
-<polygon fill="#ffffff" stroke="black" points="51.1,-92.8 -0.03,-92.8 -0.03,-68.8 51.1,-68.8 63.1,-80.8 51.1,-92.8"></polygon>
-<text text-anchor="middle" x="31.53" y="-76.6" font-family="Times,serif" font-size="14.00">Plugin 3</text>
-</g>
-<!-- a3 -->
-<g id="node6" class="node">
-<title>a3</title>
-<polygon fill="#ffffff" stroke="black" points="175.4,-101.4 114.97,-101.4 114.97,-60.2 175.4,-60.2 175.4,-101.4"></polygon>
-<text text-anchor="middle" x="145.19" y="-85" font-family="Times,serif" font-size="14.00">Agent 3</text>
-<text text-anchor="middle" x="145.19" y="-68.2" font-family="Times,serif" font-size="14.00">(sink)</text>
-</g>
-<!-- p3&#45;&gt;a3 -->
-<g id="edge3" class="edge">
-<title>p3-&gt;a3</title>
-<path fill="none" stroke="black" d="M63.34,-80.8C79.35,-80.8 98.82,-80.8 114.64,-80.8"></path>
-</g>
-<!-- a3&#45;&gt;broker -->
-<g id="edge6" class="edge">
-<title>a3-&gt;broker</title>
-<path fill="none" stroke="black" d="M185.67,-88.54C199.45,-91.24 214.56,-94.2 227,-96.64"></path>
-<polygon fill="black" stroke="black" points="185.95,-85.03 175.46,-86.54 184.6,-91.9 185.95,-85.03"></polygon>
-</g>
-<!-- a4 -->
-<g id="node7" class="node">
-<title>a4</title>
-<polygon fill="#ffffff" stroke="black" points="190.43,-41.4 99.94,-41.4 99.94,-0.2 190.43,-0.2 190.43,-41.4"></polygon>
-<text text-anchor="middle" x="145.19" y="-25" font-family="Times,serif" font-size="14.00">Monolithic</text>
-<text text-anchor="middle" x="145.19" y="-8.2" font-family="Times,serif" font-size="14.00">Agent (filter)</text>
-</g>
-<!-- a4&#45;&gt;broker -->
-<g id="edge7" class="edge">
-<title>a4-&gt;broker</title>
-<path fill="none" stroke="black" d="M185.52,-47.3C187.15,-48.47 188.75,-49.64 190.31,-50.8 201.45,-59.08 213.36,-68.55 223.79,-77.06"></path>
-<polygon fill="black" stroke="black" points="187.46,-44.38 177.28,-41.46 183.41,-50.09 187.46,-44.38"></polygon>
-<polygon fill="black" stroke="black" points="221.85,-79.99 231.8,-83.64 226.3,-74.59 221.85,-79.99"></polygon>
-</g>
-<!-- mongo -->
-<g id="node8" class="node">
-<title>mongo</title>
-<path fill="#ffffff" stroke="black" d="M521.5,-116.53C521.5,-118.33 504.51,-119.8 483.6,-119.8 462.69,-119.8 445.71,-118.33 445.71,-116.53 445.71,-116.53 445.71,-87.07 445.71,-87.07 445.71,-85.27 462.69,-83.8 483.6,-83.8 504.51,-83.8 521.5,-85.27 521.5,-87.07 521.5,-87.07 521.5,-116.53 521.5,-116.53"></path>
-<path fill="none" stroke="black" d="M521.5,-116.53C521.5,-114.72 504.51,-113.25 483.6,-113.25 462.69,-113.25 445.71,-114.72 445.71,-116.53"></path>
-<text text-anchor="middle" x="483.6" y="-97.6" font-family="Times,serif" font-size="14.00">MongoDB</text>
-</g>
-<!-- logger -->
-<g id="node10" class="node">
-<title>logger</title>
-<polygon fill="#ffffff" stroke="black" points="372.31,-119.8 318.31,-119.8 318.31,-83.8 372.31,-83.8 372.31,-119.8"></polygon>
-<text text-anchor="middle" x="345.31" y="-97.6" font-family="Times,serif" font-size="14.00">logger</text>
-</g>
-<!-- broker&#45;&gt;logger -->
-<g id="edge8" class="edge">
-<title>broker-&gt;logger</title>
-<path fill="none" stroke="black" d="M281.53,-101.8C289.86,-101.8 299.22,-101.8 308.13,-101.8"></path>
-<polygon fill="black" stroke="black" points="308.28,-105.3 318.28,-101.8 308.28,-98.3 308.28,-105.3"></polygon>
-</g>
-<!-- logger&#45;&gt;mongo -->
-<g id="edge9" class="edge">
-<title>logger-&gt;mongo</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M372.59,-101.8C390.4,-101.8 414.45,-101.8 435.52,-101.8"></path>
-<polygon fill="black" stroke="black" points="435.59,-105.3 445.59,-101.8 435.59,-98.3 435.59,-105.3"></polygon>
-<text text-anchor="middle" x="408.98" y="-106" font-family="Times,serif" font-size="14.00">BSON</text>
-</g>
-</g>
-</svg>
-</div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-net-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: MADS Network
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-important callout-titled">
+<section id="the-problem" class="level1">
+<h1>The problem</h1>
+<p>MADS agents load their setting from the centralized <code>mads.ini</code> file provided by the broker. Those settings are of course <em>read-only</em>, i.e., it is not possible for an agent to <em>update</em> its settings.</p>
+<p>This limitation is <em>by design</em>. In fact, allowing a single agent to update the setting file would possibly result in unwanted side effect: what happens if the update contains errors? what happens if there are multiple agents sharing the same name (and thus the same INI section) but having different <code>agent_id</code>? Forcing read-only settings is a way for <strong>ensuring robustness in operations</strong>.</p>
+<p>Nevertheless, there are cases where an agent needs to permanently and locally store <strong>own</strong> information that has to be persistent upon the agent’s restarts. For example, suppose that you have an <strong>agent providing IMU (inertial unit) measurements</strong> with respect to an initial reference orientation. In this case, you want the agent to calibrate it’s initial attitude upon the very first launch, and then <strong>use the same calibration</strong> even when the agent restarts or the device reboots, until explicitly forced to re-calibrate. To build on the previously cited use case, the same agent running on different devices, you want to store the calibration <strong>locally</strong>, to ensure that each instance of the same agent always loads its own calibration.</p>
+<p>In this scenario, you need <strong>persistent data storage</strong>, and that is what the <code>Datastore</code> C++ class provides.</p>
+</section>
+<section id="the-solution" class="level1">
+<h1>The solution</h1>
+<section id="the-datastore-class" class="level2">
+<h2 class="anchored" data-anchor-id="the-datastore-class">The <code>Datastore</code> class</h2>
+<p>It is a C++ header-only class, provided by the <a href="https://github.com/pbosetti/mads_plugin">plugin base project and classes</a>. This project is automatically fetched for you whenever you compile a new plugin, and provides the base code, on top of which plugins are built. In particular, it provides the base classes <code>Source</code>, <code>Filter</code>, and <code>Sink</code>, that are inherited by actual plugin classes.</p>
+<p>The source code of this project is downloaded into <code>build/_deps/plugin-src</code> in each plugin project directory.</p>
+<p>Starting from version 1.3.5, the code in <code>build/_deps/plugin-src/src</code> also provides a <code>datastore.hpp</code> class implementation. It is a relatively simple class for persistently store a <code>nlohmann::json</code> object on a text file in a local temporary folder (your OS temp dir as provided by C++ <code>std::filesystem::temp_directory_path()</code>). The class has the following notable methods:</p>
+<ul>
+<li><code>void prepare(std::string name)</code>: to be called once, it prepares a datastore file: if it exists, the file is read and parsed as a <code>nlohmann::json</code> object internally stored; if it does not exist, it is created (in the OS temp dir) and the internal storage set to an empty <code>nlohmann::json</code> object. If the <code>name</code> lacks the <code>.json</code> extension, that is automatically added.</li>
+<li><code>void save()</code>: force dumping the current internal storage in the associated file. <strong>It is automatically called when the datastore is destructed</strong> (for example upon regular exit).</li>
+<li><code>nlohmann::json &amp; operator[](const std::string &amp;key)</code>: access the object at <code>key</code> from the internal storage (both for reading and writing).</li>
+<li><code>nlohmann::json &amp; data()</code>: provides access to the internal storage.</li>
+<li><code>std::string path()</code>: provides the full path of the storage file</li>
+</ul>
+</section>
+<section id="the-plugin-template" class="level2">
+<h2 class="anchored" data-anchor-id="the-plugin-template">The plugin template</h2>
+<p>The command <code>mads plugin</code> is used to generate a plugin template. With v1.3.5, it gains the <code>-s|--datastore</code> option, which enables some example calls to the <code>Datastore</code> class. For example, by issuing:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> plugin <span class="at">-d</span> test_plugin <span class="at">-s</span> test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>the template for a blank new plugin called <code>test.plugin</code> is created in the <code>test_plugin</code> directory, <strong>with usage examples for <code>Datastore</code></strong>. With the <code>-s</code>flag, the <code>src/test.cpp</code> file has the following additions:</p>
+<ol type="1">
+<li>The <code>Datastore</code> class is included with <code>#include &lt;datastore.hpp&gt;</code></li>
+<li>The private instance member variable <code>Datastore _datastore</code>&nbsp;is added to the <code>TestPlugin</code> class</li>
+<li>in <code>set_params()</code>, the line <code>_datastore.prepare(kind());</code> prepares the datastore to a file named as the plugin (<code>kind()</code> method) with the <code>.json</code> extension. If that file exists, it loads its content</li>
+<li>some comment lines suggest how to use the <code>_datastore</code> object</li>
+<li>the <code>info()</code> method returns the full path of the storage file.</li>
+</ol>
+<p>So, recalling the calibration use case referred above, the <code>set_params()</code> method would:</p>
+<ol type="1">
+<li>prepare the datastore;</li>
+<li>check if the datastore contains the calibration: <code>if (_datastore["calibration"].empty())</code></li>
+</ol>
+<ul>
+<li>if there’s no calibration, perform the necessary calibration ops, then save the result as <code>_datastore["calibration"] = _calib_json;</code></li>
+<li>if the calibration is present, load it as <code>_calib_json = _datastore["calibration"];</code></li>
+</ul>
+<ol start="3" type="1">
+<li>when the agent regularly exits, the <code>_datastore</code> object is destroyed and its <code>save()</code>&nbsp;method is automatically invoked, ensuring persistency</li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Important
+Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Remember that the above schematic represent <em>processes</em>, regardless the physical machine on which they are being executed.</p>
-<p>For example, the whole network could run on a single workstation, or it could be conversely distributed over multiple devices connected to the same IP network, each device running a single process/node.</p>
+<p>Although there’s no need to explicitly save the datastore, forcing a save right after completing the calibration ensures that the calibration is saved even if there’s later a crash.</p>
 </div>
 </div>
-<p>In the figure <a href="#fig-net" class="quarto-xref">Figure&nbsp;1</a>, the solid lines represent a <a href="https://zeromq.org">ZeroMQ</a> connection over TCP/IP, which uses compressed JSON as a data encoding protocol. Compression is preformed with the <a href="https://github.com/google/snappy">snappy</a> library. The dashed line, conversely, represents the proprietary MongoDB protocol, with data serialized as BSON (Binary-JSON).</p>
-<section id="the-broker" class="level2">
-<h2 class="anchored" data-anchor-id="the-broker">The broker</h2>
-<p>What is the broker purpose?</p>
-<p>The broker solves the issue of knowing multiple network addresses when you have a number of devices participating to the same distributed system.</p>
-<p>With the aid of the broker, any separate device partaking to the MADS network only needs to know a single hostname/IP address: that of the machine running the broker.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>There can only be a single broker per network.</p>
-</div>
-</div>
-<p>Running the broker is quite simple:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> broker</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-<section id="the-agents" class="level2">
-<h2 class="anchored" data-anchor-id="the-agents">The agents</h2>
-<p>Agents can be:</p>
-<ul>
-<li><strong>monolithic</strong>: implemented as a single executable inheriting the <code>Mads::Agent</code> C++ class.</li>
-<li><strong>plug-in</strong>: a single executable that on runtime loads a proper plug-in (i.e.&nbsp;a dynamically loaded library)</li>
-</ul>
-<p>Regardless the type, agent can have three different behaviors:</p>
-<ul>
-<li><strong>source</strong>: they provide information to the network (e.g.&nbsp;by reading sensors)</li>
-<li><strong>filter</strong>: they operate and transform received information</li>
-<li><strong>sink</strong>: they consume information received from the network (e.g.&nbsp;to store or visualize)</li>
-</ul>
-<p>The MADS installer provides three general purpose agents, aptly named <code>source</code>, <code>filter</code>, and <code>sink</code>, that are designe do load proper plugins. The command <code>mads plugin</code> can be used to generate a suitable template for a new plugin to be developed.</p>
-</section>
-<section id="network-layout" class="level2">
-<h2 class="anchored" data-anchor-id="network-layout">Network layout</h2>
-<p>At the bare minimum, a MADS network requires:</p>
-<ul>
-<li>the broker</li>
-<li>the MongoDB database</li>
-<li>the logger agent</li>
-</ul>
-<p>The MADS installers provide broker and logger, but MongoDB must be installed separatedly. The easiest route is to it via Docker.</p>
-<p>Ideally, broker, logger and database should run on a single machine, having enough resources to store the data flow on the database, while agents can be distributed over multiple device.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -483,60 +338,49 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>According to our testing, Linux is the best choice for running MADS broker and logger in terms of performance.</p>
+<p>The JSON file location is in the temporary directory, which is OS dependent. Within that directory, plugin datastoires are saved in the <code>mads</code>&nbsp;subdirectory with the provided name (by default, the string returned by <code>kind()</code>).</p>
+<p>If the map returned by <code>info()</code> contains a pair as <code>{"Datastore", _datastore.path()}</code>, then the datastore full path is printed in the settings table when loading the plugin with <code>mads source|filter|sink</code>.</p>
 </div>
 </div>
-<p>Any other agent can be run on the same machine or on a separate machine. In the latter case, it must be started with the <code>-s</code> option stating the broker address, e.g.: <code>-s tcp://&lt;hostname&gt;:9092</code>, where <code>&lt;hostname&gt;</code> shall be replaced with the proper host name, if available, or with the machine IP address. This is the only address that any agent needs to know in order to connect to the MADS network.</p>
-<p>To help you find out the proper address, you can use the <code>-n list</code> broker option:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> mads <span class="ex">broker</span> <span class="at">-n</span> list</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Available</span> network adapters:</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span>       lo0] - 127.0.0.1</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="er">[</span>       <span class="er">en0</span><span class="ex">]</span> <span class="at">-</span> 192.168.1.220</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> bridge100] - 198.19.249.3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This shows that the host has three network interfaces. The public one is probably <code>en0</code> (your names may vary). Now quit the broker and relaunch it as:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> mads <span class="ex">broker</span> <span class="at">-n</span> en0</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Reading</span> settings from /Users/p4010/usr/local/etc/mads.ini <span class="pp">[</span><span class="ss">broker</span><span class="pp">]</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Using</span> network interface en0</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Binding</span> broker frontend <span class="er">(</span><span class="ex">XSUB</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9090</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Binding</span> broker backend <span class="er">(</span><span class="ex">XPUB</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9091</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Binding</span> broker shared settings <span class="er">(</span><span class="ex">REP</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9092</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Timecode</span> FPS: 25</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Settings</span> are provided via tcp://192.168.1.220:9092</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">CTRL-C</span> to immediate exit</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Type</span> P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Look at the line <code>Settings are provided via tcp://192.168.1.220:9092</code>: that is the address that you must use to start any agent in the network, e.g.:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> feedback <span class="at">-s</span> tcp://192.168.1.220:9092</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Important
+Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The <code>-n</code> command line option <strong>has no effect</strong> on how the broker operates. Its only purpose is to help you find out the proper address to use when starting agents that run on different machines or devices.</p>
+<p>If the JSON file loaded by the datastore is wrongly formatted, the <code>prepare()</code> method will fail throwing an exception. Catch that exception within <code>set_params()</code> if you can recover form the error (e.g.&nbsp;by performing a new calibration); or let the agent crash otherwise.</p>
 </div>
 </div>
 </section>
+<section id="existing-plugins" class="level2">
+<h2 class="anchored" data-anchor-id="existing-plugins">Existing plugins</h2>
+<p>To use the <code>&nbsp;Datastore</code> class to an existing plugin you have to update the fetched dependency. Open the plugin’s <code>CMakeLists.txt</code> and change the following (note the only change at <strong>line 3</strong>):</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="ot">GIT_TAG</span>        HEAD</span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>  <span class="ot">SUBBUILD_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-subbuild</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>  <span class="ot">SOURCE_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-src</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>  <span class="ot">BINARY_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-build</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>to:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
+<span id="cb3-2"><a href="#cb3-2"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="ot">GIT_TAG</span>        v1.<span class="dt">3.5</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>  <span class="ot">SUBBUILD_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-subbuild</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>  <span class="ot">SOURCE_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-src</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>  <span class="ot">BINARY_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-build</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This will force git fetching of the v1.3.5 of the plugin system.</p>
+<p>Then, just use the <code>&nbsp;Datastore</code> class as above outlined (it’s source is already available in the headers search path).</p>
+
+
 </section>
-<section id="where-to-go-next" class="level1">
-<h1>Where to go next</h1>
-<p>Once you have the bare minimum running, the next step is to configure and customize your distributed steps. In detail, you will have to:</p>
-<ol type="1">
-<li>learn how to develop your custom agents. This can be done in three ways:
-<ul>
-<li>by developing your own monolithic agent, using the MADS C++17 library (<a href="../guides/monolithic_agents.html">hardest</a>, high performance and maximum flexibility)</li>
-<li>by implementing a C++17 plugin (<a href="../guides/plugins.html">hard</a>, high performance, some compromise in flexibility)</li>
-<li>by using the Python wrapper agent and implementing the details in Python (<a href="../guides/python_agent.html">easy</a>, limited performance and flexibility)</li>
-</ul></li>
-<li><a href="../guides/services.html">learn</a> how to make your agents into <strong>services</strong> (only on linux)</li>
-<li>learn how to synchronize time on multiple devices</li>
-<li>learn how to analyze the data collected by the MongoDB database</li>
-</ol>
-
-
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

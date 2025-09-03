@@ -10,7 +10,7 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/structure.html</loc>
-    <lastmod>2025-09-01T06:55:12.526Z</lastmod>
+    <lastmod>2025-09-01T11:42:04.203Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/zeroconf.html</loc>
@@ -29,32 +29,36 @@
     <lastmod>2025-07-30T08:58:01.509Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/presentations/intro.html</loc>
-    <lastmod>2025-08-07T15:14:54.451Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/about.html</loc>
-    <lastmod>2025-08-05T12:00:46.384Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/index.html</loc>
-    <lastmod>2025-08-27T13:12:05.334Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/why.html</loc>
-    <lastmod>2025-08-31T15:10:35.560Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/who_is_using.html</loc>
-    <lastmod>2025-08-06T08:42:35.620Z</lastmod>
+    <loc>https://mads-net.github.io/guides/monolithic_agents.html</loc>
+    <lastmod>2025-08-08T07:29:34.279Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides.html</loc>
     <lastmod>2025-08-07T15:14:54.450Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/monolithic_agents.html</loc>
-    <lastmod>2025-08-08T07:29:34.279Z</lastmod>
+    <loc>https://mads-net.github.io/who_is_using.html</loc>
+    <lastmod>2025-08-06T08:42:35.620Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/why.html</loc>
+    <lastmod>2025-08-31T15:10:35.560Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/index.html</loc>
+    <lastmod>2025-08-27T13:12:05.334Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/about.html</loc>
+    <lastmod>2025-08-05T12:00:46.384Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/presentations/intro.html</loc>
+    <lastmod>2025-08-07T15:14:54.451Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/guides/datastore.html</loc>
+    <lastmod>2025-09-03T13:13:52.201Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/plugins.html</loc>
