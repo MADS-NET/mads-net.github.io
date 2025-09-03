@@ -13,7 +13,7 @@ format: html
 #     toc: true
 #   pdf:
 #     toc: true
-draft: ls
+draft: false
 categories: [plugin, C++, intermediate]
 abstract: |
   MADS Version 1.3.5 introduces the `Datastore` class for plugins. This class allows storing persistent information at device level.
