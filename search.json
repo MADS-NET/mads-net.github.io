@@ -147,200 +147,74 @@
     "text": "The Windows installer is a standard graphical exe installer. Download it from git.new/MADS and run it.\nThe installer installs MADS in C:\\Program Files\\MADS, The installer will also add the MADS bin directory to your search path.\n\n\nUnless we’re talking of very specific use cases, you probably want to compile your own plugins. For that, you need the Visual Studio 17 (Community Edition is fine) with the C++ development tools, together with CMake and Git."
   },
   {
-    "objectID": "guides/contribute.html",
-    "href": "guides/contribute.html",
-    "title": "How to contribute",
+    "objectID": "guides/containerized.html",
+    "href": "guides/containerized.html",
+    "title": "Containerized MADS",
     "section": "",
-    "text": "These guides are prepared in Quarto format, which is a markdown-based format that allows for the creation of documents and websites with rich formatting and interactivity. The website structure is hosted on GitHub, and contributions can be made through pull requests."
+    "text": "Setting up a MADS network requires a minimum of a broker, a MongoDB server, and the logger agent. This guide explains the easiest and more portable solution to have them up and running in minuts in a Docker environment."
   },
   {
-    "objectID": "guides/contribute.html#prerequisites",
-    "href": "guides/contribute.html#prerequisites",
-    "title": "How to contribute",
-    "section": "Prerequisites",
-    "text": "Prerequisites\n\nGit and a GitHub account\nAn IDE:\n\nRStudio (recommended)\nVisual Studio Code\n\nIf you opt for VS Code, you will need to install Quarto and the Quarto extension. RStudio comes with Quarto pre-packaged."
+    "objectID": "guides/containerized.html#step-1.-clone-the-repo",
+    "href": "guides/containerized.html#step-1.-clone-the-repo",
+    "title": "Containerized MADS",
+    "section": "Step 1. Clone the repo",
+    "text": "Step 1. Clone the repo\nAll you need is in the MADS_container repository. You can clone it with the following command:\ngit clone --depth 1 https://github.com/MADS-NET/MADS_container.git"
   },
   {
-    "objectID": "guides/contribute.html#forking-the-repository",
-    "href": "guides/contribute.html#forking-the-repository",
-    "title": "How to contribute",
-    "section": "Forking the repository",
-    "text": "Forking the repository\nTo contribute to the MADS guides collection, you need to fork the repository. This allows you to create your own copy of the repository where you can make changes without affecting the original project. To fork the repository, follow these steps:\n\ngo to https://github.com/MADS-Net/mads-net.github.io\nclick on the “Fork” button in the top right corner of the page\nselect your GitHub account as the destination for the fork\nwait for GitHub to create the forked repository in your account"
+    "objectID": "guides/containerized.html#step-2.-run-the-containers",
+    "href": "guides/containerized.html#step-2.-run-the-containers",
+    "title": "Containerized MADS",
+    "section": "Step 2. Run the containers",
+    "text": "Step 2. Run the containers\nYou can now run the containers with the following command:\ndocker compose up -d\nThis starts the three containerized processes: MogoDB, the broker, and the logger agent.\n\n\n\n\n\n\nNote\n\n\n\nYou can stop the containers at any time with the command docker compose down.\n\n\nNow the broker and the database are also accessible as if they were processes running on your host machine."
   },
   {
-    "objectID": "guides/contribute.html#authorizing-your-computer",
-    "href": "guides/contribute.html#authorizing-your-computer",
-    "title": "How to contribute",
-    "section": "Authorizing your computer",
-    "text": "Authorizing your computer\nThe best way to authorize your computer to work on GitHub repositories is to use the gh command line utility. You can get it from https://cli.github.com. Once installed, open a terminal and type:\ngh auth login\nthen follow instructions to authenticate your GitHub account. This will allow you to push changes to your forked repository and create pull requests. It is typically done once per computer."
+    "objectID": "guides/containerized.html#update-images",
+    "href": "guides/containerized.html#update-images",
+    "title": "Containerized MADS",
+    "section": "Update images",
+    "text": "Update images\nTo update the images to the latest version, do:\ndocker compose pull\nfrom project root (i.e. the same folder containing compose.yml)."
   },
   {
-    "objectID": "guides/contribute.html#cloning-the-repository",
-    "href": "guides/contribute.html#cloning-the-repository",
-    "title": "How to contribute",
-    "section": "Cloning the repository",
-    "text": "Cloning the repository\nYou cannot edit the official repository, but you can freely edit your forked repository. To do this, you need to clone the repository to your local machine. This creates a local copy of the repository that you can work on. To clone the repository, follow these steps:\n\nopen your terminal or command prompt\nnavigate to the directory where you want to clone the repository\ntype the following:\n\ngh repo clone &lt;your-username&gt;/mads-net.github.io.git\nreplacing &lt;your-username&gt; with your GitHub username. This will create a folder named mads-net.github.io in your current directory, containing the cloned repository. Then open the mads_doc.Rproj file if you are using RStudio. If you are using VSCode, just open that folder."
-  },
-  {
-    "objectID": "guides/contribute.html#ensure-your-repository-is-up-to-date",
-    "href": "guides/contribute.html#ensure-your-repository-is-up-to-date",
-    "title": "How to contribute",
-    "section": "Ensure your repository is up to date",
-    "text": "Ensure your repository is up to date\nOther people could contribute to the guides while you are working on your own. To ensure that your repository is up to date and to minimize the risks for conflicts, you shall pull the latest changes from the original repository. To do this, follow these steps:\n# Navigate to the cloned repository folder\ncd mads-net.github.io\n# fetch any new changes from the original repository\ngit fetch upstream\n# merge the changes into your local repository\ngit merge upstream/main"
-  },
-  {
-    "objectID": "guides/contribute.html#create-a-new-guide",
-    "href": "guides/contribute.html#create-a-new-guide",
-    "title": "How to contribute",
-    "section": "Create a new guide",
-    "text": "Create a new guide\nTo create a new guide, you can use the guides/template.qmd file as a starting point. This file contains the basic structure and formatting for a guide. Make a copy of it with a suitable name.\nIf the guide you are working is complex and is probably going to require images and/or data files, you should put the guide in a separate folder. For example, if you are writing a guide on “Data Analysis”, you could create a folder named guides/data-analysis and put the data-analysis.qmd file inside it. Quarto will automatically add that file as a new guide in the Guides page listing. Images and supporting files can then be put in the same folder, and they will be automatically linked in the guide."
-  },
-  {
-    "objectID": "guides/contribute.html#edit-the-guide",
-    "href": "guides/contribute.html#edit-the-guide",
-    "title": "How to contribute",
-    "section": "Edit the guide",
-    "text": "Edit the guide\nThe guide YAML preamble is the first thing to edit. Ensure that you set the title, author, and date fields correctly. You can also set the categories field to categorize your guide, and the abstract field to provide a brief description of the guide.\nNote that the preamble has a draft: true field. This means that the guide will not be published until you set it to draft: false. This is useful to work on the guide without it being visible on the website or when previewing the website locally. A guide in draft mode will not be listed in the Guides page, but it will be accessible via its URL.\n\n\n\n\n\n\nNote\n\n\n\nIf you want that the guide is also available in PDF format, uncomment the preamble section for the format key. In this way, the guide will be available in both HTML and PDF formats.\n\n\nRefer to the Quarto documentation for more information on how to format the guide using Quarto markdown."
-  },
-  {
-    "objectID": "guides/contribute.html#preview-the-guide",
-    "href": "guides/contribute.html#preview-the-guide",
-    "title": "How to contribute",
-    "section": "Preview the guide",
-    "text": "Preview the guide\nTo preview the guide, you can use the quarto preview command. This will start a local web server and open the guide in your default web browser. To do this, follow these steps:\n# Navigate to the cloned repository folder\ncd mads-net.github.io\n# Start the local web server\nquarto preview\n\n\n\n\n\n\nAutomatic refresh\n\n\n\nThe local web server will automatically refresh the page whenever you save changes to the guide files. This allows you to see the changes in real-time without having to manually refresh the page.\nHowever, some changes (e.g. adding new files) are not always detected. In these cases, you can manually refresh the page in your browser to see the changes, and if it does not work, you can stop the server with Ctrl+C and restart it with quarto preview."
-  },
-  {
-    "objectID": "guides/contribute.html#publish-your-contribute",
-    "href": "guides/contribute.html#publish-your-contribute",
-    "title": "How to contribute",
-    "section": "Publish your contribute",
-    "text": "Publish your contribute\nWhenever you are content with your contributed guide, you can commit your work and push it to your forked repository. before doing that, however, ensure that there are no new contribution on the uspstream repository. Since you cannot pull changes on your repository if it has pending changes, you first stash your changes, i.e. you put them temporarily aside, reverting back to a clean state (the last commit, in synchron with upstream):\ngit stash\nNow you can pull the latest changes from the original repository:\n# Fetch any new changes from the original repository\ngit fetch upstream\n# Merge the changes into your local repository\ngit merge upstream/main\nAfter this, you can reapply your changes:\ngit stash pop\nIf there were new changes from upstream, and you have changed the same files, you might have to resolve conflicts. In this case, Git will show you the files with conflicts, and you will need to manually edit them to resolve the conflicts.\nA conflict is typically marked in the file with &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD, =======, and &gt;&gt;&gt;&gt;&gt;&gt;&gt; upstream/main. You need to choose which changes to keep, or merge them together, and then remove these markers. Once you are done, you can add the resolved files to the staging area, make a new commit and publish your changes on gitHub:\ngit add .\ngit commit -m \"Resolved conflicts and updated guide\"\ngit push origin main\nNow your forked repository will be ahead of the original, upstream, repository. This means that you have changes that are not yet in the original repository. So you can now create a pull request to the original repository. This will allow the maintainers of the MADS guides collection to review your changes and merge them into the main repository. To create a pull request, follow these steps:\n\ngo to your forked repository on GitHub\nclick on the “Pull requests” tab\nclick on the “New pull request” button\nselect the branch you want to merge into the original repository (usually main)\nreview the changes and add a title and description for the pull request (be informative!!!)\nclick on the “Create pull request” button\nwait for the maintainers to review your changes and merge them into the original repository"
-  },
-  {
-    "objectID": "guides/services.html",
-    "href": "guides/services.html",
-    "title": "Services",
+    "objectID": "guides/plugins.html",
+    "href": "guides/plugins.html",
+    "title": "Plugins",
     "section": "",
-    "text": "Why services\nAgents are typically expected to run on boot: as soon as the machine or device starts, you want the agent to become immediately available. To do that, MADS offers a solution for quickly create a service for a given combination of MADS command and arguments.\n\n\n\n\n\n\nWarning\n\n\n\nAt the moment, this functionality is only available on Linux (Ubuntu or Debian). There are no immediate plans to extend it to MacOS or Windows.\n\n\n\n\nWhat is a service\nOn Ubuntu or Debian Linux, a service is a INI file located in /etc/systemd/system that details a command to be executed on boot and its requirements. Once you have the service file installed, e.g. as /etc/systemd/system/my_service.service, you can:\n\nEnable/disable the service: sudo systemctl enable|disable my_service. If the service is disabled, It does not starts automatically.\nStart the service manually: sudo systemctl start my_service\nStop the service manually: sudo systemctl stop my_service\nEnquire the service status: sudo systemctl status my_service\n\nSo, if the service is enabled, it starts automatically on boot; if it is disabled, you can still start it with the systemctl start command.\n\n\nHow to create a MADS service\nSuppose that you knwo that the following command launches properly an agent:\nmads source -i in0_01 arduino.plugin\nNow you want turn this command into a service. Just put mads service &lt;service_name in forn t of that command line, e.g.:\nmads service arduino source -i in0_01 arduino.plugin\nwhere mads service arduino means “create a service file called mads-arduino” (mads- is added automatically), and source -i in0_01 arduino.plugin is the proper command line for the mads command.\nYou should get an output like:\n#  __  __    _    ____  ____\n# |  \\/  |  / \\  |  _ \\/ ___|\n# | |\\/| | / _ \\ | | | \\___ \\\n# | |  | |/ ___ \\| |_| |___) |\n# |_|  |_/_/   \\_\\____/|____/\n#\n# Linux Systemd service file for mads-arduino, a mads-source agent\n# Notice that the settings file will be read from\n# /usr/local/etc/mads.ini\n#\n# Save this file to /etc/systemd/system/mads-arduino.service\n# Or run \"sudo mads service publish source publish.plugin \"\n# then run \"sudo systemctl enable mads-arduino.service\"\n\n[Unit]\nDescription=mads-arduino\nAfter=network.target\nStartLimitIntervalSec=0\n\n[Service]\nType=simple\nRestart=always\nRestartSec=1\nUser=root\nExecStart=/usr/local/bin/mads-source -i in0_01 arduino.plugin\n\n[Install]\nWantedBy=multi-user.target\nAs instructed in the comments, you shall check if everything looks fine, and if so, install the service file in the proper directory by simply re-executing the same command with sudo :\nsudo mads service arduino source -i in0_01 arduino.plugin\nA longer and more flexible path is to save the file locally, edit it to taste, then manually copy/move it to /etc/systemd/system:\nmads service arduino source -i in0_01 arduino.plugin &gt; mads-arduino.service\n# edit the file to taste\nsudo cp mads-arduino.service /usr/systemd/system/\n\n\n\n\n\n\nTip\n\n\n\nThe fist way is the suggested one, unless you really need to adjust the service file (and you know what you are doing).\n\n\nFinally, enable the service with sudo systemctl enable mads-arduino.service.\nNote that enabling the service does not makes it start: to do so, you either have to reboot the machine or to manually start with sudo systemctl start mads-arduino.service.\n\n\nSpecial case: broker service\nThe broker launched as mads broker interacts with the console, waiting for keystrokes. This is not ideal for a service, and would increase the CPU load unnecessarily.\nTo avoid this problem, the broker shall be called with the -d (daemon) option:\nsudo mads service broker broker -d\n\n\n\n\n Back to top"
+    "text": "Originally, MADS only allowed to develop monolitic agents: this required to write the whole executable code, including the management of command line arguments and loading of serrings from the INI file (either local or loaded from the broker). This solution is still possible (see the guide) and allows maximum flexibility, but it requires a good knowledse of the MADS innards and is more tedious and error prone.\nFor this reason, we developed the plugin support: the common functionality of an agent are already available, and only the data management operations need to be implemented."
   },
   {
-    "objectID": "guides/monolithic_agents.html",
-    "href": "guides/monolithic_agents.html",
-    "title": "Monolithic agents",
+    "objectID": "guides/plugins.html#how-to-install-the-plugin",
+    "href": "guides/plugins.html#how-to-install-the-plugin",
+    "title": "Plugins",
+    "section": "How to install the plugin",
+    "text": "How to install the plugin\nOnce the plugin is tested (both standalone and when loaded from an agent) it should be installed in the MADS tree. Remember that the command mads -i shows where plugins are expected to be installed (usually, /usr/local/lib). To install:\ncmake --install build\nThe you can launch it as agent with:\nmads source my_source.plugin\nAnd when you are satisfield with the result, you can make it a service as explained here."
+  },
+  {
+    "objectID": "guides/datastore.html",
+    "href": "guides/datastore.html",
+    "title": "Agents persistency with Datastore",
     "section": "",
-    "text": "Sometimes, the constraints posed by the MADS plugin architecture won’t fit your use case. When you are using MADS plugins, in fact, you are limited to implement a source, a filter, or a sink. But if the behavior of you agent is not that clearly defined, then you need to build your own monolithic agent.\nTypically, this is the case when the agent behavior depends upon some state parameter. Suppose that your agent must behave as a source in some circumstances, then switch to a filter in others. Then you need to implement a monolithic agent."
+    "text": "MADS agents load their setting from the centralized mads.ini file provided by the broker. Those settings are of course read-only, i.e., it is not possible for an agent to update its settings.\nThis limitation is by design. In fact, allowing a single agent to update the setting file would possibly result in unwanted side effect: what happens if the update contains errors? what happens if there are multiple agents sharing the same name (and thus the same INI section) but having different agent_id? Forcing read-only settings is a way for ensuring robustness in operations.\nNevertheless, there are cases where an agent needs to permanently and locally store own information that has to be persistent upon the agent’s restarts. For example, suppose that you have an agent providing IMU (inertial unit) measurements with respect to an initial reference orientation. In this case, you want the agent to calibrate it’s initial attitude upon the very first launch, and then use the same calibration even when the agent restarts or the device reboots, until explicitly forced to re-calibrate. To build on the previously cited use case, the same agent running on different devices, you want to store the calibration locally, to ensure that each instance of the same agent always loads its own calibration.\nIn this scenario, you need persistent data storage, and that is what the Datastore C++ class provides."
   },
   {
-    "objectID": "guides/monolithic_agents.html#build-system",
-    "href": "guides/monolithic_agents.html#build-system",
-    "title": "Monolithic agents",
-    "section": "Build system",
-    "text": "Build system\nUnlike for MADS plugins, there is no command (yet) to create a monolithic agent temnplate, and you need to setup the build environment by your own. Use whatever you are comfortable with, although we recommend using CMake and clang compiler on Linux and MacOS, or Visual Studio 17 on Windows (Community Edition is fine)."
+    "objectID": "guides/datastore.html#the-datastore-class",
+    "href": "guides/datastore.html#the-datastore-class",
+    "title": "Agents persistency with Datastore",
+    "section": "The Datastore class",
+    "text": "The Datastore class\nIt is a C++ header-only class, provided by the plugin base project and classes. This project is automatically fetched for you whenever you compile a new plugin, and provides the base code, on top of which plugins are built. In particular, it provides the base classes Source, Filter, and Sink, that are inherited by actual plugin classes.\nThe source code of this project is downloaded into build/_deps/plugin-src in each plugin project directory.\nStarting from version 1.3.5, the code in build/_deps/plugin-src/src also provides a datastore.hpp class implementation. It is a relatively simple class for persistently store a nlohmann::json object on a text file in a local temporary folder (your OS temp dir as provided by C++ std::filesystem::temp_directory_path()). The class has the following notable methods:\n\nvoid prepare(std::string name): to be called once, it prepares a datastore file: if it exists, the file is read and parsed as a nlohmann::json object internally stored; if it does not exist, it is created (in the OS temp dir) and the internal storage set to an empty nlohmann::json object. If the name lacks the .json extension, that is automatically added.\nvoid save(): force dumping the current internal storage in the associated file. It is automatically called when the datastore is destructed (for example upon regular exit).\nnlohmann::json & operator[](const std::string &key): access the object at key from the internal storage (both for reading and writing).\nnlohmann::json & data(): provides access to the internal storage.\nstd::string path(): provides the full path of the storage file"
   },
   {
-    "objectID": "guides/monolithic_agents.html#libraries",
-    "href": "guides/monolithic_agents.html#libraries",
-    "title": "Monolithic agents",
-    "section": "Libraries",
-    "text": "Libraries\nFrom the MADS point-of-view, everything you need is already installed by the MADS installer. Simply setup your build system to search for headers and libraries in the MADS prefix directory, which you can find with mads -p command.\nYou’ll need to link against the following libraries:\n\nOn Unixes: zmqpp-static zmq snappy\nOn Windows: zmqpp-static libzmq-v143-mt-s-4_3_6 snappy Ws2_32 bcrypt Secur32 Crypt32 Dnsapi IPHLPAPI"
+    "objectID": "guides/datastore.html#the-plugin-template",
+    "href": "guides/datastore.html#the-plugin-template",
+    "title": "Agents persistency with Datastore",
+    "section": "The plugin template",
+    "text": "The plugin template\nThe command mads plugin is used to generate a plugin template. With v1.3.5, it gains the -s|--datastore option, which enables some example calls to the Datastore class. For example, by issuing:\nmads plugin -d test_plugin -s test\nthe template for a blank new plugin called test.plugin is created in the test_plugin directory, with usage examples for Datastore. With the -sflag, the src/test.cpp file has the following additions:\n\nThe Datastore class is included with #include &lt;datastore.hpp&gt;\nThe private instance member variable Datastore _datastore is added to the TestPlugin class\nin set_params(), the line _datastore.prepare(kind()); prepares the datastore to a file named as the plugin (kind() method) with the .json extension. If that file exists, it loads its content\nsome comment lines suggest how to use the _datastore object\nthe info() method returns the full path of the storage file.\n\nSo, recalling the calibration use case referred above, the set_params() method would:\n\nprepare the datastore;\ncheck if the datastore contains the calibration: if (_datastore[\"calibration\"].empty())\n\n\nif there’s no calibration, perform the necessary calibration ops, then save the result as _datastore[\"calibration\"] = _calib_json;\nif the calibration is present, load it as _calib_json = _datastore[\"calibration\"];\n\n\nwhen the agent regularly exits, the _datastore object is destroyed and its save() method is automatically invoked, ensuring persistency\n\n\n\n\n\n\n\nTip\n\n\n\nAlthough there’s no need to explicitly save the datastore, forcing a save right after completing the calibration ensures that the calibration is saved even if there’s later a crash.\n\n\n\n\n\n\n\n\nNote\n\n\n\nThe JSON file location is in the temporary directory, which is OS dependent. Within that directory, plugin datastoires are saved in the mads subdirectory with the provided name (by default, the string returned by kind()).\nIf the map returned by info() contains a pair as {\"Datastore\", _datastore.path()}, then the datastore full path is printed in the settings table when loading the plugin with mads source|filter|sink.\n\n\n\n\n\n\n\n\nWarning\n\n\n\nIf the JSON file loaded by the datastore is wrongly formatted, the prepare() method will fail throwing an exception. Catch that exception within set_params() if you can recover form the error (e.g. by performing a new calibration); or let the agent crash otherwise."
   },
   {
-    "objectID": "guides/monolithic_agents.html#example-project",
-    "href": "guides/monolithic_agents.html#example-project",
-    "title": "Monolithic agents",
-    "section": "Example project",
-    "text": "Example project\nWe suggest to use the python agent as an example project: you can git fork it and start from there.\nIn that project, you can safely get rid of:\n\nthe python folder\nthe src/python_interpreter.hpp class\neverything related to the cppy3 library (and Python in general) in the CMakeLists.txt file.\n\nFinally, rename src/main/python.cpp to your liking (e.g. agent.cpp) and move on to the next section."
-  },
-  {
-    "objectID": "guides/monolithic_agents.html#coding",
-    "href": "guides/monolithic_agents.html#coding",
-    "title": "Monolithic agents",
-    "section": "Coding",
-    "text": "Coding\nThe file src/main/agent.cpp (or whatever name you choose th the last step above) is divided in the following sections:\n\nParse command line options: Uses the cxxopts library to define and parse the supported CLI options; customize as needed. Remember to execute the macro SETUP_OPTIONS(options, Agent);\nInitialize agent: this section is rather general, with the exception of the lines dealing with attachments (binary objects sent to the agent by the broker upon launch). If you don’t need attachments, you can remove this section altogether;\nCLI options override: the call to agent.init() actually loads the settings from the broker, fetching the mads.ini section under agent_name and storing them in the settings JSON object. So in this section you can safely override those settings with command line options, if needed, and store them back in the settings object;\nPrint info: this section is optional, but it is a good practice to print some information about the agent, such as its name, version, and settings; info are printed on stderr, indented by two spaces;\nMain loop: this is where most of the action happens, and see the next section for details;\nCleanup: free used resources, call agent.register_event to mark the exit in the database, and restart the agent if needed (i.e. if agent.restart() is true).\n\n\n\n\n\n\n\nRemote control and agents restarting\n\n\n\nThe agent initialization calls agent.enable_remote_control(). This call makes the agent listen for a special set of commands sent by the broker, such as restart and stop, and requires a regular call to agent.remote_control() in the main loop. If you don’t need this feature, you can remove the call to enable_remote_control().\nNote, though, that without that feature you won’t be able to setup the agent for a restart in the cleanup section, because agent.restart() will always return false. The agents ability to self-restart is crucial, since it allows to restart all the agents in a network and reload the INI settings automatically from the broker.\nIn fact, when the mads.ini file on the broker machine is updated, the broker automatically reloads it and makes it available to any newly started agent, but agentts that are already running will not see the changes. So, if you want to change the settings of a running agent, you need to restart it, and this is what the remote control feature allows you to do. To restart all agents you can use the TUI plugin, or mads command restart command."
-  },
-  {
-    "objectID": "guides/monolithic_agents.html#main-loop",
-    "href": "guides/monolithic_agents.html#main-loop",
-    "title": "Monolithic agents",
-    "section": "Main loop",
-    "text": "Main loop\nThe main loop is implemented by calling the agent.loop() method. It takes two arguments:\n\na C++17 lambda function, that grabs all the local context variables and has no arguments: [&]() { ... } (mandatory);\na std::chrono::milliseconds value, that defines the loop frequency (optional, typically read from settings and possibly overridden by a CLI option).\n\n\n\n\n\n\n\nImportant\n\n\n\nTo ensure performance and determinism, it is important to declare all objects used in the lambda before entering the loop.\n\n\nWithin the lambda loop function, you have access to the following methods:\n\nagent.receive(): to receive messages from the broker; it returns a message_type enum, that can be none, json, or blob (a binary buffer);\nagent.last_message(): to get the last received message, which is a zmqpp::message object;\nagent.last_topic(): to get the topic of the last received message, which is a std::string;\nagent.remote_control(): you must call it to process any incoming remote control message;\nagent.publish(): to publish a JSON message to the broker. If not specified as second argument, it uses the default publish topic of the agent.\n\nLook at the agent.hpp header file for the complete list of methods available in the agent class."
-  },
-  {
-    "objectID": "guides.html",
-    "href": "guides.html",
-    "title": "Guides",
-    "section": "",
-    "text": "Spotlight\n\n\n\nBe sure to start with MADS structure guide.\nIf you want to contribute, head on to the contribution guide.\n\n\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\nDescription\n\n\n\nCategories\n\n\n\nReading Time\n\n\n\n\n\n\n\n\nSep 3, 2025\n\n\nAgents persistency with Datastore\n\n\nPaolo Bosetti\n\n\nMADS Version 1.3.5 introduces the Datastore class for plugins. This class allows storing persistent information at device level. \n\n\nplugin, C++, intermediate\n\n\n5 min\n\n\n\n\n\n\nAug 30, 2025\n\n\nInteracting with MADS\n\n\nPaolo Bosetti\n\n\nThis guide illustrates the various ways to interact with MADS by publishing one-shot JSON messages to the MADS broker. \n\n\neasy, operations\n\n\n6 min\n\n\n\n\n\n\nAug 27, 2025\n\n\nInstalling MADS\n\n\nPaolo Bosetti\n\n\nA brief how to for installing MADS on different operating systems. \n\n\nconfiguration, setup, how-to, easy\n\n\n6 min\n\n\n\n\n\n\nAug 8, 2025\n\n\nMonolithic agents\n\n\nPaolo Bosetti\n\n\nHow to develop a custom monolithic agent by exploiting the MADS C++17 library. \n\n\nadvanced, development, c++\n\n\n5 min\n\n\n\n\n\n\nJul 11, 2025\n\n\nHDF5 Logger\n\n\nPaolo Bosetti\n\n\nMADS comes packaged with a logging facility to MongoDB database. For some applications, a file-based logging system is more appropriate. This guide explains how to use the HDF5 logger, which is a file-based sink for MADS using the hierarchical data format. \n\n\nplugin, sink, hdf5, logging, data\n\n\n7 min\n\n\n\n\n\n\nJul 7, 2025\n\n\nOTA Plugins\n\n\nPaolo Bosetti\n\n\nMADS Version 1.3.0 introduces the possibility to load plugins Over-The-Air (OTA): plugin files can be provided to agents by the broker. This allows to centralize the management of plugins and to update them without the need to manually copy compiled plugins to the devices running the agents. \n\n\nplugin, OTA, over-the-air, intermediate\n\n\n7 min\n\n\n\n\n\n\nJul 7, 2025\n\n\nParallel computing with MADS\n\n\nPaolo Bosetti\n\n\nMADS has two special agents, dealer and worker, that allow to distribute many different computations to a set of identical workers, in round-robin fashion. \n\n\nplugin, parallel computing, advanced, kubernetes, docker\n\n\n7 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nServices\n\n\nPaolo Bosetti\n\n\nOnce tested, agents can be turned into linux services, so that they start automatically on boot. \n\n\nintermediate, OS, setup, easy\n\n\n3 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nPlugins\n\n\nPaolo Bosetti\n\n\nMADS supports agents implemented as plugins in C++17. This guide explains how to create a plugin. \n\n\nadvanced, plugin, development, c++\n\n\n4 min\n\n\n\n\n\n\nJun 4, 2025\n\n\nNetwork structure\n\n\nPaolo Bosetti\n\n\nIllustrate a typical MADS network structure and its requirements. \n\n\ntemplate, basics, easy\n\n\n5 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nHow to contribute\n\n\nPaolo Bosetti\n\n\nWe explain how to contribute to the MADS guides collection. \n\n\nhow-to, easy\n\n\n7 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nContainerized MADS\n\n\nPaolo Bosetti\n\n\nThe base agents for setting up a MADS network are available as a containerized environment. \n\n\ndocker, easy, OS, setup\n\n\n3 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nRaspberry Pi IO\n\n\nPaolo Bosetti\n\n\nThe rpio.plugin allows low-latency interaction with Raspberry Pi GPIO pins via libgpiod library. \n\n\nintermediate, RaspberryPi, IO, plugin\n\n\n5 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nPython Agent\n\n\nPaolo Bosetti\n\n\nThe python_agent repo on GitHub provides a MADS agent with an embedded python3 interpreter for developing MADS sgents in Python \n\n\npython, agent, easy\n\n\n4 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nZeroConf (aka Avahi) network discovery\n\n\nPaolo Bosetti\n\n\nUsing hostnames rather than IP addresses is easier and much more robust. In this guide, we learn how to setup a Linux box for advertising its address by using the Avahi protocol/service. \n\n\nnetworking, IP, configuration, OS, Linux\n\n\n2 min\n\n\n\n\n\n\nNo matching items\n Back to top"
-  },
-  {
-    "objectID": "who_is_using.html",
-    "href": "who_is_using.html",
-    "title": "Who is using ",
-    "section": "",
-    "text": "Within the national research project “Miroscic”, Paolo Bosetti has originally developed MADS as a way to orchestrate and manage the data acquired from a collection of heterogeneous sensors, including smart cameras, ToF cameras, and other IoT devices for ensuring safety of operators in industrial environments.\nThe MADS architecture is currently being used by researchers in the MiRO lab for building the software stack of a robotic walker for rehabilitation of patients with neurological disorders.\n\n\n\nWithin the national research project “Miroscic”, the group of prof. Matteo Lancini of the MMTLab of the University of Brescia is using MADS to develop the edge cameras and software that provides 3D estimate of human pose by using AI techniques.\n\n\n\nWithin the national research project “Miroscic”, the group of prof. Roberto Marsili at the Measurement Group of the University of Perugia is using MADS collect data from wearable sensors and RFID transponders.\n\n\n\nThe group coordinated by prof. Anna-Carla Araujo at the INSA Toulouse, SUMO group of Institut Clément Ader is using MADS to collect data from multiple sensors in a machining shopfloor, with the aim of measuring and improving energy efficiency of the production processes."
-  },
-  {
-    "objectID": "who_is_using.html#university-of-trento-italy",
-    "href": "who_is_using.html#university-of-trento-italy",
-    "title": "Who is using ",
-    "section": "",
-    "text": "Within the national research project “Miroscic”, Paolo Bosetti has originally developed MADS as a way to orchestrate and manage the data acquired from a collection of heterogeneous sensors, including smart cameras, ToF cameras, and other IoT devices for ensuring safety of operators in industrial environments.\nThe MADS architecture is currently being used by researchers in the MiRO lab for building the software stack of a robotic walker for rehabilitation of patients with neurological disorders."
-  },
-  {
-    "objectID": "who_is_using.html#university-of-brescia-italy",
-    "href": "who_is_using.html#university-of-brescia-italy",
-    "title": "Who is using ",
-    "section": "",
-    "text": "Within the national research project “Miroscic”, the group of prof. Matteo Lancini of the MMTLab of the University of Brescia is using MADS to develop the edge cameras and software that provides 3D estimate of human pose by using AI techniques."
-  },
-  {
-    "objectID": "who_is_using.html#university-or-perugia-italy",
-    "href": "who_is_using.html#university-or-perugia-italy",
-    "title": "Who is using ",
-    "section": "",
-    "text": "Within the national research project “Miroscic”, the group of prof. Roberto Marsili at the Measurement Group of the University of Perugia is using MADS collect data from wearable sensors and RFID transponders."
-  },
-  {
-    "objectID": "who_is_using.html#insa-toulouse-france",
-    "href": "who_is_using.html#insa-toulouse-france",
-    "title": "Who is using ",
-    "section": "",
-    "text": "The group coordinated by prof. Anna-Carla Araujo at the INSA Toulouse, SUMO group of Institut Clément Ader is using MADS to collect data from multiple sensors in a machining shopfloor, with the aim of measuring and improving energy efficiency of the production processes."
-  },
-  {
-    "objectID": "why.html",
-    "href": "why.html",
-    "title": "Why ?",
-    "section": "",
-    "text": "Sure there are! ROS2 is a very popular framework for robotics, and it has a lot of features that MADS does not have. However, ROS2 is not as lightweight as MADS. If you need a full-fledged robotics framework, ROS2 is a great choice. If you need a lightweight framework, MADS has some advantages over ROS2. Of course, advantages come to a cost, and MADS is not as feature-rich (nor it is as mature) as ROS2.\nWe’ll see here the main differences between MADS and ROS2.\n\n\n\n\nMADS installers weight about 8 Mb (twice as much for MacOS dual architecture installer), and they have minimal dependencies on most platforms. By comparison, ROS2 installers are about 750 Mb. Installing and configuring a ROS2 workspace is a complex task, while MADS can be installed in a few seconds and it is ready to use.\nIf you know what you are doing, you can be up and running in a simple data collection MADS network in about one hour.\nWhat really makes the difference, though, is the learning curve:\n\n\n\n\n\n\n\n\n\nWhile ROS/ROS2 is a complex framework that requires a lot of time to grasp and master, MADS is a simple framework that can be learned in a few hours. The learning curve is much more gentle, and you can start using MADS for your projects in a very short time.\nAt the same time, ROS2 is much more mature and feature rich: there is a lot of pre-existing code, libraries, and tools that you can use to build your robotics applications. MADS is not as mature, and it does not have as many features, but it is lightweight and easy to use.\nThe plugin architecture of MADS allow to extend the framework with minimum knowledge and an API that virtually consists in no more than 5 methods. If performance is not critical, MADS agents can be written in Python.\n\n\n\nROS and ROS2 are typically not as easy to install and configure, and their reference platform is Ubuntu Linux. It is much more difficult to run ROS2 on Windows (without virtualization), almost impossible on MacOS, and it’s difficult on small systems as Raspberry Pi. MADS, on the other hand, is designed to be lightweight and easy to install on any platform, including Windows, MacOS, Linux, and small systems like Raspberry Pi.\nOn any system that is not supported by official installer, and that has a C++17 compiler (preferably clang), CMake, and git, MADS can be compiled in minutes / tens of minutes from source.\n\n\n\nBeing the MADS codebase smaller and simpler, it is also easier to adapt it and extend it to your needs. If you need a specific feature that is not available in MADS, you can easily implement it by yourself. The MADS community is small but growing, and we are always happy to help.\n\n\n\nMADS uses ZeroMQ as its communication layer, which is a lightweight and efficient messaging library. ZeroMQ is designed to be fast and scalable, and it is used by many other projects.\nWith respect to networking middleware used by ROS2 (DDS), ZeroMQ id much more flexible and can be adapted to different use cases and network topologies.\n\n\n\n\n\n\nIf you need hard real-time, MADS is probably not yet ready and will suffer of the lack of determinism of a TCP-based communication layer. But if a jitter in the range of milliseconds is acceptable, MADS can be used in real-time applications, preferably using PREEMPT-RT Linux kernels.\n\n\n\nMADS uses compressed JSON for data serialization. This choice has the advantage of being human-readable, easy to debug, and really flexible when it comes to adapting the data scheme to different choices taken during the development. On the other hand, serialization/deserialization is not extremely efficient and the used bandwidth is sub-optimal.\nOn the other hand, MADS supports binary attachments to any message: so if JSON-based communication performance is not enough, you can use a minimum JSON data packet with a binary attachment that encodes data in a more efficient way (e.g. by using protobufs or Cap’n’Proto)."
-  },
-  {
-    "objectID": "why.html#advantages-over-ros2",
-    "href": "why.html#advantages-over-ros2",
-    "title": "Why ?",
-    "section": "",
-    "text": "MADS installers weight about 8 Mb (twice as much for MacOS dual architecture installer), and they have minimal dependencies on most platforms. By comparison, ROS2 installers are about 750 Mb. Installing and configuring a ROS2 workspace is a complex task, while MADS can be installed in a few seconds and it is ready to use.\nIf you know what you are doing, you can be up and running in a simple data collection MADS network in about one hour.\nWhat really makes the difference, though, is the learning curve:\n\n\n\n\n\n\n\n\n\nWhile ROS/ROS2 is a complex framework that requires a lot of time to grasp and master, MADS is a simple framework that can be learned in a few hours. The learning curve is much more gentle, and you can start using MADS for your projects in a very short time.\nAt the same time, ROS2 is much more mature and feature rich: there is a lot of pre-existing code, libraries, and tools that you can use to build your robotics applications. MADS is not as mature, and it does not have as many features, but it is lightweight and easy to use.\nThe plugin architecture of MADS allow to extend the framework with minimum knowledge and an API that virtually consists in no more than 5 methods. If performance is not critical, MADS agents can be written in Python.\n\n\n\nROS and ROS2 are typically not as easy to install and configure, and their reference platform is Ubuntu Linux. It is much more difficult to run ROS2 on Windows (without virtualization), almost impossible on MacOS, and it’s difficult on small systems as Raspberry Pi. MADS, on the other hand, is designed to be lightweight and easy to install on any platform, including Windows, MacOS, Linux, and small systems like Raspberry Pi.\nOn any system that is not supported by official installer, and that has a C++17 compiler (preferably clang), CMake, and git, MADS can be compiled in minutes / tens of minutes from source.\n\n\n\nBeing the MADS codebase smaller and simpler, it is also easier to adapt it and extend it to your needs. If you need a specific feature that is not available in MADS, you can easily implement it by yourself. The MADS community is small but growing, and we are always happy to help.\n\n\n\nMADS uses ZeroMQ as its communication layer, which is a lightweight and efficient messaging library. ZeroMQ is designed to be fast and scalable, and it is used by many other projects.\nWith respect to networking middleware used by ROS2 (DDS), ZeroMQ id much more flexible and can be adapted to different use cases and network topologies."
-  },
-  {
-    "objectID": "why.html#disadvantages-over-ros2",
-    "href": "why.html#disadvantages-over-ros2",
-    "title": "Why ?",
-    "section": "",
-    "text": "If you need hard real-time, MADS is probably not yet ready and will suffer of the lack of determinism of a TCP-based communication layer. But if a jitter in the range of milliseconds is acceptable, MADS can be used in real-time applications, preferably using PREEMPT-RT Linux kernels.\n\n\n\nMADS uses compressed JSON for data serialization. This choice has the advantage of being human-readable, easy to debug, and really flexible when it comes to adapting the data scheme to different choices taken during the development. On the other hand, serialization/deserialization is not extremely efficient and the used bandwidth is sub-optimal.\nOn the other hand, MADS supports binary attachments to any message: so if JSON-based communication performance is not enough, you can use a minimum JSON data packet with a binary attachment that encodes data in a more efficient way (e.g. by using protobufs or Cap’n’Proto)."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": ": Multi-Agent Distributed System",
-    "section": "",
-    "text": "Important\n\n\n\n Always get the latest MADS installer on: git.new/MADS\nSee this guide for installation instructions.\n\n\n\nWhat is it\nMADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.\nIt is made by a main set of executables available in the MADS tools collection repo, which also provides installers for Linux, MacOS and Windows.\nThe MADS tools collection includes a broker and a set of general purpose agents that can act as sources, filters, or sinks. The actual operations performed by agents can be customized either via scripting languages (using simple popen interface), or by implementing dedicated plugins in C++.\nSome of the available plugins are:\n\narduino_plugin: reads from a serial connected arduino\nhpe2D_plugin: performs human pose estimation from a camera stream\nmqtt_plugin: acts as a bridge with an MQTT network via two agents: mqtt2mads.plugin (source) and mads2mqtt.plugin (sink)\nsay_plugin: Text-to-speech of incoming messages\nble_plugin: Bluetooth Low Energy source plugin\ntui_plugin: Terminal User Interface for sending metadata commands to MADS network\nlua_plugin: Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)\nhdf5_plugin: a sink agent that logs data traffic into a HDF5 file\nrpio_plugin: source and sink agents for Raspberry Pi GPIO pins (using libgpiod v1.6)\n\nThere are also additional monolithic agents:\n\npython_agent: Interfacing Python3 scripts to the MADS network (useful for prototyping and rapid development)\n\nLook into the guides section for more information on how to use the MADS tools collection.\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "Authors",
-    "section": "",
-    "text": "Authors\n\nMain author\n\nPaolo Bosetti, University or Trento\n\nContributors\n\nAnna-Carla Araujo, INSA Toulouse\nGuillaume Cohen, INSA Toulouse\n\nBeta-testers\n\nMatteo Lancini, University of Brescia\nMarco Ghidelli, University of Brescia\nNicola Abeni, University of Bresicia\nFederico Paolucci, University of Perugia\n\n\n\n\n\n Back to top"
+    "objectID": "guides/datastore.html#existing-plugins",
+    "href": "guides/datastore.html#existing-plugins",
+    "title": "Agents persistency with Datastore",
+    "section": "Existing plugins",
+    "text": "Existing plugins\nTo use the  Datastore class to an existing plugin you have to update the fetched dependency. Open the plugin’s CMakeLists.txt and change the following (note the only change at line 3):\nFetchContent_Populate(plugin \n  GIT_REPOSITORY https://github.com/pbosetti/mads_plugin.git\n  GIT_TAG        HEAD\n  GIT_SHALLOW    TRUE\n  SUBBUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-subbuild\n  SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-src\n  BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-build\n)\nto:\nFetchContent_Populate(plugin \n  GIT_REPOSITORY https://github.com/pbosetti/mads_plugin.git\n  GIT_TAG        v1.3.5\n  GIT_SHALLOW    TRUE\n  SUBBUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-subbuild\n  SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-src\n  BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-build\n)\nThis will force git fetching of the v1.3.5 of the plugin system.\nThen, just use the  Datastore class as above outlined (it’s source is already available in the headers search path)."
   },
   {
     "objectID": "presentations/intro.html#contents",
@@ -504,74 +378,228 @@
     "text": "The MADS implementation\nIn MADS, there are two special agents for this purpose: dealer and worker\n\ndealer: receives the computational payloads (simulation input) from a suitable source agent, and dispatches them to the workers\nworker: receives the computational payloads and uses a custom plugin to process them (of type filter), then sends the results back to the broker\n\nIdeally, the worker plugin is launched in \\(n\\) instances on a Kubernetes cluster; each instance loads the computational plugin OTA from the broker"
   },
   {
-    "objectID": "guides/datastore.html",
-    "href": "guides/datastore.html",
-    "title": "Agents persistency with Datastore",
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Authors",
     "section": "",
-    "text": "MADS agents load their setting from the centralized mads.ini file provided by the broker. Those settings are of course read-only, i.e., it is not possible for an agent to update its settings.\nThis limitation is by design. In fact, allowing a single agent to update the setting file would possibly result in unwanted side effect: what happens if the update contains errors? what happens if there are multiple agents sharing the same name (and thus the same INI section) but having different agent_id? Forcing read-only settings is a way for ensuring robustness in operations.\nNevertheless, there are cases where an agent needs to permanently and locally store own information that has to be persistent upon the agent’s restarts. For example, suppose that you have an agent providing IMU (inertial unit) measurements with respect to an initial reference orientation. In this case, you want the agent to calibrate it’s initial attitude upon the very first launch, and then use the same calibration even when the agent restarts or the device reboots, until explicitly forced to re-calibrate. To build on the previously cited use case, the same agent running on different devices, you want to store the calibration locally, to ensure that each instance of the same agent always loads its own calibration.\nIn this scenario, you need persistent data storage, and that is what the Datastore C++ class provides."
+    "text": "Authors\n\nMain author\n\nPaolo Bosetti, University or Trento\n\nContributors\n\nAnna-Carla Araujo, INSA Toulouse\nGuillaume Cohen, INSA Toulouse\n\nBeta-testers\n\nMatteo Lancini, University of Brescia\nMarco Ghidelli, University of Brescia\nNicola Abeni, University of Bresicia\nFederico Paolucci, University of Perugia\n\n\n\n\n\n Back to top"
   },
   {
-    "objectID": "guides/datastore.html#the-datastore-class",
-    "href": "guides/datastore.html#the-datastore-class",
-    "title": "Agents persistency with Datastore",
-    "section": "The Datastore class",
-    "text": "The Datastore class\nIt is a C++ header-only class, provided by the plugin base project and classes. This project is automatically fetched for you whenever you compile a new plugin, and provides the base code, on top of which plugins are built. In particular, it provides the base classes Source, Filter, and Sink, that are inherited by actual plugin classes.\nThe source code of this project is downloaded into build/_deps/plugin-src in each plugin project directory.\nStarting from version 1.3.5, the code in build/_deps/plugin-src/src also provides a datastore.hpp class implementation. It is a relatively simple class for persistently store a nlohmann::json object on a text file in a local temporary folder (your OS temp dir as provided by C++ std::filesystem::temp_directory_path()). The class has the following notable methods:\n\nvoid prepare(std::string name): to be called once, it prepares a datastore file: if it exists, the file is read and parsed as a nlohmann::json object internally stored; if it does not exist, it is created (in the OS temp dir) and the internal storage set to an empty nlohmann::json object. If the name lacks the .json extension, that is automatically added.\nvoid save(): force dumping the current internal storage in the associated file. It is automatically called when the datastore is destructed (for example upon regular exit).\nnlohmann::json & operator[](const std::string &key): access the object at key from the internal storage (both for reading and writing).\nnlohmann::json & data(): provides access to the internal storage.\nstd::string path(): provides the full path of the storage file"
-  },
-  {
-    "objectID": "guides/datastore.html#the-plugin-template",
-    "href": "guides/datastore.html#the-plugin-template",
-    "title": "Agents persistency with Datastore",
-    "section": "The plugin template",
-    "text": "The plugin template\nThe command mads plugin is used to generate a plugin template. With v1.3.5, it gains the -s|--datastore option, which enables some example calls to the Datastore class. For example, by issuing:\nmads plugin -d test_plugin -s test\nthe template for a blank new plugin called test.plugin is created in the test_plugin directory, with usage examples for Datastore. With the -sflag, the src/test.cpp file has the following additions:\n\nThe Datastore class is included with #include &lt;datastore.hpp&gt;\nThe private instance member variable Datastore _datastore is added to the TestPlugin class\nin set_params(), the line _datastore.prepare(kind()); prepares the datastore to a file named as the plugin (kind() method) with the .json extension. If that file exists, it loads its content\nsome comment lines suggest how to use the _datastore object\nthe info() method returns the full path of the storage file.\n\nSo, recalling the calibration use case referred above, the set_params() method would:\n\nprepare the datastore;\ncheck if the datastore contains the calibration: if (_datastore[\"calibration\"].empty())\n\n\nif there’s no calibration, perform the necessary calibration ops, then save the result as _datastore[\"calibration\"] = _calib_json;\nif the calibration is present, load it as _calib_json = _datastore[\"calibration\"];\n\n\nwhen the agent regularly exits, the _datastore object is destroyed and its save() method is automatically invoked, ensuring persistency\n\n\n\n\n\n\n\nTip\n\n\n\nAlthough there’s no need to explicitly save the datastore, forcing a save right after completing the calibration ensures that the calibration is saved even if there’s later a crash.\n\n\n\n\n\n\n\n\nNote\n\n\n\nThe JSON file location is in the temporary directory, which is OS dependent. Within that directory, plugin datastoires are saved in the mads subdirectory with the provided name (by default, the string returned by kind()).\nIf the map returned by info() contains a pair as {\"Datastore\", _datastore.path()}, then the datastore full path is printed in the settings table when loading the plugin with mads source|filter|sink.\n\n\n\n\n\n\n\n\nWarning\n\n\n\nIf the JSON file loaded by the datastore is wrongly formatted, the prepare() method will fail throwing an exception. Catch that exception within set_params() if you can recover form the error (e.g. by performing a new calibration); or let the agent crash otherwise."
-  },
-  {
-    "objectID": "guides/datastore.html#existing-plugins",
-    "href": "guides/datastore.html#existing-plugins",
-    "title": "Agents persistency with Datastore",
-    "section": "Existing plugins",
-    "text": "Existing plugins\nTo use the  Datastore class to an existing plugin you have to update the fetched dependency. Open the plugin’s CMakeLists.txt and change the following (note the only change at line 3):\nFetchContent_Populate(plugin \n  GIT_REPOSITORY https://github.com/pbosetti/mads_plugin.git\n  GIT_TAG        HEAD\n  GIT_SHALLOW    TRUE\n  SUBBUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-subbuild\n  SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-src\n  BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-build\n)\nto:\nFetchContent_Populate(plugin \n  GIT_REPOSITORY https://github.com/pbosetti/mads_plugin.git\n  GIT_TAG        v1.3.5\n  GIT_SHALLOW    TRUE\n  SUBBUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-subbuild\n  SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-src\n  BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/plugin-build\n)\nThis will force git fetching of the v1.3.5 of the plugin system.\nThen, just use the  Datastore class as above outlined (it’s source is already available in the headers search path)."
-  },
-  {
-    "objectID": "guides/plugins.html",
-    "href": "guides/plugins.html",
-    "title": "Plugins",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": ": Multi-Agent Distributed System",
     "section": "",
-    "text": "Originally, MADS only allowed to develop monolitic agents: this required to write the whole executable code, including the management of command line arguments and loading of serrings from the INI file (either local or loaded from the broker). This solution is still possible (see the guide) and allows maximum flexibility, but it requires a good knowledse of the MADS innards and is more tedious and error prone.\nFor this reason, we developed the plugin support: the common functionality of an agent are already available, and only the data management operations need to be implemented."
+    "text": "Important\n\n\n\n Always get the latest MADS installer on: git.new/MADS\nSee this guide for installation instructions.\n\n\n\nWhat is it\nMADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.\nIt is made by a main set of executables available in the MADS tools collection repo, which also provides installers for Linux, MacOS and Windows.\nThe MADS tools collection includes a broker and a set of general purpose agents that can act as sources, filters, or sinks. The actual operations performed by agents can be customized either via scripting languages (using simple popen interface), or by implementing dedicated plugins in C++.\nSome of the available plugins are:\n\narduino_plugin: reads from a serial connected arduino\nhpe2D_plugin: performs human pose estimation from a camera stream\nmqtt_plugin: acts as a bridge with an MQTT network via two agents: mqtt2mads.plugin (source) and mads2mqtt.plugin (sink)\nsay_plugin: Text-to-speech of incoming messages\nble_plugin: Bluetooth Low Energy source plugin\ntui_plugin: Terminal User Interface for sending metadata commands to MADS network\nlua_plugin: Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)\nhdf5_plugin: a sink agent that logs data traffic into a HDF5 file\nrpio_plugin: source and sink agents for Raspberry Pi GPIO pins (using libgpiod v1.6)\n\nThere are also additional monolithic agents:\n\npython_agent: Interfacing Python3 scripts to the MADS network (useful for prototyping and rapid development)\n\nLook into the guides section for more information on how to use the MADS tools collection.\n\n\n\n\n Back to top"
   },
   {
-    "objectID": "guides/plugins.html#how-to-install-the-plugin",
-    "href": "guides/plugins.html#how-to-install-the-plugin",
-    "title": "Plugins",
-    "section": "How to install the plugin",
-    "text": "How to install the plugin\nOnce the plugin is tested (both standalone and when loaded from an agent) it should be installed in the MADS tree. Remember that the command mads -i shows where plugins are expected to be installed (usually, /usr/local/lib). To install:\ncmake --install build\nThe you can launch it as agent with:\nmads source my_source.plugin\nAnd when you are satisfield with the result, you can make it a service as explained here."
-  },
-  {
-    "objectID": "guides/containerized.html",
-    "href": "guides/containerized.html",
-    "title": "Containerized MADS",
+    "objectID": "why.html",
+    "href": "why.html",
+    "title": "Why ?",
     "section": "",
-    "text": "Setting up a MADS network requires a minimum of a broker, a MongoDB server, and the logger agent. This guide explains the easiest and more portable solution to have them up and running in minuts in a Docker environment."
+    "text": "Sure there are! ROS2 is a very popular framework for robotics, and it has a lot of features that MADS does not have. However, ROS2 is not as lightweight as MADS. If you need a full-fledged robotics framework, ROS2 is a great choice. If you need a lightweight framework, MADS has some advantages over ROS2. Of course, advantages come to a cost, and MADS is not as feature-rich (nor it is as mature) as ROS2.\nWe’ll see here the main differences between MADS and ROS2.\n\n\n\n\nMADS installers weight about 8 Mb (twice as much for MacOS dual architecture installer), and they have minimal dependencies on most platforms. By comparison, ROS2 installers are about 750 Mb. Installing and configuring a ROS2 workspace is a complex task, while MADS can be installed in a few seconds and it is ready to use.\nIf you know what you are doing, you can be up and running in a simple data collection MADS network in about one hour.\nWhat really makes the difference, though, is the learning curve:\n\n\n\n\n\n\n\n\n\nWhile ROS/ROS2 is a complex framework that requires a lot of time to grasp and master, MADS is a simple framework that can be learned in a few hours. The learning curve is much more gentle, and you can start using MADS for your projects in a very short time.\nAt the same time, ROS2 is much more mature and feature rich: there is a lot of pre-existing code, libraries, and tools that you can use to build your robotics applications. MADS is not as mature, and it does not have as many features, but it is lightweight and easy to use.\nThe plugin architecture of MADS allow to extend the framework with minimum knowledge and an API that virtually consists in no more than 5 methods. If performance is not critical, MADS agents can be written in Python.\n\n\n\nROS and ROS2 are typically not as easy to install and configure, and their reference platform is Ubuntu Linux. It is much more difficult to run ROS2 on Windows (without virtualization), almost impossible on MacOS, and it’s difficult on small systems as Raspberry Pi. MADS, on the other hand, is designed to be lightweight and easy to install on any platform, including Windows, MacOS, Linux, and small systems like Raspberry Pi.\nOn any system that is not supported by official installer, and that has a C++17 compiler (preferably clang), CMake, and git, MADS can be compiled in minutes / tens of minutes from source.\n\n\n\nBeing the MADS codebase smaller and simpler, it is also easier to adapt it and extend it to your needs. If you need a specific feature that is not available in MADS, you can easily implement it by yourself. The MADS community is small but growing, and we are always happy to help.\n\n\n\nMADS uses ZeroMQ as its communication layer, which is a lightweight and efficient messaging library. ZeroMQ is designed to be fast and scalable, and it is used by many other projects.\nWith respect to networking middleware used by ROS2 (DDS), ZeroMQ id much more flexible and can be adapted to different use cases and network topologies.\n\n\n\n\n\n\nIf you need hard real-time, MADS is probably not yet ready and will suffer of the lack of determinism of a TCP-based communication layer. But if a jitter in the range of milliseconds is acceptable, MADS can be used in real-time applications, preferably using PREEMPT-RT Linux kernels.\n\n\n\nMADS uses compressed JSON for data serialization. This choice has the advantage of being human-readable, easy to debug, and really flexible when it comes to adapting the data scheme to different choices taken during the development. On the other hand, serialization/deserialization is not extremely efficient and the used bandwidth is sub-optimal.\nOn the other hand, MADS supports binary attachments to any message: so if JSON-based communication performance is not enough, you can use a minimum JSON data packet with a binary attachment that encodes data in a more efficient way (e.g. by using protobufs or Cap’n’Proto)."
   },
   {
-    "objectID": "guides/containerized.html#step-1.-clone-the-repo",
-    "href": "guides/containerized.html#step-1.-clone-the-repo",
-    "title": "Containerized MADS",
-    "section": "Step 1. Clone the repo",
-    "text": "Step 1. Clone the repo\nAll you need is in the MADS_container repository. You can clone it with the following command:\ngit clone --depth 1 https://github.com/MADS-NET/MADS_container.git"
+    "objectID": "why.html#advantages-over-ros2",
+    "href": "why.html#advantages-over-ros2",
+    "title": "Why ?",
+    "section": "",
+    "text": "MADS installers weight about 8 Mb (twice as much for MacOS dual architecture installer), and they have minimal dependencies on most platforms. By comparison, ROS2 installers are about 750 Mb. Installing and configuring a ROS2 workspace is a complex task, while MADS can be installed in a few seconds and it is ready to use.\nIf you know what you are doing, you can be up and running in a simple data collection MADS network in about one hour.\nWhat really makes the difference, though, is the learning curve:\n\n\n\n\n\n\n\n\n\nWhile ROS/ROS2 is a complex framework that requires a lot of time to grasp and master, MADS is a simple framework that can be learned in a few hours. The learning curve is much more gentle, and you can start using MADS for your projects in a very short time.\nAt the same time, ROS2 is much more mature and feature rich: there is a lot of pre-existing code, libraries, and tools that you can use to build your robotics applications. MADS is not as mature, and it does not have as many features, but it is lightweight and easy to use.\nThe plugin architecture of MADS allow to extend the framework with minimum knowledge and an API that virtually consists in no more than 5 methods. If performance is not critical, MADS agents can be written in Python.\n\n\n\nROS and ROS2 are typically not as easy to install and configure, and their reference platform is Ubuntu Linux. It is much more difficult to run ROS2 on Windows (without virtualization), almost impossible on MacOS, and it’s difficult on small systems as Raspberry Pi. MADS, on the other hand, is designed to be lightweight and easy to install on any platform, including Windows, MacOS, Linux, and small systems like Raspberry Pi.\nOn any system that is not supported by official installer, and that has a C++17 compiler (preferably clang), CMake, and git, MADS can be compiled in minutes / tens of minutes from source.\n\n\n\nBeing the MADS codebase smaller and simpler, it is also easier to adapt it and extend it to your needs. If you need a specific feature that is not available in MADS, you can easily implement it by yourself. The MADS community is small but growing, and we are always happy to help.\n\n\n\nMADS uses ZeroMQ as its communication layer, which is a lightweight and efficient messaging library. ZeroMQ is designed to be fast and scalable, and it is used by many other projects.\nWith respect to networking middleware used by ROS2 (DDS), ZeroMQ id much more flexible and can be adapted to different use cases and network topologies."
   },
   {
-    "objectID": "guides/containerized.html#step-2.-run-the-containers",
-    "href": "guides/containerized.html#step-2.-run-the-containers",
-    "title": "Containerized MADS",
-    "section": "Step 2. Run the containers",
-    "text": "Step 2. Run the containers\nYou can now run the containers with the following command:\ndocker compose up -d\nThis starts the three containerized processes: MogoDB, the broker, and the logger agent.\n\n\n\n\n\n\nNote\n\n\n\nYou can stop the containers at any time with the command docker compose down.\n\n\nNow the broker and the database are also accessible as if they were processes running on your host machine."
+    "objectID": "why.html#disadvantages-over-ros2",
+    "href": "why.html#disadvantages-over-ros2",
+    "title": "Why ?",
+    "section": "",
+    "text": "If you need hard real-time, MADS is probably not yet ready and will suffer of the lack of determinism of a TCP-based communication layer. But if a jitter in the range of milliseconds is acceptable, MADS can be used in real-time applications, preferably using PREEMPT-RT Linux kernels.\n\n\n\nMADS uses compressed JSON for data serialization. This choice has the advantage of being human-readable, easy to debug, and really flexible when it comes to adapting the data scheme to different choices taken during the development. On the other hand, serialization/deserialization is not extremely efficient and the used bandwidth is sub-optimal.\nOn the other hand, MADS supports binary attachments to any message: so if JSON-based communication performance is not enough, you can use a minimum JSON data packet with a binary attachment that encodes data in a more efficient way (e.g. by using protobufs or Cap’n’Proto)."
   },
   {
-    "objectID": "guides/containerized.html#update-images",
-    "href": "guides/containerized.html#update-images",
-    "title": "Containerized MADS",
-    "section": "Update images",
-    "text": "Update images\nTo update the images to the latest version, do:\ndocker compose pull\nfrom project root (i.e. the same folder containing compose.yml)."
+    "objectID": "who_is_using.html",
+    "href": "who_is_using.html",
+    "title": "Who is using ",
+    "section": "",
+    "text": "Within the national research project “Miroscic”, Paolo Bosetti has originally developed MADS as a way to orchestrate and manage the data acquired from a collection of heterogeneous sensors, including smart cameras, ToF cameras, and other IoT devices for ensuring safety of operators in industrial environments.\nThe MADS architecture is currently being used by researchers in the MiRO lab for building the software stack of a robotic walker for rehabilitation of patients with neurological disorders.\n\n\n\nWithin the national research project “Miroscic”, the group of prof. Matteo Lancini of the MMTLab of the University of Brescia is using MADS to develop the edge cameras and software that provides 3D estimate of human pose by using AI techniques.\n\n\n\nWithin the national research project “Miroscic”, the group of prof. Roberto Marsili at the Measurement Group of the University of Perugia is using MADS collect data from wearable sensors and RFID transponders.\n\n\n\nThe group coordinated by prof. Anna-Carla Araujo at the INSA Toulouse, SUMO group of Institut Clément Ader is using MADS to collect data from multiple sensors in a machining shopfloor, with the aim of measuring and improving energy efficiency of the production processes."
+  },
+  {
+    "objectID": "who_is_using.html#university-of-trento-italy",
+    "href": "who_is_using.html#university-of-trento-italy",
+    "title": "Who is using ",
+    "section": "",
+    "text": "Within the national research project “Miroscic”, Paolo Bosetti has originally developed MADS as a way to orchestrate and manage the data acquired from a collection of heterogeneous sensors, including smart cameras, ToF cameras, and other IoT devices for ensuring safety of operators in industrial environments.\nThe MADS architecture is currently being used by researchers in the MiRO lab for building the software stack of a robotic walker for rehabilitation of patients with neurological disorders."
+  },
+  {
+    "objectID": "who_is_using.html#university-of-brescia-italy",
+    "href": "who_is_using.html#university-of-brescia-italy",
+    "title": "Who is using ",
+    "section": "",
+    "text": "Within the national research project “Miroscic”, the group of prof. Matteo Lancini of the MMTLab of the University of Brescia is using MADS to develop the edge cameras and software that provides 3D estimate of human pose by using AI techniques."
+  },
+  {
+    "objectID": "who_is_using.html#university-or-perugia-italy",
+    "href": "who_is_using.html#university-or-perugia-italy",
+    "title": "Who is using ",
+    "section": "",
+    "text": "Within the national research project “Miroscic”, the group of prof. Roberto Marsili at the Measurement Group of the University of Perugia is using MADS collect data from wearable sensors and RFID transponders."
+  },
+  {
+    "objectID": "who_is_using.html#insa-toulouse-france",
+    "href": "who_is_using.html#insa-toulouse-france",
+    "title": "Who is using ",
+    "section": "",
+    "text": "The group coordinated by prof. Anna-Carla Araujo at the INSA Toulouse, SUMO group of Institut Clément Ader is using MADS to collect data from multiple sensors in a machining shopfloor, with the aim of measuring and improving energy efficiency of the production processes."
+  },
+  {
+    "objectID": "guides.html",
+    "href": "guides.html",
+    "title": "Guides",
+    "section": "",
+    "text": "Spotlight\n\n\n\nBe sure to start with MADS structure guide.\nIf you want to contribute, head on to the contribution guide.\n\n\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\nDescription\n\n\n\nCategories\n\n\n\nReading Time\n\n\n\n\n\n\n\n\nSep 3, 2025\n\n\nAgents persistency with Datastore\n\n\nPaolo Bosetti\n\n\nMADS Version 1.3.5 introduces the Datastore class for plugins. This class allows storing persistent information at device level. \n\n\nplugin, C++, intermediate\n\n\n5 min\n\n\n\n\n\n\nAug 30, 2025\n\n\nInteracting with MADS\n\n\nPaolo Bosetti\n\n\nThis guide illustrates the various ways to interact with MADS by publishing one-shot JSON messages to the MADS broker. \n\n\neasy, operations\n\n\n6 min\n\n\n\n\n\n\nAug 27, 2025\n\n\nInstalling MADS\n\n\nPaolo Bosetti\n\n\nA brief how to for installing MADS on different operating systems. \n\n\nconfiguration, setup, how-to, easy\n\n\n6 min\n\n\n\n\n\n\nAug 8, 2025\n\n\nMonolithic agents\n\n\nPaolo Bosetti\n\n\nHow to develop a custom monolithic agent by exploiting the MADS C++17 library. \n\n\nadvanced, development, c++\n\n\n5 min\n\n\n\n\n\n\nJul 11, 2025\n\n\nHDF5 Logger\n\n\nPaolo Bosetti\n\n\nMADS comes packaged with a logging facility to MongoDB database. For some applications, a file-based logging system is more appropriate. This guide explains how to use the HDF5 logger, which is a file-based sink for MADS using the hierarchical data format. \n\n\nplugin, sink, hdf5, logging, data\n\n\n7 min\n\n\n\n\n\n\nJul 7, 2025\n\n\nOTA Plugins\n\n\nPaolo Bosetti\n\n\nMADS Version 1.3.0 introduces the possibility to load plugins Over-The-Air (OTA): plugin files can be provided to agents by the broker. This allows to centralize the management of plugins and to update them without the need to manually copy compiled plugins to the devices running the agents. \n\n\nplugin, OTA, over-the-air, intermediate\n\n\n7 min\n\n\n\n\n\n\nJul 7, 2025\n\n\nParallel computing with MADS\n\n\nPaolo Bosetti\n\n\nMADS has two special agents, dealer and worker, that allow to distribute many different computations to a set of identical workers, in round-robin fashion. \n\n\nplugin, parallel computing, advanced, kubernetes, docker\n\n\n7 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nServices\n\n\nPaolo Bosetti\n\n\nOnce tested, agents can be turned into linux services, so that they start automatically on boot. \n\n\nintermediate, OS, setup, easy\n\n\n3 min\n\n\n\n\n\n\nJun 6, 2025\n\n\nPlugins\n\n\nPaolo Bosetti\n\n\nMADS supports agents implemented as plugins in C++17. This guide explains how to create a plugin. \n\n\nadvanced, plugin, development, c++\n\n\n4 min\n\n\n\n\n\n\nJun 4, 2025\n\n\nNetwork structure\n\n\nPaolo Bosetti\n\n\nIllustrate a typical MADS network structure and its requirements. \n\n\ntemplate, basics, easy\n\n\n5 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nHow to contribute\n\n\nPaolo Bosetti\n\n\nWe explain how to contribute to the MADS guides collection. \n\n\nhow-to, easy\n\n\n7 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nContainerized MADS\n\n\nPaolo Bosetti\n\n\nThe base agents for setting up a MADS network are available as a containerized environment. \n\n\ndocker, easy, OS, setup\n\n\n3 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nReplay plugin\n\n\nPaolo Bosetti\n\n\nWhen debugging a MADS system, it might prove useful to have a way to “replay” a previously recorded data stream. This is what the replay.plugin does. \n\n\ntemplate\n\n\n3 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nRaspberry Pi IO\n\n\nPaolo Bosetti\n\n\nThe rpio.plugin allows low-latency interaction with Raspberry Pi GPIO pins via libgpiod library. \n\n\nintermediate, RaspberryPi, IO, plugin\n\n\n5 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nPython Agent\n\n\nPaolo Bosetti\n\n\nThe python_agent repo on GitHub provides a MADS agent with an embedded python3 interpreter for developing MADS sgents in Python \n\n\npython, agent, easy\n\n\n4 min\n\n\n\n\n\n\nJun 2, 2025\n\n\nZeroConf (aka Avahi) network discovery\n\n\nPaolo Bosetti\n\n\nUsing hostnames rather than IP addresses is easier and much more robust. In this guide, we learn how to setup a Linux box for advertising its address by using the Avahi protocol/service. \n\n\nnetworking, IP, configuration, OS, Linux\n\n\n2 min\n\n\n\n\n\n\nNo matching items\n Back to top"
+  },
+  {
+    "objectID": "guides/monolithic_agents.html",
+    "href": "guides/monolithic_agents.html",
+    "title": "Monolithic agents",
+    "section": "",
+    "text": "Sometimes, the constraints posed by the MADS plugin architecture won’t fit your use case. When you are using MADS plugins, in fact, you are limited to implement a source, a filter, or a sink. But if the behavior of you agent is not that clearly defined, then you need to build your own monolithic agent.\nTypically, this is the case when the agent behavior depends upon some state parameter. Suppose that your agent must behave as a source in some circumstances, then switch to a filter in others. Then you need to implement a monolithic agent."
+  },
+  {
+    "objectID": "guides/monolithic_agents.html#build-system",
+    "href": "guides/monolithic_agents.html#build-system",
+    "title": "Monolithic agents",
+    "section": "Build system",
+    "text": "Build system\nUnlike for MADS plugins, there is no command (yet) to create a monolithic agent temnplate, and you need to setup the build environment by your own. Use whatever you are comfortable with, although we recommend using CMake and clang compiler on Linux and MacOS, or Visual Studio 17 on Windows (Community Edition is fine)."
+  },
+  {
+    "objectID": "guides/monolithic_agents.html#libraries",
+    "href": "guides/monolithic_agents.html#libraries",
+    "title": "Monolithic agents",
+    "section": "Libraries",
+    "text": "Libraries\nFrom the MADS point-of-view, everything you need is already installed by the MADS installer. Simply setup your build system to search for headers and libraries in the MADS prefix directory, which you can find with mads -p command.\nYou’ll need to link against the following libraries:\n\nOn Unixes: zmqpp-static zmq snappy\nOn Windows: zmqpp-static libzmq-v143-mt-s-4_3_6 snappy Ws2_32 bcrypt Secur32 Crypt32 Dnsapi IPHLPAPI"
+  },
+  {
+    "objectID": "guides/monolithic_agents.html#example-project",
+    "href": "guides/monolithic_agents.html#example-project",
+    "title": "Monolithic agents",
+    "section": "Example project",
+    "text": "Example project\nWe suggest to use the python agent as an example project: you can git fork it and start from there.\nIn that project, you can safely get rid of:\n\nthe python folder\nthe src/python_interpreter.hpp class\neverything related to the cppy3 library (and Python in general) in the CMakeLists.txt file.\n\nFinally, rename src/main/python.cpp to your liking (e.g. agent.cpp) and move on to the next section."
+  },
+  {
+    "objectID": "guides/monolithic_agents.html#coding",
+    "href": "guides/monolithic_agents.html#coding",
+    "title": "Monolithic agents",
+    "section": "Coding",
+    "text": "Coding\nThe file src/main/agent.cpp (or whatever name you choose th the last step above) is divided in the following sections:\n\nParse command line options: Uses the cxxopts library to define and parse the supported CLI options; customize as needed. Remember to execute the macro SETUP_OPTIONS(options, Agent);\nInitialize agent: this section is rather general, with the exception of the lines dealing with attachments (binary objects sent to the agent by the broker upon launch). If you don’t need attachments, you can remove this section altogether;\nCLI options override: the call to agent.init() actually loads the settings from the broker, fetching the mads.ini section under agent_name and storing them in the settings JSON object. So in this section you can safely override those settings with command line options, if needed, and store them back in the settings object;\nPrint info: this section is optional, but it is a good practice to print some information about the agent, such as its name, version, and settings; info are printed on stderr, indented by two spaces;\nMain loop: this is where most of the action happens, and see the next section for details;\nCleanup: free used resources, call agent.register_event to mark the exit in the database, and restart the agent if needed (i.e. if agent.restart() is true).\n\n\n\n\n\n\n\nRemote control and agents restarting\n\n\n\nThe agent initialization calls agent.enable_remote_control(). This call makes the agent listen for a special set of commands sent by the broker, such as restart and stop, and requires a regular call to agent.remote_control() in the main loop. If you don’t need this feature, you can remove the call to enable_remote_control().\nNote, though, that without that feature you won’t be able to setup the agent for a restart in the cleanup section, because agent.restart() will always return false. The agents ability to self-restart is crucial, since it allows to restart all the agents in a network and reload the INI settings automatically from the broker.\nIn fact, when the mads.ini file on the broker machine is updated, the broker automatically reloads it and makes it available to any newly started agent, but agentts that are already running will not see the changes. So, if you want to change the settings of a running agent, you need to restart it, and this is what the remote control feature allows you to do. To restart all agents you can use the TUI plugin, or mads command restart command."
+  },
+  {
+    "objectID": "guides/monolithic_agents.html#main-loop",
+    "href": "guides/monolithic_agents.html#main-loop",
+    "title": "Monolithic agents",
+    "section": "Main loop",
+    "text": "Main loop\nThe main loop is implemented by calling the agent.loop() method. It takes two arguments:\n\na C++17 lambda function, that grabs all the local context variables and has no arguments: [&]() { ... } (mandatory);\na std::chrono::milliseconds value, that defines the loop frequency (optional, typically read from settings and possibly overridden by a CLI option).\n\n\n\n\n\n\n\nImportant\n\n\n\nTo ensure performance and determinism, it is important to declare all objects used in the lambda before entering the loop.\n\n\nWithin the lambda loop function, you have access to the following methods:\n\nagent.receive(): to receive messages from the broker; it returns a message_type enum, that can be none, json, or blob (a binary buffer);\nagent.last_message(): to get the last received message, which is a zmqpp::message object;\nagent.last_topic(): to get the topic of the last received message, which is a std::string;\nagent.remote_control(): you must call it to process any incoming remote control message;\nagent.publish(): to publish a JSON message to the broker. If not specified as second argument, it uses the default publish topic of the agent.\n\nLook at the agent.hpp header file for the complete list of methods available in the agent class."
+  },
+  {
+    "objectID": "guides/services.html",
+    "href": "guides/services.html",
+    "title": "Services",
+    "section": "",
+    "text": "Why services\nAgents are typically expected to run on boot: as soon as the machine or device starts, you want the agent to become immediately available. To do that, MADS offers a solution for quickly create a service for a given combination of MADS command and arguments.\n\n\n\n\n\n\nWarning\n\n\n\nAt the moment, this functionality is only available on Linux (Ubuntu or Debian). There are no immediate plans to extend it to MacOS or Windows.\n\n\n\n\nWhat is a service\nOn Ubuntu or Debian Linux, a service is a INI file located in /etc/systemd/system that details a command to be executed on boot and its requirements. Once you have the service file installed, e.g. as /etc/systemd/system/my_service.service, you can:\n\nEnable/disable the service: sudo systemctl enable|disable my_service. If the service is disabled, It does not starts automatically.\nStart the service manually: sudo systemctl start my_service\nStop the service manually: sudo systemctl stop my_service\nEnquire the service status: sudo systemctl status my_service\n\nSo, if the service is enabled, it starts automatically on boot; if it is disabled, you can still start it with the systemctl start command.\n\n\nHow to create a MADS service\nSuppose that you knwo that the following command launches properly an agent:\nmads source -i in0_01 arduino.plugin\nNow you want turn this command into a service. Just put mads service &lt;service_name in forn t of that command line, e.g.:\nmads service arduino source -i in0_01 arduino.plugin\nwhere mads service arduino means “create a service file called mads-arduino” (mads- is added automatically), and source -i in0_01 arduino.plugin is the proper command line for the mads command.\nYou should get an output like:\n#  __  __    _    ____  ____\n# |  \\/  |  / \\  |  _ \\/ ___|\n# | |\\/| | / _ \\ | | | \\___ \\\n# | |  | |/ ___ \\| |_| |___) |\n# |_|  |_/_/   \\_\\____/|____/\n#\n# Linux Systemd service file for mads-arduino, a mads-source agent\n# Notice that the settings file will be read from\n# /usr/local/etc/mads.ini\n#\n# Save this file to /etc/systemd/system/mads-arduino.service\n# Or run \"sudo mads service publish source publish.plugin \"\n# then run \"sudo systemctl enable mads-arduino.service\"\n\n[Unit]\nDescription=mads-arduino\nAfter=network.target\nStartLimitIntervalSec=0\n\n[Service]\nType=simple\nRestart=always\nRestartSec=1\nUser=root\nExecStart=/usr/local/bin/mads-source -i in0_01 arduino.plugin\n\n[Install]\nWantedBy=multi-user.target\nAs instructed in the comments, you shall check if everything looks fine, and if so, install the service file in the proper directory by simply re-executing the same command with sudo :\nsudo mads service arduino source -i in0_01 arduino.plugin\nA longer and more flexible path is to save the file locally, edit it to taste, then manually copy/move it to /etc/systemd/system:\nmads service arduino source -i in0_01 arduino.plugin &gt; mads-arduino.service\n# edit the file to taste\nsudo cp mads-arduino.service /usr/systemd/system/\n\n\n\n\n\n\nTip\n\n\n\nThe fist way is the suggested one, unless you really need to adjust the service file (and you know what you are doing).\n\n\nFinally, enable the service with sudo systemctl enable mads-arduino.service.\nNote that enabling the service does not makes it start: to do so, you either have to reboot the machine or to manually start with sudo systemctl start mads-arduino.service.\n\n\nSpecial case: broker service\nThe broker launched as mads broker interacts with the console, waiting for keystrokes. This is not ideal for a service, and would increase the CPU load unnecessarily.\nTo avoid this problem, the broker shall be called with the -d (daemon) option:\nsudo mads service broker broker -d\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "guides/contribute.html",
+    "href": "guides/contribute.html",
+    "title": "How to contribute",
+    "section": "",
+    "text": "These guides are prepared in Quarto format, which is a markdown-based format that allows for the creation of documents and websites with rich formatting and interactivity. The website structure is hosted on GitHub, and contributions can be made through pull requests."
+  },
+  {
+    "objectID": "guides/contribute.html#prerequisites",
+    "href": "guides/contribute.html#prerequisites",
+    "title": "How to contribute",
+    "section": "Prerequisites",
+    "text": "Prerequisites\n\nGit and a GitHub account\nAn IDE:\n\nRStudio (recommended)\nVisual Studio Code\n\nIf you opt for VS Code, you will need to install Quarto and the Quarto extension. RStudio comes with Quarto pre-packaged."
+  },
+  {
+    "objectID": "guides/contribute.html#forking-the-repository",
+    "href": "guides/contribute.html#forking-the-repository",
+    "title": "How to contribute",
+    "section": "Forking the repository",
+    "text": "Forking the repository\nTo contribute to the MADS guides collection, you need to fork the repository. This allows you to create your own copy of the repository where you can make changes without affecting the original project. To fork the repository, follow these steps:\n\ngo to https://github.com/MADS-Net/mads-net.github.io\nclick on the “Fork” button in the top right corner of the page\nselect your GitHub account as the destination for the fork\nwait for GitHub to create the forked repository in your account"
+  },
+  {
+    "objectID": "guides/contribute.html#authorizing-your-computer",
+    "href": "guides/contribute.html#authorizing-your-computer",
+    "title": "How to contribute",
+    "section": "Authorizing your computer",
+    "text": "Authorizing your computer\nThe best way to authorize your computer to work on GitHub repositories is to use the gh command line utility. You can get it from https://cli.github.com. Once installed, open a terminal and type:\ngh auth login\nthen follow instructions to authenticate your GitHub account. This will allow you to push changes to your forked repository and create pull requests. It is typically done once per computer."
+  },
+  {
+    "objectID": "guides/contribute.html#cloning-the-repository",
+    "href": "guides/contribute.html#cloning-the-repository",
+    "title": "How to contribute",
+    "section": "Cloning the repository",
+    "text": "Cloning the repository\nYou cannot edit the official repository, but you can freely edit your forked repository. To do this, you need to clone the repository to your local machine. This creates a local copy of the repository that you can work on. To clone the repository, follow these steps:\n\nopen your terminal or command prompt\nnavigate to the directory where you want to clone the repository\ntype the following:\n\ngh repo clone &lt;your-username&gt;/mads-net.github.io.git\nreplacing &lt;your-username&gt; with your GitHub username. This will create a folder named mads-net.github.io in your current directory, containing the cloned repository. Then open the mads_doc.Rproj file if you are using RStudio. If you are using VSCode, just open that folder."
+  },
+  {
+    "objectID": "guides/contribute.html#ensure-your-repository-is-up-to-date",
+    "href": "guides/contribute.html#ensure-your-repository-is-up-to-date",
+    "title": "How to contribute",
+    "section": "Ensure your repository is up to date",
+    "text": "Ensure your repository is up to date\nOther people could contribute to the guides while you are working on your own. To ensure that your repository is up to date and to minimize the risks for conflicts, you shall pull the latest changes from the original repository. To do this, follow these steps:\n# Navigate to the cloned repository folder\ncd mads-net.github.io\n# fetch any new changes from the original repository\ngit fetch upstream\n# merge the changes into your local repository\ngit merge upstream/main"
+  },
+  {
+    "objectID": "guides/contribute.html#create-a-new-guide",
+    "href": "guides/contribute.html#create-a-new-guide",
+    "title": "How to contribute",
+    "section": "Create a new guide",
+    "text": "Create a new guide\nTo create a new guide, you can use the guides/template.qmd file as a starting point. This file contains the basic structure and formatting for a guide. Make a copy of it with a suitable name.\nIf the guide you are working is complex and is probably going to require images and/or data files, you should put the guide in a separate folder. For example, if you are writing a guide on “Data Analysis”, you could create a folder named guides/data-analysis and put the data-analysis.qmd file inside it. Quarto will automatically add that file as a new guide in the Guides page listing. Images and supporting files can then be put in the same folder, and they will be automatically linked in the guide."
+  },
+  {
+    "objectID": "guides/contribute.html#edit-the-guide",
+    "href": "guides/contribute.html#edit-the-guide",
+    "title": "How to contribute",
+    "section": "Edit the guide",
+    "text": "Edit the guide\nThe guide YAML preamble is the first thing to edit. Ensure that you set the title, author, and date fields correctly. You can also set the categories field to categorize your guide, and the abstract field to provide a brief description of the guide.\nNote that the preamble has a draft: true field. This means that the guide will not be published until you set it to draft: false. This is useful to work on the guide without it being visible on the website or when previewing the website locally. A guide in draft mode will not be listed in the Guides page, but it will be accessible via its URL.\n\n\n\n\n\n\nNote\n\n\n\nIf you want that the guide is also available in PDF format, uncomment the preamble section for the format key. In this way, the guide will be available in both HTML and PDF formats.\n\n\nRefer to the Quarto documentation for more information on how to format the guide using Quarto markdown."
+  },
+  {
+    "objectID": "guides/contribute.html#preview-the-guide",
+    "href": "guides/contribute.html#preview-the-guide",
+    "title": "How to contribute",
+    "section": "Preview the guide",
+    "text": "Preview the guide\nTo preview the guide, you can use the quarto preview command. This will start a local web server and open the guide in your default web browser. To do this, follow these steps:\n# Navigate to the cloned repository folder\ncd mads-net.github.io\n# Start the local web server\nquarto preview\n\n\n\n\n\n\nAutomatic refresh\n\n\n\nThe local web server will automatically refresh the page whenever you save changes to the guide files. This allows you to see the changes in real-time without having to manually refresh the page.\nHowever, some changes (e.g. adding new files) are not always detected. In these cases, you can manually refresh the page in your browser to see the changes, and if it does not work, you can stop the server with Ctrl+C and restart it with quarto preview."
+  },
+  {
+    "objectID": "guides/contribute.html#publish-your-contribute",
+    "href": "guides/contribute.html#publish-your-contribute",
+    "title": "How to contribute",
+    "section": "Publish your contribute",
+    "text": "Publish your contribute\nWhenever you are content with your contributed guide, you can commit your work and push it to your forked repository. before doing that, however, ensure that there are no new contribution on the uspstream repository. Since you cannot pull changes on your repository if it has pending changes, you first stash your changes, i.e. you put them temporarily aside, reverting back to a clean state (the last commit, in synchron with upstream):\ngit stash\nNow you can pull the latest changes from the original repository:\n# Fetch any new changes from the original repository\ngit fetch upstream\n# Merge the changes into your local repository\ngit merge upstream/main\nAfter this, you can reapply your changes:\ngit stash pop\nIf there were new changes from upstream, and you have changed the same files, you might have to resolve conflicts. In this case, Git will show you the files with conflicts, and you will need to manually edit them to resolve the conflicts.\nA conflict is typically marked in the file with &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD, =======, and &gt;&gt;&gt;&gt;&gt;&gt;&gt; upstream/main. You need to choose which changes to keep, or merge them together, and then remove these markers. Once you are done, you can add the resolved files to the staging area, make a new commit and publish your changes on gitHub:\ngit add .\ngit commit -m \"Resolved conflicts and updated guide\"\ngit push origin main\nNow your forked repository will be ahead of the original, upstream, repository. This means that you have changes that are not yet in the original repository. So you can now create a pull request to the original repository. This will allow the maintainers of the MADS guides collection to review your changes and merge them into the main repository. To create a pull request, follow these steps:\n\ngo to your forked repository on GitHub\nclick on the “Pull requests” tab\nclick on the “New pull request” button\nselect the branch you want to merge into the original repository (usually main)\nreview the changes and add a title and description for the pull request (be informative!!!)\nclick on the “Create pull request” button\nwait for the maintainers to review your changes and merge them into the original repository"
+  },
+  {
+    "objectID": "guides/replay.html",
+    "href": "guides/replay.html",
+    "title": "Replay plugin",
+    "section": "",
+    "text": "The replay.plugin is available on https://github.com/MADS-NET/replay_plugin. Clone it and build as usual with (on Windows, follow the instriction on the README.md file):\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build -j4\nsudo cmake --install build\n\n\n\nApart from the common settings, the INI file for the replay.plugin requires the following additional fields:\n[replay]\ncsv_file = \"path/to/file.csv\"\nloop = true # once the end of file has been reached, start again from beginning\nNote that the CSV file path can be either absolute or relative to the current working directory (the one where you launch the agent).\n\n\n\nThe CSV is supposed to contain a list of datasets, one per row, with different signals in different rows.\nBut how do we map a flat row of a CSV file to a structured JSON object, which may have nested sub-objects and sub-arrays?\nThe answer is to use keypaths as column headers. A keypath is a string that identifies the path to a specific field in a JSON object, using dots (.) to separate different levels of the hierarchy, and square brakets ([]) to indicate array indices. for example:\n# Comments and empty lines are skipped\ntimestamp, sensor[0].temperature, sensor[0].humidity, sensor[1].temperature, sensor[1].humidity\n2024-06-01T12:00:00Z, 22.5, 45.0, 23.0, 50.0\nbecomes:\n{\n  \"timestamp\": \"2024-06-01T12:00:00Z\",\n  \"sensor\": [\n    {\n      \"temperature\": 22.5,\n      \"humidity\": 45.0\n    },\n    {\n      \"temperature\": 23.0,\n      \"humidity\": 50.0\n    }\n  ]\n}"
+  },
+  {
+    "objectID": "guides/replay.html#getting-it",
+    "href": "guides/replay.html#getting-it",
+    "title": "Replay plugin",
+    "section": "",
+    "text": "The replay.plugin is available on https://github.com/MADS-NET/replay_plugin. Clone it and build as usual with (on Windows, follow the instriction on the README.md file):\ncmake -Bbuild -DCMAKE_INSTALL_PREFIX=\"$(mads -p)\"\ncmake --build build -j4\nsudo cmake --install build"
+  },
+  {
+    "objectID": "guides/replay.html#configuration",
+    "href": "guides/replay.html#configuration",
+    "title": "Replay plugin",
+    "section": "",
+    "text": "Apart from the common settings, the INI file for the replay.plugin requires the following additional fields:\n[replay]\ncsv_file = \"path/to/file.csv\"\nloop = true # once the end of file has been reached, start again from beginning\nNote that the CSV file path can be either absolute or relative to the current working directory (the one where you launch the agent)."
+  },
+  {
+    "objectID": "guides/replay.html#mapping-a-csv-to-a-list-of-json-objects",
+    "href": "guides/replay.html#mapping-a-csv-to-a-list-of-json-objects",
+    "title": "Replay plugin",
+    "section": "",
+    "text": "The CSV is supposed to contain a list of datasets, one per row, with different signals in different rows.\nBut how do we map a flat row of a CSV file to a structured JSON object, which may have nested sub-objects and sub-arrays?\nThe answer is to use keypaths as column headers. A keypath is a string that identifies the path to a specific field in a JSON object, using dots (.) to separate different levels of the hierarchy, and square brakets ([]) to indicate array indices. for example:\n# Comments and empty lines are skipped\ntimestamp, sensor[0].temperature, sensor[0].humidity, sensor[1].temperature, sensor[1].humidity\n2024-06-01T12:00:00Z, 22.5, 45.0, 23.0, 50.0\nbecomes:\n{\n  \"timestamp\": \"2024-06-01T12:00:00Z\",\n  \"sensor\": [\n    {\n      \"temperature\": 22.5,\n      \"humidity\": 45.0\n    },\n    {\n      \"temperature\": 23.0,\n      \"humidity\": 50.0\n    }\n  ]\n}"
   },
   {
     "objectID": "guides/rpio.html",
