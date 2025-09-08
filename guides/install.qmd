@@ -27,6 +27,18 @@ The installers are provided for:
 Always get the latest MADS installer on: [git.new/MADS](https://git.new/MADS)
 :::
 
+## A note on versions
+
+MADS follows [Semantic Versioning](https://semver.org). The version number is in the form `MAJOR.MINOR.PATCH`, where:
+
+* `MAJOR` is incremented when there are incompatible API changes
+* `MINOR` is incremented when functionality is added in a backwards-compatible manner
+* `PATCH` is incremented when backwards-compatible bug fixes or minor new functions are made
+
+In addition, some internal bug fixes are published as `MAJOR.MINOR.PATCH-<number>-g<hash>`, where `<number>` is the number of commits since the last official release and `<hash>` is the short git hash of the commit.
+
+That said, agents and broker **must have the same MAJOR.MINOR version** to be able to communicate. An agent trying to connect to a broker with different MAJOR.MINOR versions **refuses to start**. The PATCH number can be different, but it is recommended to keep it the same and as recent as possible.
+
 
 ## Installing on MacOS
 
