@@ -204,6 +204,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#installing-pre-compiled-binaries" id="toc-installing-pre-compiled-binaries" class="nav-link active" data-scroll-target="#installing-pre-compiled-binaries">Installing pre-compiled binaries</a>
   <ul class="collapse">
   <li><a href="#getting-the-installers" id="toc-getting-the-installers" class="nav-link" data-scroll-target="#getting-the-installers">Getting the installers</a></li>
+  <li><a href="#a-note-on-versions" id="toc-a-note-on-versions" class="nav-link" data-scroll-target="#a-note-on-versions">A note on versions</a></li>
   <li><a href="#installing-on-macos" id="toc-installing-on-macos" class="nav-link" data-scroll-target="#installing-on-macos">Installing on MacOS</a>
   <ul class="collapse">
   <li><a href="#requirements" id="toc-requirements" class="nav-link" data-scroll-target="#requirements">Requirements</a></li>
@@ -297,6 +298,17 @@ Important
 <p>Always get the latest MADS installer on: <a href="https://git.new/MADS">git.new/MADS</a></p>
 </div>
 </div>
+</section>
+<section id="a-note-on-versions" class="level2">
+<h2 class="anchored" data-anchor-id="a-note-on-versions">A note on versions</h2>
+<p>MADS follows <a href="https://semver.org">Semantic Versioning</a>. The version number is in the form <code>MAJOR.MINOR.PATCH</code>, where:</p>
+<ul>
+<li><code>MAJOR</code> is incremented when there are incompatible API changes</li>
+<li><code>MINOR</code> is incremented when functionality is added in a backwards-compatible manner</li>
+<li><code>PATCH</code> is incremented when backwards-compatible bug fixes or minor new functions are made</li>
+</ul>
+<p>In addition, some internal bug fixes are published as <code>MAJOR.MINOR.PATCH-&lt;number&gt;-g&lt;hash&gt;</code>, where <code>&lt;number&gt;</code> is the number of commits since the last official release and <code>&lt;hash&gt;</code> is the short git hash of the commit.</p>
+<p>That said, agents and broker <strong>must have the same MAJOR.MINOR version</strong> to be able to communicate. An agent trying to connect to a broker with different MAJOR.MINOR versions <strong>refuses to start</strong>. The PATCH number can be different, but it is recommended to keep it the same and as recent as possible.</p>
 </section>
 <section id="installing-on-macos" class="level2">
 <h2 class="anchored" data-anchor-id="installing-on-macos">Installing on MacOS</h2>
