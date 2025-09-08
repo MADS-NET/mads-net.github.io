@@ -206,6 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#getting-it" id="toc-getting-it" class="nav-link" data-scroll-target="#getting-it">Getting it</a></li>
   <li><a href="#configuration" id="toc-configuration" class="nav-link" data-scroll-target="#configuration">Configuration</a></li>
   <li><a href="#mapping-a-csv-to-a-list-of-json-objects" id="toc-mapping-a-csv-to-a-list-of-json-objects" class="nav-link" data-scroll-target="#mapping-a-csv-to-a-list-of-json-objects">Mapping a CSV to a list of JSON objects</a></li>
+  <li><a href="#replaying-multiple-signals" id="toc-replaying-multiple-signals" class="nav-link" data-scroll-target="#replaying-multiple-signals">Replaying multiple signals</a></li>
   </ul></li>
   <li><a href="#creating-a-csv-file" id="toc-creating-a-csv-file" class="nav-link" data-scroll-target="#creating-a-csv-file">Creating a CSV file</a></li>
   </ul>
@@ -280,8 +281,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="configuration">Configuration</h2>
 <p>Apart from the common settings, the INI file for the <code>replay.plugin</code> requires the following additional fields:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[replay]</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">csv_file </span><span class="ot">=</span><span class="st"> "path/to/file.csv"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">loop </span><span class="ot">=</span><span class="st"> true # once the end of file has been reached, start again from beginning</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "sensors" # topic on which to publish the datasets</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">csv_file </span><span class="ot">=</span><span class="st"> "path/to/file.csv"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="dt">loop </span><span class="ot">=</span><span class="st"> true # once the end of file has been reached, start again from beginning</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Note that the CSV file path can be either absolute or relative to the current working directory (the one where you launch the agent).</p>
 </section>
 <section id="mapping-a-csv-to-a-list-of-json-objects" class="level2">
@@ -306,6 +308,24 @@ timestamp, sensor[0].temperature, sensor[0].humidity, sensor[1].temperature, sen
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="replaying-multiple-signals" class="level2">
+<h2 class="anchored" data-anchor-id="replaying-multiple-signals">Replaying multiple signals</h2>
+<p>To replay multiple agents, you need to have multiple CSV files, one per agent, and launch multiple instances of the <code>replay.plugin</code>, each one with its own INI file and with its custom <code>pub_topic</code> and agent name. With the INI file having:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[replay_agent1]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "temperature" # topic on which to publish the datasets</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">csv_file </span><span class="ot">=</span><span class="st"> "temp_data.csv"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">loop </span><span class="ot">=</span><span class="st"> </span><span class="kw">true</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">[replay_agent2]</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "imu" # topic on which to publish the datasets</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="dt">csv_file </span><span class="ot">=</span><span class="st"> "imu_data.csv"</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="dt">loop </span><span class="ot">=</span><span class="st"> </span><span class="kw">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>launch two agents with:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># on first terminal:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source replay.plugin <span class="at">-n</span> replay_agent1</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># on second terminal:</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source replay.plugin <span class="at">-n</span> replay_agent2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
 <section id="creating-a-csv-file" class="level1">
