@@ -4,7 +4,7 @@ author:
   - name: "Paolo Bosetti"
     affiliations: 
       - name: "University of Trento"
-date: 06/02/2025
+date: 09/08/2025
 date-modified: today
 format: html
 # or uncomment the following line to also create PDF format
@@ -37,6 +37,7 @@ Apart from the common settings, the INI file for the `replay.plugin` requires th
 
 ```ini
 [replay]
+pub_topic = "sensors" # topic on which to publish the datasets
 csv_file = "path/to/file.csv"
 loop = true # once the end of file has been reached, start again from beginning
 ```
@@ -73,6 +74,31 @@ becomes:
     }
   ]
 }
+```
+
+## Replaying multiple signals
+
+To replay multiple agents, you need to have multiple CSV files, one per agent, and launch multiple instances of the `replay.plugin`, each one with its own INI file and with its custom `pub_topic` and agent name. With the INI file having:
+
+```ini
+[replay_agent1]
+pub_topic = "temperature" # topic on which to publish the datasets
+csv_file = "temp_data.csv"
+loop = true
+
+[replay_agent2]
+pub_topic = "imu" # topic on which to publish the datasets
+csv_file = "imu_data.csv"
+loop = true
+```
+
+launch two agents with:
+
+```bash
+# on first terminal:
+mads source replay.plugin -n replay_agent1
+# on second terminal:
+mads source replay.plugin -n replay_agent2
 ```
 
 # Creating a CSV file
