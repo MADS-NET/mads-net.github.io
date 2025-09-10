@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-06-02">
+<meta name="dcterms.date" content="2025-09-10">
 
-<title>template</title>
+<title>Real-time visualization with Rerun</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -99,7 +134,6 @@ cookieconsent.run({
 });
 </script> 
   
-<meta name="quarto:status" content="draft">
 
 
 </head>
@@ -107,7 +141,7 @@ cookieconsent.run({
 <body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -196,7 +230,17 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#contents" id="toc-contents" class="nav-link active" data-scroll-target="#contents">Contents</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#the-plugin" id="toc-the-plugin" class="nav-link" data-scroll-target="#the-plugin">The plugin</a>
+  <ul class="collapse">
+  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a>
+  <ul class="collapse">
+  <li><a href="#keypaths" id="toc-keypaths" class="nav-link" data-scroll-target="#keypaths">Keypaths</a></li>
+  <li><a href="#visualizations" id="toc-visualizations" class="nav-link" data-scroll-target="#visualizations">Visualizations</a></li>
+  </ul></li>
+  <li><a href="#example-usage" id="toc-example-usage" class="nav-link" data-scroll-target="#example-usage">Example usage</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -205,9 +249,12 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">template</h1>
+<h1 class="title">Real-time visualization with Rerun</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">template</div>
+    <div class="quarto-category">easy</div>
+    <div class="quarto-category">visualizaztion</div>
+    <div class="quarto-category">operations</div>
+    <div class="quarto-category">plugin</div>
   </div>
   </div>
 
@@ -232,7 +279,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 2, 2025</p>
+      <p class="date">September 10, 2025</p>
     </div>
   </div>
   
@@ -248,7 +295,7 @@ cookieconsent.run({
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>This is a template for Quarto documents. It can be used to create reports, articles, or any other type of document. You can use it as a starting point for your own documents.</p>
+    <p>Rerun.io is a powerful tool for real-time visualization and debugging of robotics applications. This guide introduces the rerunner plugin, which allows to capture MADS packets and feed them to the rerun viewer to get real-time plots of signals.</p>
   </div>
 </div>
 
@@ -256,10 +303,115 @@ cookieconsent.run({
 </header>
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p><a href="https://rerun.io/">Rerun.io</a> is a powerful tool for real-time visualization and debugging of robotics applications. It allows developers to visualize data from their applications in real-time, making it easier to identify issues and understand system behavior. It supports visualization of 2-D plots and time-series, 3-D cloud points and scenes, tabulated data, heatmaps and tensor maps. Rerun is made by two components: The library, which is integrated into the application to capture and send data, and the viewer GUI, which displays the data in a user-friendly interface.</p>
+<p>The <a href="https://github.com/MADS-NET/rerunner_plugin"><code>rerunner</code></a> plugin is a MADS sink plugin that integrates the Rerun library into MADS. It captures MADS packets and feeds them to the Rerun viewer, allowing users to visualize data from their MADS applications in real-time.</p>
+</section>
+<section id="the-plugin" class="level1">
+<h1>The plugin</h1>
+<section id="installation" class="level2">
+<h2 class="anchored" data-anchor-id="installation">Installation</h2>
+<p>To obtain and install the plugin, follow instructions on the <a href="https://github.com/MADS-NET/rerunner_plugin">GitHub page</a>. Note that you’ll have to download separately the Rerun library, as described in the instructions or following this <a href="https://rerun.io/docs/getting-started/installing-viewer#installing-the-viewer">link</a>. Once you have compiled and installed the plugin, you can quickly test it together with the <a href="https://github.com/MADS-NET/replay_plugin"><code>replay</code></a> source plugin, which is used to publish a previously recorded MADS log file. In the following, we are assuming that you have it installed and that followed <a href="replay.html">its guide</a>.</p>
+</section>
+<section id="usage" class="level2">
+<h2 class="anchored" data-anchor-id="usage">Usage</h2>
+<section id="keypaths" class="level3">
+<h3 class="anchored" data-anchor-id="keypaths">Keypaths</h3>
+<p>The plugin uses the concept of <strong>keypaths</strong> to tap into JSON messages and extract data to be sent to the Rerun viewer. A keypath is a string that specifies the path to a specific field in a JSON object, using dot notation to separate nested fields. For example, the keypath <code>sensor.temperature</code> would refer to the <code>temperature</code> field inside the <code>sensor</code> object:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"sensor"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"temperature"</span><span class="fu">:</span> <span class="fl">25.3</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"humidity"</span><span class="fu">:</span> <span class="dv">60</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Furthermore, the plugin can subscribe to multiple MADS topics, so a keypath is actually prepended with the topic name. So, according to the example above, if the message is published on the topic <code>env</code>, the full keypath to access the temperature field would be <code>env.sensor.temperature</code>.</p>
+<p>If a JSON object contains an array, you can use the square brakets to access individual elements. For example, the keypath <code>sensors[0].temperature</code> would refer to the <code>temperature</code> field of the first element in the <code>sensors</code> array:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"sensors"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"temperature"</span><span class="fu">:</span> <span class="fl">25.3</span><span class="fu">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"humidity"</span><span class="fu">:</span> <span class="dv">60</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"temperature"</span><span class="fu">:</span> <span class="fl">26.1</span><span class="fu">,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"humidity"</span><span class="fu">:</span> <span class="dv">55</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="visualizations" class="level3">
+<h3 class="anchored" data-anchor-id="visualizations">Visualizations</h3>
+<p>The plugin supports the visualization of scalar values as <strong>time series</strong>. If the INI file contains the following section:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[rerunner]</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topics</span> <span class="op">=</span> <span class="op">[</span><span class="st">"env"</span><span class="op">]</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="dt">keypaths</span> <span class="op">=</span> <span class="op">[</span><span class="st">"sensor.temperature"</span><span class="op">,</span> <span class="st">"sensor.humidity"</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>then the Rerun viewer will display two time series for the temperature and humidity values. The layout of the two series is heuristically determined by the viewer, but it can be customized by the user in the viewer GUI.</p>
+<p>For the time-series, the plugin assumes that the JSON messages contain a field named <code>timeframe</code> with the timeframe of the measurement, expressed in seconds since last midnight rounded to the nearest frame. If the field is not present, the plugin will use the current system time as timestamp.</p>
+<p>At the moment, the plugin can also visualize the <strong>Auto-Correlation Function</strong> (<a href="https://en.wikipedia.org/wiki/Autocorrelation">ACF</a>) of selected signals. The ACF is useful for visualizing periodicity in the signal and — most importantly — to define the maximum sampling frequency for a signal (above that frequency we are essentially sampling the same observation).</p>
+<p>To also plot ACFs, select the desired signals as follows:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">acf_keypaths</span> <span class="op">=</span> <span class="op">[</span><span class="st">"sensor.temperature"</span><span class="op">,</span> <span class="st">"sensor.humidity"</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+More complex viewers
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It is relatively easy to customize the <code>RerunnerPlugin</code> class to add more or different viewers, including animating 3-D scenes with real-time data. Follow the <a href="https://rerun.io/docs">Rerun guides</a> for that.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="example-usage" class="level2">
+<h2 class="anchored" data-anchor-id="example-usage">Example usage</h2>
+<p>To quickly test the plugin, follow the next steps:</p>
+<ol type="1">
+<li>Install the <a href="https://github.com/MADS-NET/replay_plugin"><code>replay</code></a> source plugin</li>
+<li>Start the MADS broker</li>
+<li>Configure the <code>replay.plugin</code> with this INI section:</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[replay]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"replay"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">period</span> <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">csv_file</span> <span class="op">=</span> <span class="st">"example.csv"</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="dt">loop</span> <span class="op">=</span> <span class="cn">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="4" type="1">
+<li>Clone the <code>rerunner</code> plugin: <code>git clone https://github.com/MADS-NET/rerunner_plugin.git</code></li>
+<li>From the <code>rerunner_plugin</code> folder, run the <code>replay</code> plugin, so that it uses the <code>example.cvs</code> file <em>from the current folder</em>:</li>
+</ol>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source replay.plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="6" type="1">
+<li>Configure the INI file withe the following:</li>
+</ol>
+<div class="sourceCode" id="cb7"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[rerunnner]</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"replay"</span><span class="op">]</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="dt">time</span> <span class="op">=</span> <span class="st">""</span>                              <span class="co"># Use system time</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="dt">keypaths</span> <span class="op">=</span> <span class="op">[</span><span class="st">"replay.sensor.temperature"</span><span class="op">,</span> <span class="st">"replay.sensor.humidity"</span><span class="op">]</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="dt">acf_keypaths</span> <span class="op">=</span> <span class="op">[</span><span class="st">"replay.sensor.temperature"</span><span class="op">,</span> <span class="st">"replay.sensor.humidity"</span><span class="op">]</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="dt">acf_width</span> <span class="op">=</span> <span class="dv">200</span>                        <span class="co"># ACF running windows width</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="7" type="1">
+<li>Launch the Rerun viewer</li>
+<li>From a new terminal, compile and launch the <code>rerunner</code> plugin:</li>
+</ol>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-DCMAKE_INSTALL_PREFIX</span><span class="op">=</span><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j6</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> sink build/rerunner.plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="8" type="1">
+<li>The plugin will start collecting the data streamed on the <code>replay</code> topic and plotting it on the viewer:</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/rerun.png" class="img-fluid figure-img"></p>
+<figcaption>Rerun viewer output</figcaption>
+</figure>
+</div>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
