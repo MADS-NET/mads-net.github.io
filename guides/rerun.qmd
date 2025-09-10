@@ -19,6 +19,12 @@ abstract: |
   Rerun.io is a powerful tool for real-time visualization and debugging of robotics applications. This guide introduces the rerunner plugin, which allows to capture MADS packets and feed them to the rerun viewer to get real-time plots of signals.
 ---
 
+
+```{r setup, inlude=FALSE, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)
+library(readr)
+```
+
 # Introduction
 
 [Rerun.io](https://rerun.io/) is a powerful tool for real-time visualization and debugging of robotics applications. It allows developers to visualize data from their applications in real-time, making it easier to identify issues and understand system behavior. It supports visualization of 2-D plots and time-series, 3-D cloud points and scenes, tabulated data, heatmaps and tensor maps. Rerun is made by two components: The library, which is integrated into the application to capture and send data, and the viewer GUI, which displays the data in a user-friendly interface.
@@ -95,7 +101,64 @@ It is relatively easy to customize the `RerunnerPlugin` class to add more or dif
 
 ## Example usage
 
-To quickly test the plugin, follow the next steps:
+We are using the `replay` plugin to reproduce in loop a CSV file generated with synthetic data. The datafile contains two signals, `sensor.temperature` and `sensor.humidity`, published on the topic `replay`. The temperature signal is generated with a sinusoidal plus some Gaussian noise. the humidity signal is generated with as an ARIMA(2,0,4) process, so that we expect to have 3-4 lags of autocorrelation.
+
+```{r}
+#| echo: false
+set.seed(0)
+N <- 500
+dt <- 0.1
+T <- N*dt
+f <- 2*pi/T *2
+d <- 0 # diff order
+df <- tibble(
+  id = 1:N,
+  timecode = (id-1)*dt,
+  sensor.temperature = 10*sin(timecode*f) + rnorm(100, 0, 2),
+  sensor.humidity = NA
+)
+df$sensor.humidity <- list(
+  ar = c(0.7, -0.4),
+  ma = c(0.2, 0.5, 0.2, 0.1),
+  order = c(2, d, 4)
+) %>% arima.sim(N-d) + 20
+
+write_csv(df, "example.csv")
+
+```
+
+```{r, dev.args=list(bg = "transparent")}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 3
+#| dev: png
+df %>%
+  pivot_longer(cols = starts_with("sensor")) %>%
+  mutate(name = str_remove(name, "sensor.")) %>%
+  ggplot(aes(x=timecode, y=value, color=name)) + 
+  geom_line() + 
+  labs(color="signal") 
+```
+
+The ACF and PACF charts of the humidity signal are:
+
+```{r, dev.args=list(bg = "transparent")}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 3
+#| dev: png
+forecast::ggtsdisplay(df$sensor.humidity)
+```
+
+We observe that in the ACF chart the lags 1--3 are significant.
+
+These data are available in the `example.csv` file in the `rerunner_plugin` repository.
+
+To quickly test the `rerunner` plugin, we follow the next steps:
 
 1. Install the [`replay`](https://github.com/MADS-NET/replay_plugin) source plugin
 2. Start the MADS broker
@@ -110,7 +173,7 @@ loop = true
 ```
 
 4. Clone the `rerunner` plugin: `git clone https://github.com/MADS-NET/rerunner_plugin.git`
-5. From the `rerunner_plugin` folder, run the `replay` plugin, so that it uses the `example.cvs` file *from the current folder*:
+5. From the `rerunner_plugin` folder, run the `replay` plugin, so that it uses the `example.csv` file *from the current folder*:
 
 ```sh
 mads source replay.plugin
@@ -139,3 +202,5 @@ mads sink build/rerunner.plugin
 9. The plugin will start collecting the data streamed on the `replay` topic and plotting it on the viewer:
 
 ![Rerun viewer output](images/rerun.png)
+
+In particular, note that the ACF file for the humidity signal shows significant lags at 1, 2 and 3, as expected, while the temperature signal a long ACF as expected by such a periodic signal.
