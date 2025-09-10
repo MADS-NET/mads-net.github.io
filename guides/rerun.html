@@ -368,7 +368,29 @@ More complex viewers
 </section>
 <section id="example-usage" class="level2">
 <h2 class="anchored" data-anchor-id="example-usage">Example usage</h2>
-<p>To quickly test the plugin, follow the next steps:</p>
+<p>We are using the <code>replay</code> plugin to reproduce in loop a CSV file generated with synthetic data. The datafile contains two signals, <code>sensor.temperature</code> and <code>sensor.humidity</code>, published on the topic <code>replay</code>. The temperature signal is generated with a sinusoidal plus some Gaussian noise. the humidity signal is generated with as an ARIMA(2,0,4) process, so that we expect to have 3-4 lags of autocorrelation.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="rerun_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The ACF and PACF charts of the humidity signal are:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="rerun_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We observe that in the ACF chart the lags 1–3 are significant.</p>
+<p>These data are available in the <code>example.csv</code> file in the <code>rerunner_plugin</code> repository.</p>
+<p>To quickly test the <code>rerunner</code> plugin, we follow the next steps:</p>
 <ol type="1">
 <li>Install the <a href="https://github.com/MADS-NET/replay_plugin"><code>replay</code></a> source plugin</li>
 <li>Start the MADS broker</li>
@@ -381,7 +403,7 @@ More complex viewers
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="dt">loop</span> <span class="op">=</span> <span class="cn">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="4" type="1">
 <li>Clone the <code>rerunner</code> plugin: <code>git clone https://github.com/MADS-NET/rerunner_plugin.git</code></li>
-<li>From the <code>rerunner_plugin</code> folder, run the <code>replay</code> plugin, so that it uses the <code>example.cvs</code> file <em>from the current folder</em>:</li>
+<li>From the <code>rerunner_plugin</code> folder, run the <code>replay</code> plugin, so that it uses the <code>example.csv</code> file <em>from the current folder</em>:</li>
 </ol>
 <div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source replay.plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="6" type="1">
@@ -409,6 +431,7 @@ More complex viewers
 <figcaption>Rerun viewer output</figcaption>
 </figure>
 </div>
+<p>In particular, note that the ACF file for the humidity signal shows significant lags at 1, 2 and 3, as expected, while the temperature signal a long ACF as expected by such a periodic signal.</p>
 
 
 </section>
