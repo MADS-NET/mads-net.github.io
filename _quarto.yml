@@ -7,6 +7,11 @@ website:
   draft-mode: unlinked
   back-to-top-navigation: true
   reader-mode: true
+  google-analytics: "G-L37VBCVVQW"
+  cookie-consent:
+    type: express
+    style: simple
+    palette: light
   page-footer: 
     left: "Paolo Bosetti, [BY-NC-SA4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)" 
   navbar:

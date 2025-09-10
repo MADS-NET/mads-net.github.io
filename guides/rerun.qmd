@@ -1,0 +1,141 @@
+---
+title: "Real-time visualization with Rerun"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 09/10/2025
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [easy, visualizaztion, operations, plugin]
+abstract: |
+  Rerun.io is a powerful tool for real-time visualization and debugging of robotics applications. This guide introduces the rerunner plugin, which allows to capture MADS packets and feed them to the rerun viewer to get real-time plots of signals.
+---
+
+# Introduction
+
+[Rerun.io](https://rerun.io/) is a powerful tool for real-time visualization and debugging of robotics applications. It allows developers to visualize data from their applications in real-time, making it easier to identify issues and understand system behavior. It supports visualization of 2-D plots and time-series, 3-D cloud points and scenes, tabulated data, heatmaps and tensor maps. Rerun is made by two components: The library, which is integrated into the application to capture and send data, and the viewer GUI, which displays the data in a user-friendly interface.
+
+The [`rerunner`](https://github.com/MADS-NET/rerunner_plugin) plugin is a MADS sink plugin that integrates the Rerun library into MADS. It captures MADS packets and feeds them to the Rerun viewer, allowing users to visualize data from their MADS applications in real-time.
+
+# The plugin
+
+## Installation
+
+To obtain and install the plugin, follow instructions on the [GitHub page](https://github.com/MADS-NET/rerunner_plugin). Note that you'll have to download separately the Rerun library, as described in the instructions or following this [link](https://rerun.io/docs/getting-started/installing-viewer#installing-the-viewer). Once you have compiled and installed the plugin, you can quickly test it together with the [`replay`](https://github.com/MADS-NET/replay_plugin) source plugin, which is used to publish a previously recorded MADS log file. In the following, we are assuming that you have it installed and that followed [its guide](replay.html).
+
+
+## Usage
+
+### Keypaths
+
+The plugin uses the concept of **keypaths** to tap into JSON messages and extract data to be sent to the Rerun viewer. A keypath is a string that specifies the path to a specific field in a JSON object, using dot notation to separate nested fields. For example, the keypath `sensor.temperature` would refer to the `temperature` field inside the `sensor` object:
+
+```json
+{
+  "sensor": {
+    "temperature": 25.3,
+    "humidity": 60
+  }
+}
+```
+
+Furthermore, the plugin can subscribe to multiple MADS topics, so a keypath is actually prepended with the topic name. So, according to the example above, if the message is published on the topic `env`, the full keypath to access the temperature field would be `env.sensor.temperature`.
+
+If a JSON object contains an array, you can use the square brakets to access individual elements. For example, the keypath `sensors[0].temperature` would refer to the `temperature` field of the first element in the `sensors` array:
+
+```json
+{
+  "sensors": [
+    {
+      "temperature": 25.3,
+      "humidity": 60
+    },
+    {
+      "temperature": 26.1,
+      "humidity": 55
+    }
+  ]
+}
+```
+
+### Visualizations
+
+The plugin supports the visualization of scalar values as **time series**. If the INI file contains the following section:
+
+```toml
+[rerunner]
+sub_topics = ["env"]
+keypaths = ["sensor.temperature", "sensor.humidity"]
+```
+
+then the Rerun viewer will display two time series for the temperature and humidity values. The layout of the two series is heuristically determined by the viewer, but it can be customized by the user in the viewer GUI.
+
+For the time-series, the plugin assumes that the JSON messages contain a field named `timeframe` with the timeframe of the measurement, expressed in seconds since last midnight rounded to the nearest frame. If the field is not present, the plugin will use the current system time as timestamp.
+
+At the moment, the plugin can also visualize the **Auto-Correlation Function** ([ACF](https://en.wikipedia.org/wiki/Autocorrelation)) of selected signals. The ACF is useful for visualizing periodicity in the signal and --- most importantly --- to define the maximum sampling frequency for a signal (above that frequency we are essentially sampling the same observation).
+
+To also plot ACFs, select the desired signals as follows:
+
+```toml
+acf_keypaths = ["sensor.temperature", "sensor.humidity"]
+```
+
+::: callout-tip
+# More complex viewers
+It is relatively easy to customize the `RerunnerPlugin` class to add more or different viewers, including animating 3-D scenes with real-time data. Follow the [Rerun guides](https://rerun.io/docs) for that.
+:::
+
+## Example usage
+
+To quickly test the plugin, follow the next steps:
+
+1. Install the [`replay`](https://github.com/MADS-NET/replay_plugin) source plugin
+2. Start the MADS broker
+3. Configure the `replay.plugin` with this INI section:
+
+```toml
+[replay]
+pub_topic = "replay"
+period = 10
+csv_file = "example.csv"
+loop = true
+```
+
+4. Clone the `rerunner` plugin: `git clone https://github.com/MADS-NET/rerunner_plugin.git`
+5. From the `rerunner_plugin` folder, run the `replay` plugin, so that it uses the `example.cvs` file *from the current folder*:
+
+```sh
+mads source replay.plugin
+```
+
+6. Configure the INI file withe the following:
+
+```toml
+[rerunnner]
+sub_topic = ["replay"]
+time = ""                              # Use system time
+keypaths = ["replay.sensor.temperature", "replay.sensor.humidity"]
+acf_keypaths = ["replay.sensor.temperature", "replay.sensor.humidity"]
+acf_width = 200                        # ACF running windows width
+```
+
+7. Launch the Rerun viewer
+8. From a new terminal, compile and launch the `rerunner` plugin:
+
+```sh
+cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(mads -p)
+cmake --build build -j6
+mads sink build/rerunner.plugin
+```
+
+9. The plugin will start collecting the data streamed on the `replay` topic and plotting it on the viewer:
+
+![Rerun viewer output](images/rerun.png)
