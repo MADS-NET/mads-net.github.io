@@ -327,6 +327,28 @@ The plugin is available on <https://github.com/MADS-Net/hdf5_plugin>{target="_bl
 Also see the [guide page](/guides/hdf5.qmd) for more details on the `hdf5_writer.plugin`
 :::
 
+
+## {{< bi graph-up >}} Rerun graphical logger
+
+::: columns
+::: column
+* The `rerunner.plugin` is a MADS sink that streams data to [Rerun.io](https://rerun.io)
+* Can subscribe to many topics and select data to plot with **keypaths** as `topic.message.field.value`
+* Fast: thousands of messages per second
+* Currently plots time series and ACF plots
+* Flexible: 2-D plots, 3-D scenes, bar charts, graphs, maps easy to implement (in C++)
+::: 
+
+:::column
+![Rerun GUI](/guides/images/rerun.png)
+:::
+:::
+
+::: aside
+Also see the [guide page](/guides/rerun.qmd) for more details on the `rerunner.plugin`
+:::
+
+
 # Services
 
 Automate it!
