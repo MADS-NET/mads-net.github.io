@@ -642,6 +642,29 @@ Paolo Bosetti
 
 <aside><div>
 <p>Also see the <a href="../guides/hdf5.html">guide page</a> for more details on the <code>hdf5_writer.plugin</code></p>
+</div></aside></section>
+<section id="rerun-graphical-logger" class="slide level2">
+<h2><i class="bi-graph-up " style="" role="img" aria-hidden="true"></i> Rerun graphical logger</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li>The <code>rerunner.plugin</code> is a MADS sink that streams data to <a href="https://rerun.io">Rerun.io</a></li>
+<li>Can subscribe to many topics and select data to plot with <strong>keypaths</strong> as <code>topic.message.field.value</code></li>
+<li>Fast: thousands of messages per second</li>
+<li>Currently plots time series and ACF plots</li>
+<li>Flexible: 2-D plots, 3-D scenes, bar charts, graphs, maps easy to implement (in C++)</li>
+</ul>
+</div><div class="column">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../guides/images/rerun.png"></p>
+<figcaption>Rerun GUI</figcaption>
+</figure>
+</div>
+</div></div>
+
+<aside><div>
+<p>Also see the <a href="../guides/rerun.html">guide page</a> for more details on the <code>rerunner.plugin</code></p>
 </div></aside></section></section>
 <section>
 <section id="services" class="title-slide slide level1 center">

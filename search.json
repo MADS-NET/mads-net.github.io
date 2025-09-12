@@ -427,6 +427,13 @@
     "text": "HDF5 logger\n\nAmong the official MADS plugins, there is also an HDF5 logger\nThe hdf5_writer.plugin is a MADS sink that stores data in an HDF5 file\nWithin the HDF5 file, each topic goes into a separate group\nmessages are queued, so a scalar becomes a vector, a vector becomes a table\nthe INI file must specify which data has to be saved, using a keypath syntax: \"key1.subkey2.subsubkey3\" corresponds to JSON fields data[\"key1\"][\"subkey2\"][\"subsubkey3\"]\ntimestamp, timecode, and hostname are automatically recorded into separate datasets\n\n\n\n\n\n\n\nNote\n\n\nThe plugin is available on https://github.com/MADS-Net/hdf5_plugin\n\n\n\n\n\nAlso see the guide page for more details on the hdf5_writer.plugin"
   },
   {
+    "objectID": "presentations/intro.html#rerun-graphical-logger",
+    "href": "presentations/intro.html#rerun-graphical-logger",
+    "title": " Intro",
+    "section": " Rerun graphical logger",
+    "text": "Rerun graphical logger\n\n\n\nThe rerunner.plugin is a MADS sink that streams data to Rerun.io\nCan subscribe to many topics and select data to plot with keypaths as topic.message.field.value\nFast: thousands of messages per second\nCurrently plots time series and ACF plots\nFlexible: 2-D plots, 3-D scenes, bar charts, graphs, maps easy to implement (in C++)\n\n\n\n\n\nRerun GUI\n\n\n\n\n\nAlso see the guide page for more details on the rerunner.plugin"
+  },
+  {
     "objectID": "presentations/intro.html#mads-services",
     "href": "presentations/intro.html#mads-services",
     "title": " Intro",
