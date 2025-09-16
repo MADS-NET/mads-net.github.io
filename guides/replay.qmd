@@ -50,11 +50,11 @@ The CSV is supposed to contain a list of datasets, one per row, with different s
 
 But how do we map a flat row of a CSV file to a structured JSON object, which may have nested sub-objects and sub-arrays?
 
-The answer is to use **keypaths** as column headers. A keypath is a string that identifies the path to a specific field in a JSON object, using dots (`.`) to separate different levels of the hierarchy, and square brakets (`[]`) to indicate array indices. for example:
+The answer is to use **keypaths** as column headers. A keypath is a string that identifies the path to a specific field in a JSON object, using slashes (`/`) to separate different levels of the hierarchy,including array indexes (zero based). For example:
 
 ```csv
 # Comments and empty lines are skipped
-timestamp, sensor[0].temperature, sensor[0].humidity, sensor[1].temperature, sensor[1].humidity
+/timestamp, /sensor/0/temperature, /sensor/0/humidity, /sensor/1/temperature, /sensor/1/humidity
 2024-06-01T12:00:00Z, 22.5, 45.0, 23.0, 50.0
 ```
 
@@ -75,6 +75,12 @@ becomes:
   ]
 }
 ```
+
+::: callout-important
+Keypaths **must** start with a leading slash: `/sensor/x` os OK, `sensor/x` is wrong.
+:::
+
+An alternative syntax uses dots and square brakets for array indexes, as for example in `sensor[0].temperature`. This alterante syntax is supported because it's the way MongoDB Compass exports data to CSV format (see later on for an example).
 
 ## Replaying multiple signals
 

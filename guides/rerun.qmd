@@ -42,7 +42,7 @@ To obtain and install the plugin, follow instructions on the [GitHub page](https
 
 ### Keypaths
 
-The plugin uses the concept of **keypaths** to tap into JSON messages and extract data to be sent to the Rerun viewer. A keypath is a string that specifies the path to a specific field in a JSON object, using dot notation to separate nested fields. For example, the keypath `sensor.temperature` would refer to the `temperature` field inside the `sensor` object:
+The plugin uses the concept of **keypaths** to tap into JSON messages and extract data to be sent to the Rerun viewer. A keypath is a string that specifies the path to a specific field in a JSON object, using slash notation to separate nested fields. For example, the keypath `/sensor/temperature` would refer to the `temperature` field inside the `sensor` object:
 
 ```json
 {
@@ -53,9 +53,9 @@ The plugin uses the concept of **keypaths** to tap into JSON messages and extrac
 }
 ```
 
-Furthermore, the plugin can subscribe to multiple MADS topics, so a keypath is actually prepended with the topic name. So, according to the example above, if the message is published on the topic `env`, the full keypath to access the temperature field would be `env.sensor.temperature`.
+Furthermore, the plugin can subscribe to multiple MADS topics, so a keypath is actually prepended with the topic name. So, according to the example above, if the message is published on the topic `env`, the full keypath to access the temperature field would be `/env/sensor/temperature`.
 
-If a JSON object contains an array, you can use the square brakets to access individual elements. For example, the keypath `sensors[0].temperature` would refer to the `temperature` field of the first element in the `sensors` array:
+If a JSON object contains an array, you can use numbers to access individual elements. For example, the keypath `/sensors/0/temperature` would refer to the `temperature` field of the first element in the `sensors` array:
 
 ```json
 {
@@ -72,6 +72,12 @@ If a JSON object contains an array, you can use the square brakets to access ind
 }
 ```
 
+::: callout-important
+Keypaths **must** start with a leading slash: `/sensor/x` os OK, `sensor/x` is wrong.
+:::
+
+An alternative syntax uses dots and square brakets for array indexes, as for example in `topic.sensor[0].temperature`. This alterante syntax less efficient and it is mostly supported for similarity to the [replay plugin](replay.qmd).
+
 ### Visualizations
 
 The plugin supports the visualization of scalar values as **time series**. If the INI file contains the following section:
@@ -79,27 +85,47 @@ The plugin supports the visualization of scalar values as **time series**. If th
 ```toml
 [rerunner]
 sub_topics = ["env"]
-keypaths = ["sensor.temperature", "sensor.humidity"]
+keypaths = ["/env/sensor/temperature", "/env/sensor/humidity"]
 ```
 
 then the Rerun viewer will display two time series for the temperature and humidity values. The layout of the two series is heuristically determined by the viewer, but it can be customized by the user in the viewer GUI.
 
 For the time-series, the plugin assumes that the JSON messages contain a field named `timeframe` with the timeframe of the measurement, expressed in seconds since last midnight rounded to the nearest frame. If the field is not present, the plugin will use the current system time as timestamp.
 
-At the moment, the plugin can also visualize the **Auto-Correlation Function** ([ACF](https://en.wikipedia.org/wiki/Autocorrelation)) of selected signals. The ACF is useful for visualizing periodicity in the signal and --- most importantly --- to define the maximum sampling frequency for a signal (above that frequency we are essentially sampling the same observation).
+At the moment, the plugin can also visualize the **Auto-Correlation Function** ([ACF](https://en.wikipedia.org/wiki/Autocorrelation)) and **Fast Fourier Transform** (FFT) of selected signals. The ACF is useful for visualizing periodicity in the signal and --- most importantly --- to define the maximum sampling frequency for a signal (above that frequency we are essentially sampling the same observation).
 
-To also plot ACFs, select the desired signals as follows:
+To also plot ACFs and FFTs, select the desired signals and set the running window size as follows:
 
 ```toml
-acf_keypaths = ["sensor.temperature", "sensor.humidity"]
+window_size = 500
+acf_keypaths = ["/env/sensor/temperature", "/env/sensor/humidity"]
+fft_keypaths = ["/env/sensor/temperature", "/env/sensor/humidity"]
 ```
+
+The plugin currently also calculates, for each selected signal, its average, standard deviation, and standard uncertainty. Also, it provides statistics on the time-steps.
 
 ::: callout-tip
 # More complex viewers
 It is relatively easy to customize the `RerunnerPlugin` class to add more or different viewers, including animating 3-D scenes with real-time data. Follow the [Rerun guides](https://rerun.io/docs) for that.
 :::
 
-## Example usage
+
+## Paths in Rerun
+
+The Rerun viewer receives data organized in **paths**, using the same slash syntax above described. You can expect the followings:
+
+* `data/*`: the raw data as time series
+* `acf_plot/*`: the autocorrelation function plots
+* `fft_plot/*`: the autocorrelation function plots
+* `stats/mean/*`: the running mean for the same signals in `data/`
+* `stats/stdev/*`: the running standard deviation for the same signals in `data/`
+* `stats/std_uncertainty/*`: the running standard uncertainty for the same signals in `data/`
+* `timestep`: the time series of data timesteps
+* `mean_timestep`: the running mean for the data timesteps
+
+Using the Rerun viewer GUI it is easy to add/remove and rearrange plots for individual data series.
+
+# Example usage
 
 We are using the `replay` plugin to reproduce in loop a CSV file generated with synthetic data. The datafile contains two signals, `sensor.temperature` and `sensor.humidity`, published on the topic `replay`. The temperature signal is generated with a sinusoidal plus some Gaussian noise. the humidity signal is generated with as an ARIMA(2,0,4) process, so that we expect to have 3-4 lags of autocorrelation.
 
@@ -185,11 +211,12 @@ mads source replay.plugin
 
 ```toml
 [rerunnner]
-sub_topic = ["replay"]
-time = ""                              # Use system time
-keypaths = ["replay.sensor.temperature", "replay.sensor.humidity"]
-acf_keypaths = ["replay.sensor.temperature", "replay.sensor.humidity"]
-acf_width = 200                        # ACF running windows width
+sub_topic = ["replay"] # Topics to subscribe
+time = ""              # Use system time
+window_size = 200      # ACF running windows width
+keypaths = ["/replay/sensor/temperature", "/replay/sensor/humidity"]
+acf_keypaths = ["/replay/sensor/temperature", "/replay/sensor/humidity"]
+fft_keypaths = ["/replay/sensor/temperature", "/replay/sensor/humidity"]
 ```
 
 7. Launch the Rerun viewer
