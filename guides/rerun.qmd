@@ -125,6 +125,20 @@ The Rerun viewer receives data organized in **paths**, using the same slash synt
 
 Using the Rerun viewer GUI it is easy to add/remove and rearrange plots for individual data series.
 
+
+## Rerun blueprints
+
+The Rerun viewer supports **blueprints**. A blueprint is actually a description of the panels layout in the viewer and of their content (type and configuration of graphical elements). In the absence of a blueprint specified by the user, the Rerun viewer heuristically creates one by itself. Starting from that, the user can rearrange panels and charts to his/her likings, and then **save the blueprint** as a `.rbl` file.
+
+![Save blueprint](images/blueprint.png){width=50%}
+
+Once you have a blueprint file, you can load it upon launching the `rerunner.plugin`, in two different ways:
+
+* by adding a line `blueprint = "path/to/a/.rbl/file"` to the `[rerunner]` INI section
+* by passing the option to the plugin command line: `mads sink rerunner.plugin -o blueprint=path` (this requires mads version 1.4.x)
+
+The command line options overrides any settings in the INI file.
+
 # Example usage
 
 We are using the `replay` plugin to reproduce in loop a CSV file generated with synthetic data. The datafile contains two signals, `sensor.temperature` and `sensor.humidity`, published on the topic `replay`. The temperature signal is generated with a sinusoidal plus some Gaussian noise. the humidity signal is generated with as an ARIMA(2,0,4) process, so that we expect to have 3-4 lags of autocorrelation.
