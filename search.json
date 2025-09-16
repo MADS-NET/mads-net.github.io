@@ -203,6 +203,13 @@
     "text": "Paths in Rerun\nThe Rerun viewer receives data organized in paths, using the same slash syntax above described. You can expect the followings:\n\ndata/*: the raw data as time series\nacf_plot/*: the autocorrelation function plots\nfft_plot/*: the autocorrelation function plots\nstats/mean/*: the running mean for the same signals in data/\nstats/stdev/*: the running standard deviation for the same signals in data/\nstats/std_uncertainty/*: the running standard uncertainty for the same signals in data/\ntimestep: the time series of data timesteps\nmean_timestep: the running mean for the data timesteps\n\nUsing the Rerun viewer GUI it is easy to add/remove and rearrange plots for individual data series."
   },
   {
+    "objectID": "guides/rerun.html#rerun-blueprints",
+    "href": "guides/rerun.html#rerun-blueprints",
+    "title": "Real-time visualization with Rerun",
+    "section": "Rerun blueprints",
+    "text": "Rerun blueprints\nThe Rerun viewer supports blueprints. A blueprint is actually a description of the panels layout in the viewer and of their content (type and configuration of graphical elements). In the absence of a blueprint specified by the user, the Rerun viewer heuristically creates one by itself. Starting from that, the user can rearrange panels and charts to his/her likings, and then save the blueprint as a .rbl file.\n\n\n\nSave blueprint\n\n\nOnce you have a blueprint file, you can load it upon launching the rerunner.plugin, in two different ways:\n\nby adding a line blueprint = \"path/to/a/.rbl/file\" to the [rerunner] INI section\nby passing the option to the plugin command line: mads sink rerunner.plugin -o blueprint=path (this requires mads version 1.4.x)\n\nThe command line options overrides any settings in the INI file."
+  },
+  {
     "objectID": "guides/services.html",
     "href": "guides/services.html",
     "title": "Services",

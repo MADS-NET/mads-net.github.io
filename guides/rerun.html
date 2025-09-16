@@ -240,6 +240,7 @@ cookieconsent.run({
   <li><a href="#visualizations" id="toc-visualizations" class="nav-link" data-scroll-target="#visualizations">Visualizations</a></li>
   </ul></li>
   <li><a href="#paths-in-rerun" id="toc-paths-in-rerun" class="nav-link" data-scroll-target="#paths-in-rerun">Paths in Rerun</a></li>
+  <li><a href="#rerun-blueprints" id="toc-rerun-blueprints" class="nav-link" data-scroll-target="#rerun-blueprints">Rerun blueprints</a></li>
   </ul></li>
   <li><a href="#example-usage" id="toc-example-usage" class="nav-link" data-scroll-target="#example-usage">Example usage</a></li>
   </ul>
@@ -398,6 +399,22 @@ More complex viewers
 <li><code>mean_timestep</code>: the running mean for the data timesteps</li>
 </ul>
 <p>Using the Rerun viewer GUI it is easy to add/remove and rearrange plots for individual data series.</p>
+</section>
+<section id="rerun-blueprints" class="level2">
+<h2 class="anchored" data-anchor-id="rerun-blueprints">Rerun blueprints</h2>
+<p>The Rerun viewer supports <strong>blueprints</strong>. A blueprint is actually a description of the panels layout in the viewer and of their content (type and configuration of graphical elements). In the absence of a blueprint specified by the user, the Rerun viewer heuristically creates one by itself. Starting from that, the user can rearrange panels and charts to his/her likings, and then <strong>save the blueprint</strong> as a <code>.rbl</code> file.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/blueprint.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption>Save blueprint</figcaption>
+</figure>
+</div>
+<p>Once you have a blueprint file, you can load it upon launching the <code>rerunner.plugin</code>, in two different ways:</p>
+<ul>
+<li>by adding a line <code>blueprint = "path/to/a/.rbl/file"</code> to the <code>[rerunner]</code> INI section</li>
+<li>by passing the option to the plugin command line: <code>mads sink rerunner.plugin -o blueprint=path</code> (this requires mads version 1.4.x)</li>
+</ul>
+<p>The command line options overrides any settings in the INI file.</p>
 </section>
 </section>
 <section id="example-usage" class="level1">
