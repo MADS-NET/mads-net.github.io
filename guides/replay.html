@@ -280,7 +280,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 12, 2025</p>
+      <p class="date-modified">September 16, 2025</p>
     </div>
   </div>
     
@@ -319,9 +319,9 @@ cookieconsent.run({
 <h2 class="anchored" data-anchor-id="mapping-a-csv-to-a-list-of-json-objects">Mapping a CSV to a list of JSON objects</h2>
 <p>The CSV is supposed to contain a list of datasets, one per row, with different signals in different rows.</p>
 <p>But how do we map a flat row of a CSV file to a structured JSON object, which may have nested sub-objects and sub-arrays?</p>
-<p>The answer is to use <strong>keypaths</strong> as column headers. A keypath is a string that identifies the path to a specific field in a JSON object, using dots (<code>.</code>) to separate different levels of the hierarchy, and square brakets (<code>[]</code>) to indicate array indices. for example:</p>
+<p>The answer is to use <strong>keypaths</strong> as column headers. A keypath is a string that identifies the path to a specific field in a JSON object, using slashes (<code>/</code>) to separate different levels of the hierarchy,including array indexes (zero based). For example:</p>
 <pre class="csv"><code># Comments and empty lines are skipped
-timestamp, sensor[0].temperature, sensor[0].humidity, sensor[1].temperature, sensor[1].humidity
+/timestamp, /sensor/0/temperature, /sensor/0/humidity, /sensor/1/temperature, /sensor/1/humidity
 2024-06-01T12:00:00Z, 22.5, 45.0, 23.0, 50.0</code></pre>
 <p>becomes:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
@@ -337,6 +337,20 @@ timestamp, sensor[0].temperature, sensor[0].humidity, sensor[1].temperature, sen
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Keypaths <strong>must</strong> start with a leading slash: <code>/sensor/x</code> os OK, <code>sensor/x</code> is wrong.</p>
+</div>
+</div>
+<p>An alternative syntax uses dots and square brakets for array indexes, as for example in <code>sensor[0].temperature</code>. This alterante syntax is supported because it’s the way MongoDB Compass exports data to CSV format (see later on for an example).</p>
 </section>
 <section id="replaying-multiple-signals" class="level2">
 <h2 class="anchored" data-anchor-id="replaying-multiple-signals">Replaying multiple signals</h2>
