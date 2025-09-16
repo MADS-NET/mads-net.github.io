@@ -402,7 +402,7 @@ Enable sudo on Windows
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dt">period </span><span class="ot">=</span><span class="st"> </span><span class="dv">200</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">venv </span><span class="ot">=</span><span class="st"> "/path/to/.venv"</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="dt">python_module </span><span class="ot">=</span><span class="st"> "my_source"</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="dt">search_paths </span><span class="ot">=</span><span class="st"> ["/path/to/python/folder"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="dt">search_paths </span><span class="ot">=</span><span class="st"> ["/path/to/python/folder"]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -413,11 +413,11 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The section name must match the <code>-m</code> option argument when you launch the agent, so in the case aboxe you must use <code>-m python_source</code>.</p>
+<p>The section name must match the <code>-n</code> option argument when you launch the agent, so in the case above you must use <code>-n python_source</code>.</p>
 </div>
 </div>
 <p>During <strong>development</strong>, you typically run the plugin interactively and using a python module that is under your home folder. In these conditions, you probably want to set the module name on the command line, such as <code>mads python -n python_source -m my_module</code>. This means that you must have the file <code>my_module.py</code> in the <code>python</code> or <code>scripts</code> subfolder of your current working directory.</p>
-<p>During <strong>deployment</strong>, you want to transform the agent in a service, so that you rely on the module to be loaded according to the <code>&nbsp;mads.ini</code> file (from the <code>python_module</code> key), and the module is expected to be placed in <code>&lt;INSTALL_PREFIX&gt;/python/my_module.py</code>. Since <code>INSTALL_PREFIX</code> is usually <code>/usr/local</code>, this means that the file should be in <code>/usr/local/python/my_module.py</code>. Then you create a service as documented <a href="services.html">here</a>.</p>
+<p>During <strong>deployment</strong>, you want to transform the agent in a service, so that you rely on the module to be loaded according to the <code>mads.ini</code> file (from the <code>python_module</code> key), and the module is expected to be placed in <code>&lt;INSTALL_PREFIX&gt;/python/my_module.py</code>. Since <code>INSTALL_PREFIX</code> is usually <code>/usr/local</code>, this means that the file should be in <code>/usr/local/python/my_module.py</code>. Then you create a service as documented <a href="services.html">here</a>.</p>
 </section>
 <section id="module-types" class="level2">
 <h2 class="anchored" data-anchor-id="module-types">Module Types</h2>

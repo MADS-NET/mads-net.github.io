@@ -326,9 +326,9 @@ Warning
 </section>
 <section id="how-to-create-a-mads-service" class="level1">
 <h1>How to create a MADS service</h1>
-<p>Suppose that you knwo that the following command launches properly an agent:</p>
+<p>Suppose that you know that the following command launches properly an agent:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-i</span> in0_01 arduino.plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Now you want turn this command into a service. Just put <code>mads service &lt;service_name</code> in forn t of that command line, e.g.:</p>
+<p>Now you want turn this command into a service. Just put <code>mads service &lt;service_name&gt;</code> in front of that command line, e.g.:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> service arduino source <span class="at">-i</span> in0_01 arduino.plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>where <code>mads service arduino</code> means “create a service file called <code>mads-arduino</code>” (<code>mads-</code> is added automatically), and <code>source -i in0_01 arduino.plugin</code> is the proper command line for the <code>mads</code> command.</p>
 <p>You should get an output like:</p>
