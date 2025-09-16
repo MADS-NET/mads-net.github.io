@@ -131,16 +131,16 @@ The following fields are typically used:
 period = 200
 venv = "/path/to/.venv"
 python_module = "my_source"
-search_paths = ["/path/to/python/folder"
+search_paths = ["/path/to/python/folder"]
 ```
 
 ::: callout-warning
-The section name must match the `-m` option argument when you launch the agent, so in the case aboxe you must use `-m python_source`.
+The section name must match the `-n` option argument when you launch the agent, so in the case above you must use `-n python_source`.
 :::
 
 During **development**, you typically run the plugin interactively and using a python module that is under your home folder. In these conditions, you probably want to set the module name on the command line, such as `mads python -n python_source -m my_module`. This means that you must have the file `my_module.py` in the `python` or `scripts` subfolder of your current working directory.
 
-During **deployment**, you want to transform the agent in a service, so that you rely on the module to be loaded according to the ` mads.ini` file (from the `python_module` key), and the module is expected to be placed in `<INSTALL_PREFIX>/python/my_module.py`. Since `INSTALL_PREFIX` is usually `/usr/local`, this means that the file should be in `/usr/local/python/my_module.py`. Then you create a service as documented [here](services.html).
+During **deployment**, you want to transform the agent in a service, so that you rely on the module to be loaded according to the `mads.ini` file (from the `python_module` key), and the module is expected to be placed in `<INSTALL_PREFIX>/python/my_module.py`. Since `INSTALL_PREFIX` is usually `/usr/local`, this means that the file should be in `/usr/local/python/my_module.py`. Then you create a service as documented [here](services.html).
 
 ## Module Types
 
