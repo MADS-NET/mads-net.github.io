@@ -113,3 +113,109 @@ mads source my_source.plugin
 ```
 
 And when you are satisfield with the result, you can make it a service as explained [here](services.html).
+
+
+# Writing a plugin
+
+## Concepts
+
+All the complexity of writing a shared object (i.e. a dynamic library) that can be *loaded at runtime* as a plugin is demanded to the `pugg` and `plugin` libraries that are automatically loaded by CMake (via `FetchContent`). This makes relatively easy and fast to implement a plugin, effectively requiring the user to inherit from a plugin class and to override a handful of methods.
+
+The `mads plugin` command creates a template cpp file that provides a commented skeleton class, which the user has to complete in a few points.
+
+The list of methods to override depends on the type of plugin (source, filter or sink), and are detailed in the next section.
+
+## Mandatory methods
+
+### Source plugin
+
+The methods to override are:
+
+* `void set_params(void const *params)`: receives a buffer containing a `nlohmann::json` object, which contains the settings loaded by the `mads.ini` file; it is its responsibility to locally store those data. This method is **called once on startup**.
+* `return_type get_output(json &out, std::vector<unsigned char> *blob = nullptr)`: provides the plugin loader with a new `nlohmann::json` object to be published on the network (optionally, a binary blob can be attached as well). This method is **called repeatedly** in the plugin loader loop.
+* `map<string, string> info()`: returns a map of info that is printed at the end of the agent initialization; it is useful for explicitly showing the settings values as loaded by `mads.ini` via broker. This method is **called once** after `set_params()`.
+
+Note that `set_params()` should call the parent class method `Source::set_params(params)`: this way, the attribute `_params` is filled with all the settings received from the broker.
+
+The return value of `get_output()` can be:
+
+* `return_type::success`: the output document `out` has been filled correctly
+* `return_type::warning`: the user can set the `_error` string for adding a warning inside the `out` document; the rest of the document is filled as usual
+* `return_type::retry`: nothing is published by the plugin loader
+* `return_type::error`: the user can set the `_error` string for adding an error inside the `out` document; the rest of the document not completed
+* `return_type::critical`: the execution stops and the `_error` string is printed
+
+
+### Filter plugin
+
+The methods to override are:
+
+* `void set_params(void const *params)`: receives a buffer containing a `nlohmann::json` object, which contains the settings loaded by the `mads.ini` file; it is its responsibility to locally store those data. This method is **called once on startup**.
+* `return_type load_data(json const &input, string topic = "")`: receives from the plugin loader the JSON payload last recieved on the given `topic`. This method should internally elaborate and store the received data. This method is **called repeatedly** in the plugin loader loop.
+* `return_type process(json &out)`: process the received data (internally stored) and provides back the plugin loader with a new `nlohmann::json` object to be published on the network. This method is **called repeatedly** in the plugin loader loop (after `load_data()`).
+* `map<string, string> info()`: returns a map of info that is printed at the end of the agent initialization; it is useful for explicitly showing the settings values as loaded by `mads.ini` via broker. This method is **called once** after `set_params()`.
+
+Note that `set_params()` should call the parent class method `Source::set_params(params)`: this way, the attribute `_params` is filled with all the settings received from the broker.
+
+The return value of `get_output()` can be:
+
+* `return_type::success`: the input or output documents have been filled correctly
+* `return_type::warning`: 
+  - `load_data()`: the user can set the `_error` string for adding a warning inside the document that will be published
+  - `process()`: the user can set the `_error` string for adding a warning inside the document that will be published
+* `return_type::retry`: 
+  - `load_data()`: nothing is published by the plugin loader
+  - `process()`: nothing is published by the plugin loader (but data has been loaded by `load_data()`)
+* `return_type::error`: 
+  - `load_data()`: the `_error` message string is added to the output, the `process()` method is not called and the JSON document with the error is published.
+  - `process()`: the `_error` message string is added to the output and the JSON document with the error is published.
+* `return_type::critical`: the execution stops and the `_error` string is printed
+
+
+### Sink plugin
+
+The methods to override are:
+
+* `void set_params(void const *params)`: receives a buffer containing a `nlohmann::json` object, which contains the settings loaded by the `mads.ini` file; it is its responsibility to locally store those data. This method is **called once on startup**.
+* `return_type load_data(json const &input, string topic = "")`: receives the `nlohmann::json` object from the plugin loader and disposes of it accordingly. This method is **called repeatedly** in the plugin loader loop.
+* `map<string, string> info()`: returns a map of info that is printed at the end of the agent initialization; it is useful for explicitly showing the settings values as loaded by `mads.ini` via broker. This method is **called once** after `set_params()`.
+
+Note that `set_params()` should call the parent class method `Source::set_params(params)`: this way, the attribute `_params` is filled with all the settings received from the broker.
+
+The return value of `load_data()` can be:
+
+* `return_type::success`: data has been correctly elaborated
+* `return_type::warning`: the user can set the `_error` string, which is printed on console
+* `return_type::retry`: nothing is done
+* `return_type::error`: the user can set the `_error` string, which is printed on console
+* `return_type::critical`: the execution stops and the `_error` string is printed
+
+
+## Settings
+
+For each plugin, the list of supported settings in the corresponding section of the `mads.ini` file is decided by the developer. Any given setting is collectively received within a JSON object by the `set_params()` method, which has the responsibility for checking for correctness and providing a sensible default.
+
+Starting from **MADS v1.4.0**, the plugin loaders can override the settings in the `mads.ini` file using the `-o|--option` command line switch, which may be repeated once for each settings to be overridden. For example, suppose that the INI section is:
+
+```toml
+[plugin_name]
+key1 = "value"
+key2 = 10.3
+key3 = 7
+```
+
+Then, each option can be overridden by:
+
+```bash
+mads source my_source.plugin -o key1=test -o key2=10.4 -o key3=13
+```
+
+so the `set_params()` method will receive a JSON as:
+
+```json
+{
+  "key1": "test",
+  "key2": 10.4,
+  "key3": 13
+}
+```
