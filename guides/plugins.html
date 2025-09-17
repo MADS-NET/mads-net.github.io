@@ -237,6 +237,17 @@ cookieconsent.run({
   <ul class="collapse">
   <li><a href="#how-to-install-the-plugin" id="toc-how-to-install-the-plugin" class="nav-link" data-scroll-target="#how-to-install-the-plugin">How to install the plugin</a></li>
   </ul></li>
+  <li><a href="#writing-a-plugin" id="toc-writing-a-plugin" class="nav-link" data-scroll-target="#writing-a-plugin">Writing a plugin</a>
+  <ul class="collapse">
+  <li><a href="#concepts" id="toc-concepts" class="nav-link" data-scroll-target="#concepts">Concepts</a></li>
+  <li><a href="#mandatory-methods" id="toc-mandatory-methods" class="nav-link" data-scroll-target="#mandatory-methods">Mandatory methods</a>
+  <ul class="collapse">
+  <li><a href="#source-plugin" id="toc-source-plugin" class="nav-link" data-scroll-target="#source-plugin">Source plugin</a></li>
+  <li><a href="#filter-plugin" id="toc-filter-plugin" class="nav-link" data-scroll-target="#filter-plugin">Filter plugin</a></li>
+  <li><a href="#sink-plugin" id="toc-sink-plugin" class="nav-link" data-scroll-target="#sink-plugin">Sink plugin</a></li>
+  </ul></li>
+  <li><a href="#settings" id="toc-settings" class="nav-link" data-scroll-target="#settings">Settings</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -282,7 +293,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 16, 2025</p>
+      <p class="date-modified">September 17, 2025</p>
     </div>
   </div>
     
@@ -369,6 +380,102 @@ Important
 <p>The you can launch it as agent with:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source my_source.plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>And when you are satisfield with the result, you can make it a service as explained <a href="services.html">here</a>.</p>
+</section>
+</section>
+<section id="writing-a-plugin" class="level1">
+<h1>Writing a plugin</h1>
+<section id="concepts" class="level2">
+<h2 class="anchored" data-anchor-id="concepts">Concepts</h2>
+<p>All the complexity of writing a shared object (i.e.&nbsp;a dynamic library) that can be <em>loaded at runtime</em> as a plugin is demanded to the <code>pugg</code> and <code>plugin</code> libraries that are automatically loaded by CMake (via <code>FetchContent</code>). This makes relatively easy and fast to implement a plugin, effectively requiring the user to inherit from a plugin class and to override a handful of methods.</p>
+<p>The <code>mads plugin</code> command creates a template cpp file that provides a commented skeleton class, which the user has to complete in a few points.</p>
+<p>The list of methods to override depends on the type of plugin (source, filter or sink), and are detailed in the next section.</p>
+</section>
+<section id="mandatory-methods" class="level2">
+<h2 class="anchored" data-anchor-id="mandatory-methods">Mandatory methods</h2>
+<section id="source-plugin" class="level3">
+<h3 class="anchored" data-anchor-id="source-plugin">Source plugin</h3>
+<p>The methods to override are:</p>
+<ul>
+<li><code>void set_params(void const *params)</code>: receives a buffer containing a <code>nlohmann::json</code> object, which contains the settings loaded by the <code>mads.ini</code> file; it is its responsibility to locally store those data. This method is <strong>called once on startup</strong>.</li>
+<li><code>return_type get_output(json &amp;out, std::vector&lt;unsigned char&gt; *blob = nullptr)</code>: provides the plugin loader with a new <code>nlohmann::json</code> object to be published on the network (optionally, a binary blob can be attached as well). This method is <strong>called repeatedly</strong> in the plugin loader loop.</li>
+<li><code>map&lt;string, string&gt; info()</code>: returns a map of info that is printed at the end of the agent initialization; it is useful for explicitly showing the settings values as loaded by <code>mads.ini</code> via broker. This method is <strong>called once</strong> after <code>set_params()</code>.</li>
+</ul>
+<p>Note that <code>set_params()</code> should call the parent class method <code>Source::set_params(params)</code>: this way, the attribute <code>_params</code> is filled with all the settings received from the broker.</p>
+<p>The return value of <code>get_output()</code> can be:</p>
+<ul>
+<li><code>return_type::success</code>: the output document <code>out</code> has been filled correctly</li>
+<li><code>return_type::warning</code>: the user can set the <code>_error</code> string for adding a warning inside the <code>out</code> document; the rest of the document is filled as usual</li>
+<li><code>return_type::retry</code>: nothing is published by the plugin loader</li>
+<li><code>return_type::error</code>: the user can set the <code>_error</code> string for adding an error inside the <code>out</code> document; the rest of the document not completed</li>
+<li><code>return_type::critical</code>: the execution stops and the <code>_error</code> string is printed</li>
+</ul>
+</section>
+<section id="filter-plugin" class="level3">
+<h3 class="anchored" data-anchor-id="filter-plugin">Filter plugin</h3>
+<p>The methods to override are:</p>
+<ul>
+<li><code>void set_params(void const *params)</code>: receives a buffer containing a <code>nlohmann::json</code> object, which contains the settings loaded by the <code>mads.ini</code> file; it is its responsibility to locally store those data. This method is <strong>called once on startup</strong>.</li>
+<li><code>return_type load_data(json const &amp;input, string topic = "")</code>: receives from the plugin loader the JSON payload last recieved on the given <code>topic</code>. This method should internally elaborate and store the received data. This method is <strong>called repeatedly</strong> in the plugin loader loop.</li>
+<li><code>return_type process(json &amp;out)</code>: process the received data (internally stored) and provides back the plugin loader with a new <code>nlohmann::json</code> object to be published on the network. This method is <strong>called repeatedly</strong> in the plugin loader loop (after <code>load_data()</code>).</li>
+<li><code>map&lt;string, string&gt; info()</code>: returns a map of info that is printed at the end of the agent initialization; it is useful for explicitly showing the settings values as loaded by <code>mads.ini</code> via broker. This method is <strong>called once</strong> after <code>set_params()</code>.</li>
+</ul>
+<p>Note that <code>set_params()</code> should call the parent class method <code>Source::set_params(params)</code>: this way, the attribute <code>_params</code> is filled with all the settings received from the broker.</p>
+<p>The return value of <code>get_output()</code> can be:</p>
+<ul>
+<li><code>return_type::success</code>: the input or output documents have been filled correctly</li>
+<li><code>return_type::warning</code>:
+<ul>
+<li><code>load_data()</code>: the user can set the <code>_error</code> string for adding a warning inside the document that will be published</li>
+<li><code>process()</code>: the user can set the <code>_error</code> string for adding a warning inside the document that will be published</li>
+</ul></li>
+<li><code>return_type::retry</code>:
+<ul>
+<li><code>load_data()</code>: nothing is published by the plugin loader</li>
+<li><code>process()</code>: nothing is published by the plugin loader (but data has been loaded by <code>load_data()</code>)</li>
+</ul></li>
+<li><code>return_type::error</code>:
+<ul>
+<li><code>load_data()</code>: the <code>_error</code> message string is added to the output, the <code>process()</code> method is not called and the JSON document with the error is published.</li>
+<li><code>process()</code>: the <code>_error</code> message string is added to the output and the JSON document with the error is published.</li>
+</ul></li>
+<li><code>return_type::critical</code>: the execution stops and the <code>_error</code> string is printed</li>
+</ul>
+</section>
+<section id="sink-plugin" class="level3">
+<h3 class="anchored" data-anchor-id="sink-plugin">Sink plugin</h3>
+<p>The methods to override are:</p>
+<ul>
+<li><code>void set_params(void const *params)</code>: receives a buffer containing a <code>nlohmann::json</code> object, which contains the settings loaded by the <code>mads.ini</code> file; it is its responsibility to locally store those data. This method is <strong>called once on startup</strong>.</li>
+<li><code>return_type load_data(json const &amp;input, string topic = "")</code>: receives the <code>nlohmann::json</code> object from the plugin loader and disposes of it accordingly. This method is <strong>called repeatedly</strong> in the plugin loader loop.</li>
+<li><code>map&lt;string, string&gt; info()</code>: returns a map of info that is printed at the end of the agent initialization; it is useful for explicitly showing the settings values as loaded by <code>mads.ini</code> via broker. This method is <strong>called once</strong> after <code>set_params()</code>.</li>
+</ul>
+<p>Note that <code>set_params()</code> should call the parent class method <code>Source::set_params(params)</code>: this way, the attribute <code>_params</code> is filled with all the settings received from the broker.</p>
+<p>The return value of <code>load_data()</code> can be:</p>
+<ul>
+<li><code>return_type::success</code>: data has been correctly elaborated</li>
+<li><code>return_type::warning</code>: the user can set the <code>_error</code> string, which is printed on console</li>
+<li><code>return_type::retry</code>: nothing is done</li>
+<li><code>return_type::error</code>: the user can set the <code>_error</code> string, which is printed on console</li>
+<li><code>return_type::critical</code>: the execution stops and the <code>_error</code> string is printed</li>
+</ul>
+</section>
+</section>
+<section id="settings" class="level2">
+<h2 class="anchored" data-anchor-id="settings">Settings</h2>
+<p>For each plugin, the list of supported settings in the corresponding section of the <code>mads.ini</code> file is decided by the developer. Any given setting is collectively received within a JSON object by the <code>set_params()</code> method, which has the responsibility for checking for correctness and providing a sensible default.</p>
+<p>Starting from <strong>MADS v1.4.0</strong>, the plugin loaders can override the settings in the <code>mads.ini</code> file using the <code>-o|--option</code> command line switch, which may be repeated once for each settings to be overridden. For example, suppose that the INI section is:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[plugin_name]</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="dt">key1</span> <span class="op">=</span> <span class="st">"value"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="dt">key2</span> <span class="op">=</span> <span class="fl">10.3</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="dt">key3</span> <span class="op">=</span> <span class="dv">7</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then, each option can be overridden by:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source my_source.plugin <span class="at">-o</span> key1=test <span class="at">-o</span> key2=10.4 <span class="at">-o</span> key3=13</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>so the <code>set_params()</code> method will receive a JSON as:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"key1"</span><span class="fu">:</span> <span class="st">"test"</span><span class="fu">,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"key2"</span><span class="fu">:</span> <span class="fl">10.4</span><span class="fu">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"key3"</span><span class="fu">:</span> <span class="dv">13</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 </section>
