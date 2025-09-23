@@ -293,7 +293,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 17, 2025</p>
+      <p class="date-modified">September 23, 2025</p>
     </div>
   </div>
     
@@ -404,10 +404,10 @@ Important
 <p>The return value of <code>get_output()</code> can be:</p>
 <ul>
 <li><code>return_type::success</code>: the output document <code>out</code> has been filled correctly</li>
-<li><code>return_type::warning</code>: the user can set the <code>_error</code> string for adding a warning inside the <code>out</code> document; the rest of the document is filled as usual</li>
-<li><code>return_type::retry</code>: nothing is published by the plugin loader</li>
-<li><code>return_type::error</code>: the user can set the <code>_error</code> string for adding an error inside the <code>out</code> document; the rest of the document not completed</li>
-<li><code>return_type::critical</code>: the execution stops and the <code>_error</code> string is printed</li>
+<li><code>return_type::warning</code>: the user can set the <code>_error</code> string for adding a warning inside the <code>out</code> document (field <code>["warning"]["get_output"]</code>); the rest of the document is filled as usual</li>
+<li><code>return_type::retry</code>: nothing is published by the plugin loader, skip to next iteration</li>
+<li><code>return_type::error</code>: nothing is published, the status line increments the counters; the user can set the <code>_error</code> string for publishing an error message to the <code>agent_event</code> special topic (field <code>["error"]["get_output"]</code>).</li>
+<li><code>return_type::critical</code>: the execution stops, the <code>_error</code> string is printed and a message is published on <code>agent_event</code>.</li>
 </ul>
 </section>
 <section id="filter-plugin" class="level3">
@@ -425,8 +425,8 @@ Important
 <li><code>return_type::success</code>: the input or output documents have been filled correctly</li>
 <li><code>return_type::warning</code>:
 <ul>
-<li><code>load_data()</code>: the user can set the <code>_error</code> string for adding a warning inside the document that will be published</li>
-<li><code>process()</code>: the user can set the <code>_error</code> string for adding a warning inside the document that will be published</li>
+<li><code>load_data()</code>: the user can set the <code>_error</code> string for adding a warning inside the document that will be published (field <code>["warning"]["load_data"]</code>)</li>
+<li><code>process()</code>: the user can set the <code>_error</code> string for adding a warning inside the document that will be published (field <code>["warning"]["process"]</code>)</li>
 </ul></li>
 <li><code>return_type::retry</code>:
 <ul>
@@ -435,10 +435,10 @@ Important
 </ul></li>
 <li><code>return_type::error</code>:
 <ul>
-<li><code>load_data()</code>: the <code>_error</code> message string is added to the output, the <code>process()</code> method is not called and the JSON document with the error is published.</li>
-<li><code>process()</code>: the <code>_error</code> message string is added to the output and the JSON document with the error is published.</li>
+<li><code>load_data()</code>: nothing is published, the status line increments the counters; the user can set the <code>_error</code> string for publishing an error message to the <code>agent_event</code> special topic (field <code>["error"]["load_data"]</code>). The <code>process()</code> method is not called.</li>
+<li><code>process()</code>: nothing is published, the status line increments the counters; the user can set the <code>_error</code> string for publishing an error message to the <code>agent_event</code> special topic (field <code>["error"]["process"]</code>).</li>
 </ul></li>
-<li><code>return_type::critical</code>: the execution stops and the <code>_error</code> string is printed</li>
+<li><code>return_type::critical</code>: the execution stops, the <code>_error</code> string is printed and a message is published on <code>agent_event</code>.</li>
 </ul>
 </section>
 <section id="sink-plugin" class="level3">
@@ -452,11 +452,11 @@ Important
 <p>Note that <code>set_params()</code> should call the parent class method <code>Source::set_params(params)</code>: this way, the attribute <code>_params</code> is filled with all the settings received from the broker.</p>
 <p>The return value of <code>load_data()</code> can be:</p>
 <ul>
-<li><code>return_type::success</code>: data has been correctly elaborated</li>
-<li><code>return_type::warning</code>: the user can set the <code>_error</code> string, which is printed on console</li>
-<li><code>return_type::retry</code>: nothing is done</li>
-<li><code>return_type::error</code>: the user can set the <code>_error</code> string, which is printed on console</li>
-<li><code>return_type::critical</code>: the execution stops and the <code>_error</code> string is printed</li>
+<li><code>return_type::success</code>: data has been correctly elaborated.</li>
+<li><code>return_type::warning</code>: the user can set the <code>_error</code> string, which is printed on console.</li>
+<li><code>return_type::retry</code>: nothing is done.</li>
+<li><code>return_type::error</code>: the user can set the <code>_error</code> string, which is printed on console and published on <code>agent_event</code> (field <code>["error"]["load_data"]</code>).</li>
+<li><code>return_type::critical</code>: the execution stops, the <code>_error</code> string is printed and a message is published on <code>agent_event</code>.</li>
 </ul>
 </section>
 </section>
