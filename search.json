@@ -382,7 +382,7 @@
     "href": "presentations/intro.html#implementation",
     "title": " Intro",
     "section": " Implementation",
-    "text": "Implementation\n\nMADS is implemented in C++17 and provides an API to create agents and connect them to the network\nIt can be compiled on Linux, macOS, and Windows\nCompilation is rather tedious and has a number of dependencies, but:\n\ninstallers are available for Linux, MacOS, and Windows\na Docker image is available for easy setup\n\nDeveloping custom agents as plugins is much easier, as it requires only a few functions to be implemented\nExample plugins are available on GitHub\nThe main MADS command can generate a plugin template"
+    "text": "Implementation\n\nMADS is implemented in C++17 and provides an API to create agents and connect them to the network\nIt can be compiled on Linux, macOS, and Windows\nCompilation is rather tedious and has a number of dependencies, but:\n\ninstallers are available for Linux, MacOS, and Windows\na Docker image is available for easy setup\n\nDeveloping custom agents as plugins is much easier, as it requires only a few functions to be implemented\nExample plugins are available on GitHub\nThe main MADS command can generate a plugin template\n\n\n\n\n\n\n\nTip\n\n\nEasy to remember: https://git.new/mads!"
   },
   {
     "objectID": "presentations/intro.html#main-command-mads",
