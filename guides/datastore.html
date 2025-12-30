@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.30">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -71,14 +71,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0829b0b756d6a27eb117278c0ab9cd09.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6e942f2f6372d81a3862b03e33b5f49d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-bd7d9e9d7f458aa9e34494af118c0d68.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6e942f2f6372d81a3862b03e33b5f49d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3950152f3f0a907b4d447a3aea1a0a2e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-c0f2d3e989b2edd28e70bef51d272bf3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-a9b58074f428f44b6ca53811f3afa7b1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-c0f2d3e989b2edd28e70bef51d272bf3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -146,7 +151,8 @@ cookieconsent.run({
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../images/logo_white.png" alt="" class="navbar-logo">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo light-content">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo dark-content">
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -281,7 +287,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 24, 2025</p>
+      <p class="date-modified">December 30, 2025</p>
     </div>
   </div>
     
@@ -323,7 +329,7 @@ cookieconsent.run({
 <section id="the-plugin-template" class="level2">
 <h2 class="anchored" data-anchor-id="the-plugin-template">The plugin template</h2>
 <p>The command <code>mads plugin</code> is used to generate a plugin template. With v1.3.5, it gains the <code>-s|--datastore</code> option, which enables some example calls to the <code>Datastore</code> class. For example, by issuing:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> plugin <span class="at">-d</span> test_plugin <span class="at">-s</span> test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> plugin <span class="at">-d</span> test_plugin <span class="at">-s</span> test</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>the template for a blank new plugin called <code>test.plugin</code> is created in the <code>test_plugin</code> directory, <strong>with usage examples for <code>Datastore</code></strong>. With the <code>-s</code>flag, the <code>src/test.cpp</code> file has the following additions:</p>
 <ol type="1">
 <li>The <code>Datastore</code> class is included with <code>#include &lt;datastore.hpp&gt;</code></li>
@@ -388,23 +394,23 @@ Warning
 <section id="existing-plugins" class="level2">
 <h2 class="anchored" data-anchor-id="existing-plugins">Existing plugins</h2>
 <p>To use the <code>&nbsp;Datastore</code> class to an existing plugin you have to update the fetched dependency. Open the plugin’s <code>CMakeLists.txt</code> and change the following (note the only change at <strong>line 3</strong>):</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
 <span id="cb2-2"><a href="#cb2-2"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
 <span id="cb2-3"><a href="#cb2-3"></a>  <span class="ot">GIT_TAG</span>        HEAD</span>
 <span id="cb2-4"><a href="#cb2-4"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
 <span id="cb2-5"><a href="#cb2-5"></a>  <span class="ot">SUBBUILD_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-subbuild</span></span>
 <span id="cb2-6"><a href="#cb2-6"></a>  <span class="ot">SOURCE_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-src</span></span>
 <span id="cb2-7"><a href="#cb2-7"></a>  <span class="ot">BINARY_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-build</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-8"><a href="#cb2-8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>to:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
 <span id="cb3-2"><a href="#cb3-2"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
 <span id="cb3-3"><a href="#cb3-3"></a>  <span class="ot">GIT_TAG</span>        v1.<span class="dt">3.5</span></span>
 <span id="cb3-4"><a href="#cb3-4"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
 <span id="cb3-5"><a href="#cb3-5"></a>  <span class="ot">SUBBUILD_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-subbuild</span></span>
 <span id="cb3-6"><a href="#cb3-6"></a>  <span class="ot">SOURCE_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-src</span></span>
 <span id="cb3-7"><a href="#cb3-7"></a>  <span class="ot">BINARY_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-build</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-8"><a href="#cb3-8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This will force git fetching of the v1.3.5 of the plugin system.</p>
 <p>Then, just use the <code>&nbsp;Datastore</code> class as above outlined (it’s source is already available in the headers search path).</p>
 
@@ -464,13 +470,14 @@ Warning
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

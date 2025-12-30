@@ -2,6 +2,7 @@
   {
     "listing": "/guides.html",
     "items": [
+      "/guides/security.html",
       "/guides/rerun.html",
       "/guides/replay.html",
       "/guides/datastore.html",

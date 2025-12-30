@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-07-11">
+<meta name="dcterms.date" content="2027-06-12">
 
-<title>HDF5 Logger</title>
+<title>Security in MADS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -237,11 +237,16 @@ cookieconsent.run({
    
   <ul>
   <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation">Motivation</a></li>
-  <li><a href="#the-hdf5-sink-plugin" id="toc-the-hdf5-sink-plugin" class="nav-link" data-scroll-target="#the-hdf5-sink-plugin">The HDF5 Sink Plugin</a>
+  <li><a href="#how-it-works" id="toc-how-it-works" class="nav-link" data-scroll-target="#how-it-works">How it works</a></li>
+  <li><a href="#how-to-set-it-up" id="toc-how-to-set-it-up" class="nav-link" data-scroll-target="#how-to-set-it-up">How to set it up</a>
   <ul class="collapse">
-  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
-  <li><a href="#configuration" id="toc-configuration" class="nav-link" data-scroll-target="#configuration">Configuration</a></li>
-  <li><a href="#execution" id="toc-execution" class="nav-link" data-scroll-target="#execution">Execution</a></li>
+  <li><a href="#keypair-generation" id="toc-keypair-generation" class="nav-link" data-scroll-target="#keypair-generation">Keypair generation</a></li>
+  <li><a href="#keypair-expected-location" id="toc-keypair-expected-location" class="nav-link" data-scroll-target="#keypair-expected-location">Keypair expected location</a></li>
+  <li><a href="#distributing-the-keys" id="toc-distributing-the-keys" class="nav-link" data-scroll-target="#distributing-the-keys">Distributing the keys</a></li>
+  <li><a href="#launching-the-broker" id="toc-launching-the-broker" class="nav-link" data-scroll-target="#launching-the-broker">Launching the broker</a></li>
+  <li><a href="#launching-the-agents" id="toc-launching-the-agents" class="nav-link" data-scroll-target="#launching-the-agents">Launching the agents</a></li>
+  <li><a href="#a-note-on-the-logger" id="toc-a-note-on-the-logger" class="nav-link" data-scroll-target="#a-note-on-the-logger">A note on the logger</a></li>
+  <li><a href="#ip-whitelist" id="toc-ip-whitelist" class="nav-link" data-scroll-target="#ip-whitelist">IP Whitelist</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -251,13 +256,12 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">HDF5 Logger</h1>
+<h1 class="title">Security in MADS</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">plugin</div>
-    <div class="quarto-category">sink</div>
-    <div class="quarto-category">hdf5</div>
-    <div class="quarto-category">logging</div>
-    <div class="quarto-category">data</div>
+    <div class="quarto-category">configuration</div>
+    <div class="quarto-category">advanced</div>
+    <div class="quarto-category">security</div>
+    <div class="quarto-category">encryption</div>
   </div>
   </div>
 
@@ -282,7 +286,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">July 11, 2025</p>
+      <p class="date">June 12, 2027</p>
     </div>
   </div>
   
@@ -298,7 +302,7 @@ cookieconsent.run({
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>MADS comes packaged with a logging facility to MongoDB database. For some applications, a file-based logging system is more appropriate. This guide explains how to use the HDF5 logger, which is a file-based sink for MADS using the hierarchical data format.</p>
+    <p>MADS agents communicate over the network. In production environment, it is suggested to enable authentication and encryption. This guide explains how to do that (starting from MADS v2.0.0).</p>
   </div>
 </div>
 
@@ -308,163 +312,134 @@ cookieconsent.run({
 
 <section id="motivation" class="level1">
 <h1>Motivation</h1>
-<p>By default, MADS enable capturing data produced in the network to a MongoDB database, one topic per table. This is very effective and has some advantages:</p>
-<ul>
-<li><strong>concurrency</strong>: it is possible to access the database while the data acquisition is still running, even from multiple clients</li>
-<li><strong>persistence</strong>: the data is stored in a database, which is designed to handle large amounts of data and provide fast access; MongoDB datapases can also be <strong>replicated</strong> and sharded, which allows for high availability, scalability, and resiliency</li>
-<li><strong>querying</strong>: the data can be queried using the MongoDB query language, which is powerful and flexible; MongoDB <strong>aggregations</strong> can be defined as read-only tables, which can offload the processing from the client side and allow for complex data analysis</li>
-<li><strong>visualization</strong>: the data can be visualized using tools like MongoDB Compass, which provides a graphical interface to explore the data</li>
-</ul>
-<p>On the other hand, for simpler tasks this can prove an overkill. Furthermore, if forces the user to learn the MongoDB query language, which is not always necessary. For these reasons, MADS provides a file-based logging system, which is simpler to use and does not require a database.</p>
-<p>Since data generted by MADS can have a complex and schema-free structure, a simple table-oriented logging is not sufficient, unless we would revert to multiple flat-files, which can turn too messy pretty quickly. For this reason, MADS uses the <a href="https://www.hdfgroup.org/solutions/hdf5/">HDF5</a> format, which is a hierarchical data format that allows for storing complex data structures in a single file. HDF5 is widely used in scientific computing and data analysis, and it is supported by many libraries and tools.</p>
-<p>A common use for HDF5 is to store and retrieve data used for training machine learning models, given that the format has a good support within Python and other scripting languages (as GNU-R) used for data analysis.</p>
+<p>MADS communication by default is <strong>not encrypted</strong> and potentially unsafe. This means that anyone having access to the network used by MADS agents can get access to the data and possibly inject forged data.</p>
+<p>For this reason, <strong>in production environment</strong> you want to enable authentication and encryption features provided by MADS.</p>
 </section>
-<section id="the-hdf5-sink-plugin" class="level1">
-<h1>The HDF5 Sink Plugin</h1>
-<section id="installation" class="level2">
-<h2 class="anchored" data-anchor-id="installation">Installation</h2>
-<p>While the MongoDB logger agent (<code>mads logger</code>) comes pre-packaged with MADS, the HDF5 logger is a plugin that needs to be compiled and installed separately. To install it, run the following commands <strong>on the machine where you want the logs to be saved</strong>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--depth</span> 1 https://github.com/MADS-Net/hdf5_plugin.git</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> hdf5_plugin</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-DCMAKE_INSTALL_PREFIX</span><span class="op">=</span><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">--target</span> install</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled">
+<section id="how-it-works" class="level1">
+<h1>How it works</h1>
+<p>MADS security relies on the <a href="http://curvezmq.org" target="_blank">CURVE authentication</a> for the ZeroMQ protocol. It provides MADS with the following features:</p>
+<ul>
+<li>Clients authentication via private/public keypair</li>
+<li>Clients authentication via IP whitelist</li>
+<li>High performance data encryption via <a href="https://en.wikipedia.org/wiki/Elliptic-curve_cryptography" target="_blank">Elliptic curve encryption (ECC)</a></li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Building the HDF5 Plugin
+<span class="screen-reader-only">Note</span>In brief
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li>Follow the instructions on <a href="https://github.com/MADS-Net/hdf5_plugin" class="uri">https://github.com/MADS-Net/hdf5_plugin</a> when building on Windows.</li>
-<li>Some CMake versions on Linux cannot compile successfully the project when a parallel build is enabled (<code>-j</code> option). If you encounter issues, try to build the project without parallelization, at least for the first build when the HDF5 library is compiled.</li>
+<li>each device must have a public/private pair of encryption keys (<code>.pub</code> and <code>.key</code> text files)</li>
+<li>the private key <strong>always remains on the device</strong></li>
+<li>a copy of the public key must be saved on the connected device(s)</li>
+<li>This means that the broker must have the public keys of all the agents, while each agent only needs the public key of the broker</li>
 </ul>
 </div>
 </div>
-<p>Confirm that the plugin has been installed correctly by running:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> <span class="at">--plugins</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>which shall also report the <code>hdf5_writer.plugin</code> entry.</p>
+<p>CURVE encryption has the same level of security of a RSA encryption, but with <strong>much smaller and faster</strong> encryption keys.</p>
 </section>
-<section id="configuration" class="level2">
-<h2 class="anchored" data-anchor-id="configuration">Configuration</h2>
-<p>As any agent, the plugin needs a proper entry in the MADS configuration file <code>mads.ini</code>. The relevant configuration parameters are:</p>
-<ul>
-<li><code>sub_topic</code>: the array of topics that we want to log</li>
-<li><code>filename</code>: the full path name to the HDF5 file taht we want to create</li>
-<li><code>keypaths</code>: a dictionary of entries that we want to save (see below for details)</li>
-<li><code>keypath_separator</code>: the separator used to split the keypaths (default is <code>.</code>)</li>
-</ul>
-<p>Let’s consider an example. We want to log the data collected by an agent running the <a href="https://github.com/MADS-NET/arduino_plugin"><code>arduino_plugin</code></a>, which produces the following JSON data structure on the topic <code>arduino</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"data"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"AI1"</span><span class="fu">:</span> <span class="dv">52</span><span class="fu">,</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"AI2"</span><span class="fu">:</span> <span class="dv">44</span><span class="fu">,</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"AI3"</span><span class="fu">:</span> <span class="dv">58</span><span class="fu">,</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"AI4"</span><span class="fu">:</span> <span class="dv">45</span><span class="fu">,</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"AI5"</span><span class="fu">:</span> <span class="dv">165</span><span class="fu">,</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"DI1"</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"DI2"</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"DI3"</span><span class="fu">:</span> <span class="dv">1</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"hostname"</span><span class="fu">:</span> <span class="st">"mads-agent.local"</span><span class="fu">,</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"millis"</span><span class="fu">:</span> <span class="dv">150679</span><span class="fu">,</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"timecode"</span><span class="fu">:</span> <span class="fl">39198.68</span><span class="fu">,</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"timestamp"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"$date"</span><span class="fu">:</span> <span class="st">"2025-07-11T10:53:18.716+0200"</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The HDF5 logger always saves the field <code>timestamp</code>, <code>timecode</code>, and <code>hostname</code>. Everything else is optional and must be specified on the INI file using <em>keypaths</em>. A keypath is a string representing the hierarchical path within the JSON structure. For example, the <code>["data"]["AI1"]</code> field can be accessed using the keypath <code>data.AI1</code>, where the field separator is the dot (<code>.</code>) by default, and can be changed using the <code>keypath_separator</code> parameter.</p>
-<p>A valid INI section would then be:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[hdf5_writer]</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"arduino"</span><span class="op">]</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="dt">filename</span> <span class="op">=</span> <span class="st">"/path/to/test.h5"</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">keypaths</span> <span class="op">=</span> <span class="op">{</span><span class="dt">"arduino"</span><span class="op"> =</span> <span class="op">[</span><span class="st">"data.AI1"</span><span class="op">,</span> <span class="st">"data.AI2"</span><span class="op">]}</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="dt">keypath_separator</span> <span class="op">=</span> <span class="st">"."</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Whereas, if we wanted to capture data from two different topics, we would do something like:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[hdf5_writer]</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"arduino"</span><span class="op">,</span> <span class="st">"temp_sensor"</span><span class="op">]</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">filename</span> <span class="op">=</span> <span class="st">"/path/to/test.h5"</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">keypaths</span> <span class="op">=</span> <span class="op">{</span><span class="dt">"arduino"</span><span class="op"> =</span> <span class="op">[</span><span class="st">"data.AI1"</span><span class="op">,</span> <span class="st">"data.AI2"</span><span class="op">], </span><span class="dt">"temp_sensor"</span><span class="op"> =</span> <span class="op">[</span><span class="st">"data.Temperature"</span><span class="op">,</span> <span class="st">"data.Humidity"</span><span class="op">]}</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="dt">keypath_separator</span> <span class="op">=</span> <span class="st">"."</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled">
+<section id="how-to-set-it-up" class="level1">
+<h1>How to set it up</h1>
+<section id="keypair-generation" class="level2">
+<h2 class="anchored" data-anchor-id="keypair-generation">Keypair generation</h2>
+<p>The first step is to create <strong>keypairs</strong>, i.e.&nbsp;matching pairs of public and private keys. On each device to be connected to the same MADS broker, including the broker, do the following:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> <span class="at">--keypair</span><span class="op">=&lt;</span>agent_name<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>where <code>&lt;agent_name&gt;</code> is a reference string dor the current device. This command will create in the working directory a pair of files, named <code>&lt;agent_name&gt;.key</code> (the <span class="bred">private</span> key file) and <code>&lt;agent_name&gt;.pub</code> (the <span class="bgreen">public</span> key file). Note that the command refuses to work if the files already exist; in that case you can overwrite the files with the <code>--force</code> option.</p>
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Note that the TOML standard used for <code>mads.ini</code> forbids newlines within a dictionary field, so that the <code>keypaths</code> field must be on a single line!</p>
-<p>As an alternative, you can split the dictionary using <em>sub-tables</em>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[hdf5_writer]</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"arduino"</span><span class="op">,</span> <span class="st">"temp_sensor"</span><span class="op">]</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">filename</span> <span class="op">=</span> <span class="st">"/path/to/test.h5"</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="dt">keypath_separator</span> <span class="op">=</span> <span class="st">"."</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="kw">[hdf5_writer.keypaths]</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="dt">arduino</span> <span class="op">=</span> <span class="op">[</span><span class="st">"data.AI1"</span><span class="op">,</span> <span class="st">"data.AI2"</span><span class="op">]</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="dt">temp_sensor</span> <span class="op">=</span> <span class="op">[</span><span class="st">"data.Temperature"</span><span class="op">,</span> <span class="st">"data.Humidity"</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Never edit the content of key files!</p>
 </div>
 </div>
 </section>
-<section id="execution" class="level2">
-<h2 class="anchored" data-anchor-id="execution">Execution</h2>
-<p>Now that the plugin is installed and configured, you can use it as a sink plugin:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> sink <span class="at">-s</span> tcp://broker.host:9092 hdf5_writer.plugin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Of course, if the plugin runs on the same broker machine, you can just use <code>mads sink hdf5_writer.plugin</code>. The initial output is something like:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Agent:</span> hdf5_writer</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Settings</span> file:    tcp://localhost:9092</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Pub</span> endpoint:     tcp://localhost:9090</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Pub</span> topic:        hdf5_writer</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Sub</span> endpoint:     tcp://localhost:9091</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Sub</span> topics:       arduino topic2 control</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Compression:</span>      enabled</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Timecode</span> FPS:     25</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Timecode</span> offset:  0 s</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Searching</span> for installed plugin in the default location /Users/p4010/usr/local/lib</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Plugin:</span>           /usr/local/lib/hdf5_writer.plugin <span class="er">(</span><span class="ex">loaded</span> as hdf5_writer<span class="kw">)</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="ex">File</span> name         /tmp/hdf5_plugin/test.h5</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Keypath</span> sep.      .</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Keypaths</span>          arduino.timecode, arduino.timestamp, arduino.hostname, arduino.data.AI1, arduino.data.AI2, temp_sensor.timecode, temp_sensor.timestamp, temp_sensor.hostname, temp_sensor.data.Temperature, temp_sensor.data.Humidity <span class="er">(</span><span class="ex">total:</span> 10<span class="kw">)</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="ex">Sink</span> plugin started</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The content of the HDF5 file can be quickly inspected using the <code>HDFView</code> GUI tool:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/HDFView.png" class="img-fluid figure-img"></p>
-<figcaption>An overview of the captured data</figcaption>
-</figure>
+<section id="keypair-expected-location" class="level2">
+<h2 class="anchored" data-anchor-id="keypair-expected-location">Keypair expected location</h2>
+<p>By default, keypairs are expected to be in the <code>etc</code> directory under the MADS prefix, i.e.&nbsp;within <code>$(mads -p)/etc</code>. Note that each device only needs its own private key and the public key of any connecting device, so usually it does not need its own <em>public</em> key. Nonetheless, it is suggested to copy in the same location both keys for two reasons:</p>
+<ul>
+<li>so that you can keep track of its public key in case it gets lost; it is safe to distribute copies of public keys until the matching private one remains reserved;</li>
+<li>if the device can be <strong>client of itself</strong> (e.g.&nbsp;it is running both the broker and an agent), it actually needs <strong>both keys</strong>.</li>
+</ul>
+<p>Expected location can be overridden by the command line option <code>--keys_dir</code>, which allows to specify a different search path for keys on agents and broker.</p>
+</section>
+<section id="distributing-the-keys" class="level2">
+<h2 class="anchored" data-anchor-id="distributing-the-keys">Distributing the keys</h2>
+<p>Copy <strong>only the public keys</strong> of each agent on the device running the broker and put them in the expected location. Any way for copying the keys is acceptable: thumbdrives, <code>scp</code>, <code>sftp</code>, even unsecure and unencrypted ways as the plain old <code>ftp</code>, for the public key is useless without its matching private key.</p>
+<p>Distribute the broker’s public key to each connecting agent.</p>
+<p>You can name the keys as you like, but ideally, the broker’s key is named <code>mads-broker.pub</code>, and the agents’ keys have aptly names as <code>agent-logger.pub</code>, <code>agent-feedback.pub</code> and so on.</p>
+</section>
+<section id="launching-the-broker" class="level2">
+<h2 class="anchored" data-anchor-id="launching-the-broker">Launching the broker</h2>
+<p>You need to launch the broker explicitly enabling the cryptography support. Supposing that the broker’s private key is named <code>mads-broker.key</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> broker <span class="at">--crypto</span><span class="op">=</span>mads-broker</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If you want to search for the key in a different directory, use the <code>--keys_dir=/path/to/keys</code> command line option.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<p>As we see, within the HDF5 file data are collected into <strong>groups</strong> (folders), one for each topic, and <strong>datasets</strong> (tables), one for each keypath. The name of the dataset corresponds to the keypath:</p>
-<ul>
-<li>when the keypath produces a scalar, the dataset is a column vector (1-column table)</li>
-<li>when the keypath produces a vector, the dataset is a 2D table with one column per element of the vector</li>
-<li>timecode and timestamp are collected as vectors (same length of any other table)</li>
-<li>timecode is stored as a string according to ISO 8601 format, which is the default for MADS</li>
-</ul>
-<p>The plugin CMake install command also installs three command-line tools to inspect the HDF5 file:</p>
-<ul>
-<li><code>h5ls</code>: lists the contents of an HDF5 file</li>
-<li><code>h5watch</code>: watches an HDF5 file for changes</li>
-<li><code>h5stat</code>: displays statistics about an HDF5 file</li>
-</ul>
-<p>So, for example, we can list the contents of the file using:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">h5ls</span> <span class="at">-r</span> /path/to/test.h5</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Which produces an output like:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/</span>                        Group</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/arduino</span>                 Group</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">/arduino/data.AI1</span>        Dataset {303/Inf}</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="ex">/arduino/data.AI2</span>        Dataset {303/Inf}</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ex">/arduino/hostname</span>        Dataset {303/Inf}</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ex">/arduino/timecode</span>        Dataset {303/Inf}</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="ex">/arduino/timestamp</span>       Dataset {303/Inf}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Where <code>{303/Inf}</code> indicates that the dataset has 303 elements and is not limited in size (i.e., it can grow indefinitely). The the <code>h5stat</code> command can be used to display statistics about the file, such as the number of datasets, groups, and attributes, as well as the size of the file.</p>
-<p>Finally, <code>h5watch</code> command can be used to monitor the file for changes, which is useful when the data acquisition is still running:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">h5watch</span> /path/to/test.h5/arduino/data.AI1</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># will watch for changes untile CTRL-C</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If the broker is running as a service, you shall edit the command line in the service file, or create a new service line as explained <a href="../guides/services.html">here</a> and then restart the service.</p>
+</div>
+</div>
+</section>
+<section id="launching-the-agents" class="level2">
+<h2 class="anchored" data-anchor-id="launching-the-agents">Launching the agents</h2>
+<p>Agents need to be launched by specifying the settings URI and the cryptography option:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> logger <span class="at">-s</span> tcp://<span class="op">&lt;</span>broker-name.local<span class="op">&gt;</span>:9092 <span class="at">--crypto</span> <span class="at">--key_broker</span><span class="op">=</span>mads-broker <span class="at">--key_client</span><span class="op">=</span>agent-logger</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Again, if you want to search for the key in a different directory, use the <code>--keys_dir=/path/to/keys</code> command line option.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If on a single device there are more agents running, you only need a <strong>single keypair</strong> and there is no need to create (and distribute) a different keypair for each agent!</p>
+</div>
+</div>
+</section>
+<section id="a-note-on-the-logger" class="level2">
+<h2 class="anchored" data-anchor-id="a-note-on-the-logger">A note on the logger</h2>
+<p>The current version of the MongoDB logger agent, which is distributed along MADS, <strong>does not support</strong> data encryption for the communication between the logger agent and the MongoDB server. For this reason, it is suggested that the <code>mads-logger</code> agent runs on the same machine as the MongoDB server, so that the connection happens in loopback and its traffic it is not exposed to the network. MongoDB server shall be configured to only accept unencrypted connection from localhost.</p>
+<p>If this is not acceptable, you can write your own logger version as a <a href="../guides/plugins.html">plugin</a>, implementing TSL encryption.</p>
+</section>
+<section id="ip-whitelist" class="level2">
+<h2 class="anchored" data-anchor-id="ip-whitelist">IP Whitelist</h2>
+<p>The CURVE authentication mechanism also provide IP whitelist. On MADS, it relies on the <code>ip_whitelist</code> key in the <code>[broker]</code> section of <code>mads.ini</code>. This key must be an array of IP strings (<strong>not hostnames!</strong>). If this array is empty, any IP can connect to the broker. If the array has a list of IPs, only those IPs can connect to the broker.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">ip_whitelist</span> <span class="op">=</span> <span class="op">[</span><span class="st">"127.0.0.1"</span><span class="op">,</span> <span class="st">"192.168.0.12"</span><span class="op">,</span> <span class="st">"192.168.0.13"</span><span class="op">]</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">auth_verbose</span> <span class="op">=</span> <span class="cn">false</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Also note the <code>auth_verbose</code> boolean flag: if enabled, the authentication steps are verbosely stated, helping troubleshooting authentication errors.</p>
+</div>
+</div>
 
 
 </section>
