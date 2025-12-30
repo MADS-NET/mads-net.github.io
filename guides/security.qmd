@@ -1,0 +1,129 @@
+---
+title: "Security in MADS"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 30/12/2025
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [configuration, advanced, security, encryption]
+abstract: |
+  MADS agents communicate over the network. In production environment, it is suggested to enable authentication and encryption. This guide explains how to do that (starting from MADS v2.0.0).
+---
+
+# Motivation
+
+MADS communication by default is **not encrypted** and potentially unsafe. This means that anyone having access to the network used by MADS agents can get access to the data and possibly inject forged data.
+
+For this reason, **in production environment** you want to enable authentication and encryption features provided by MADS.
+
+# How it works
+
+MADS security relies on the [CURVE authentication](http://curvezmq.org){target="_blank"} for the ZeroMQ protocol. It provides MADS with the following features:
+
+* Clients authentication via private/public keypair
+* Clients authentication via IP whitelist
+* High performance data encryption via [Elliptic curve encryption (ECC)](https://en.wikipedia.org/wiki/Elliptic-curve_cryptography){target="_blank"}
+
+:::callout-note
+### In brief
+
+* each device must have a public/private pair of encryption keys (`.pub` and `.key` text files)
+* the private key **always remains on the device**
+* a copy of the public key must be saved on the connected device(s)
+* This means that the broker must have the public keys of all the agents, while each agent only needs the public key of the broker
+:::
+
+CURVE encryption has the same level of security of a RSA encryption, but with **much smaller and faster** encryption keys.
+
+
+# How to set it up
+
+## Keypair generation
+
+The first step is to create **keypairs**, i.e. matching pairs of public and private keys. On each device to be connected to the same MADS broker, including the broker, do the following:
+
+```sh
+mads --keypair=<agent_name>
+```
+
+where `<agent_name>` is a reference string dor the current device. This command will create in the working directory a pair of files, named `<agent_name>.key` (the [private]{.bred} key file) and `<agent_name>.pub` (the [public]{.bgreen} key file). Note that the command refuses to work if the files already exist; in that case you can overwrite the files with the `--force` option.
+
+:::callout-important
+Never edit the content of key files!
+:::
+
+## Keypair expected location
+
+By default, keypairs are expected to be in the `etc` directory under the MADS prefix, i.e. within `$(mads -p)/etc`. Note that each device only needs its own private key and the public key of any connecting device, so usually it does not need its own *public* key. Nonetheless, it is suggested to copy in the same location both keys for two reasons:
+
+* so that you can keep track of its public key in case it gets lost; it is safe to distribute copies of public keys until the matching private one remains reserved;
+* if the device can be **client of itself** (e.g. it is running both the broker and an agent), it actually needs **both keys**.
+
+Expected location can be overridden by the command line option `--keys_dir`, which allows to specify a different search path for keys on agents and broker.
+
+## Distributing the keys
+
+Copy **only the public keys** of each agent on the device running the broker and put them in the expected location. Any way for copying the keys is acceptable: thumbdrives, `scp`, `sftp`, even unsecure and unencrypted ways as the plain old `ftp`, for the public key is useless without its matching private key.
+
+Distribute the broker's public key to each connecting agent.
+
+You can name the keys as you like, but ideally, the broker's key is named `mads-broker.pub`, and the agents' keys have aptly names as `agent-logger.pub`, `agent-feedback.pub` and so on.
+
+## Launching the broker
+
+You need to launch the broker explicitly enabling the cryptography support. Supposing that the broker's private key is named `mads-broker.key`:
+
+```sh
+mads broker --crypto=mads-broker
+```
+
+If you want to search for the key in a different directory, use the `--keys_dir=/path/to/keys` command line option.
+
+:::callout-important
+If the broker is running as a service, you shall edit the command line in the service file, or create a new service line as explained [here](services.qmd) and then restart the service.
+:::
+
+## Launching the agents
+
+Agents need to be launched by specifying the settings URI and the cryptography option:
+
+```sh
+mads logger -s tcp://<broker-name.local>:9092 --crypto --key_broker=mads-broker --key_client=agent-logger
+```
+
+Again, if you want to search for the key in a different directory, use the `--keys_dir=/path/to/keys` command line option.
+
+:::callout-tip
+If on a single device there are more agents running, you only need a **single keypair** and there is no need to create (and distribute) a different keypair for each agent!
+:::
+
+
+## A note on the logger
+
+The current version of the MongoDB logger agent, which is distributed along MADS, **does not support** data encryption for the communication between the logger agent and the MongoDB server. For this reason, it is suggested that the `mads-logger` agent runs on the same machine as the MongoDB server, so that the connection happens in loopback and its traffic it is not exposed to the network. MongoDB server shall be configured to only accept unencrypted connection from localhost.
+
+If this is not acceptable, you can write your own logger version as a [plugin](plugins.qmd), implementing TSL encryption.
+
+
+
+## IP Whitelist
+
+The CURVE authentication mechanism also provide IP whitelist. On MADS, it relies on the `ip_whitelist` key in the `[broker]` section of `mads.ini`. This key must be an array of IP strings (**not hostnames!**). If this array is empty, any IP can connect to the broker. If the array has a list of IPs, only those IPs can connect to the broker.
+
+```toml
+ip_whitelist = ["127.0.0.1", "192.168.0.12", "192.168.0.13"]
+auth_verbose = false
+```
+
+:::callout-tip
+Also note the `auth_verbose` boolean flag: if enabled, the authentication steps are verbosely stated, helping troubleshooting authentication errors.
+:::

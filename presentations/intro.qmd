@@ -21,6 +21,10 @@ abstract: |
 #   position: "left"
 ---
 
+```{r setup}
+
+```
+
 
 # What is it?
 
@@ -135,6 +139,7 @@ Agents can be implemented in any programming language that supports ZeroMQ, but 
 :::
 
 
+
 ## {{< bi person-standing >}} Agents
 
 :::columns
@@ -162,11 +167,15 @@ Plugins are actually shared C++ libraries, compiled with minimal dependencies
 * MADS is implemented in C++17 and provides an API to create agents and connect them to the network
 * It can be compiled on Linux, macOS, and Windows
 * Compilation is rather tedious and has a number of dependencies, but:
-  - [installers](https://github.com/pbosetti/MADS/releases){target="blank_"} are available for Linux, MacOS, and Windows
-  - a [Docker image](https://hub.docker.com/repository/docker/p4010/mads){target="blank_"} is available for easy setup 
+  - [installers](https://git.new/mads){target="blank_"} are available for Linux, MacOS, and Windows
+  - a [Docker image](https://hub.docker.com/r/p4010/mads){target="blank_"} is available for easy setup 
 * Developing custom agents as plugins is much easier, as it requires only a few functions to be implemented
 * Example plugins are available [on GitHub](https://github.com/mads-net){target="blank_"}
 * The main MADS command can generate a plugin template
+
+::: callout-tip
+Easy to remember: <https://git.new/mads>!
+:::
 
 
 # Basic usage
@@ -556,6 +565,31 @@ In MADS, there are two special agents for this purpose: `dealer` and `worker`
 * `worker`: receives the computational payloads and uses a custom plugin to process them (of type *filter*), then sends the results back to the broker
 
 Ideally, the worker plugin is launched in $n$ instances on a Kubernetes cluster; each instance loads the computational plugin OTA from the broker
+
+
+## {{< bi shield-lock >}} Security
+
+Starting from v2.0.0, MADS supports authentication and encryption over the network
+
+:::columns
+:::column
+### What is it
+
+* Encryption is provided via ZeroMQ CURVE backend
+* CURVE provides **elliptic curve cryptography** via public/private key; provides same security as RSA but with much smaller and faster keys
+* Public/provate keypair also provide authentication
+* IP whitelisting is also supported
+:::
+
+:::column
+### How?
+
+* The `mads` command can create the public/private **keypair** for a device
+* The broker must have the public keys of all connecting devices, plus its own private key
+* Each device must have the broker's key, plus its own private key
+:::
+:::
+
 
 # Contacts
 
