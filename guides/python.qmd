@@ -1,0 +1,136 @@
+---
+title: "Python interface"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 28/01/2026
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [python, scripts, interfaces, v2]
+abstract: |
+  Version 2 of MADS, among other new features, introduces a C-wrapper in the MADS dynamic library. This allows in turn to implement a fast Python interface to MADS.
+---
+
+# Motivation
+
+MADS version 1.x is a collection of executable commands and a header-only C++ library. This makes it not so easy and effective to integrate the MADS library to other languages and systems.
+
+With **MADS v2.x** we moved to a proper compiled library (both static and dynamic), and plain header files. The library also includes a pure C wrapper to the Agent class. At the moment it is not a 1:1 alternative to the C++ version: it is more limited, not all C++ methods and classes have a corresponding C function, but it is sufficient to implement basic interfaces to a network to MADS agents, i.e.: connecting to a broker, reading the shared settings, publishing and reading messages.
+
+# Python interface
+
+The C wrapper makes it very easy and quick to develop a Python interface. In fact, this interface is already provided by the MADS installer, and it is provided as a module `mads_agent` by the file in `$(mads -p)/python/mads_agent.py`. We describe in the following how to use it.
+
+## Loading the library
+
+The Python module is not installed in standard Python search paths, so in order to load it, you first have to add the folder `$(mads -p)/python` to the Python search path. There are two possible ways:
+
+**Method 1**: environment variable
+
+```sh
+export PYTHONPATH=$PYTHONPATH:$(mads -p)/python
+```
+
+**Method 2**: manipulate from python:
+
+```python
+import sys, os
+import subprocess
+mads_path = subprocess.check_output(["mads", "-p"], text=True).strip()
+sys.path.append(os.path.join(mads_path, 'python'))
+```
+
+:::callout-note
+The first method can be used to add that search path to the default set of environment variables (both on Windows and Unixes), then you just have to `import` it in your scripts.
+
+The second method takes a bit more effort, but it does not mangle with the `PYTHONPATH` variable and is thus less invasive.
+:::
+
+Then, proceed with importing the `mads_agent` module:
+
+```python
+from mads_agent import Agent, EventType, MessageType, mads_version, mads_de\
+fault_settings_uri
+```
+
+
+## Initializing an Agent
+
+To create a new agent, you just have to give it a name, then call `init`:
+
+```python
+agent = Agent("python_agent", "tcp://broker.local:9092) # then the mads.ini file MUST have a python_agent section!
+agent.set_id("script1")
+agent.set_settings_timeout(2000) # 2 sec timeout
+if agent.init() != 0:
+    sys.stderr.write("Cannot contact broker\n")
+    exit
+print(agent.settings()) # received from the broker
+agent.connect()
+```
+
+:::callout-important
+The second argument of the initializer is the broker URI. If it missing, the agent assumes that the broker is running at `tcp://localhost:9092`.
+
+The method `init()` connects to the broker and asks for the settings, so that if there is no broker running, it keeps trying and waiting fro one to become available.
+:::
+
+
+## Reading and publishing messages
+
+To publish a message, it is a simple as:
+
+```python
+msg = {"value": 10, "list": [1, 2, 3]}
+topic = "test_topic"
+agent.publish(topic, msg)
+```
+
+To read, waiting, for a message:
+
+```python
+agent.set_receive_timeout(2000) # Timeout for receiving messages, in ms
+r = agent.receive()
+if r == MessageType.NONE:
+    sys.stderr.write("No message received\n")
+else:
+    lm = agent.last_message()
+    print(f"from topic {lm[0]} got: {lm[1]}\n")
+```
+
+## Disconnecting
+
+Easy:
+
+```python
+agent.disconnect()
+```
+
+## Limitations
+
+Compared to the C++ API, The Python interface has the following limitations:
+
+* it is slower (of course), although most of the operations are performed by the underlying compiled code
+* the application loop must be implemented in Python code, and it is your responsibility to ensure timing and regularity (conversely, the C++ `Agent::loop()` method provides robust and regular timing for the main loop).
+* there is no support for loading C++ plugins
+
+
+## Typical application
+
+Given the above limitation, the Python interface should be limited to the following cases:
+
+* Prototyping: OK, it helps you quickly test ideas
+* Low-frequency messaging: whenever you want to publish or receive out-of-band messages without developing a custom plugin
+* Integration into other frameworks: for example, whenever you need to integrate a web-app implemented in Python to the MADS network, to send or receive (preferably low-frequency) messages
+
+:::callout-note
+Note that the plain C wrapper, with the header in `$(mads -p)/include/agent_c.h`, can be used as easily to integrate into other languages, as Matlab, Ruby, Lua, etc.
+:::
