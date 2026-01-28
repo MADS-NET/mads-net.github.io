@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-06-02">
+<meta name="dcterms.date" content="2028-04-01">
 
-<title>Raspberry Pi IO</title>
+<title>Python interface</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -236,20 +236,15 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#intro" id="toc-intro" class="nav-link active" data-scroll-target="#intro">Intro</a></li>
-  <li><a href="#getting-the-plugin" id="toc-getting-the-plugin" class="nav-link" data-scroll-target="#getting-the-plugin">Getting the plugin</a>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation">Motivation</a></li>
+  <li><a href="#python-interface" id="toc-python-interface" class="nav-link" data-scroll-target="#python-interface">Python interface</a>
   <ul class="collapse">
-  <li><a href="#requirements" id="toc-requirements" class="nav-link" data-scroll-target="#requirements">Requirements</a></li>
-  <li><a href="#compilation" id="toc-compilation" class="nav-link" data-scroll-target="#compilation">Compilation</a></li>
-  </ul></li>
-  <li><a href="#using-the-plugin" id="toc-using-the-plugin" class="nav-link" data-scroll-target="#using-the-plugin">Using the plugin</a>
-  <ul class="collapse">
-  <li><a href="#for-setting-pin-values" id="toc-for-setting-pin-values" class="nav-link" data-scroll-target="#for-setting-pin-values">For setting pin values</a></li>
-  <li><a href="#for-reading-pin-values" id="toc-for-reading-pin-values" class="nav-link" data-scroll-target="#for-reading-pin-values">For reading pin values</a>
-  <ul class="collapse">
-  <li><a href="#synchronous-read" id="toc-synchronous-read" class="nav-link" data-scroll-target="#synchronous-read">Synchronous read</a></li>
-  <li><a href="#asynchronous-read" id="toc-asynchronous-read" class="nav-link" data-scroll-target="#asynchronous-read">Asynchronous read</a></li>
-  </ul></li>
+  <li><a href="#loading-the-library" id="toc-loading-the-library" class="nav-link" data-scroll-target="#loading-the-library">Loading the library</a></li>
+  <li><a href="#initializing-an-agent" id="toc-initializing-an-agent" class="nav-link" data-scroll-target="#initializing-an-agent">Initializing an Agent</a></li>
+  <li><a href="#reading-and-publishing-messages" id="toc-reading-and-publishing-messages" class="nav-link" data-scroll-target="#reading-and-publishing-messages">Reading and publishing messages</a></li>
+  <li><a href="#disconnecting" id="toc-disconnecting" class="nav-link" data-scroll-target="#disconnecting">Disconnecting</a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations</a></li>
+  <li><a href="#typical-application" id="toc-typical-application" class="nav-link" data-scroll-target="#typical-application">Typical application</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -259,12 +254,12 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Raspberry Pi IO</h1>
+<h1 class="title">Python interface</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">intermediate</div>
-    <div class="quarto-category">RaspberryPi</div>
-    <div class="quarto-category">IO</div>
-    <div class="quarto-category">plugin</div>
+    <div class="quarto-category">python</div>
+    <div class="quarto-category">scripts</div>
+    <div class="quarto-category">interfaces</div>
+    <div class="quarto-category">v2</div>
   </div>
   </div>
 
@@ -289,7 +284,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 2, 2025</p>
+      <p class="date">April 1, 2028</p>
     </div>
   </div>
   
@@ -305,7 +300,7 @@ cookieconsent.run({
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>The <code>rpio.plugin</code> allows low-latency interaction with Raspberry Pi GPIO pins via <code>libgpiod</code> library.</p>
+    <p>Version 2 of MADS, among other new features, introduces a C-wrapper in the MADS dynamic library. This allows in turn to implement a fast Python interface to MADS.</p>
   </div>
 </div>
 
@@ -313,17 +308,53 @@ cookieconsent.run({
 </header>
 
 
-<section id="intro" class="level1">
-<h1>Intro</h1>
-<p>Raspberry Pi boards have a 40-pin GPIO header that can provide useful input-output to switches, relais, LEDs and similar digital I/O devices. The <code>libgpiod</code> library allows direct access to all GPIO pins, which can be set as outputs or inputs. In the latter case, pins can be read synchronously (polling) or asynchronously (on events, i.e.&nbsp;whenever there is a change of state).</p>
-<p>The <a href="https://github.com/MADS-NET/rpio_plugin"><code>rpio_plugin</code></a> provides a way for interacting with GPIO pins through MADS messages.</p>
+<section id="motivation" class="level1">
+<h1>Motivation</h1>
+<p>MADS version 1.x is a collection of executable commands and a header-only C++ library. This makes it not so easy and effective to integrate the MADS library to other languages and systems.</p>
+<p>With <strong>MADS v2.x</strong> we moved to a proper compiled library (both static and dynamic), and plain header files. The library also includes a pure C wrapper to the Agent class. At the moment it is not a 1:1 alternative to the C++ version: it is more limited, not all C++ methods and classes have a corresponding C function, but it is sufficient to implement basic interfaces to a network to MADS agents, i.e.: connecting to a broker, reading the shared settings, publishing and reading messages.</p>
 </section>
-<section id="getting-the-plugin" class="level1">
-<h1>Getting the plugin</h1>
-<section id="requirements" class="level2">
-<h2 class="anchored" data-anchor-id="requirements">Requirements</h2>
-<p>First of all, the plugin is designed for the Raspberry Pi. It might work (but it has not been tested) on any Linux system where the <code>libgpiod</code> library is available and that has a GPIO chip and header.</p>
-<p>The library <code>libgpiod</code> can be installed with <code>sudo apt install libgpiod-dev</code>.</p>
+<section id="python-interface" class="level1">
+<h1>Python interface</h1>
+<p>The C wrapper makes it very easy and quick to develop a Python interface. In fact, this interface is already provided by the MADS installer, and it is provided as a module <code>mads_agent</code> by the file in <code>$(mads -p)/python/mads_agent.py</code>. We describe in the following how to use it.</p>
+<section id="loading-the-library" class="level2">
+<h2 class="anchored" data-anchor-id="loading-the-library">Loading the library</h2>
+<p>The Python module is not installed in standard Python search paths, so in order to load it, you first have to add the folder <code>$(mads -p)/python</code> to the Python search path. There are two possible ways:</p>
+<p><strong>Method 1</strong>: environment variable</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PYTHONPATH</span><span class="op">=</span><span class="va">$PYTHONPATH</span>:<span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span>/python</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Method 2</strong>: manipulate from python:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys, os</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>mads_path <span class="op">=</span> subprocess.check_output([<span class="st">"mads"</span>, <span class="st">"-p"</span>], text<span class="op">=</span><span class="va">True</span>).strip()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>sys.path.append(os.path.join(mads_path, <span class="st">'python'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The first method can be used to add that search path to the default set of environment variables (both on Windows and Unixes), then you just have to <code>import</code> it in your scripts.</p>
+<p>The second method takes a bit more effort, but it does not mangle with the <code>PYTHONPATH</code> variable and is thus less invasive.</p>
+</div>
+</div>
+<p>Then, proceed with importing the <code>mads_agent</code> module:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mads_agent <span class="im">import</span> Agent, EventType, MessageType, mads_version, mads_de<span class="op">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fault_settings_uri</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="initializing-an-agent" class="level2">
+<h2 class="anchored" data-anchor-id="initializing-an-agent">Initializing an Agent</h2>
+<p>To create a new agent, you just have to give it a name, then call <code>init</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> Agent(<span class="st">"python_agent"</span>, <span class="st">"tcp://broker.local:9092) # then the mads.ini file MUST have a python_agent section!</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="er">agent.set_id</span>(<span class="st">"script1"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>agent.set_settings_timeout(<span class="dv">2000</span>) <span class="co"># 2 sec timeout</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> agent.init() <span class="op">!=</span> <span class="dv">0</span>:</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    sys.stderr.write(<span class="st">"Cannot contact broker</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    exit</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(agent.settings()) <span class="co"># received from the broker</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>agent.<span class="ex">connect</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -334,109 +365,63 @@ Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Note that there are two <strong>incompatible</strong> versions of <code>libgpiod</code> currently diffused: version 1.6.x and version 2.x (aka <code>libgpiod2</code>). At the time of writing this guide, RaspbianOS only comes with the version 1.6 and version 2 is not yet available.</p>
-<p>The <code>rpio_plugin</code> is designed to build with version 1.6.x and it <strong>won’t compile</strong> on systems that have the version 2 installed.</p>
+<p>The second argument of the initializer is the broker URI. If it missing, the agent assumes that the broker is running at <code>tcp://localhost:9092</code>.</p>
+<p>The method <code>init()</code> connects to the broker and asks for the settings, so that if there is no broker running, it keeps trying and waiting fro one to become available.</p>
 </div>
 </div>
 </section>
-<section id="compilation" class="level2">
-<h2 class="anchored" data-anchor-id="compilation">Compilation</h2>
-<p>To obtain the plugin proceed as usual: clone it, compile, and install:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">-d</span> 1 https://github.com/MADS-NET/rpio_plugin.git</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> rpio_plugin</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j5</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">[sudo]</span> cmake <span class="at">--install</span> build <span class="co"># use sudo if needed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This produces and installs two different plugins:</p>
+<section id="reading-and-publishing-messages" class="level2">
+<h2 class="anchored" data-anchor-id="reading-and-publishing-messages">Reading and publishing messages</h2>
+<p>To publish a message, it is a simple as:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>msg <span class="op">=</span> {<span class="st">"value"</span>: <span class="dv">10</span>, <span class="st">"list"</span>: [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]}</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>topic <span class="op">=</span> <span class="st">"test_topic"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>agent.publish(topic, msg)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To read, waiting, for a message:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>agent.set_receive_timeout(<span class="dv">2000</span>) <span class="co"># Timeout for receiving messages, in ms</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> agent.receive()</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> r <span class="op">==</span> MessageType.NONE:</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    sys.stderr.write(<span class="st">"No message received</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    lm <span class="op">=</span> agent.last_message()</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"from topic </span><span class="sc">{</span>lm[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> got: </span><span class="sc">{</span>lm[<span class="dv">1</span>]<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="disconnecting" class="level2">
+<h2 class="anchored" data-anchor-id="disconnecting">Disconnecting</h2>
+<p>Easy:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>agent.disconnect()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="limitations" class="level2">
+<h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
+<p>Compared to the C++ API, The Python interface has the following limitations:</p>
 <ul>
-<li><code>rpio_in.plugin</code>, which is used to read pins values and to publish them on the MADS network;</li>
-<li><code>rpio_out.plugin</code>, which is used to set pin levels upon receiving the proper JSON command from the MADS network.</li>
+<li>it is slower (of course), although most of the operations are performed by the underlying compiled code</li>
+<li>the application loop must be implemented in Python code, and it is your responsibility to ensure timing and regularity (conversely, the C++ <code>Agent::loop()</code> method provides robust and regular timing for the main loop).</li>
+<li>there is no support for loading C++ plugins</li>
 </ul>
-<p>Remember that the install command copies these plugins to the MADS library directory, i.e.&nbsp;<code>$(mads -p)/usr/local/lib</code> (if that is outside your home folder, you have to use <code>sudo</code>).</p>
 </section>
-</section>
-<section id="using-the-plugin" class="level1">
-<h1>Using the plugin</h1>
-<section id="for-setting-pin-values" class="level2">
-<h2 class="anchored" data-anchor-id="for-setting-pin-values">For setting pin values</h2>
-<p>First of all, add a proper configuration to <code>mads.ini</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[rpio_out]</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic </span><span class="ot">=</span><span class="st"> ["gpio"]</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">chip_path </span><span class="ot">=</span><span class="st"> "/dev/gpiochip0"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>where <code>chip_path</code> is the device path of the GPIO device, typically <code>/dev/gpiochip0</code> on a Raspberry Pi, but it might be different on other device. Check for the proper device with <code>gpiodetect</code> and <code>gpioinfo</code> shell commands.</p>
-<p>Then, the agent will wait for messages published on the topic <code>gpio</code> with a JSON like the following:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"pins"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"10"</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"12"</span><span class="fu">:</span> <span class="dv">0</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>which will set pin 10 to <code>HIGH</code> and pin 12 to <code>LOW</code>, leaving any other pin unchanged.</p>
-</section>
-<section id="for-reading-pin-values" class="level2">
-<h2 class="anchored" data-anchor-id="for-reading-pin-values">For reading pin values</h2>
-<p>Reading pins is a tad more complicated and can be performed in two different ways.</p>
-<section id="synchronous-read" class="level3">
-<h3 class="anchored" data-anchor-id="synchronous-read">Synchronous read</h3>
-<p>This means reading pin values immediately or — since the agent runs in a loop — repeatedly at a given time step. The <code>mads.ini</code> configuration is something like:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[rpio_in]</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">chip_path </span><span class="ot">=</span><span class="st"> "/dev/gpiochip0"</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "gpio"</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">offsets </span><span class="ot">=</span><span class="st"> [5, 15, 10, 12]</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="dt">pulldown </span><span class="ot">=</span><span class="st"> </span><span class="kw">true</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="dt">event_mode </span><span class="ot">=</span><span class="st"> "none"</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="dt">period </span><span class="ot">=</span><span class="st"> 500          # in milliseconds</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This will publish a message with the observed values for pins 5, 15, 10, and 12 every 500 milliseconds, with possibly repeated values (when there is no level change). Use <code>pulldown = true</code> if you want floating pins to be forced low, or <code>pulldown = false</code> to be forced high.</p>
-</section>
-<section id="asynchronous-read" class="level3">
-<h3 class="anchored" data-anchor-id="asynchronous-read">Asynchronous read</h3>
-<p>Synchronous read is fine if you want to log a time-sequence of pin values, especially when they change frequently. But if you want to read the value of a pin connected to a device like a switch or a push button, that would uselessly flood the network with repeated messages.</p>
-<p>In these cases, an asynchronous read is much more preferable. This works by waiting for level change and only publishing a message when it happens. The proper <code>mads.ini</code> section is:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[rpio_in]</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">chip_path </span><span class="ot">=</span><span class="st"> "/dev/gpiochip0"</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "gpio"</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">offsets </span><span class="ot">=</span><span class="st"> [5, 15, 10, 12]</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="dt">pulldown </span><span class="ot">=</span><span class="st"> true        # as explained above</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="dt">event_mode </span><span class="ot">=</span><span class="st"> "rising"  # options: none, rising, falling, both</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="dt">period </span><span class="ot">=</span><span class="st"> 500           # in milliseconds</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="dt">polling_timeout </span><span class="ot">=</span><span class="st"> 100  # in milliseconds</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This will wait for a transition from low to high on any of the selected pins; when (and only when!) a transition is detected, it will publish the corresponding message. The <code>period</code> setting means that it won’t publish any message more often that 500 ms; the <code>polling_timeout</code> indicates how long the process wait for a level change before returning a no-change condition, which corresponds to no message being sent and a <code>retry</code> condition in the plugin loop. Making that timeout shorted results in a plugin that is more responsive to signals (e.g.&nbsp;CTRL-C).</p>
-<div class="callout callout-style-default callout-tip callout-titled">
+<section id="typical-application" class="level2">
+<h2 class="anchored" data-anchor-id="typical-application">Typical application</h2>
+<p>Given the above limitation, the Python interface should be limited to the following cases:</p>
+<ul>
+<li>Prototyping: OK, it helps you quickly test ideas</li>
+<li>Low-frequency messaging: whenever you want to publish or receive out-of-band messages without developing a custom plugin</li>
+<li>Integration into other frameworks: for example, whenever you need to integrate a web-app implemented in Python to the MADS network, to send or receive (preferably low-frequency) messages</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>It is currently not possible to have the same agent reading different pins in different ways or with different <code>event_mode</code>s. If you really find yourself in that condition, you shall run different agents loading the same <code>rpio_in.plugin</code> with different names, and have different sections in the <code>mads.ini</code> file. For example:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[rpio_in_sync]</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dt">chip_path </span><span class="ot">=</span><span class="st"> "/dev/gpiochip0"</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "gpio"</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="dt">offsets </span><span class="ot">=</span><span class="st"> [5, 15]</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="dt">pulldown </span><span class="ot">=</span><span class="st"> true        # as explained above</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="dt">event_mode </span><span class="ot">=</span><span class="st"> "none"    # options: none, rising, falling, both</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="dt">period </span><span class="ot">=</span><span class="st"> 100           # in milliseconds</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="kw">[rpio_in_async]</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="dt">chip_path </span><span class="ot">=</span><span class="st"> "/dev/gpiochip0"</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "gpio"</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="dt">offsets </span><span class="ot">=</span><span class="st"> [10, 12]</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="dt">pulldown </span><span class="ot">=</span><span class="st"> true        # as explained above</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="dt">event_mode </span><span class="ot">=</span><span class="st"> "rising"  # options: none, rising, falling, both</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="dt">period </span><span class="ot">=</span><span class="st"> 500           # in milliseconds</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="dt">polling_timeout </span><span class="ot">=</span><span class="st"> 100  # in milliseconds</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>and then launch two agents with different names. In the first terminal run the <strong>synchronous</strong> agent, reading from pins 5 and 15 every 100 milliseconds:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source rpio_in.plugin <span class="at">-n</span> rpio_in_sync</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>On another terminal run the <strong>asynchronous</strong> agent, reading only rising level changes on pins 10 and 12:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source rpio_in.plugin <span class="at">-n</span> rpio_in_async</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Note that the plain C wrapper, with the header in <code>$(mads -p)/include/agent_c.h</code>, can be used as easily to integrate into other languages, as Matlab, Ruby, Lua, etc.</p>
 </div>
 </div>
 
 
-</section>
 </section>
 </section>
 
