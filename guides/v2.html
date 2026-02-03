@@ -257,6 +257,8 @@ cookieconsent.run({
   <div class="quarto-categories">
     <div class="quarto-category">v2</div>
     <div class="quarto-category">changes</div>
+    <div class="quarto-category">plugin</div>
+    <div class="quarto-category">crypto</div>
   </div>
   </div>
 
@@ -311,7 +313,7 @@ cookieconsent.run({
 <p>The new version introduces some important features, listed hereafter.</p>
 <section id="authentication-and-cryptography" class="level2">
 <h2 class="anchored" data-anchor-id="authentication-and-cryptography">Authentication and Cryptography</h2>
-<p>This is the single biggest new feature (and the reason for a major version change from 1.x to 2.x), which enables the use of MADS in production environments. MADS now supports <strong>optional</strong> encrypted communication via the underlying ZeroMQ protocol.</p>
+<p>This is the single biggest new feature (and the reason for a major version change from 1.x to 2.x), which enables the use of MADS in production environments. MADS now supports <strong>optional</strong> <a href="../guides/security.html">encrypted communication</a> via the underlying ZeroMQ protocol.</p>
 <p>Cryptography is provided via CURVE library, which implements <a href="https://en.wikipedia.org/wiki/Elliptic-curve_cryptography" target="_blank">elliptic curve cryptography</a> via public/private key pairs. Each agent has its own private key and the public key of the broker, while the broker has its private key and the keys of all agents.</p>
 <p>The mechanism also provides an optional <strong>whitelist authentication</strong> for a given list of IPs (via <code>mads.ini</code>).</p>
 <p>The <code>mads --keypair</code> command creates a valid keypair for the current device, then the broker and each agent can be started with the <code>--crypto</code> option for enabling encrypted communication. Only agents with valid keys can then join an encrypted MADS network.</p>
