@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-09-08">
+<meta name="dcterms.date" content="2026-02-02">
 
-<title>Replay plugin</title>
+<title>MADS v2.0</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -236,14 +236,15 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-plugin" id="toc-the-plugin" class="nav-link active" data-scroll-target="#the-plugin">The plugin</a>
+  <li><a href="#whats-new-in-v2.0" id="toc-whats-new-in-v2.0" class="nav-link active" data-scroll-target="#whats-new-in-v2.0">What’s new in <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> v2.0</a>
   <ul class="collapse">
-  <li><a href="#getting-it" id="toc-getting-it" class="nav-link" data-scroll-target="#getting-it">Getting it</a></li>
-  <li><a href="#configuration" id="toc-configuration" class="nav-link" data-scroll-target="#configuration">Configuration</a></li>
-  <li><a href="#mapping-a-csv-to-a-list-of-json-objects" id="toc-mapping-a-csv-to-a-list-of-json-objects" class="nav-link" data-scroll-target="#mapping-a-csv-to-a-list-of-json-objects">Mapping a CSV to a list of JSON objects</a></li>
-  <li><a href="#replaying-multiple-signals" id="toc-replaying-multiple-signals" class="nav-link" data-scroll-target="#replaying-multiple-signals">Replaying multiple signals</a></li>
+  <li><a href="#authentication-and-cryptography" id="toc-authentication-and-cryptography" class="nav-link" data-scroll-target="#authentication-and-cryptography">Authentication and Cryptography</a></li>
+  <li><a href="#libraries" id="toc-libraries" class="nav-link" data-scroll-target="#libraries">Libraries</a></li>
+  <li><a href="#newchanged-commands" id="toc-newchanged-commands" class="nav-link" data-scroll-target="#newchanged-commands">New/changed commands</a></li>
+  <li><a href="#plugins" id="toc-plugins" class="nav-link" data-scroll-target="#plugins">Plugins</a></li>
+  <li><a href="#plugin-template-generation" id="toc-plugin-template-generation" class="nav-link" data-scroll-target="#plugin-template-generation">Plugin template generation</a></li>
+  <li><a href="#breaking-changes" id="toc-breaking-changes" class="nav-link" data-scroll-target="#breaking-changes">Breaking changes</a></li>
   </ul></li>
-  <li><a href="#creating-a-csv-file" id="toc-creating-a-csv-file" class="nav-link" data-scroll-target="#creating-a-csv-file">Creating a CSV file</a></li>
   </ul>
 </nav>
     </div>
@@ -252,9 +253,10 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Replay plugin</h1>
+<h1 class="title">MADS v2.0</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">template</div>
+    <div class="quarto-category">v2</div>
+    <div class="quarto-category">changes</div>
   </div>
   </div>
 
@@ -279,7 +281,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 8, 2025</p>
+      <p class="date">February 2, 2026</p>
     </div>
   </div>
   
@@ -295,7 +297,8 @@ cookieconsent.run({
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>When debugging a MADS system, it might prove useful to have a way to “replay” a previously recorded data stream. This is what the <code>replay.plugin</code> does.</p>
+    <p>MADS v2.0 introduces a set of new features and a breaking change in the plugin protocol.</p>
+    <p><strong>NOTE</strong>: this document is a work in progress, while MADS v2 remains in beta.</p>
   </div>
 </div>
 
@@ -303,46 +306,15 @@ cookieconsent.run({
 </header>
 
 
-<section id="the-plugin" class="level1">
-<h1>The plugin</h1>
-<section id="getting-it" class="level2">
-<h2 class="anchored" data-anchor-id="getting-it">Getting it</h2>
-<p>The <code>replay.plugin</code> is available on <a href="https://github.com/MADS-NET/replay_plugin" class="uri">https://github.com/MADS-NET/replay_plugin</a>. Clone it and build as usual with (on Windows, follow the instriction on the <code>README.md</code> file):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-DCMAKE_INSTALL_PREFIX</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="st">"</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j4</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cmake <span class="at">--install</span> build</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="configuration" class="level2">
-<h2 class="anchored" data-anchor-id="configuration">Configuration</h2>
-<p>Apart from the common settings, the INI file for the <code>replay.plugin</code> requires the following additional fields:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[replay]</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "sensors" # topic on which to publish the datasets</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">csv_file </span><span class="ot">=</span><span class="st"> "path/to/file.csv"</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="dt">loop </span><span class="ot">=</span><span class="st"> true # once the end of file has been reached, start again from beginning</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Note that the CSV file path can be either absolute or relative to the current working directory (the one where you launch the agent).</p>
-</section>
-<section id="mapping-a-csv-to-a-list-of-json-objects" class="level2">
-<h2 class="anchored" data-anchor-id="mapping-a-csv-to-a-list-of-json-objects">Mapping a CSV to a list of JSON objects</h2>
-<p>The CSV is supposed to contain a list of datasets, one per row, with different signals in different rows.</p>
-<p>But how do we map a flat row of a CSV file to a structured JSON object, which may have nested sub-objects and sub-arrays?</p>
-<p>The answer is to use <strong>keypaths</strong> as column headers. A keypath is a string that identifies the path to a specific field in a JSON object, using slashes (<code>/</code>) to separate different levels of the hierarchy,including array indexes (zero based). For example:</p>
-<pre class="csv"><code># Comments and empty lines are skipped
-/timestamp, /sensor/0/temperature, /sensor/0/humidity, /sensor/1/temperature, /sensor/1/humidity
-2024-06-01T12:00:00Z, 22.5, 45.0, 23.0, 50.0</code></pre>
-<p>becomes:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"timestamp"</span><span class="fu">:</span> <span class="st">"2024-06-01T12:00:00Z"</span><span class="fu">,</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"sensor"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"temperature"</span><span class="fu">:</span> <span class="fl">22.5</span><span class="fu">,</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"humidity"</span><span class="fu">:</span> <span class="fl">45.0</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="ot">,</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"temperature"</span><span class="fu">:</span> <span class="fl">23.0</span><span class="fu">,</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"humidity"</span><span class="fu">:</span> <span class="fl">50.0</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="whats-new-in-v2.0" class="level1">
+<h1>What’s new in <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> v2.0</h1>
+<p>The new version introduces some important features, listed hereafter.</p>
+<section id="authentication-and-cryptography" class="level2">
+<h2 class="anchored" data-anchor-id="authentication-and-cryptography">Authentication and Cryptography</h2>
+<p>This is the single biggest new feature (and the reason for a major version change from 1.x to 2.x), which enables the use of MADS in production environments. MADS now supports <strong>optional</strong> encrypted communication via the underlying ZeroMQ protocol.</p>
+<p>Cryptography is provided via CURVE library, which implements <a href="https://en.wikipedia.org/wiki/Elliptic-curve_cryptography" target="_blank">elliptic curve cryptography</a> via public/private key pairs. Each agent has its own private key and the public key of the broker, while the broker has its private key and the keys of all agents.</p>
+<p>The mechanism also provides an optional <strong>whitelist authentication</strong> for a given list of IPs (via <code>mads.ini</code>).</p>
+<p>The <code>mads --keypair</code> command creates a valid keypair for the current device, then the broker and each agent can be started with the <code>--crypto</code> option for enabling encrypted communication. Only agents with valid keys can then join an encrypted MADS network.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -353,84 +325,88 @@ Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Keypaths <strong>must</strong> start with a leading slash: <code>/sensor/x</code> os OK, <code>sensor/x</code> is wrong.</p>
+<p>Note that macOS version requires the <code>libsodium</code> library, which can be installed with <code>brew install libsodium</code>. The Linux version requires <code>libsodium23</code> (<code>sudo apt install libsodium23</code>).</p>
 </div>
 </div>
-<p>An alternative syntax uses dots and square brakets for array indexes, as for example in <code>sensor[0].temperature</code>. This alterante syntax is supported because it’s the way MongoDB Compass exports data to CSV format (see later on for an example).</p>
 </section>
-<section id="replaying-multiple-signals" class="level2">
-<h2 class="anchored" data-anchor-id="replaying-multiple-signals">Replaying multiple signals</h2>
-<p>To replay multiple agents, you need to have multiple CSV files, one per agent, and launch multiple instances of the <code>replay.plugin</code>, each one with its own INI file and with its custom <code>pub_topic</code> and agent name. With the INI file having:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[replay_agent1]</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "temperature" # topic on which to publish the datasets</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">csv_file </span><span class="ot">=</span><span class="st"> "temp_data.csv"</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">loop </span><span class="ot">=</span><span class="st"> </span><span class="kw">true</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">[replay_agent2]</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "imu" # topic on which to publish the datasets</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="dt">csv_file </span><span class="ot">=</span><span class="st"> "imu_data.csv"</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="dt">loop </span><span class="ot">=</span><span class="st"> </span><span class="kw">true</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>launch two agents with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># on first terminal:</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source replay.plugin <span class="at">-n</span> replay_agent1</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># on second terminal:</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source replay.plugin <span class="at">-n</span> replay_agent2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="creating-a-csv-file" class="level1">
-<h1>Creating a CSV file</h1>
-<p>An input CSV file can be easily created with scripting languages by generating synthetic data, or by logging data from sensors.</p>
-<p>Another possibility is to use MADS to record data in the MongoDB database, then use <a href="https://www.mongodb.com/products/compass">MongoDB Compass</a> to export the data as CSV.</p>
-<p>To do that, open the table you want to export in Compass. Suppose that you have something similar:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/csv/step_01.png" class="img-fluid figure-img"></p>
-<figcaption>MongoDB Compass screenshot</figcaption>
-</figure>
-</div>
-<p>We only want to export the elements with keypaths <code>message.list</code> and <code>message.processed</code>. Then expand the <em>Options…</em> query menu and set the <em>Project</em> field as:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/csv/step_02.png" class="img-fluid figure-img"></p>
-<figcaption>Query projection</figcaption>
-</figure>
-</div>
-<p>Now click on the expand icon on the top left of the objects list and select <em>Expand query results</em>:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/csv/step_03.png" class="img-fluid figure-img"></p>
-<figcaption>Expand fields</figcaption>
-</figure>
-</div>
-<p>Finally, select <em>CSV</em> as export format, and save the file:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/csv/step_04.png" class="img-fluid figure-img"></p>
-<figcaption>Export CSV</figcaption>
-</figure>
-</div>
-<p>The resulting CSV file will look like this (first two lines only):</p>
-<pre class="csv"><code>message.list[0],message.list[1],message.list[2],message.list[3],message.processed
-1,2,3,4,false</code></pre>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The replay of the data currently only support the timing stated by the <code>--period</code> command line option or by the <code>period</code> INI file field. This means that:</p>
+<section id="libraries" class="level2">
+<h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
+<p>Before v2.0, MADS <code>Agent</code> C++ class was available in a header only file. This made it harder to integrate MADS into other languages.</p>
+<p>With MADS v2.0, the standard MADS installer provides both a static and a shared library, plus a host of C++ header files. The libraries also provide a pure C wrapper interface (and its corresponding header <code>agent_c.h</code>). This makes it easier for:</p>
 <ul>
-<li>if the original data contains a timestamp field, that is not used for the replay</li>
-<li>if stream was not periodic, the replay will be anyway periodic, with the specified period.</li>
+<li>implementing custom agents in any language that has a pure C interface (i.e.&nbsp;probably ANY language)</li>
+<li>releasing within the MADS installer a <a href="../guides/python.html">Python 3 interface</a>, available as a module</li>
+<li>compiling the library for Android (planned for the next month), which will allow to write MADS agents in — for example — in C# within GUIs to be used on a tablet of phone</li>
 </ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
 </div>
 </div>
+<div class="callout-body-container callout-body">
+<p>The C wrapper (and as such the Python module) is not a complete alternative to the C++ class, as it only provides a minimal subset of functions. For example, the C++ <code>Mads::Agent</code> class includes methods that simplify the creation of timed main loops, which is not provided by the C or Python interfaces (where you shall provide loop control by yourself).</p>
+</div>
+</div>
+</section>
+<section id="newchanged-commands" class="level2">
+<h2 class="anchored" data-anchor-id="newchanged-commands">New/changed commands</h2>
+<p>New sub-commands and agents are provided by MADS v2.0:</p>
+<ul>
+<li><strong>To check and download new versions:</strong> the command <code>mads update</code> shows a list of the available download links for the latest official MADS release (on GitHub). Similarly, <code>mads beta</code> provides a list of the available download links for the latest beta version (if available)</li>
+<li><strong>To monitor running agents:</strong> a new plugin is installed: <code>mads sink monitor.plugin</code> is a sink agent that shows a table of the running agents together with the time delay between the last two published messages, colored in green, yellow or red according to pre-defined intervals (that can be set in <code>mads.ini</code>)</li>
+<li><strong>Simpler plugin loading:</strong> the sub-commands <code>source</code>, <code>filter</code>, and <code>sink</code> also accept the plugin name <em>without extension</em>, i.e.&nbsp;as <code>mads sink monitor</code> rather than <code>mads sink monitor.plugin</code></li>
+</ul>
+</section>
+<section id="plugins" class="level2">
+<h2 class="anchored" data-anchor-id="plugins">Plugins</h2>
+<p>Another important change is the support for <strong>Dynamic Loop Timing</strong> (DLT) in plugins. In practice, the loop time period for source and filter plugins can be dynamically adapted <em>from within the plugin</em>, making it faster, slower, or going back to the default value.</p>
+<p>To use DLT, you simply have to set the instance variable <code>std::chrono:milliseconds next_loop_duration</code> to the desired duration of the <strong>next iteration</strong> of the main execution loop. Set it again to 0 re revert back to the nominal (and constant) loop timing.</p>
+<p>The DLT allow the development of plugins that can adapt the frequency of operation: for example, we could have a plugin that replays a stream of data collected at irregular time steps.</p>
+</section>
+<section id="plugin-template-generation" class="level2">
+<h2 class="anchored" data-anchor-id="plugin-template-generation">Plugin template generation</h2>
+<p>The <code>mads plugin</code> command, which generates stub for plugins, has been improved in order to generate stub C++ files with more detailed comments. In particular, the purpose of the different <code>return_types</code> have been explained in comments.</p>
+</section>
+<section id="breaking-changes" class="level2">
+<h2 class="anchored" data-anchor-id="breaking-changes">Breaking changes</h2>
+<p>A major version jump usually means that some breaking change has to be expected. In fact, we are also updating the plugin loading mechanism (or, <em>plugin protocol</em>) in order to make plugins more effective an easy to code.</p>
+<p>Upon loading, a plugin signals its <em>protocol version</em> to the plugin loader. The protocol version was 5 for MADS v1.4, and it is now 6 for MADS v2.0. This means that plugins developed for MADS v1.4 <strong>must be updated and re-compiled</strong>.</p>
+<p>The user-facing changes in the new protocol version are:</p>
+<ul>
+<li>support for the <code>std::chrono:milliseconds next_loop_duration</code> variable (see above)</li>
+<li>change of <code>void set_params(void const *params)</code> signature to <code>void set_params(const json &amp;params)</code>. This makes it easier the use of the <code>params</code> parameter, since a more flexible void pointer is rarely needed. No need for a cast in the function body, and any call to <code>set_params()</code> (typically in the body of the <code>main()</code> test function) must be adapted to take a <code>json</code> instance rather than a pointer to it.</li>
+<li>update the <code>CMakeLists.txt</code> to fetch the proper version of the plugin base class (with tag v2.0-P6).</li>
+</ul>
+<p>To update the plugin source code, proceed as follows:</p>
+<ul>
+<li><strong>delete</strong> the directories <code>build/plugin-*</code> (much faster than deleting the whole <code>build</code> folder)</li>
+<li>update the plugin source file either manually, or by using the <code>update_plugin_source.py</code> script that is available either in <code>$(mads -p)/python</code> or from <a href="https://gist.github.com/pbosetti/70f1da3317b5145786e3b2a8ae080820">Gist</a>:</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="ex">/python/update_plugin_source.py</span> src/my_plugin.cpp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>update the <code>CMakeLists.txt</code> so that the section:</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_TAG</span>        HEAD <span class="co"># or any tag in place of `HEAD`</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>becomes:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_TAG</span>        v2.0-P6</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>re-compile the plugin: <code>cmake -Bbuild &amp;&amp; cmake --build build</code></li>
+</ul>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

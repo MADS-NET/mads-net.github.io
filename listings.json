@@ -3,6 +3,7 @@
     "listing": "/guides.html",
     "items": [
       "/guides/python.html",
+      "/guides/v2.html",
       "/guides/security.html",
       "/guides/rerun.html",
       "/guides/replay.html",
