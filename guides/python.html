@@ -347,8 +347,8 @@ Note
 <section id="initializing-an-agent" class="level2">
 <h2 class="anchored" data-anchor-id="initializing-an-agent">Initializing an Agent</h2>
 <p>To create a new agent, you just have to give it a name, then call <code>init</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> Agent(<span class="st">"python_agent"</span>, <span class="st">"tcp://broker.local:9092) # then the mads.ini file MUST have a python_agent section!</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="er">agent.set_id</span>(<span class="st">"script1"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> Agent(<span class="st">"python_agent"</span>, <span class="st">"tcp://broker.local:9092"</span>) <span class="co"># then the mads.ini file MUST have a python_agent section!</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>agent.set_id(<span class="st">"script1"</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>agent.set_settings_timeout(<span class="dv">2000</span>) <span class="co"># 2 sec timeout</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> agent.init() <span class="op">!=</span> <span class="dv">0</span>:</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    sys.stderr.write(<span class="st">"Cannot contact broker</span><span class="ch">\n</span><span class="st">"</span>)</span>
