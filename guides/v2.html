@@ -242,6 +242,7 @@ cookieconsent.run({
   <li><a href="#libraries" id="toc-libraries" class="nav-link" data-scroll-target="#libraries">Libraries</a></li>
   <li><a href="#newchanged-commands" id="toc-newchanged-commands" class="nav-link" data-scroll-target="#newchanged-commands">New/changed commands</a></li>
   <li><a href="#plugins" id="toc-plugins" class="nav-link" data-scroll-target="#plugins">Plugins</a></li>
+  <li><a href="#receive-queue-size-control" id="toc-receive-queue-size-control" class="nav-link" data-scroll-target="#receive-queue-size-control">Receive queue size control</a></li>
   <li><a href="#plugin-template-generation" id="toc-plugin-template-generation" class="nav-link" data-scroll-target="#plugin-template-generation">Plugin template generation</a></li>
   <li><a href="#breaking-changes" id="toc-breaking-changes" class="nav-link" data-scroll-target="#breaking-changes">Breaking changes</a></li>
   </ul></li>
@@ -290,7 +291,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 3, 2026</p>
+      <p class="date-modified">February 4, 2026</p>
     </div>
   </div>
     
@@ -369,6 +370,32 @@ Note
 <p>To use DLT, you simply have to set the instance variable <code>std::chrono:milliseconds next_loop_duration</code> to the desired duration of the <strong>next iteration</strong> of the main execution loop. Set it again to 0 re revert back to the nominal (and constant) loop timing.</p>
 <p>The DLT allow the development of plugins that can adapt the frequency of operation: for example, we could have a plugin that replays a stream of data collected at irregular time steps.</p>
 </section>
+<section id="receive-queue-size-control" class="level2">
+<h2 class="anchored" data-anchor-id="receive-queue-size-control">Receive queue size control</h2>
+<p>MADS v2.0.0 allows to set the ZeroMQ receive queue size (aka <em>High-Water-Mark</em> level). By default, ad in previous versions, the queue size is 1000: any agent can queue up to 1000 messages while it performs the processing, and once the queue is full new incoming messages are discarded.</p>
+<p>Now MADS allows to set the queue size via settings. For example:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[my_agent]</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">queue_size</span> <span class="op">=</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>effectively removes the queue, and if messages arrive faster than they can be processed, they are immediately dropped.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The queue is important for agents that accept incoming messages at variable rates, possibly in bursts. This allow a thorough processing of the incoming messages. But if the incoming messages arrive at a regular and sustained rate <strong>faster than the agent’s processing capability</strong>, the queue is ineffective and only results in delay until full, then excess messages are discarded (silently). In such a condition, you want:</p>
+<ul>
+<li>to reduce the rate of incoming messages, or:</li>
+<li>to reduce the queue size to 1 so that excess messages are discarded and the <strong>older one</strong> is processed</li>
+</ul>
+<p>Unfortunately, due to ZeroMQ architecture, it is not possible to only keep the most recent message (but if you think about that, it makes no practical difference).</p>
+</div>
+</div>
+</section>
 <section id="plugin-template-generation" class="level2">
 <h2 class="anchored" data-anchor-id="plugin-template-generation">Plugin template generation</h2>
 <p>The <code>mads plugin</code> command, which generates stub for plugins, has been improved in order to generate stub C++ files with more detailed comments. In particular, the purpose of the different <code>return_types</code> have been explained in comments.</p>
@@ -388,21 +415,21 @@ Note
 <li><strong>delete</strong> the directories <code>build/plugin-*</code> (much faster than deleting the whole <code>build</code> folder)</li>
 <li>update the plugin source file either manually, or by using the <code>update_plugin_source.py</code> script that is available either in <code>$(mads -p)/python</code> or from <a href="https://gist.github.com/pbosetti/70f1da3317b5145786e3b2a8ae080820">Gist</a>:</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="ex">/python/update_plugin_source.py</span> src/my_plugin.cpp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="ex">/python/update_plugin_source.py</span> src/my_plugin.cpp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>update the <code>CMakeLists.txt</code> so that the section:</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_TAG</span>        HEAD <span class="co"># or any tag in place of `HEAD`</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>becomes:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_TAG</span>        v2.0-P6</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_TAG</span>        HEAD <span class="co"># or any tag in place of `HEAD`</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>becomes:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_TAG</span>        v2.0-P6</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>re-compile the plugin: <code>cmake -Bbuild &amp;&amp; cmake --build build</code></li>
 </ul>
