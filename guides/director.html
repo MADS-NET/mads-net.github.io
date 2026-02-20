@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-09-03">
+<meta name="dcterms.date" content="2026-02-20">
 
-<title>Agents persistency with Datastore</title>
+<title>Director</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -236,12 +236,11 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-problem" id="toc-the-problem" class="nav-link active" data-scroll-target="#the-problem">The problem</a></li>
-  <li><a href="#the-solution" id="toc-the-solution" class="nav-link" data-scroll-target="#the-solution">The solution</a>
+  <li><a href="#the-new-mads-director-command" id="toc-the-new-mads-director-command" class="nav-link active" data-scroll-target="#the-new-mads-director-command">The new <code>mads director</code> command</a>
   <ul class="collapse">
-  <li><a href="#the-datastore-class" id="toc-the-datastore-class" class="nav-link" data-scroll-target="#the-datastore-class">The <code>Datastore</code> class</a></li>
-  <li><a href="#the-plugin-template" id="toc-the-plugin-template" class="nav-link" data-scroll-target="#the-plugin-template">The plugin template</a></li>
-  <li><a href="#existing-plugins" id="toc-existing-plugins" class="nav-link" data-scroll-target="#existing-plugins">Existing plugins</a></li>
+  <li><a href="#the-director.toml-file" id="toc-the-director.toml-file" class="nav-link" data-scroll-target="#the-director.toml-file">The <code>director.toml</code> file</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
+  <li><a href="#operating-system-support" id="toc-operating-system-support" class="nav-link" data-scroll-target="#operating-system-support">Operating system support</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -251,11 +250,12 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Agents persistency with Datastore</h1>
+<h1 class="title">Director</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">plugin</div>
-    <div class="quarto-category">C++</div>
+    <div class="quarto-category">v2</div>
+    <div class="quarto-category">director</div>
     <div class="quarto-category">intermediate</div>
+    <div class="quarto-category">operations</div>
   </div>
   </div>
 
@@ -280,7 +280,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 3, 2025</p>
+      <p class="date">February 20, 2026</p>
     </div>
   </div>
   
@@ -296,7 +296,7 @@ cookieconsent.run({
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>MADS Version 1.3.5 introduces the <code>Datastore</code> class for plugins. This class allows storing persistent information at device level.</p>
+    <p>MADS v2 provides a new command that makes it easier to launch and control many different agents on the same machine.</p>
   </div>
 </div>
 
@@ -304,115 +304,119 @@ cookieconsent.run({
 </header>
 
 
-<section id="the-problem" class="level1">
-<h1>The problem</h1>
-<p>MADS agents load their setting from the centralized <code>mads.ini</code> file provided by the broker. Those settings are of course <em>read-only</em>, i.e., it is not possible for an agent to <em>update</em> its settings.</p>
-<p>This limitation is <em>by design</em>. In fact, allowing a single agent to update the setting file would possibly result in unwanted side effect: what happens if the update contains errors? what happens if there are multiple agents sharing the same name (and thus the same INI section) but having different <code>agent_id</code>? Forcing read-only settings is a way for <strong>ensuring robustness in operations</strong>.</p>
-<p>Nevertheless, there are cases where an agent needs to permanently and locally store <strong>own</strong> information that has to be persistent upon the agent’s restarts. For example, suppose that you have an <strong>agent providing IMU (inertial unit) measurements</strong> with respect to an initial reference orientation. In this case, you want the agent to calibrate it’s initial attitude upon the very first launch, and then <strong>use the same calibration</strong> even when the agent restarts or the device reboots, until explicitly forced to re-calibrate. To build on the previously cited use case, the same agent running on different devices, you want to store the calibration <strong>locally</strong>, to ensure that each instance of the same agent always loads its own calibration.</p>
-<p>In this scenario, you need <strong>persistent data storage</strong>, and that is what the <code>Datastore</code> C++ class provides.</p>
-</section>
-<section id="the-solution" class="level1">
-<h1>The solution</h1>
-<section id="the-datastore-class" class="level2">
-<h2 class="anchored" data-anchor-id="the-datastore-class">The <code>Datastore</code> class</h2>
-<p>It is a C++ header-only class, provided by the <a href="https://github.com/pbosetti/mads_plugin">plugin base project and classes</a>. This project is automatically fetched for you whenever you compile a new plugin, and provides the base code, on top of which plugins are built. In particular, it provides the base classes <code>Source</code>, <code>Filter</code>, and <code>Sink</code>, that are inherited by actual plugin classes.</p>
-<p>The source code of this project is downloaded into <code>build/_deps/plugin-src</code> in each plugin project directory.</p>
-<p>Starting from version 1.3.5, the code in <code>build/_deps/plugin-src/src</code> also provides a <code>datastore.hpp</code> class implementation. It is a relatively simple class for persistently store a <code>nlohmann::json</code> object on a text file in a local temporary folder (your OS temp dir as provided by C++ <code>std::filesystem::temp_directory_path()</code>). The class has the following notable methods:</p>
-<ul>
-<li><code>void prepare(std::string name)</code>: to be called once, it prepares a datastore file: if it exists, the file is read and parsed as a <code>nlohmann::json</code> object internally stored; if it does not exist, it is created (in the OS temp dir) and the internal storage set to an empty <code>nlohmann::json</code> object. If the <code>name</code> lacks the <code>.json</code> extension, that is automatically added.</li>
-<li><code>void save()</code>: force dumping the current internal storage in the associated file. <strong>It is automatically called when the datastore is destructed</strong> (for example upon regular exit).</li>
-<li><code>nlohmann::json &amp; operator[](const std::string &amp;key)</code>: access the object at <code>key</code> from the internal storage (both for reading and writing).</li>
-<li><code>nlohmann::json &amp; data()</code>: provides access to the internal storage.</li>
-<li><code>std::string path()</code>: provides the full path of the storage file</li>
-</ul>
-</section>
-<section id="the-plugin-template" class="level2">
-<h2 class="anchored" data-anchor-id="the-plugin-template">The plugin template</h2>
-<p>The command <code>mads plugin</code> is used to generate a plugin template. With v1.3.5, it gains the <code>-s|--datastore</code> option, which enables some example calls to the <code>Datastore</code> class. For example, by issuing:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> plugin <span class="at">-d</span> test_plugin <span class="at">-s</span> test</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>the template for a blank new plugin called <code>test.plugin</code> is created in the <code>test_plugin</code> directory, <strong>with usage examples for <code>Datastore</code></strong>. With the <code>-s</code>flag, the <code>src/test.cpp</code> file has the following additions:</p>
-<ol type="1">
-<li>The <code>Datastore</code> class is included with <code>#include &lt;datastore.hpp&gt;</code></li>
-<li>The private instance member variable <code>Datastore _datastore</code>&nbsp;is added to the <code>TestPlugin</code> class</li>
-<li>in <code>set_params()</code>, the line <code>_datastore.prepare(kind());</code> prepares the datastore to a file named as the plugin (<code>kind()</code> method) with the <code>.json</code> extension. If that file exists, it loads its content</li>
-<li>some comment lines suggest how to use the <code>_datastore</code> object</li>
-<li>the <code>info()</code> method returns the full path of the storage file.</li>
-</ol>
-<p>So, recalling the calibration use case referred above, the <code>set_params()</code> method would:</p>
-<ol type="1">
-<li>prepare the datastore;</li>
-<li>check if the datastore contains the calibration: <code>if (_datastore["calibration"].empty())</code></li>
-</ol>
-<ul>
-<li>if there’s no calibration, perform the necessary calibration ops, then save the result as <code>_datastore["calibration"] = _calib_json;</code></li>
-<li>if the calibration is present, load it as <code>_calib_json = _datastore["calibration"];</code></li>
-</ul>
-<ol start="3" type="1">
-<li>when the agent regularly exits, the <code>_datastore</code> object is destroyed and its <code>save()</code>&nbsp;method is automatically invoked, ensuring persistency</li>
-</ol>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Although there’s no need to explicitly save the datastore, forcing a save right after completing the calibration ensures that the calibration is saved even if there’s later a crash.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The JSON file location is in the temporary directory, which is OS dependent. Within that directory, plugin datastoires are saved in the <code>mads</code>&nbsp;subdirectory with the provided name (by default, the string returned by <code>kind()</code>).</p>
-<p>If the map returned by <code>info()</code> contains a pair as <code>{"Datastore", _datastore.path()}</code>, then the datastore full path is printed in the settings table when loading the plugin with <code>mads source|filter|sink</code>.</p>
-</div>
-</div>
+<section id="the-new-mads-director-command" class="level1">
+<h1>The new <code>mads director</code> command</h1>
+<p>It is often the case that you have to launch and control different agents on the same machine, like the broker, the logger, the monitor, the feedback, plus some other locally running agents.</p>
+<p>This scenario requires to have as many terminals — or split screens — running, repeatedly typing the same startup commands every time.</p>
+<p>This is of course not really ideal nor comfortable. Some users solve this issue by writing custom startup scripts, which int turn has its own downside (maintainability, programming needed).</p>
+<p>The new command <code>mads director</code> is to the rescue. The command is actually a GUI that spawns a number of different processes according to a TOML file (same syntax as <code>mads.ini</code>).</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+<span class="screen-reader-only">Warning</span>Windows specific note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If the JSON file loaded by the datastore is wrongly formatted, the <code>prepare()</code> method will fail throwing an exception. Catch that exception within <code>set_params()</code> if you can recover form the error (e.g.&nbsp;by performing a new calibration); or let the agent crash otherwise.</p>
+<p>As for any other MADS command, to launch the director you have to type <code>mads-director</code> (note the hyphen!).</p>
+</div>
+</div>
+<section id="the-director.toml-file" class="level2">
+<h2 class="anchored" data-anchor-id="the-director.toml-file">The <code>director.toml</code> file</h2>
+<p>The list of commands to be executed is defined in the <code>director.toml</code> file, which is by default searched by the <code>mads director</code> command in the current working directory or in the path given as first argument. If the file is not available, it prints a template for that file, which you can use as a starting point:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># director example configuration</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Notes:</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># - [director] is optional global settings.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># - Each top-level section name is the process name (mandatory).</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># - All options are shown below with defaults and purpose.</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">[director]</span> <span class="co"># optional: global director settings</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="dt">terminal</span> <span class="op">=</span> <span class="st">""</span> <span class="co"># optional, default="": terminal executable for detached attach windows</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">[db]</span> <span class="co"># process section name (mandatory)</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="dt">command</span> <span class="op">=</span> <span class="st">"./bin/db --port 5432"</span> <span class="co"># mandatory: command line to execute</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="dt">after</span> <span class="op">=</span> <span class="st">""</span> <span class="co"># optional, default="": start after this process name</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="dt">workdir</span> <span class="op">=</span> <span class="st">""</span> <span class="co"># optional, default="": working directory (uses director working directory)</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="dt">enabled</span> <span class="op">=</span> <span class="cn">true</span> <span class="co"># optional, default=true: when false, process is listed but never started</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="dt">scale</span> <span class="op">=</span> <span class="dv">1</span> <span class="co"># optional, default=1: number of instances to launch</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="dt">relaunch</span> <span class="op">=</span> <span class="cn">false</span> <span class="co"># optional, default=false: restart on non-zero exit status</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="dt">tty</span> <span class="op">=</span> <span class="cn">false</span> <span class="co"># optional, default=false: enable TTY/attach interaction</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># if workdir/.venv exists, director exposes it to launched Python commands</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="kw">[api]</span> <span class="co"># process section name (mandatory)</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="dt">command</span> <span class="op">=</span> <span class="st">"./bin/api_server --port 8080"</span> <span class="co"># mandatory: command line to execute</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="dt">after</span> <span class="op">=</span> <span class="st">"db"</span> <span class="co"># optional, default="": dependency by process name</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="dt">workdir</span> <span class="op">=</span> <span class="st">"services/api"</span> <span class="co"># optional, default="": working directory for this process</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="dt">enabled</span> <span class="op">=</span> <span class="cn">true</span> <span class="co"># optional, default=true: when false, process is listed but never started</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="dt">scale</span> <span class="op">=</span> <span class="dv">1</span> <span class="co"># optional, default=1: number of instances to launch</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="dt">relaunch</span> <span class="op">=</span> <span class="cn">false</span> <span class="co"># optional, default=false: restart on non-zero exit status</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="dt">tty</span> <span class="op">=</span> <span class="cn">false</span> <span class="co"># optional, default=false: enable TTY/attach interaction</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Each section is the custom name for a command: for example <code>[broker]</code> will define the settings for launching a broker. Note that <strong>any valid command</strong> is supported (not only <code>mads</code> commands).</p>
+<p>Each command has different options, above reported with their defaults:</p>
+<ul>
+<li><code>command</code>: this is the full command line including arguments, as if you were launching it from a terminal</li>
+<li><code>after</code>: if given, the corresponding command is executed only after starting the command at the corresponding section</li>
+<li><code>workdir</code>: an optional working directory; if missing, it is the directory from which <code>mads director</code> has been started</li>
+<li><code>enabled</code>: if false, the command won’t be started</li>
+<li><code>relaunch</code>: automatically relaunch a command if it fails or crashes</li>
+<li><code>tty</code>: set it to true if the command accepts interaction (like <code>mads broker</code>)</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Python
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The suggested way to use Python is by using <em>virtual environments</em>. If the process working directory contains a <code>.venv</code> directory, then it is activated before launching the process. This is the case for the <code>rerunner.plugin</code>.</p>
+</div>
+</div>
+<p>The <code>[director]</code> section only has a single option, <code>terminal</code>, which shall be set to the full path of your preferred terminal application. If missing, the OS default will be used.</p>
+</section>
+<section id="usage" class="level2">
+<h2 class="anchored" data-anchor-id="usage">Usage</h2>
+<p>The director GUI has the following elements.</p>
+<ul>
+<li>on the left: the selectable list of processes, with their current status and PID number</li>
+<li>on the right, form top to bottom:
+<ul>
+<li>details on the selected process</li>
+<li>launch command</li>
+<li>buttons for starting, stopping or relaunching the selected process</li>
+<li>TTY interaction: used for sending input to the selected process</li>
+<li>option for attaching a terminal: if the user interaction is more complex, you can attach the running process to a new terminal window</li>
+<li>the process output log (normal or selectable)</li>
+</ul></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/director_window.png" class="img-fluid figure-img"></p>
+<figcaption>The <code>mads director</code> window</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>On closing the GUI, all the controlled processes are closed.</p>
 </div>
 </div>
 </section>
-<section id="existing-plugins" class="level2">
-<h2 class="anchored" data-anchor-id="existing-plugins">Existing plugins</h2>
-<p>To use the <code>&nbsp;Datastore</code> class to an existing plugin you have to update the fetched dependency. Open the plugin’s <code>CMakeLists.txt</code> and change the following (note the only change at <strong>line 3</strong>):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
-<span id="cb2-2"><a href="#cb2-2"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
-<span id="cb2-3"><a href="#cb2-3"></a>  <span class="ot">GIT_TAG</span>        HEAD</span>
-<span id="cb2-4"><a href="#cb2-4"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a>  <span class="ot">SUBBUILD_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-subbuild</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a>  <span class="ot">SOURCE_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-src</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a>  <span class="ot">BINARY_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-build</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>to:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
-<span id="cb3-2"><a href="#cb3-2"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
-<span id="cb3-3"><a href="#cb3-3"></a>  <span class="ot">GIT_TAG</span>        v1.<span class="dt">3.5</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a>  <span class="ot">SUBBUILD_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-subbuild</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a>  <span class="ot">SOURCE_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-src</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a>  <span class="ot">BINARY_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-build</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This will force git fetching of the v1.3.5 of the plugin system.</p>
-<p>Then, just use the <code>&nbsp;Datastore</code> class as above outlined (it’s source is already available in the headers search path).</p>
+<section id="operating-system-support" class="level2">
+<h2 class="anchored" data-anchor-id="operating-system-support">Operating system support</h2>
+<p>The director GUI shall work on macOS, Linux and Windows. The MADS installer packages include the <code>mads director</code> command, <strong>with the exception</strong> of the version for ARM64 Linux. This is due to the fact that this is typically the platform for RaspbianOS on Raspberry Py devices, and the GUI is not compatible with the minimalist graphical front-end fo RaspbianOS.</p>
+<p>Not that the <code>mads director</code> is also available as a separate project on <a href="https://github.com/mads-net/mads_director" class="uri">https://github.com/mads-net/mads_director</a>, so if you really need it on Raspberry you could try and compile by yourself.</p>
 
 
 </section>

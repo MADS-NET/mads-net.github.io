@@ -291,7 +291,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 4, 2026</p>
+      <p class="date-modified">February 20, 2026</p>
     </div>
   </div>
     
@@ -362,6 +362,7 @@ Note
 <li><strong>To check and download new versions:</strong> the command <code>mads update</code> shows a list of the available download links for the latest official MADS release (on GitHub). Similarly, <code>mads beta</code> provides a list of the available download links for the latest beta version (if available)</li>
 <li><strong>To monitor running agents:</strong> a new plugin is installed: <code>mads sink monitor.plugin</code> is a sink agent that shows a table of the running agents together with the time delay between the last two published messages, colored in green, yellow or red according to pre-defined intervals (that can be set in <code>mads.ini</code>)</li>
 <li><strong>Simpler plugin loading:</strong> the sub-commands <code>source</code>, <code>filter</code>, and <code>sink</code> also accept the plugin name <em>without extension</em>, i.e.&nbsp;as <code>mads sink monitor</code> rather than <code>mads sink monitor.plugin</code></li>
+<li><strong>Director GUI</strong>: the command <code>mads director</code> launches a GUI for coordinating a number of agents <strong>on the same machine</strong>. See <a href="../guides/director.html">the guide</a></li>
 </ul>
 </section>
 <section id="plugins" class="level2">
@@ -403,36 +404,28 @@ Important
 <section id="breaking-changes" class="level2">
 <h2 class="anchored" data-anchor-id="breaking-changes">Breaking changes</h2>
 <p>A major version jump usually means that some breaking change has to be expected. In fact, we are also updating the plugin loading mechanism (or, <em>plugin protocol</em>) in order to make plugins more effective an easy to code.</p>
-<p>Upon loading, a plugin signals its <em>protocol version</em> to the plugin loader. The protocol version was 5 for MADS v1.4, and it is now 6 for MADS v2.0. This means that plugins developed for MADS v1.4 <strong>must be updated and re-compiled</strong>.</p>
+<p>Upon loading, a plugin signals its <em>protocol version</em> to the plugin loader. The protocol version was 5 for MADS v1.4, and it is now 7 for MADS v2.0. This means that plugins developed for MADS v1.4 <strong>must be updated and re-compiled</strong>.</p>
 <p>The user-facing changes in the new protocol version are:</p>
 <ul>
 <li>support for the <code>std::chrono:milliseconds next_loop_duration</code> variable (see above)</li>
 <li>change of <code>void set_params(void const *params)</code> signature to <code>void set_params(const json &amp;params)</code>. This makes it easier the use of the <code>params</code> parameter, since a more flexible void pointer is rarely needed. No need for a cast in the function body, and any call to <code>set_params()</code> (typically in the body of the <code>main()</code> test function) must be adapted to take a <code>json</code> instance rather than a pointer to it.</li>
+<li>methods for loading/publishing data are updated to also accept <strong>binary blobs</strong>. This allows to attach to any message an arbitrarily large binary object (images, data serialized more efficiently than with JSON)</li>
 <li>update the <code>CMakeLists.txt</code> to fetch the proper version of the plugin base class (with tag v2.0-P6).</li>
 </ul>
 <p>To update the plugin source code, proceed as follows:</p>
 <ul>
-<li><strong>delete</strong> the directories <code>build/plugin-*</code> (much faster than deleting the whole <code>build</code> folder)</li>
-<li>update the plugin source file either manually, or by using the <code>update_plugin_source.py</code> script that is available either in <code>$(mads -p)/python</code> or from <a href="https://gist.github.com/pbosetti/70f1da3317b5145786e3b2a8ae080820">Gist</a>:</li>
+<li><strong>delete</strong> the directories <code>build/plugin-*</code> (much faster than deleting the whole <code>build</code> folder); this forces CMake to re-download the updated version</li>
+<li>update the plugin source file either manually, or by using the <code>update_plugin_source.py</code> script that is available either in <code>$(mads -p)/python</code>:</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="ex">/python/update_plugin_source.py</span> src/my_plugin.cpp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li>update the <code>CMakeLists.txt</code> so that the section:</li>
+<li>update the <code>CMakeLists.txt</code> using the same command:</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_TAG</span>        HEAD <span class="co"># or any tag in place of `HEAD`</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>becomes:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_TAG</span>        v2.0-P6</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="ex">/python/update_plugin_source.py</span> CMakeLists.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li>re-compile the plugin: <code>cmake -Bbuild &amp;&amp; cmake --build build</code></li>
+<li>re-compile the plugin:</li>
 </ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="kw">&amp;&amp;</span> <span class="fu">cmake</span> <span class="at">--build</span> build</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

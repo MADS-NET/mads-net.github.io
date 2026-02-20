@@ -2,6 +2,7 @@
   {
     "listing": "/guides.html",
     "items": [
+      "/guides/director.html",
       "/guides/v2.html",
       "/guides/python.html",
       "/guides/security.html",
