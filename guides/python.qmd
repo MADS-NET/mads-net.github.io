@@ -4,7 +4,7 @@ author:
   - name: "Paolo Bosetti"
     affiliations: 
       - name: "University of Trento"
-date: 28/01/2026
+date: 01/28/2026
 date-modified: today
 format: html
 # or uncomment the following line to also create PDF format
@@ -23,7 +23,7 @@ abstract: |
 
 MADS version 1.x is a collection of executable commands and a header-only C++ library. This makes it not so easy and effective to integrate the MADS library to other languages and systems.
 
-With **MADS v2.x** we moved to a proper compiled library (both static and dynamic), and plain header files. The library also includes a pure C wrapper to the Agent class. At the moment it is not a 1:1 alternative to the C++ version: it is more limited, not all C++ methods and classes have a corresponding C function, but it is sufficient to implement basic interfaces to a network to MADS agents, i.e.: connecting to a broker, reading the shared settings, publishing and reading messages.
+With [MADS v2.x](v2.qmd) we moved to a proper compiled library (both static and dynamic), and plain header files. The library also includes a pure C wrapper to the Agent class. At the moment it is not a 1:1 alternative to the C++ version: it is more limited, not all C++ methods and classes have a corresponding C function, but it is sufficient to implement basic interfaces to a network to MADS agents, i.e.: connecting to a broker, reading the shared settings, publishing and reading messages.
 
 # Python interface
 
@@ -67,7 +67,7 @@ fault_settings_uri
 To create a new agent, you just have to give it a name, then call `init`:
 
 ```python
-agent = Agent("python_agent", "tcp://broker.local:9092) # then the mads.ini file MUST have a python_agent section!
+agent = Agent("python_agent", "tcp://broker.local:9092") # then the mads.ini file MUST have a python_agent section!
 agent.set_id("script1")
 agent.set_settings_timeout(2000) # 2 sec timeout
 if agent.init() != 0:

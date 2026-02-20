@@ -1,0 +1,139 @@
+---
+title: "MADS v2.0"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 02/02/2026
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [v2, changes, plugin, crypto]
+abstract: |
+  MADS v2.0 introduces a set of new features and a breaking change in the plugin protocol.
+  
+  **NOTE**: this document is a work in progress, while MADS v2 remains in beta.
+---
+
+# What's new in {{< logo >}} v2.0
+
+The new version introduces some important features, listed hereafter.
+
+## Authentication and Cryptography
+
+This is the single biggest new feature (and the reason for a major version change from 1.x to 2.x), which enables the use of MADS in production environments. MADS now supports **optional** [encrypted communication](security.qmd) via the underlying ZeroMQ protocol. 
+
+Cryptography is provided via CURVE library, which implements [elliptic curve cryptography](https://en.wikipedia.org/wiki/Elliptic-curve_cryptography){target="_blank"} via public/private key pairs. Each agent has its own private key and the public key of the broker, while the broker has its private key and the keys of all agents. 
+
+The mechanism also provides an optional **whitelist authentication** for a given list of IPs (via `mads.ini`).
+
+The `mads --keypair` command creates a valid keypair for the current device, then the broker and each agent can be started with the `--crypto` option for enabling encrypted communication. Only agents with valid keys can then join an encrypted MADS network.
+
+:::callout-important
+Note that macOS version requires the `libsodium` library, which can be installed with `brew install libsodium`. The Linux version requires `libsodium23` (`sudo apt install libsodium23`).
+:::
+
+
+
+
+## Libraries
+
+Before v2.0, MADS `Agent` C++ class was available in a header only file. This made it harder to integrate MADS into other languages.
+
+With MADS v2.0, the standard MADS installer provides both a static and a shared library, plus a host of C++ header files. The libraries also provide a pure C wrapper interface (and its corresponding header `agent_c.h`). This makes it easier for:
+
+* implementing custom agents in any language that has a pure C interface (i.e. probably ANY language)
+* releasing within the MADS installer a [Python 3 interface](python.qmd), available as a module
+* compiling the library for Android (planned for the next month), which will allow to write MADS agents in --- for example --- in C# within GUIs to be used on a tablet of phone
+
+:::callout-note
+The C wrapper (and as such the Python module) is not a complete alternative to the C++ class, as it only provides a minimal subset of functions. For example, the C++ `Mads::Agent` class includes methods that simplify the creation of timed main loops, which is not provided by the C or Python interfaces (where you shall provide loop control by yourself).
+:::
+
+
+## New/changed commands
+
+New sub-commands and agents are provided by MADS v2.0:
+
+* **To check and download new versions:** the command `mads update` shows a list of the available download links for the latest official MADS release (on GitHub). Similarly, `mads beta` provides a list of the available download links for the latest beta version (if available)
+* **To monitor running agents:** a new plugin is installed: `mads sink monitor.plugin` is a sink agent that shows a table of the running agents together with the time delay between the last two published messages, colored in green, yellow or red according to pre-defined intervals (that can be set in `mads.ini`)
+* **Simpler plugin loading:** the sub-commands `source`, `filter`, and `sink` also accept the plugin name *without extension*, i.e. as `mads sink monitor` rather than `mads sink monitor.plugin`
+* **Director GUI**: the command `mads director` launches a GUI for coordinating a number of agents **on the same machine**. See [the guide](director.qmd)
+
+
+## Plugins
+
+Another important change is the support for **Dynamic Loop Timing** (DLT) in plugins. In practice, the loop time period for source and filter plugins can be dynamically adapted *from within the plugin*, making it faster, slower, or going back to the default value.
+
+To use DLT, you simply have to set the instance variable `std::chrono:milliseconds next_loop_duration` to the desired duration of the **next iteration** of the main execution loop. Set it again to 0 re revert back to the nominal (and constant) loop timing.
+
+The DLT allow the development of plugins that can adapt the frequency of operation: for example, we could have a plugin that replays a stream of data collected at irregular time steps.
+
+
+## Receive queue size control
+
+MADS v2.0.0 allows to set the ZeroMQ receive queue size (aka *High-Water-Mark* level). By default, ad in previous versions, the queue size is 1000: any agent can queue up to 1000 messages while it performs the processing, and once the queue is full new incoming messages are discarded.
+
+Now MADS allows to set the queue size via settings. For example:
+
+```toml
+[my_agent]
+queue_size = 1
+```
+
+effectively removes the queue, and if messages arrive faster than they can be processed, they are immediately dropped.
+
+:::callout-important
+The queue is important for agents that accept incoming messages at variable rates, possibly in bursts. This allow a thorough processing of the incoming messages. But if the incoming messages arrive at a regular and sustained rate **faster than the agent's processing capability**, the queue is ineffective and only results in delay until full, then excess messages are discarded (silently). In such a condition, you want:
+
+* to reduce the rate of incoming messages, or:
+* to reduce the queue size to 1 so that excess messages are discarded and the **older one** is processed
+
+Unfortunately, due to ZeroMQ architecture, it is not possible to only keep the most recent message (but if you think about that, it makes no practical difference).
+:::
+
+
+## Plugin template generation
+
+The `mads plugin` command, which generates stub for plugins, has been improved in order to generate stub C++ files with more detailed comments. In particular, the purpose of the different `return_types` have been explained in comments.
+
+
+## Breaking changes
+
+A major version jump usually means that some breaking change has to be expected. In fact, we are also updating the plugin loading mechanism (or, *plugin protocol*) in order to make plugins more effective an easy to code.
+
+Upon loading, a plugin signals its *protocol version* to the plugin loader. The protocol version was 5 for MADS v1.4, and it is now 7 for MADS v2.0. This means that plugins developed for MADS v1.4 **must be updated and re-compiled**.
+
+The user-facing changes in the new protocol version are:
+
+* support for the `std::chrono:milliseconds next_loop_duration` variable (see above)
+* change of `void set_params(void const *params)` signature to `void set_params(const json &params)`. This makes it easier the use of the `params` parameter, since a more flexible void pointer is rarely needed. No need for a cast in the function body, and any call to `set_params()` (typically in the body of the `main()` test function) must be adapted to take a `json` instance rather than a pointer to it.
+* methods for loading/publishing data are updated to also accept **binary blobs**. This allows to attach to any message an arbitrarily large binary object (images, data serialized more efficiently than with JSON)
+* update the `CMakeLists.txt` to fetch the proper version of the plugin base class (with tag v2.0-P6).
+
+To update the plugin source code, proceed as follows:
+
+* **delete** the directories `build/plugin-*` (much faster than deleting the whole `build` folder); this forces CMake to re-download the updated version
+* update the plugin source file either manually, or by using the `update_plugin_source.py` script that is available either in `$(mads -p)/python`:
+
+```sh
+$(mads -p)/python/update_plugin_source.py src/my_plugin.cpp
+```
+
+* update the `CMakeLists.txt` using the same command:
+
+```sh
+$(mads -p)/python/update_plugin_source.py CMakeLists.txt
+```
+
+* re-compile the plugin: 
+
+```sh
+cmake -Bbuild && cmake --build build
+```
