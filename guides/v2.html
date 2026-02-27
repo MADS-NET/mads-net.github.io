@@ -238,7 +238,9 @@ cookieconsent.run({
   <ul>
   <li><a href="#whats-new-in-v2.0" id="toc-whats-new-in-v2.0" class="nav-link active" data-scroll-target="#whats-new-in-v2.0">What’s new in <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> v2.0</a>
   <ul class="collapse">
+  <li><a href="#new-build-system" id="toc-new-build-system" class="nav-link" data-scroll-target="#new-build-system">New build system</a></li>
   <li><a href="#authentication-and-cryptography" id="toc-authentication-and-cryptography" class="nav-link" data-scroll-target="#authentication-and-cryptography">Authentication and Cryptography</a></li>
+  <li><a href="#windows-specific" id="toc-windows-specific" class="nav-link" data-scroll-target="#windows-specific">Windows specific</a></li>
   <li><a href="#libraries" id="toc-libraries" class="nav-link" data-scroll-target="#libraries">Libraries</a></li>
   <li><a href="#newchanged-commands" id="toc-newchanged-commands" class="nav-link" data-scroll-target="#newchanged-commands">New/changed commands</a></li>
   <li><a href="#plugins" id="toc-plugins" class="nav-link" data-scroll-target="#plugins">Plugins</a></li>
@@ -291,7 +293,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 20, 2026</p>
+      <p class="date-modified">February 27, 2026</p>
     </div>
   </div>
     
@@ -312,6 +314,10 @@ cookieconsent.run({
 <section id="whats-new-in-v2.0" class="level1">
 <h1>What’s new in <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> v2.0</h1>
 <p>The new version introduces some important features, listed hereafter.</p>
+<section id="new-build-system" class="level2">
+<h2 class="anchored" data-anchor-id="new-build-system">New build system</h2>
+<p>The whole CMake build system has been rewritten from scratch. It should be now much easier than it was to build MADS from source. Nonetheless, installing <a href="https://git.new/mads" target="MADS">binaries</a> remains the suggester way to go.</p>
+</section>
 <section id="authentication-and-cryptography" class="level2">
 <h2 class="anchored" data-anchor-id="authentication-and-cryptography">Authentication and Cryptography</h2>
 <p>This is the single biggest new feature (and the reason for a major version change from 1.x to 2.x), which enables the use of MADS in production environments. MADS now supports <strong>optional</strong> <a href="../guides/security.html">encrypted communication</a> via the underlying ZeroMQ protocol.</p>
@@ -332,15 +338,20 @@ Important
 </div>
 </div>
 </section>
+<section id="windows-specific" class="level2">
+<h2 class="anchored" data-anchor-id="windows-specific">Windows specific</h2>
+<p>On Windows, you can now run commands as on unixes, i.e.&nbsp;<code>mads broker</code> in place of <code>mads-broker</code>. Of course, the dash version continues to work.</p>
+</section>
 <section id="libraries" class="level2">
 <h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
 <p>Before v2.0, MADS <code>Agent</code> C++ class was available in a header only file. This made it harder to integrate MADS into other languages.</p>
-<p>With MADS v2.0, the standard MADS installer provides both a static and a shared library, plus a host of C++ header files. The libraries also provide a pure C wrapper interface (and its corresponding header <code>agent_c.h</code>). This makes it easier for:</p>
+<p>With MADS v2.0, the standard MADS installer provides both a static and a shared library, <code>libMadsCore.[so|dll|dylib]</code>, plus a host of C++ header files. The libraries also provide a pure C wrapper interface (and its corresponding header <code>agent_c.h</code>). This makes it easier for:</p>
 <ul>
 <li>implementing custom agents in any language that has a pure C interface (i.e.&nbsp;probably ANY language)</li>
 <li>releasing within the MADS installer a <a href="../guides/python.html">Python 3 interface</a>, available as a module</li>
 <li>compiling the library for Android (planned for the next month), which will allow to write MADS agents in — for example — in C# within GUIs to be used on a tablet of phone</li>
 </ul>
+<p>The MadsCore library embeds all the libraries needed by MADS: for MongoDB, ZeroMQ, Snappy compression, Sodium for encription, and others. Only OpenSSL or equivalent cryptography libraries are needed.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -414,18 +425,14 @@ Important
 </ul>
 <p>To update the plugin source code, proceed as follows:</p>
 <ul>
-<li><strong>delete</strong> the directories <code>build/plugin-*</code> (much faster than deleting the whole <code>build</code> folder); this forces CMake to re-download the updated version</li>
+<li><strong>delete</strong> the directories <code>build/plugin-*</code> (much faster than deleting the whole <code>build</code> folder); this forces CMake to re-download the updated version. If it does not work, delete the whole <code>build</code> folder and rebuild it from scratch</li>
 <li>update the plugin source file either manually, or by using the <code>update_plugin_source.py</code> script that is available either in <code>$(mads -p)/python</code>:</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="ex">/python/update_plugin_source.py</span> src/my_plugin.cpp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ul>
-<li>update the <code>CMakeLists.txt</code> using the same command:</li>
-</ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="ex">/python/update_plugin_source.py</span> CMakeLists.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="ex">/python/update_plugin_source.py</span> src/<span class="pp">*</span>.cpp CMakeLists.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>re-compile the plugin:</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="kw">&amp;&amp;</span> <span class="fu">cmake</span> <span class="at">--build</span> build</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="kw">&amp;&amp;</span> <span class="fu">cmake</span> <span class="at">--build</span> build</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
