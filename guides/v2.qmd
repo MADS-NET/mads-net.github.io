@@ -14,7 +14,7 @@ format: html
 #   pdf:
 #     toc: true
 draft: false
-categories: [v2, changes, plugin, crypto]
+categories: [v2, changes, plugin, crypto, dyrector]
 abstract: |
   MADS v2.0 introduces a set of new features and a breaking change in the plugin protocol.
   
@@ -24,6 +24,10 @@ abstract: |
 # What's new in {{< logo >}} v2.0
 
 The new version introduces some important features, listed hereafter.
+
+## New build system
+
+The whole CMake build system has been rewritten from scratch. It should be now much easier than it was to build MADS from source. Nonetheless, installing [binaries](https://git.new/mads){target="MADS"} remains the suggester way to go.
 
 ## Authentication and Cryptography
 
@@ -35,22 +39,22 @@ The mechanism also provides an optional **whitelist authentication** for a given
 
 The `mads --keypair` command creates a valid keypair for the current device, then the broker and each agent can be started with the `--crypto` option for enabling encrypted communication. Only agents with valid keys can then join an encrypted MADS network.
 
-:::callout-important
-Note that macOS version requires the `libsodium` library, which can be installed with `brew install libsodium`. The Linux version requires `libsodium23` (`sudo apt install libsodium23`).
-:::
+## Windows specific
 
-
+On Windows, you can now run commands as on unixes, i.e. `mads broker` in place of `mads-broker`. Of course, the dash version continues to work.
 
 
 ## Libraries
 
 Before v2.0, MADS `Agent` C++ class was available in a header only file. This made it harder to integrate MADS into other languages.
 
-With MADS v2.0, the standard MADS installer provides both a static and a shared library, plus a host of C++ header files. The libraries also provide a pure C wrapper interface (and its corresponding header `agent_c.h`). This makes it easier for:
+With MADS v2.0, the standard MADS installer provides both a static and a shared library, `libMadsCore.[so|dll|dylib]`, plus a host of C++ header files. The libraries also provide a pure C wrapper interface (and its corresponding header `agent_c.h`). This makes it easier for:
 
 * implementing custom agents in any language that has a pure C interface (i.e. probably ANY language)
 * releasing within the MADS installer a [Python 3 interface](python.qmd), available as a module
 * compiling the library for Android (planned for the next month), which will allow to write MADS agents in --- for example --- in C# within GUIs to be used on a tablet of phone
+
+The MadsCore library embeds all the libraries needed by MADS: for MongoDB, ZeroMQ, Snappy compression, Sodium for encription, and others. Only OpenSSL or equivalent cryptography libraries are needed.
 
 :::callout-note
 The C wrapper (and as such the Python module) is not a complete alternative to the C++ class, as it only provides a minimal subset of functions. For example, the C++ `Mads::Agent` class includes methods that simplify the creation of timed main loops, which is not provided by the C or Python interfaces (where you shall provide loop control by yourself).
@@ -65,6 +69,7 @@ New sub-commands and agents are provided by MADS v2.0:
 * **To monitor running agents:** a new plugin is installed: `mads sink monitor.plugin` is a sink agent that shows a table of the running agents together with the time delay between the last two published messages, colored in green, yellow or red according to pre-defined intervals (that can be set in `mads.ini`)
 * **Simpler plugin loading:** the sub-commands `source`, `filter`, and `sink` also accept the plugin name *without extension*, i.e. as `mads sink monitor` rather than `mads sink monitor.plugin`
 * **Director GUI**: the command `mads director` launches a GUI for coordinating a number of agents **on the same machine**. See [the guide](director.qmd)
+
 
 
 ## Plugins
@@ -119,17 +124,11 @@ The user-facing changes in the new protocol version are:
 
 To update the plugin source code, proceed as follows:
 
-* **delete** the directories `build/plugin-*` (much faster than deleting the whole `build` folder); this forces CMake to re-download the updated version
+* **delete** the directories `build/plugin-*` (much faster than deleting the whole `build` folder); this forces CMake to re-download the updated version. If it does not work, delete the whole `build` folder and rebuild it from scratch
 * update the plugin source file either manually, or by using the `update_plugin_source.py` script that is available either in `$(mads -p)/python`:
 
 ```sh
-$(mads -p)/python/update_plugin_source.py src/my_plugin.cpp
-```
-
-* update the `CMakeLists.txt` using the same command:
-
-```sh
-$(mads -p)/python/update_plugin_source.py CMakeLists.txt
+$(mads -p)/python/update_plugin_source.py src/*.cpp CMakeLists.txt
 ```
 
 * re-compile the plugin: 

@@ -1,0 +1,9 @@
+---
+title: "Python test"
+author: "Paolo Bosetti"
+---
+
+
+```{python}
+2+2
+```

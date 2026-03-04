@@ -91,7 +91,7 @@ To publish a message, it is a simple as:
 ```python
 msg = {"value": 10, "list": [1, 2, 3]}
 topic = "test_topic"
-agent.publish(topic, msg)
+agent.publish(msg, topic)
 ```
 
 To read, waiting, for a message:

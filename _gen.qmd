@@ -1,0 +1,55 @@
+---
+title: "gen"
+format: html
+---
+
+```{r setup}
+library(tidyverse)
+library(readr)
+```
+
+```{r}
+set.seed(0)
+N <- 500
+dt <- 0.1
+T <- N*dt
+f <- 2*pi/T *2
+df <- tibble(
+  id = 1:N,
+  timecode = (id-1)*dt,
+  sensor.temperature = 10*sin(timecode*f) + rnorm(100, 0, 2),
+  sensor.humidity = NA
+)
+```
+
+
+
+
+
+```{r}
+d <- 0
+df$sensor.humidity <- list(
+  ar = c(0.7, -0.4),
+  ma = c(0.2, 0.5, 0.2, 0.1),
+  order = c(2, d, 4)
+) %>% arima.sim(N-d) + 20
+
+
+df %>%
+  ggplot(aes(x=timecode)) + 
+  geom_line(aes(y = sensor.temperature, color="temp")) + 
+  geom_line(aes(y = sensor.humidity, color="hum"))
+
+
+```
+
+
+```{r}
+write_csv(df, "example.csv")
+```
+
+```{r}
+forecast::ggtsdisplay(df$sensor.humidity)
+```
+
+

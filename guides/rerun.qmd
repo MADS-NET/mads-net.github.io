@@ -90,6 +90,16 @@ keypaths = ["/env/sensor/temperature", "/env/sensor/humidity"]
 
 then the Rerun viewer will display two time series for the temperature and humidity values. The layout of the two series is heuristically determined by the viewer, but it can be customized by the user in the viewer GUI.
 
+The INI file can also contain an array of **trace keypaths**. a trace is a sequence of 2-D or 3-D points that can be used to visualize trajectories, paths, or any other sequence of points. For example, if the JSON messages contain a field `position` with the following structure:
+
+```json
+{
+  "position": [1, 2, 3]
+}
+```
+
+then the keypath to visualize the position as a trace would be `trace_keypath = ["/env/position"]`. The plugin will automatically detect that this is a 3-D point and will visualize it as such in the Rerun viewer. If the `position` field contains only two values, it will be visualized as a 2-D point.
+
 For the time-series, the plugin assumes that the JSON messages contain a field named `timeframe` with the timeframe of the measurement, expressed in seconds since last midnight rounded to the nearest frame. If the field is not present, the plugin will use the current system time as timestamp.
 
 At the moment, the plugin can also visualize the **Auto-Correlation Function** ([ACF](https://en.wikipedia.org/wiki/Autocorrelation)) and **Fast Fourier Transform** (FFT) of selected signals. The ACF is useful for visualizing periodicity in the signal and --- most importantly --- to define the maximum sampling frequency for a signal (above that frequency we are essentially sampling the same observation).

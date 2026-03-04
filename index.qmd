@@ -17,7 +17,7 @@ See [this guide](/guides/install.html) for installation instructions.
 :::callout-important
 ## New version!
 
-**MADS v2.0.0** is about to be released. This version introduces some **breaking changes**: look at [this guide](guides/v2.qmd) to learn more and how to migrate.
+**MADS v2.0.0** is OUT! This version introduces some **breaking changes**: look at [this guide](guides/v2.qmd) to learn more and how to migrate.
 :::
 
 # What is it
