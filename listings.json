@@ -2,6 +2,7 @@
   {
     "listing": "/guides.html",
     "items": [
+      "/guides/replay.html",
       "/guides/director.html",
       "/guides/v2.html",
       "/guides/python.html",
@@ -22,8 +23,7 @@
       "/guides/containerized.html",
       "/guides/rpio.html",
       "/guides/python_agent.html",
-      "/guides/zeroconf.html",
-      "/guides/replay.html"
+      "/guides/zeroconf.html"
     ]
   }
 ]
