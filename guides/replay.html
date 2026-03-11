@@ -2,15 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.9.30">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-09-08">
+<meta name="dcterms.date" content="2025-03-11">
 
-<title>Replay plugin</title>
+<title>template</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -71,19 +74,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6e942f2f6372d81a3862b03e33b5f49d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-bd7d9e9d7f458aa9e34494af118c0d68.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6e942f2f6372d81a3862b03e33b5f49d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-26c68d61cf99900fc3c88cffcfbb4b26.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-8d9d75b6206e79db986742cfe6744e81.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-26c68d61cf99900fc3c88cffcfbb4b26.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-c0f2d3e989b2edd28e70bef51d272bf3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-a9b58074f428f44b6ca53811f3afa7b1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-c0f2d3e989b2edd28e70bef51d272bf3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-28da3566de5677dd9681dab41dae1e46.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-cdf766d25d83b9775e38c3a252729f9a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-28da3566de5677dd9681dab41dae1e46.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -236,14 +238,12 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-plugin" id="toc-the-plugin" class="nav-link active" data-scroll-target="#the-plugin">The plugin</a>
+  <li><a href="#rationale" id="toc-rationale" class="nav-link active" data-scroll-target="#rationale">Rationale</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a>
   <ul class="collapse">
-  <li><a href="#getting-it" id="toc-getting-it" class="nav-link" data-scroll-target="#getting-it">Getting it</a></li>
-  <li><a href="#configuration" id="toc-configuration" class="nav-link" data-scroll-target="#configuration">Configuration</a></li>
-  <li><a href="#mapping-a-csv-to-a-list-of-json-objects" id="toc-mapping-a-csv-to-a-list-of-json-objects" class="nav-link" data-scroll-target="#mapping-a-csv-to-a-list-of-json-objects">Mapping a CSV to a list of JSON objects</a></li>
-  <li><a href="#replaying-multiple-signals" id="toc-replaying-multiple-signals" class="nav-link" data-scroll-target="#replaying-multiple-signals">Replaying multiple signals</a></li>
+  <li><a href="#ini-file-section" id="toc-ini-file-section" class="nav-link" data-scroll-target="#ini-file-section">INI file section</a></li>
+  <li><a href="#running-the-plugin" id="toc-running-the-plugin" class="nav-link" data-scroll-target="#running-the-plugin">Running the plugin</a></li>
   </ul></li>
-  <li><a href="#creating-a-csv-file" id="toc-creating-a-csv-file" class="nav-link" data-scroll-target="#creating-a-csv-file">Creating a CSV file</a></li>
   </ul>
 </nav>
     </div>
@@ -252,9 +252,13 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Replay plugin</h1>
+<h1 class="title">template</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">template</div>
+    <div class="quarto-category">replay</div>
+    <div class="quarto-category">easy</div>
+    <div class="quarto-category">plugin</div>
+    <div class="quarto-category">v2</div>
+    <div class="quarto-category">mongodb</div>
   </div>
   </div>
 
@@ -279,14 +283,14 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 8, 2025</p>
+      <p class="date">March 11, 2025</p>
     </div>
   </div>
   
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">March 4, 2026</p>
+      <p class="date-modified">March 11, 2026</p>
     </div>
   </div>
     
@@ -295,7 +299,7 @@ cookieconsent.run({
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>When debugging a MADS system, it might prove useful to have a way to “replay” a previously recorded data stream. This is what the <code>replay.plugin</code> does.</p>
+    <p>MADS v2.0.1 provides a new <code>replay.plugin</code> for replaying a stream of datasets from a MongoDB database. This can be useful for testing and debugging purposes.</p>
   </div>
 </div>
 
@@ -303,134 +307,61 @@ cookieconsent.run({
 </header>
 
 
-<section id="the-plugin" class="level1">
-<h1>The plugin</h1>
-<section id="getting-it" class="level2">
-<h2 class="anchored" data-anchor-id="getting-it">Getting it</h2>
-<p>The <code>replay.plugin</code> is available on <a href="https://github.com/MADS-NET/replay_plugin" class="uri">https://github.com/MADS-NET/replay_plugin</a>. Clone it and build as usual with (on Windows, follow the instriction on the <code>README.md</code> file):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-DCMAKE_INSTALL_PREFIX</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="st">"</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j4</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cmake <span class="at">--install</span> build</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="configuration" class="level2">
-<h2 class="anchored" data-anchor-id="configuration">Configuration</h2>
-<p>Apart from the common settings, the INI file for the <code>replay.plugin</code> requires the following additional fields:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[replay]</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "sensors" # topic on which to publish the datasets</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">csv_file </span><span class="ot">=</span><span class="st"> "path/to/file.csv"</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="dt">loop </span><span class="ot">=</span><span class="st"> true # once the end of file has been reached, start again from beginning</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Note that the CSV file path can be either absolute or relative to the current working directory (the one where you launch the agent).</p>
-</section>
-<section id="mapping-a-csv-to-a-list-of-json-objects" class="level2">
-<h2 class="anchored" data-anchor-id="mapping-a-csv-to-a-list-of-json-objects">Mapping a CSV to a list of JSON objects</h2>
-<p>The CSV is supposed to contain a list of datasets, one per row, with different signals in different rows.</p>
-<p>But how do we map a flat row of a CSV file to a structured JSON object, which may have nested sub-objects and sub-arrays?</p>
-<p>The answer is to use <strong>keypaths</strong> as column headers. A keypath is a string that identifies the path to a specific field in a JSON object, using slashes (<code>/</code>) to separate different levels of the hierarchy,including array indexes (zero based). For example:</p>
-<pre class="csv"><code># Comments and empty lines are skipped
-/timestamp, /sensor/0/temperature, /sensor/0/humidity, /sensor/1/temperature, /sensor/1/humidity
-2024-06-01T12:00:00Z, 22.5, 45.0, 23.0, 50.0</code></pre>
-<p>becomes:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"timestamp"</span><span class="fu">:</span> <span class="st">"2024-06-01T12:00:00Z"</span><span class="fu">,</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"sensor"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"temperature"</span><span class="fu">:</span> <span class="fl">22.5</span><span class="fu">,</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"humidity"</span><span class="fu">:</span> <span class="fl">45.0</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="ot">,</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"temperature"</span><span class="fu">:</span> <span class="fl">23.0</span><span class="fu">,</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"humidity"</span><span class="fu">:</span> <span class="fl">50.0</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-important callout-titled">
+<section id="rationale" class="level1">
+<h1>Rationale</h1>
+<p>Before MADS v2.0.1, there was no built-in way to replay a stream of datasets from a MongoDB database. The only solution was to export the data to a CSV file and then use the plugin <a href="https://github.com/MADS-NET/replay_plugin"><code>replay_plugin</code></a> to read the CSV file and publish the datasets. This was not ideal, as it required extra steps and a custom plugin.</p>
+<p>Furthermore, the replay plugin allowed to stream a single topic at a time, making it impossible to replay a complex system with multiple topics and interdependencies.</p>
+<p>Now we have a better solution directly provided by the MADS installer, which allows to replay a stream of datasets straight from the MongoDB database, without the need for intermediate CSV files. This plugin can be launched with the usual <code>mads source replay</code> command, and it allows to replay multiple topics at the same time, preserving the original timestamps and interdependencies between datasets.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Important
+Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Keypaths <strong>must</strong> start with a leading slash: <code>/sensor/x</code> os OK, <code>sensor/x</code> is wrong.</p>
+<p>Just to be clear: no need to clone and compile a new plugin: the <code>replay.plugin</code> is now included in the MADS installer, and can be launched with the usual <code>mads source replay</code> command.</p>
 </div>
 </div>
-<p>An alternative syntax uses dots and square brakets for array indexes, as for example in <code>sensor[0].temperature</code>. This alterante syntax is supported because it’s the way MongoDB Compass exports data to CSV format (see later on for an example).</p>
 </section>
-<section id="replaying-multiple-signals" class="level2">
-<h2 class="anchored" data-anchor-id="replaying-multiple-signals">Replaying multiple signals</h2>
-<p>To replay multiple agents, you need to have multiple CSV files, one per agent, and launch multiple instances of the <code>replay.plugin</code>, each one with its own INI file and with its custom <code>pub_topic</code> and agent name. With the INI file having:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[replay_agent1]</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "temperature" # topic on which to publish the datasets</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">csv_file </span><span class="ot">=</span><span class="st"> "temp_data.csv"</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">loop </span><span class="ot">=</span><span class="st"> </span><span class="kw">true</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">[replay_agent2]</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "imu" # topic on which to publish the datasets</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="dt">csv_file </span><span class="ot">=</span><span class="st"> "imu_data.csv"</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="dt">loop </span><span class="ot">=</span><span class="st"> </span><span class="kw">true</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>launch two agents with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># on first terminal:</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source replay.plugin <span class="at">-n</span> replay_agent1</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># on second terminal:</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source replay.plugin <span class="at">-n</span> replay_agent2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="creating-a-csv-file" class="level1">
-<h1>Creating a CSV file</h1>
-<p>An input CSV file can be easily created with scripting languages by generating synthetic data, or by logging data from sensors.</p>
-<p>Another possibility is to use MADS to record data in the MongoDB database, then use <a href="https://www.mongodb.com/products/compass">MongoDB Compass</a> to export the data as CSV.</p>
-<p>To do that, open the table you want to export in Compass. Suppose that you have something similar:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/csv/step_01.png" class="img-fluid figure-img"></p>
-<figcaption>MongoDB Compass screenshot</figcaption>
-</figure>
-</div>
-<p>We only want to export the elements with keypaths <code>message.list</code> and <code>message.processed</code>. Then expand the <em>Options…</em> query menu and set the <em>Project</em> field as:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/csv/step_02.png" class="img-fluid figure-img"></p>
-<figcaption>Query projection</figcaption>
-</figure>
-</div>
-<p>Now click on the expand icon on the top left of the objects list and select <em>Expand query results</em>:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/csv/step_03.png" class="img-fluid figure-img"></p>
-<figcaption>Expand fields</figcaption>
-</figure>
-</div>
-<p>Finally, select <em>CSV</em> as export format, and save the file:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/csv/step_04.png" class="img-fluid figure-img"></p>
-<figcaption>Export CSV</figcaption>
-</figure>
-</div>
-<p>The resulting CSV file will look like this (first two lines only):</p>
-<pre class="csv"><code>message.list[0],message.list[1],message.list[2],message.list[3],message.processed
-1,2,3,4,false</code></pre>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The replay of the data currently only support the timing stated by the <code>--period</code> command line option or by the <code>period</code> INI file field. This means that:</p>
+<section id="usage" class="level1">
+<h1>Usage</h1>
+<section id="ini-file-section" class="level2">
+<h2 class="anchored" data-anchor-id="ini-file-section">INI file section</h2>
+<p>as for any agent, you first need to vcreate a section in the <code>mads.ini</code> file for the <code>replay.plugin</code>, with the following additional fields:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[replay]</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">db_uri</span> <span class="op">=</span> <span class="st">"mongodb://localhost:27017"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dt">db_name</span> <span class="op">=</span> <span class="st">"mads_test"</span>                                      <span class="co"># Mandatory, a string</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="dt">collections</span> <span class="op">=</span> <span class="op">[</span><span class="st">"perf_assess_1"</span><span class="op">,</span> <span class="st">"perf_assess_2"</span><span class="op">]</span>   <span class="co"># Mandatory, array of strings</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">start_time</span> <span class="op">=</span> <span class="st">"2026-03-10T20:27:00Z"</span>      <span class="co"># Mandatory, a string in ISO8601 format</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="dt">end_time</span> <span class="op">=</span> <span class="st">"2026-03-10T20:27:10Z"</span>        <span class="co"># Optional, a string in ISO8601 format</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="dt">max_loop_duration_ms</span> <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="dt">repeat</span> <span class="op">=</span> <span class="cn">false</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="dt">view_name</span> <span class="op">=</span> <span class="st">"mads_replay_view"</span>   <span class="co"># default="": if specified mongo_replay creates</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                                 <span class="co"># a view with this name </span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="dt">reuse_view</span> <span class="op">=</span> <span class="cn">false</span>          <span class="co"># default=false: if true and view_name is specified, </span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                            <span class="co"># mongo_replay will reuse the existing view</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The above is pretty self-explanatory, but here are some details:</p>
 <ul>
-<li>if the original data contains a timestamp field, that is not used for the replay</li>
-<li>if stream was not periodic, the replay will be anyway periodic, with the specified period.</li>
+<li><code>db_uri</code> is the URI of the MongoDB database to read from. It can be either a local or a remote database, and it can include authentication credentials if needed. This is optional, and if missing “mongodb://localhost:27017” is used as default.</li>
+<li><code>db_name</code> is the name of the database to read from. This is mandatory, and it must be a string.</li>
+<li><code>collections</code> is the list of collections to read from. This is mandatory, and it must be an array of strings. The plugin will read all the datasets from the specified collections, and publish them on the corresponding topics (i.e.&nbsp;the topic name will be the same as the collection name).</li>
+<li><code>start_time</code> is the timestamp of the first dataset to read. This is mandatory, and it must be a string in ISO8601 format. The plugin will read only the datasets with a timestamp greater than or equal to this value.</li>
+<li><code>end_time</code> is the timestamp of the last dataset to read. This is optional, and it must be a string in ISO8601 format. If specified, the plugin will read only the datasets with a timestamp less than or equal to this value. If not specified, the plugin will read all the datasets with a timestamp greater than or equal to <code>start_time</code>.</li>
+<li><code>max_loop_duration_ms</code> is the maximum duration of a single loop in milliseconds. This is optional, and it must be a non-negative integer. If specified, the plugin will limit the duration of each loop to this value. This is useful whenever logged data may contain long periods of inactivity, which would otherwise cause the plugin to wait for a long time before publishing the next dataset. If not specified or set to 0, there is no limit on the loop duration.</li>
+<li><code>repeat</code> is a boolean flag that indicates whether to repeat the replay after reaching the end of the specified time range. This is optional, and it must be a boolean value (true or false). - <code>view_name</code> is the name of the MongoDB view to create for the replay. This is optional, and it must be a string. If specified, the plugin will create a view with this name that filters the datasets according to the specified time range and collections. The plugin will then read from this view instead of directly from the collections. This can improve performance and reduce the load on the database, especially if the original collections are large. If not specified, a temporary view with a random name will be created and deleted at the end of the replay.</li>
+<li><code>reuse_view</code> is a boolean flag that indicates whether to reuse an existing view if <code>view_name</code> is specified. This is optional, and it must be a boolean value (true or false). If set to true and the specified view already exists, the plugin will reuse the existing view instead of creating a new one. This can be useful if you want to run multiple replays with the same view, or if you want to create the view manually with specific settings.</li>
 </ul>
-</div>
-</div>
+</section>
+<section id="running-the-plugin" class="level2">
+<h2 class="anchored" data-anchor-id="running-the-plugin">Running the plugin</h2>
+<p>As usual, you can run the plugin with the <code>mads source replay</code> command, which will start the agent and publish the datasets on the corresponding topics. The plugin will read the datasets from the specified MongoDB database, and publish them with their original time differences, preserving the interdependencies between datasets from different collections.</p>
+<p>So, for example, if you are replaying the collections <code>signal_1</code> and <code>signal_2</code>, and thefirst colletion contains a data flow with one document every 100 ms, while the second collection contains a data flow with one document every 500 ms, the plugin will publish the datasets from <code>signal_1</code> every 100 ms, and the datasets from <code>signal_2</code> every 500 ms, preserving the original timing, although with timestamps translated to the current time (i.e.&nbsp;the timestamp of the first published dataset will be the current time, and the timestamps of the subsequent datasets will be shifted accordingly).</p>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

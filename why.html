@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.9.30">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,6 +11,9 @@
 
 <title>Why ?</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -36,19 +39,18 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-6e942f2f6372d81a3862b03e33b5f49d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-bd7d9e9d7f458aa9e34494af118c0d68.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-6e942f2f6372d81a3862b03e33b5f49d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-26c68d61cf99900fc3c88cffcfbb4b26.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8d9d75b6206e79db986742cfe6744e81.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-26c68d61cf99900fc3c88cffcfbb4b26.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-c0f2d3e989b2edd28e70bef51d272bf3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-a9b58074f428f44b6ca53811f3afa7b1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-c0f2d3e989b2edd28e70bef51d272bf3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-28da3566de5677dd9681dab41dae1e46.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-cdf766d25d83b9775e38c3a252729f9a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-28da3566de5677dd9681dab41dae1e46.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -203,14 +205,14 @@ cookieconsent.run({
   <ul>
   <li><a href="#are-there-alternatives-to-mads" id="toc-are-there-alternatives-to-mads" class="nav-link active" data-scroll-target="#are-there-alternatives-to-mads">Are there alternatives to MADS?</a>
   <ul class="collapse">
-  <li><a href="#advantages-over-ros2" id="toc-advantages-over-ros2" class="nav-link" data-scroll-target="#advantages-over-ros2"><i class="bi-hand-thumbs-up-fill " style="" role="img" aria-hidden="true"></i> Advantages over ROS2</a>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692068616e642d7468756d62732d75702d66696c6c203e7d7d-advantages-over-ros2" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692068616e642d7468756d62732d75702d66696c6c203e7d7d-advantages-over-ros2" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692068616e642d7468756d62732d75702d66696c6c203e7d7d-advantages-over-ros2"><i class="bi-hand-thumbs-up-fill " style="" role="img" aria-hidden="true"></i> Advantages over ROS2</a>
   <ul class="collapse">
   <li><a href="#mads-is-lightweight-and-easier" id="toc-mads-is-lightweight-and-easier" class="nav-link" data-scroll-target="#mads-is-lightweight-and-easier">MADS is lightweight and easier</a></li>
   <li><a href="#mads-is-less-platform-sensitive-than-rosros2" id="toc-mads-is-less-platform-sensitive-than-rosros2" class="nav-link" data-scroll-target="#mads-is-less-platform-sensitive-than-rosros2">MADS is less platform-sensitive than ROS/ROS2</a></li>
   <li><a href="#mads-is-more-adaptable" id="toc-mads-is-more-adaptable" class="nav-link" data-scroll-target="#mads-is-more-adaptable">MADS is more adaptable</a></li>
   <li><a href="#mads-relies-on-zeromq" id="toc-mads-relies-on-zeromq" class="nav-link" data-scroll-target="#mads-relies-on-zeromq">MADS relies on ZeroMQ</a></li>
   </ul></li>
-  <li><a href="#disadvantages-over-ros2" id="toc-disadvantages-over-ros2" class="nav-link" data-scroll-target="#disadvantages-over-ros2"><i class="bi-hand-thumbs-down-fill " style="" role="img" aria-hidden="true"></i> Disadvantages over ROS2</a>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692068616e642d7468756d62732d646f776e2d66696c6c203e7d7d-disadvantages-over-ros2" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692068616e642d7468756d62732d646f776e2d66696c6c203e7d7d-disadvantages-over-ros2" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692068616e642d7468756d62732d646f776e2d66696c6c203e7d7d-disadvantages-over-ros2"><i class="bi-hand-thumbs-down-fill " style="" role="img" aria-hidden="true"></i> Disadvantages over ROS2</a>
   <ul class="collapse">
   <li><a href="#real-time" id="toc-real-time" class="nav-link" data-scroll-target="#real-time">Real-time</a></li>
   <li><a href="#data-serialization" id="toc-data-serialization" class="nav-link" data-scroll-target="#data-serialization">Data serialization</a></li>
@@ -257,8 +259,8 @@ cookieconsent.run({
 <h1>Are there alternatives to MADS?</h1>
 <p>Sure there are! <a href="https://www.ros.org/">ROS2</a> is a very popular framework for robotics, and it has a lot of features that MADS does not have. However, ROS2 is not as lightweight as MADS. If you need a full-fledged robotics framework, ROS2 is a great choice. If you need a lightweight framework, MADS has some advantages over ROS2. Of course, advantages come to a cost, and MADS is not as feature-rich (nor it is as mature) as ROS2.</p>
 <p>We’ll see here the main differences between MADS and ROS2.</p>
-<section id="advantages-over-ros2" class="level2">
-<h2 class="anchored" data-anchor-id="advantages-over-ros2"><i class="bi-hand-thumbs-up-fill " style="" role="img" aria-hidden="true"></i> Advantages over ROS2</h2>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692068616e642d7468756d62732d75702d66696c6c203e7d7d-advantages-over-ros2" class="level2">
+<h2 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692068616e642d7468756d62732d75702d66696c6c203e7d7d-advantages-over-ros2"><i class="bi-hand-thumbs-up-fill " style="" role="img" aria-hidden="true"></i> Advantages over ROS2</h2>
 <section id="mads-is-lightweight-and-easier" class="level3">
 <h3 class="anchored" data-anchor-id="mads-is-lightweight-and-easier">MADS is lightweight and easier</h3>
 <p>MADS <a href="https://github.com/pbosetti/mads/releases">installers</a> weight about 8 Mb (twice as much for MacOS dual architecture installer), and they have minimal dependencies on most platforms. By comparison, ROS2 installers are about 750 Mb. Installing and configuring a ROS2 workspace is a complex task, while MADS can be installed in a few seconds and it is ready to use.</p>
@@ -292,8 +294,8 @@ cookieconsent.run({
 <p>With respect to networking middleware used by ROS2 (DDS), ZeroMQ id much more flexible and can be adapted to different use cases and network topologies.</p>
 </section>
 </section>
-<section id="disadvantages-over-ros2" class="level2">
-<h2 class="anchored" data-anchor-id="disadvantages-over-ros2"><i class="bi-hand-thumbs-down-fill " style="" role="img" aria-hidden="true"></i> Disadvantages over ROS2</h2>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692068616e642d7468756d62732d646f776e2d66696c6c203e7d7d-disadvantages-over-ros2" class="level2">
+<h2 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692068616e642d7468756d62732d646f776e2d66696c6c203e7d7d-disadvantages-over-ros2"><i class="bi-hand-thumbs-down-fill " style="" role="img" aria-hidden="true"></i> Disadvantages over ROS2</h2>
 <section id="real-time" class="level3">
 <h3 class="anchored" data-anchor-id="real-time">Real-time</h3>
 <p>If you need hard real-time, MADS is probably not yet ready and will suffer of the lack of determinism of a TCP-based communication layer. But if a jitter in the range of milliseconds is acceptable, MADS can be used in real-time applications, preferably using PREEMPT-RT Linux kernels.</p>

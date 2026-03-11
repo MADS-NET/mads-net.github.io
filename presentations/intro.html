@@ -8,11 +8,11 @@
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-b6a8276bf55561bdbc268162d41bd1f7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.26">
+  <meta name="generator" content="quarto-1.9.30">
 
   <meta name="author" content="Paolo Bosetti">
   <title> Intro</title>
@@ -22,6 +22,9 @@
   <link rel="stylesheet" href="../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../site_libs/revealjs/dist/reveal.css">
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -100,7 +103,7 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-3ac79a2333d1b67b74e0007b71b0f56c.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-c9ff7b6bf49f4bbb2c32f9f208a03409.css">
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L37VBCVVQW"></script>
 
   <script type="text/plain" cookie-consent="tracking">
@@ -248,7 +251,7 @@ Paolo Bosetti
 <h1>What is it?</h1>
 <p><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: none;"> stands for <em>Multi-Agent Distributed System</em></p>
 </section>
-<section id="contents" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206c697374203e7d7d-contents" class="slide level2">
 <h2><i class="bi-list " style="" role="img" aria-hidden="true"></i> Contents</h2>
 <ul>
 <li>Terminology</li>
@@ -263,7 +266,7 @@ Paolo Bosetti
 <h1>Terminology</h1>
 
 </section>
-<section id="lets-get-understood" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207175657374696f6e2d636972636c65203e7d7d-lets-get-understood" class="slide level2">
 <h2><i class="bi-question-circle " style="" role="img" aria-hidden="true"></i> Let’s get understood…</h2>
 <ul>
 <li><strong>Agent</strong>: an entity that can perceive its environment and act upon it.</li>
@@ -277,7 +280,7 @@ Paolo Bosetti
 </ul>
 <p>And everything in between…</p>
 </section>
-<section id="mads-network-topology" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206469616772616d2d33203e7d7d-mads-network-topology" class="slide level2">
 <h2><i class="bi-diagram-3 " style="" role="img" aria-hidden="true"></i> MADS Network Topology</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -407,7 +410,7 @@ Paolo Bosetti
 <aside><div>
 <p>Also see the guide page on <a href="../guides/structure.html">MADS network topology</a></p>
 </div></aside></section>
-<section id="its-a-zeromq-network" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920726f75746572203e7d7d-its-a-zeromq-network" class="slide level2">
 <h2><i class="bi-router " style="" role="img" aria-hidden="true"></i> It’s a ZeroMQ network</h2>
 <p>MADS uses <a href="https://zeromq.org/" target="_blank">ZeroMQ</a> as the underlying communication layer:</p>
 <ul>
@@ -420,7 +423,7 @@ Paolo Bosetti
 <li>MADS is designed to be scalable: you can have hundreds of agents, the limiting factor being network bandwidth</li>
 </ul>
 </section>
-<section id="agents" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920706572736f6e2d7374616e64696e67203e7d7d-agents" class="slide level2">
 <h2><i class="bi-person-standing " style="" role="img" aria-hidden="true"></i> Agents</h2>
 <div class="columns">
 <div class="column" style="width:70%;">
@@ -440,7 +443,7 @@ Paolo Bosetti
 </div>
 </div></div>
 </section>
-<section id="agents-1" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920706572736f6e2d7374616e64696e67203e7d7d-agents-1" class="slide level2">
 <h2><i class="bi-person-standing " style="" role="img" aria-hidden="true"></i> Agents</h2>
 <div class="columns">
 <div class="column" style="width:70%;">
@@ -462,7 +465,7 @@ Paolo Bosetti
 <aside><div>
 <p>Plugins are actually shared C++ libraries, compiled with minimal dependencies</p>
 </div></aside></section>
-<section id="implementation" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692066696c652d636f6465203e7d7d-implementation" class="slide level2">
 <h2><i class="bi-file-code " style="" role="img" aria-hidden="true"></i> Implementation</h2>
 <ul>
 <li>MADS is implemented in C++17 and provides an API to create agents and connect them to the network</li>
@@ -495,7 +498,7 @@ Paolo Bosetti
 <h1>Basic usage</h1>
 <p>How do we use it in practice?</p>
 </section>
-<section id="main-command-mads" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-main-command-mads" class="slide level2">
 <h2><i class="bi-terminal " style="" role="img" aria-hidden="true"></i> Main command: <code>mads</code></h2>
 <ul>
 <li><p>The standard installers provide a main command: <code>mads</code></p></li>
@@ -513,7 +516,7 @@ Paolo Bosetti
 <li><p>Options <code>-i</code> and <code>-p</code> are useful to check the installation</p></li>
 </ul>
 </section>
-<section id="mads-subcommands" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-mads-subcommands" class="slide level2">
 <h2><i class="bi-terminal " style="" role="img" aria-hidden="true"></i> Mads subcommands</h2>
 <ul>
 <li>The list of available <code>mads</code> sub commands can be obtained as:</li>
@@ -547,7 +550,7 @@ Paolo Bosetti
 </ul>
 </div></div>
 </section>
-<section id="launching-the-broker" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-launching-the-broker" class="slide level2">
 <h2><i class="bi-terminal " style="" role="img" aria-hidden="true"></i> Launching the <code>broker</code></h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a></a><span class="op">&gt;</span> mads <span class="ex">broker</span></span>
 <span id="cb3-2"><a></a><span class="ex">Reading</span> settings from /Users/p4010/usr/local/etc/mads.ini <span class="pp">[</span><span class="ss">broker</span><span class="pp">]</span></span>
@@ -564,7 +567,7 @@ Paolo Bosetti
 <li>Each agent is launched with the settings URL (e.g.&nbsp;<code>tcp://127.0.0.1:9092</code>) as a command line argument</li>
 </ul>
 </section>
-<section id="running-an-agent" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-running-an-agent" class="slide level2">
 <h2><i class="bi-terminal " style="" role="img" aria-hidden="true"></i> Running an agent</h2>
 <div class="columns">
 <div class="column">
@@ -586,7 +589,7 @@ Paolo Bosetti
 <aside><div>
 <p>Click on the white triangle <i class="bi-play " style="" role="img" aria-hidden="true"></i> to start the clip 😉</p>
 </div></aside></section>
-<section id="logging-data" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692073617665203e7d7d-logging-data" class="slide level2">
 <h2><i class="bi-save " style="" role="img" aria-hidden="true"></i> Logging data</h2>
 <ul>
 <li>Data flowing on the MADS network can be logged for later analysis</li>
@@ -603,7 +606,7 @@ Paolo Bosetti
 </ul></li>
 </ul>
 </section>
-<section id="logger" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206461746162617365203e7d7d-logger" class="slide level2">
 <h2><i class="bi-database " style="" role="img" aria-hidden="true"></i> Logger</h2>
 <ul>
 <li>MADS provides an agent called <code>logger</code> for logging messages</li>
@@ -629,7 +632,7 @@ Paolo Bosetti
 </div>
 </div>
 </section>
-<section id="hdf5-logger" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692061726368697665203e7d7d-hdf5-logger" class="slide level2">
 <h2><i class="bi-archive " style="" role="img" aria-hidden="true"></i> HDF5 logger</h2>
 <ul>
 <li>Among the official MADS plugins, there is also an <a href="https://www.hdfgroup.org/solutions/hdf5/">HDF5</a> logger</li>
@@ -656,7 +659,7 @@ Paolo Bosetti
 <aside><div>
 <p>Also see the <a href="../guides/hdf5.html">guide page</a> for more details on the <code>hdf5_writer.plugin</code></p>
 </div></aside></section>
-<section id="rerun-graphical-logger" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692067726170682d7570203e7d7d-rerun-graphical-logger" class="slide level2">
 <h2><i class="bi-graph-up " style="" role="img" aria-hidden="true"></i> Rerun graphical logger</h2>
 <div class="columns">
 <div class="column">
@@ -684,7 +687,7 @@ Paolo Bosetti
 <h1>Services</h1>
 <p>Automate it!</p>
 </section>
-<section id="mads-services" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206661206d6963726f63686970203e7d7d-mads-services" class="slide level2">
 <h2><i class="fa-solid fa-microchip" aria-label="microchip"></i> MADS services</h2>
 <p>On Linux machine only, MADS provides a service file generator that can be used to run MADS agents as system services, <strong>automatically active on boot</strong></p>
 <p>Procedure:</p>
@@ -703,7 +706,7 @@ Paolo Bosetti
 <h1>Plugins</h1>
 <p>Or, please, make it easy!</p>
 </section>
-<section id="motivation" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207175657374696f6e2d636972636c65203e7d7d-motivation" class="slide level2">
 <h2><i class="bi-question-circle " style="" role="img" aria-hidden="true"></i> Motivation</h2>
 <ul>
 <li>MADS is designed to be simple, but it can be complex to implement agents</li>
@@ -714,7 +717,7 @@ Paolo Bosetti
 </ul>
 <p><strong>Solution</strong>: MADS plugins</p>
 </section>
-<section id="mads-plugins" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920706c7567696e203e7d7d-mads-plugins" class="slide level2">
 <h2><i class="bi-plugin " style="" role="img" aria-hidden="true"></i> MADS plugins</h2>
 <ul>
 <li>A plugin is a shared library that implements a specific agent logic</li>
@@ -731,7 +734,7 @@ Paolo Bosetti
 <aside><div>
 <p>Also see the <a href="../guides/plugins.html">guide page</a> for more details on plugins</p>
 </div></aside></section>
-<section id="running-mads-plugin" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-running-mads-plugin" class="slide level2">
 <h2><i class="bi-terminal " style="" role="img" aria-hidden="true"></i> Running <code>mads plugin</code></h2>
 <div class="columns">
 <div class="column">
@@ -751,7 +754,7 @@ Paolo Bosetti
 </script>
 </div></div>
 </section>
-<section id="plugin-class-details" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692066696c652d636f6465203e7d7d-plugin-class-details" class="slide level2">
 <h2><i class="bi-file-code " style="" role="img" aria-hidden="true"></i> Plugin class details</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb5-1"><a></a><span class="kw">class</span> My_sourcePlugin <span class="op">:</span> <span class="kw">public</span> Source<span class="op">&lt;</span>json<span class="op">&gt;</span> <span class="op">{</span></span>
 <span id="cb5-2"><a></a><span class="kw">public</span><span class="op">:</span></span>
@@ -773,7 +776,7 @@ Paolo Bosetti
 <span id="cb5-18"><a></a><span class="co">// Macro that does the magic of allowing dlopen to work</span></span>
 <span id="cb5-19"><a></a>INSTALL_SOURCE_DRIVER<span class="op">(</span>My_sourcePlugin<span class="op">,</span> json<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="plugin-class-details-1" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692066696c652d636f6465203e7d7d-plugin-class-details-1" class="slide level2">
 <h2><i class="bi-file-code " style="" role="img" aria-hidden="true"></i> Plugin class details</h2>
 <ul>
 <li>Implementing a plugin does not require knowledge of the MADS API</li>
@@ -790,7 +793,7 @@ Paolo Bosetti
 <aside><div>
 <p><strong>Note</strong>: the <code>CMakeLists.txt</code> provides an <code>add_plugin(name SRCS &lt;source lists&gt; LIBS &lt;libraries list&gt;)</code> macro that simplifies the process of creating a plugin target</p>
 </div></aside></section>
-<section id="ota-plugins" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920706c7567696e203e7d7d-ota-plugins" class="slide level2">
 <h2><i class="bi-plugin " style="" role="img" aria-hidden="true"></i> OTA plugins</h2>
 <ul>
 <li><p>Plugins can be loaded <strong>Over-The-Air</strong> (OTA) by the <code>mads source</code>, <code>mads filter</code>, and <code>mads sink</code> commands</p></li>
@@ -806,7 +809,7 @@ Paolo Bosetti
 <h1>Parallel computing</h1>
 <p>MADS can be also use for dispatching parallel computations on HPC clusters</p>
 </section>
-<section id="the-dealer-worker-model" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20666120636972636c652d6e6f646573203e7d7d-the-dealer-worker-model" class="slide level2">
 <h2><i class="fa-solid fa-circle-nodes" aria-label="circle-nodes"></i> The <em>dealer-worker</em> model</h2>
 <p>Suppose that you want to explore a large domain of parameters for a simulation to perform <strong>sensitivity analysis</strong> or <strong>parameters optimization</strong>:</p>
 <div class="columns">
@@ -993,7 +996,7 @@ Paolo Bosetti
 <aside><div>
 <p>Also see <a href="../guides/worker.html">the guide page</a></p>
 </div></aside></section>
-<section id="the-mads-implementation" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920706572736f6e2d7374616e64696e67203e7d7d-the-mads-implementation" class="slide level2">
 <h2><i class="bi-person-standing " style="" role="img" aria-hidden="true"></i> The MADS implementation</h2>
 <p>In MADS, there are two special agents for this purpose: <code>dealer</code> and <code>worker</code></p>
 <ul>
@@ -1002,7 +1005,7 @@ Paolo Bosetti
 </ul>
 <p>Ideally, the worker plugin is launched in <span class="math inline">\(n\)</span> instances on a Kubernetes cluster; each instance loads the computational plugin OTA from the broker</p>
 </section>
-<section id="security" class="slide level2">
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920736869656c642d6c6f636b203e7d7d-security" class="slide level2">
 <h2><i class="bi-shield-lock " style="" role="img" aria-hidden="true"></i> Security</h2>
 <p>Starting from v2.0.0, MADS supports authentication and encryption over the network</p>
 <div class="columns">

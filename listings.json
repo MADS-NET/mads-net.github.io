@@ -7,7 +7,7 @@
       "/guides/python.html",
       "/guides/security.html",
       "/guides/rerun.html",
-      "/guides/replay.html",
+      "/guides/replay_csv.html",
       "/guides/datastore.html",
       "/guides/interaction.html",
       "/guides/install.html",
@@ -22,7 +22,8 @@
       "/guides/containerized.html",
       "/guides/rpio.html",
       "/guides/python_agent.html",
-      "/guides/zeroconf.html"
+      "/guides/zeroconf.html",
+      "/guides/replay.html"
     ]
   }
 ]
