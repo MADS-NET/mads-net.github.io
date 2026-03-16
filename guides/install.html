@@ -255,6 +255,7 @@ cookieconsent.run({
   <li><a href="#requirements-2" id="toc-requirements-2" class="nav-link" data-scroll-target="#requirements-2">Requirements</a></li>
   </ul></li>
   </ul></li>
+  <li><a href="#pthyon-interface" id="toc-pthyon-interface" class="nav-link" data-scroll-target="#pthyon-interface">Pthyon interface</a></li>
   <li><a href="#building-from-source" id="toc-building-from-source" class="nav-link" data-scroll-target="#building-from-source">Building from source</a></li>
   </ul>
 </nav>
@@ -349,18 +350,18 @@ Important
 </section>
 <section id="installing-on-macos" class="level2">
 <h2 class="anchored" data-anchor-id="installing-on-macos">Installing on MacOS</h2>
-<p>Suppose that you downloaded the installer <code>mads-&lt;version&gt;-Darwin-universal.sh</code> (where <code>&lt;version&gt;</code> is the version number, e.g.&nbsp;<code>1.3.3</code>). The installer takes the following arguments:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./mads-1.3.3-Darwin-universal.sh</span> <span class="at">--help</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Usage:</span> packages/mads-1.3.3-Darwin-universal.sh <span class="pp">[</span><span class="ss">options</span><span class="pp">]</span></span>
+<p>Suppose that you downloaded the installer <code>mads-&lt;version&gt;-Darwin-universal.sh</code> (where <code>&lt;version&gt;</code> is the version number, e.g.&nbsp;<code>2.0.0</code>). The installer takes the following arguments:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./Mads-2.0.0-Darwin-universal.sh</span> <span class="at">--help</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Usage:</span> packages/Mads-2.0.0-Darwin-universal.sh <span class="pp">[</span><span class="ss">options</span><span class="pp">]</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Options:</span> [defaults in brackets after descriptions]</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--help</span>            print this message</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--version</span>         print cmake installer version</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--prefix=dir</span>      directory in which to install</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--include-subdir</span>  include the mads-1.3.3-Darwin-universal subdirectory</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--exclude-subdir</span>  exclude the mads-1.3.3-Darwin-universal subdirectory</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--include-subdir</span>  include the Mads-2.0.0-Darwin-universal subdirectory</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--exclude-subdir</span>  exclude the Mads-2.0.0-Darwin-universal subdirectory</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--skip-license</span>    accept license</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>If you run it with no arguments, it will install MADS in the <code>/usr/local/</code> directory (need <code>sudo</code>) and ask for accepting the license. If you (as me) prefer to keep it in your home directory, you can run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./mads-1.3.3-Darwin-universal.sh</span> <span class="at">--prefix</span><span class="op">=</span><span class="va">${HOME}</span> <span class="at">--skip-license</span>    </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./Mads-2.0.0-Darwin-universal.sh</span> <span class="at">--prefix</span><span class="op">=</span><span class="va">${HOME}</span> <span class="at">--skip-license</span>    </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>which will install in <code>${HOME}/usr/local</code> and automatically accept license. Then, you want to add <code>${HOME}/usr/local/bin</code> to your search path: add the following line to your <code>.zshrc</code> or <code>.bashrc</code> file:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="va">${HOME}</span>/usr/local/bin:<span class="va">$PATH</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Finally, restart your terminal and check that MADS is correctly installed by running:</p>
@@ -413,6 +414,19 @@ Note
 </section>
 </section>
 </section>
+<section id="pthyon-interface" class="level1">
+<h1>Pthyon interface</h1>
+<p>Since MADS v2.0.0, a Python interface is provided as a module <code>mads_agent</code> by the file in <code>$(mads -p)/python/mads_agent.py</code>.</p>
+<p>To be able to use it, you need to add the folder <code>$(mads -p)/python</code> to the Python search path. There are two possible ways:</p>
+<p><strong>Method 1</strong>: environment variable (probably the easiest way):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PYTHONPATH</span><span class="op">=</span><span class="va">$PYTHONPATH</span>:<span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span>/python</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If you want to make this permanent, add the above line to your <code>.zshrc</code> or <code>.bashrc</code> file (on Unix) or to your system environment variables (on Windows).</p>
+<p><strong>Method 2</strong>: manipulate from python:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys, os</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>mads_path <span class="op">=</span> subprocess.check_output([<span class="st">"mads"</span>, <span class="st">"-p"</span>], text<span class="op">=</span><span class="va">True</span>).strip()</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>sys.path.append(os.path.join(mads_path, <span class="st">'python'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
 <section id="building-from-source" class="level1">
 <h1>Building from source</h1>
 <p>Building from source is discouraged and on some architectures can be quite a long process (10s of minutes). However, it is the only way to get MADS on architectures for which no pre-compiled binaries are available.</p>
@@ -423,14 +437,14 @@ Note
 <li>Git</li>
 </ul>
 <p>Get the source code from the MADS repository:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">-d1</span> https://github.com/pbosetti/MADS.git</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> MADS</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">-d1</span> https://github.com/pbosetti/MADS.git</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> MADS</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Building MADS takes three steps:</p>
 <ol type="1">
 <li><strong>Configuration</strong></li>
 </ol>
 <p>This is where you configure the various build options. You can specify build options either on the <code>cmake</code> command line or interactively with <code>ccmake</code> (on MacOS and Linux, CMake GUI on Windows). For example, to configure MADS in the <code>build</code> directory with default options, you can run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Options that you might want to customize include:</p>
 <ul>
 <li><code>CMAKE_INSTALL_PREFIX</code>: this is where build products will be put by doing <code>cmake --install build</code> after compilation is done</li>
@@ -444,9 +458,9 @@ Note
 <li><strong>Building</strong></li>
 </ol>
 <p>Make the first build. On Unixes:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>On Windows:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cmake <span class="op">--</span>build build <span class="op">--</span>config Release</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>cmake <span class="op">--</span>build build <span class="op">--</span>config Release</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>If everything goes fine, skip to the next step. If something goes wrong, check the error messages and try to fix the issues. If you need help, open an issue on the MADS GitHub repository.</p>
 <ol start="3" type="1">
 <li><strong>Installation</strong></li>
@@ -457,8 +471,8 @@ Note
 <li><code>MADS_SKIP_EXTERNALS</code>: set it to <code>ON</code> to avoid CMake build dependencies as MongoDB and Snappy; <strong>this is also enabling the creation of an installer</strong>.</li>
 </ul>
 <p>Runn again the compiler and then create the package:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j8</span> <span class="co"># On Windows, don't forget to add --config Release</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-t</span> package</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j8</span> <span class="co"># On Windows, don't forget to add --config Release</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-t</span> package</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The installer will be created in the <code>packages</code> directory.</p>
 
 
