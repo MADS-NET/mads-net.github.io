@@ -1,10 +1,10 @@
 ---
-title: "Replay plugin"
+title: "MongoDB Replay"
 author:
   - name: "Paolo Bosetti"
     affiliations: 
       - name: "University of Trento"
-date: 09/08/2025
+date: 03/11/2026
 date-modified: today
 format: html
 # or uncomment the following line to also create PDF format
@@ -14,132 +14,57 @@ format: html
 #   pdf:
 #     toc: true
 draft: false
-categories: [template]
+categories: [replay, easy, plugin, v2, mongodb]
 abstract: |
-  When debugging a MADS system, it might prove useful to have a way to "replay" a previously recorded data stream. This is what the `replay.plugin` does.
+  MADS v2.0.1 provides a new `replay.plugin` for replaying a stream of datasets from a MongoDB database. This can be useful for testing and debugging purposes.
 ---
 
-# The plugin
+# Rationale
 
-## Getting it
+Before MADS v2.0.1, there was no built-in way to replay a stream of datasets from a MongoDB database. The only solution was to export the data to a CSV file and then use the plugin [`replay_plugin`](https://github.com/MADS-NET/replay_plugin) to read the CSV file and publish the datasets. This was not ideal, as it required extra steps and a custom plugin.
 
-The `replay.plugin` is available on <https://github.com/MADS-NET/replay_plugin>. Clone it and build as usual with (on Windows, follow the instriction on the `README.md` file):
+Furthermore, the replay plugin allowed to stream a single topic at a time, making it impossible to replay a complex system with multiple topics and interdependencies.
 
-```bash
-cmake -Bbuild -DCMAKE_INSTALL_PREFIX="$(mads -p)"
-cmake --build build -j4
-sudo cmake --install build
-```
+Now we have a better solution directly provided by the MADS installer, which allows to replay a stream of datasets straight from the MongoDB database, without the need for intermediate CSV files. This plugin can be launched with the usual `mads source replay` command, and it allows to replay multiple topics at the same time, preserving the original timestamps and interdependencies between datasets.
 
-## Configuration
+::: {.callout-tip}
+Just to be clear: no need to clone and compile a new plugin: the `replay.plugin` is now included in the MADS installer, and can be launched with the usual `mads source replay` command.
+:::
 
-Apart from the common settings, the INI file for the `replay.plugin` requires the following additional fields:
+# Usage
 
-```ini
+## INI file section
+
+as for any agent, you first need to vcreate a section in the `mads.ini` file for the `replay.plugin`, with the following additional fields:
+
+```toml
 [replay]
-pub_topic = "sensors" # topic on which to publish the datasets
-csv_file = "path/to/file.csv"
-loop = true # once the end of file has been reached, start again from beginning
+db_uri = "mongodb://localhost:27017"
+db_name = "mads_test"                                      # Mandatory, a string
+collections = ["perf_assess_1", "perf_assess_2"]   # Mandatory, array of strings
+start_time = "2026-03-10T20:27:00Z"      # Mandatory, a string in ISO8601 format
+end_time = "2026-03-10T20:27:10Z"        # Optional, a string in ISO8601 format
+max_loop_duration_ms = 0
+repeat = false
+view_name = "mads_replay_view"   # default="": if specified mongo_replay creates
+                                 # a view with this name 
+reuse_view = false          # default=false: if true and view_name is specified, 
+                            # mongo_replay will reuse the existing view
 ```
 
-Note that the CSV file path can be either absolute or relative to the current working directory (the one where you launch the agent).
+The above is pretty self-explanatory, but here are some details:
 
-## Mapping a CSV to a list of JSON objects
+- `db_uri` is the URI of the MongoDB database to read from. It can be either a local or a remote database, and it can include authentication credentials if needed. This is optional, and if missing "mongodb://localhost:27017" is used as default.
+- `db_name` is the name of the database to read from. This is mandatory, and it must be a string.
+- `collections` is the list of collections to read from. This is mandatory, and it must be an array of strings. The plugin will read all the datasets from the specified collections, and publish them on the corresponding topics (i.e. the topic name will be the same as the collection name).
+- `start_time` is the timestamp of the first dataset to read. This is mandatory, and it must be a string in ISO8601 format. The plugin will read only the datasets with a timestamp greater than or equal to this value.
+- `end_time` is the timestamp of the last dataset to read. This is optional, and it must be a string in ISO8601 format. If specified, the plugin will read only the datasets with a timestamp less than or equal to this value. If not specified, the plugin will read all the datasets with a timestamp greater than or equal to `start_time`.
+- `max_loop_duration_ms` is the maximum duration of a single loop in milliseconds. This is optional, and it must be a non-negative integer. If specified, the plugin will limit the duration of each loop to this value. This is useful whenever logged data may contain long periods of inactivity, which would otherwise cause the plugin to wait for a long time before publishing the next dataset. If not specified or set to 0, there is no limit on the loop duration.
+- `repeat` is a boolean flag that indicates whether to repeat the replay after reaching the end of the specified time range. This is optional, and it must be a boolean value (true or false). - `view_name` is the name of the MongoDB view to create for the replay. This is optional, and it must be a string. If specified, the plugin will create a view with this name that filters the datasets according to the specified time range and collections. The plugin will then read from this view instead of directly from the collections. This can improve performance and reduce the load on the database, especially if the original collections are large. If not specified, a temporary view with a random name will be created and deleted at the end of the replay.
+- `reuse_view` is a boolean flag that indicates whether to reuse an existing view if `view_name` is specified. This is optional, and it must be a boolean value (true or false). If set to true and the specified view already exists, the plugin will reuse the existing view instead of creating a new one. This can be useful if you want to run multiple replays with the same view, or if you want to create the view manually with specific settings. 
 
-The CSV is supposed to contain a list of datasets, one per row, with different signals in different rows.
+## Running the plugin
 
-But how do we map a flat row of a CSV file to a structured JSON object, which may have nested sub-objects and sub-arrays?
+As usual, you can run the plugin with the `mads source replay` command, which will start the agent and publish the datasets on the corresponding topics. The plugin will read the datasets from the specified MongoDB database, and publish them with their original time differences, preserving the interdependencies between datasets from different collections.
 
-The answer is to use **keypaths** as column headers. A keypath is a string that identifies the path to a specific field in a JSON object, using slashes (`/`) to separate different levels of the hierarchy,including array indexes (zero based). For example:
-
-```csv
-# Comments and empty lines are skipped
-/timestamp, /sensor/0/temperature, /sensor/0/humidity, /sensor/1/temperature, /sensor/1/humidity
-2024-06-01T12:00:00Z, 22.5, 45.0, 23.0, 50.0
-```
-
-becomes:
-
-```json
-{
-  "timestamp": "2024-06-01T12:00:00Z",
-  "sensor": [
-    {
-      "temperature": 22.5,
-      "humidity": 45.0
-    },
-    {
-      "temperature": 23.0,
-      "humidity": 50.0
-    }
-  ]
-}
-```
-
-::: callout-important
-Keypaths **must** start with a leading slash: `/sensor/x` os OK, `sensor/x` is wrong.
-:::
-
-An alternative syntax uses dots and square brakets for array indexes, as for example in `sensor[0].temperature`. This alterante syntax is supported because it's the way MongoDB Compass exports data to CSV format (see later on for an example).
-
-## Replaying multiple signals
-
-To replay multiple agents, you need to have multiple CSV files, one per agent, and launch multiple instances of the `replay.plugin`, each one with its own INI file and with its custom `pub_topic` and agent name. With the INI file having:
-
-```ini
-[replay_agent1]
-pub_topic = "temperature" # topic on which to publish the datasets
-csv_file = "temp_data.csv"
-loop = true
-
-[replay_agent2]
-pub_topic = "imu" # topic on which to publish the datasets
-csv_file = "imu_data.csv"
-loop = true
-```
-
-launch two agents with:
-
-```bash
-# on first terminal:
-mads source replay.plugin -n replay_agent1
-# on second terminal:
-mads source replay.plugin -n replay_agent2
-```
-
-# Creating a CSV file
-
-An input CSV file can be easily created with scripting languages by generating synthetic data, or by logging data from sensors.
-
-Another possibility is to use MADS to record data in the MongoDB database, then use [MongoDB Compass](https://www.mongodb.com/products/compass) to export the data as CSV.
-
-To do that, open the table you want to export in Compass. Suppose that you have something similar:
-
-![MongoDB Compass screenshot](images/csv/step_01.png)
-
-We only want to export the elements with keypaths `message.list` and `message.processed`. Then expand the *Options...* query menu and set the *Project* field as:
-
-![Query projection](images/csv/step_02.png)
-
-Now click on the expand icon on the top left of the objects list and select *Expand query results*:
-
-![Expand fields](images/csv/step_03.png)
-
-Finally, select *CSV* as export format, and save the file:
-
-![Export CSV](images/csv/step_04.png)
-
-The resulting CSV file will look like this (first two lines only):
-
-```csv
-message.list[0],message.list[1],message.list[2],message.list[3],message.processed
-1,2,3,4,false
-```
-
-::: callout-important
-The replay of the data currently only support the timing stated by the `--period` command line option or by the `period` INI file field. This means that:
-
-* if the original data contains a timestamp field, that is not used for the replay
-* if stream was not periodic, the replay will be anyway periodic, with the specified period.
-
-:::
+So, for example, if you are replaying the collections `signal_1` and `signal_2`, and thefirst colletion contains a data flow with one document every 100 ms, while the second collection contains a data flow with one document every 500 ms, the plugin will publish the datasets from `signal_1` every 100 ms, and the datasets from `signal_2` every 500 ms, preserving the original timing, although with timestamps translated to the current time (i.e. the timestamp of the first published dataset will be the current time, and the timestamps of the subsequent datasets will be shifted accordingly).

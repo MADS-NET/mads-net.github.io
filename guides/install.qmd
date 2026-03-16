@@ -42,24 +42,24 @@ That said, agents and broker **must have the same MAJOR.MINOR version** to be ab
 
 ## Installing on MacOS
 
-Suppose that you downloaded the installer `mads-<version>-Darwin-universal.sh` (where `<version>` is the version number, e.g. `1.3.3`). The installer takes the following arguments:
+Suppose that you downloaded the installer `mads-<version>-Darwin-universal.sh` (where `<version>` is the version number, e.g. `2.0.0`). The installer takes the following arguments:
 
 ```bash
-./mads-1.3.3-Darwin-universal.sh --help
-Usage: packages/mads-1.3.3-Darwin-universal.sh [options]
+./Mads-2.0.0-Darwin-universal.sh --help
+Usage: packages/Mads-2.0.0-Darwin-universal.sh [options]
 Options: [defaults in brackets after descriptions]
   --help            print this message
   --version         print cmake installer version
   --prefix=dir      directory in which to install
-  --include-subdir  include the mads-1.3.3-Darwin-universal subdirectory
-  --exclude-subdir  exclude the mads-1.3.3-Darwin-universal subdirectory
+  --include-subdir  include the Mads-2.0.0-Darwin-universal subdirectory
+  --exclude-subdir  exclude the Mads-2.0.0-Darwin-universal subdirectory
   --skip-license    accept license
 ```
 
 If you run it with no arguments, it will install MADS in the `/usr/local/` directory (need `sudo`) and ask for accepting the license. If you (as me) prefer to keep it in your home directory, you can run:
 
 ```bash
-./mads-1.3.3-Darwin-universal.sh --prefix=${HOME} --skip-license    
+./Mads-2.0.0-Darwin-universal.sh --prefix=${HOME} --skip-license    
 ```
 
 which will install in `${HOME}/usr/local` and automatically accept license. Then, you want to add `${HOME}/usr/local/bin` to your search path: add the following line to your `.zshrc` or `.bashrc` file:
@@ -120,6 +120,27 @@ The installer installs MADS in `C:\Program Files\MADS`, The installer will also 
 ### Requirements
 
 Unless we're talking of very specific use cases, you probably want to compile your own plugins. For that, you need the Visual Studio 17 (Community Edition is fine) with the C++ development tools, together with CMake and Git.
+
+# Pthyon interface
+
+Since MADS v2.0.0, a Python interface is provided as a module `mads_agent` by the file in `$(mads -p)/python/mads_agent.py`. 
+
+To be able to use it, you need to add the folder `$(mads -p)/python` to the Python search path. There are two possible ways:
+
+**Method 1**: environment variable (probably the easiest way):
+```sh
+export PYTHONPATH=$PYTHONPATH:$(mads -p)/python
+```
+
+If you want to make this permanent, add the above line to your `.zshrc` or `.bashrc` file (on Unix) or to your system environment variables (on Windows).
+
+**Method 2**: manipulate from python:
+```python
+import sys, os
+import subprocess
+mads_path = subprocess.check_output(["mads", "-p"], text=True).strip()
+sys.path.append(os.path.join(mads_path, 'python'))
+```
 
 
 # Building from source
