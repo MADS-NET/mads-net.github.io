@@ -1,0 +1,218 @@
+---
+title: "Finite State Machines"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 03/16/2026
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+engine: knitr
+draft: false
+categories: [CLI, agents, v2, FSM]
+code-annotations: hover
+abstract: |
+  This is a template for Quarto documents. It can be used to create reports, articles, or any other type of document.
+  You can use it as a starting point for your own documents.
+---
+
+::: {.callout-caution}
+The command `mads fsm` is available in {{< logo >}} version 2.0.2 and later. Make sure you have the latest version of MADS installed to use this feature.
+:::
+
+
+# Finite state machines
+
+Finite state machines (FSM) are a powerful tool for modeling the behavior of agents. They allow to define a set of states and transitions between them, based on events and conditions. 
+
+When designing and creating a complex network of MADS agents, it is often useful to have a **single orchestrator agent** that manages the overall behavior of the system. This agent can be implemented as a FSM, where each state corresponds to a different phase of the system operation, and the transitions are triggered by events such as messages received from other agents, or timers, or input from the user/environment.
+
+FSMs can be implemented in different ways, but a great advantage of FSMs is that the boilerplate for reliably and robustly running the FSM can be automatically generated from a simple, graphical description of the states and their **allowed transitions**. This is the approach we took in MADS v2, where the FSM is defined in a simple text file in [Graphviz](https://graphviz.org/) format, and the C++ code for the agent is automatically generated from it. This allows to focus on the logic of the FSM, rather than on the details of its implementation.
+
+The actual operations to be performed in each state and transition can be implemented in separate functions, which are then called by the generated code. This allows to keep the code clean and modular, and to easily modify the behavior of the agent by changing the FSM definition and the corresponding functions.
+
+## Graphviz FSM definition
+
+To start, we design a simple FSM in Graphviz `.dot` format. In a possible implementation, the FSM has four states: `init`, `idle`, `run`, and `stop`. The states and their transitions  are defined as follows:
+
+```{dot}
+//| echo: true
+//| fig-height: 2.5
+digraph "mads" {
+  graph [bgcolor="transparent"]
+  node [fillcolor="white", style="filled", fontname="Helvetica", fontsize=10]
+  // Nodes, or states:
+  init
+  stop
+  idle
+  run
+
+  // Edges, or transitions:
+  init -> idle
+  idle -> run [label="prepare"]
+  idle -> stop [label="teardown"]
+  run -> run
+  idle -> idle
+  run -> idle
+}
+```
+
+Note that we use the Graphviz **edge labels** to define transitions that also perform some operations, e.g. `prepare` and `teardown`. These operations are then implemented in separate functions, which are called by the generated code when the corresponding transition is triggered (more on that later)
+
+Using different tools (including [tintinweb.graphviz-interactive-preview](https://marketplace.visualstudio.com/items?itemName=tintinweb.graphviz-interactive-preview) for Visual Studio Code) you can easily visualize the FSM while you write it and check that it is correct.
+
+## Generating the code
+
+Once we are satisfied with the FSM definition, we can generate the code for the agent. This is done using the `mads fsm` command, which takes as input the `.dot` file and generates a C++ header file with the implementation of the FSM. The generated code includes the boilerplate for running the FSM, and calls to the functions corresponding to the operations defined in the edge labels.
+
+::: {.callout-tip}
+The command `mads fsm` is actually imported from the command line tool [gv2fsm](https://github.com/pbosetti/gv2fsm). Look there for more details on the syntax of the `.dot` file and the generated code.
+:::
+
+The command line for generating suitable code for our above example --- assuming that the FSM file is saved as `fsm.dot` --- is the following:
+
+```bash
+mkdir src
+mads fsm --cpp -k stop -o src/fsm -f fsm.dot
+````
+where:
+
+- `--cpp` specifies that we want to generate **C++ code** (if not given it generates C code)
+- `-k stop` specifies that the state `stop` is a "kill" state, where the agent transitions to when a `SIGINT` signal is received (e.g. when the user presses `Ctrl+C` in the terminal). This allows to gracefully stop the agent when the user wants to terminate it.
+- `-o src/fsm` specifies the output folder and the base itemName where the generated code will be saved
+- `-f` means **forcefully overwrite** the output any existing output file
+
+As a result, we obtain the two files `src/fsm.hpp` and `src/fsm_impl.hpp`.
+
+The first file contains the declaration of the FSM class and all the necessary boilerplate for running the FSM, only allowing transitions that are designed in the `.dot` file. This makes it very robust and superior to a hand-written FSM implementation, where it is easy to make mistakes and forget to handle some edge cases. 
+
+The second file contains the implementation of the operations. In particular, for every state (or note) in the `.dot` file named `state_name`, a function `do_state_name()` is declared in `fsm.hpp` and a stub for it is implemented in `fsm_impl.hpp`; for every edge with label `operation_name` a function `operation_name()` is declared in `fsm.hpp` and a stub for it is implemented in `fsm_impl.hpp`. You can then fill in the implementation of these functions to define the behavior of the agent in each state and transition.
+
+For example, the `do_idle()` function is called every time the FSM enters the `idle` state, and the `prepare()` function is called every time the transition from `idle` to `run` is triggered. You can implement these functions to perform the desired operations in each state and transition.
+
+The `do_idle()` function stub is typically:
+
+```cpp
+// Function to be executed in state STATE_IDLE
+// valid return states: NO_CHANGE, STATE_RUN, STATE_STOP, STATE_IDLE
+// SIGINT triggers an emergency transition to STATE_STOP
+template<class T> 
+state_t do_idle(T &data) {
+  state_t next_state = FSM::UNIMPLEMENTED;
+  /* Your Code Here */
+  
+  return next_state;
+}
+```
+
+where the comment clearly states the valid return states, and the fact that a `SIGINT` signal triggers an emergency transition to the `stop` state. This makes it very easy to implement the FSM logic, while ensuring that the implementation is robust and correct by construction. Just remember to return a valid state from the function to transition to any valid destination state.
+
+The FSM code will **raise an error** if you try to return an invalid state (including the default `FSM::UNIMPLEMENTED`), or if you try to perform a transition that is not defined in the `.dot` file. This makes it very easy to debug and test the FSM, as you can quickly identify any issues with the transitions or the states.
+
+::: {.callout-important}
+In FSM representations, states spontaneously transition to their destinations states, unless there is a **default transition** to themselves. In the above example, the `idle` state has a default transition to itself, which means that if the `do_idle()` function returns `STATE_IDLE` or `NO_CHANGE`, the FSM will stay in the `idle` state. On the other hand, the `init` state does not have a default transition to itself, which means that if the `do_init)` function returns `STATE_IDLE`, the FSM will transition to the `idle` state and then immediately transition to the next state defined in the `.dot` file (in this case, it will transition again to `idle`).
+:::
+
+## Modifying the code
+
+Typically, **you don't have to change the generated code** in `fsm.hpp`, as it contains the boilerplate for running the FSM and ensuring that only valid transitions are performed. You can modify the implementation of the operations in `fsm_impl.hpp` to define the behavior of the agent in each state and transition.
+
+If you later on have to change the FSM definition in the `.dot` file, you can simply re-run the `mads fsm` command to regenerate the code, specifying the `--header-only` option. This will update the `fsm.hpp` file with the new FSM definition, while keeping the implementation in `fsm_impl.hpp` unchanged. This allows to easily modify the FSM definition without losing any of the implementation work you have done in the `fsm_impl.hpp` file. Of course, you will have to implement in the `fsm_impl.hpp` file any new operations that you have defined in the new FSM definition.
+
+::: {.callout-caution}
+**Remember** to always specify the `--header-only` option when regenerating the code after changing the FSM definition, otherwise you will lose all your implementation work in `fsm_impl.hpp`! You will also need to specify the `--force` option to overwrite the existing `fsm.hpp` file, or the command will refuse to run.
+:::
+
+## Using the FSM implementation
+
+AT the bottom of `fsm_impl.hpp` you can find a simple example of how to use the generated FSM code to create an agent that runs the FSM, in the form of a skeleton `main()`. You can modify this example to create your own agent that implements the desired behavior based on the FSM definition. What you get is the following:
+
+```{.cpp code-line-numbers=true}
+#include <mads.hpp>
+#include <agent.hpp>
+#include <thread>
+#include <chrono>
+#include <filesystem>
+#include <nlohmann/json.hpp>
+#include "fsm.hpp"
+
+using namespace chrono_literals;
+using json = nlohmann::json;
+
+struct FsmData { // <1>
+  std::unique_ptr<Mads::Agent> agent;
+};
+
+int main(int argc, char *argv[]) {
+  std::filesystem::path exec = argv[0];
+  std::string agent_name = exec.stem().string();
+  std::string settings_path = "tcp://localhost:9092";
+  std::chrono::duration loop_period = 100ms;
+  std::chrono::duration receive_timeout = 50ms;
+  bool non_blocking = false;
+
+  if (argc > 1) {
+    settings_path = argv[1];
+  }
+  FsmData data = {std::make_unique<Mads::Agent>(agent_name, settings_path)};
+  // If crypto is needed, properly load keys and enable it
+  data.agent->init(false, false); // <2>
+  data.agent->connect();
+  data.agent->enable_remote_control();
+  auto settings = data.agent->get_settings();
+  if (settings.contains("period")) {
+    loop_period = std::chrono::milliseconds(settings["period"].get<int>());
+  }
+  if (settings.contains("receive_timeout")) {
+    receive_timeout = std::chrono::milliseconds(settings["receive_timeout"].get<int>());
+  }
+  if (settings.contains("non_blocking")) {
+    non_blocking = settings["non_blocking"].get<bool>();
+  }
+  data.agent->set_receive_timeout(receive_timeout);
+  // Deal with further settings as needed
+
+  // Initialize FSM
+  auto fsm = FSM::FiniteStateMachine(&data); // <3>
+  fsm.set_timing_function([&]() {
+    std::this_thread::sleep_for(loop_period);
+  });
+  fsm.run([&](FsmData &s) {
+    // here put everything that shall run at each loop iteration
+    data.agent->receive(non_blocking); // <4>
+    data.agent->remote_control(get<1>(data.agent->last_message()));
+  });
+
+  // Shutdown procedure
+  data.agent->register_event(Mads::event_type::shutdown); // <5>
+  data.agent->disconnect();
+
+  if (data.agent->restart()) {
+    auto cmd = string(MADS_PREFIX) + argv[0];
+    cout << "Restarting " << cmd << "..." << endl;
+    execvp(cmd.c_str(), argv);
+  }
+  return 0;
+}
+```
+
+1. Embed any persisting object, including the {{< logo >}} agent, in a structure that will be passed to the FSM operations. This allows to easily access the agent and its settings from the FSM operations, and to keep the code clean and modular.
+2. Initialize the code and manage the settings as needed. This is a good place to customize loading of settings and management of command line options, and to enable any relevant features (e.g. crypto).
+3. Initialize the FSM and enter its loop.
+4. Here we automatically receive messages at each iteration of the main loop.
+5. Properly shutdown the {{< logo >}} agent.
+
+
+The first step is to **encapsulate the agent in a data structure** that will be passed to the FSM functions. This allows to easily access the agent and its settings from the FSM operations, and to keep the code clean and modular. The same structture shall also contain any other data that you want to share between the FSM operations, e.g. resources, objects, memory pointers, or any other relevant data for the FSM logic.
+
+Then, we initialize the agent and connect it to the broker, and we retrieve any relevant settings from the broker (e.g. loop period, receive timeout, etc.). We also enable remote control, which allows to send commands to the agent from the broker (e.g. to change settings or trigger transitions). Here you typically want to **customize loading of settings** and management of command line options.
+
+Then we initialize the FSM and enter its loop. Note that within the loop we call `data.agent->receive()` to receive messages from the broker, and `data.agent->remote_control()` to handle any remote control commands. This allows to easily integrate the FSM logic with the messaging system of MADS, and to trigger transitions based on messages received from other agents or from the user/environment. With this setup, any state function can access the last received message using `data.agent->last_message()`, and can perform any necessary operations based on the content of the message or the remote control commands.
+
+Finally, we register a shutdown event and disconnect the agent when the FSM loop is terminated. We also check if a restart is requested by the broker, and if so we restart the agent using `execvp()`. This allows to easily restart the agent without having to manually stop and start it again.
