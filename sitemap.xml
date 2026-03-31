@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://mads-net.github.io/guides/hdf5.html</loc>
-    <lastmod>2025-07-11T11:07:30.133Z</lastmod>
+    <loc>https://mads-net.github.io/start.html</loc>
+    <lastmod>2026-03-31T15:17:24.583Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/worker.html</loc>
-    <lastmod>2025-07-10T13:43:25.756Z</lastmod>
+    <loc>https://mads-net.github.io/guides/OTA_plugins.html</loc>
+    <lastmod>2025-07-07T14:29:03.420Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/structure.html</loc>
-    <lastmod>2025-09-01T11:42:04.203Z</lastmod>
+    <loc>https://mads-net.github.io/guides/interaction.html</loc>
+    <lastmod>2025-09-10T07:03:11.120Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/zeroconf.html</loc>
-    <lastmod>2025-09-16T15:07:37.942Z</lastmod>
+    <loc>https://mads-net.github.io/guides/director.html</loc>
+    <lastmod>2026-03-04T09:45:32.800Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/security.html</loc>
-    <lastmod>2025-12-30T13:04:25.964Z</lastmod>
+    <loc>https://mads-net.github.io/guides/v2.html</loc>
+    <lastmod>2026-03-04T09:34:04.009Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/python_agent.html</loc>
-    <lastmod>2025-09-16T15:07:37.941Z</lastmod>
+    <loc>https://mads-net.github.io/guides/install.html</loc>
+    <lastmod>2026-03-16T12:13:30.884Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/python.html</loc>
-    <lastmod>2026-03-04T09:54:16.614Z</lastmod>
+    <loc>https://mads-net.github.io/guides/rpio.html</loc>
+    <lastmod>2025-09-01T10:10:01.702Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/containerized.html</loc>
@@ -93,27 +93,35 @@
     <lastmod>2026-03-11T15:24:58.462Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/rpio.html</loc>
-    <lastmod>2025-09-01T10:10:01.702Z</lastmod>
+    <loc>https://mads-net.github.io/guides/r_plugin.html</loc>
+    <lastmod>2026-03-31T16:06:32.227Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/install.html</loc>
-    <lastmod>2026-03-16T12:13:30.884Z</lastmod>
+    <loc>https://mads-net.github.io/guides/python.html</loc>
+    <lastmod>2026-03-04T09:54:16.614Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/v2.html</loc>
-    <lastmod>2026-03-04T09:34:04.009Z</lastmod>
+    <loc>https://mads-net.github.io/guides/python_agent.html</loc>
+    <lastmod>2025-09-16T15:07:37.941Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/director.html</loc>
-    <lastmod>2026-03-04T09:45:32.800Z</lastmod>
+    <loc>https://mads-net.github.io/guides/security.html</loc>
+    <lastmod>2025-12-30T13:04:25.964Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/interaction.html</loc>
-    <lastmod>2025-09-10T07:03:11.120Z</lastmod>
+    <loc>https://mads-net.github.io/guides/zeroconf.html</loc>
+    <lastmod>2025-09-16T15:07:37.942Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/OTA_plugins.html</loc>
-    <lastmod>2025-07-07T14:29:03.420Z</lastmod>
+    <loc>https://mads-net.github.io/guides/structure.html</loc>
+    <lastmod>2025-09-01T11:42:04.203Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/guides/worker.html</loc>
+    <lastmod>2025-07-10T13:43:25.756Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/guides/hdf5.html</loc>
+    <lastmod>2025-07-11T11:07:30.133Z</lastmod>
   </url>
 </urlset>

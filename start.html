@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-06-02">
+<meta name="dcterms.date" content="2026-03-30">
 
-<title>Python Agent</title>
+<title> Quick Start Guide</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,68 +25,33 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
-<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-26c68d61cf99900fc3c88cffcfbb4b26.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-8d9d75b6206e79db986742cfe6744e81.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-26c68d61cf99900fc3c88cffcfbb4b26.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-28da3566de5677dd9681dab41dae1e46.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-cdf766d25d83b9775e38c3a252729f9a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-28da3566de5677dd9681dab41dae1e46.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-26c68d61cf99900fc3c88cffcfbb4b26.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8d9d75b6206e79db986742cfe6744e81.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-26c68d61cf99900fc3c88cffcfbb4b26.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-28da3566de5677dd9681dab41dae1e46.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-cdf766d25d83b9775e38c3a252729f9a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-28da3566de5677dd9681dab41dae1e46.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -152,9 +117,9 @@ cookieconsent.run({
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../images/logo_white.png" alt="" class="navbar-logo light-content">
-    <img src="../images/logo_white.png" alt="" class="navbar-logo dark-content">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./images/logo_white.png" alt="" class="navbar-logo light-content">
+    <img src="./images/logo_white.png" alt="" class="navbar-logo dark-content">
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -164,19 +129,19 @@ cookieconsent.run({
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../start.html"> 
+    <a class="nav-link active" href="./start.html" aria-current="page"> 
 <span class="menu-text">Start here</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../guides.html"> 
+    <a class="nav-link" href="./guides.html"> 
 <span class="menu-text">Guides</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../why.html"> 
+    <a class="nav-link" href="./why.html"> 
 <span class="menu-text">Why MADS?</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../who_is_using.html"> 
+    <a class="nav-link" href="./who_is_using.html"> 
 <span class="menu-text">Use cases</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -185,8 +150,8 @@ cookieconsent.run({
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-presentations">    
         <li>
-    <a class="dropdown-item" href="../presentations/intro.html">
- <span class="dropdown-text"><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Intro</span></a>
+    <a class="dropdown-item" href="./presentations/intro.html">
+ <span class="dropdown-text"><img src="./images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Intro</span></a>
   </li>  
     </ul>
   </li>
@@ -197,7 +162,7 @@ cookieconsent.run({
 <span class="menu-text"><i class="bi-cloud-arrow-down-fill " style="" role="img" aria-hidden="true"></i> Get MADS</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../about.html"> 
+    <a class="nav-link" href="./about.html"> 
 <span class="menu-text"><i class="bi-question-circle-fill " style="" role="img" aria-hidden="true"></i> About</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -245,19 +210,16 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#contents" id="toc-contents" class="nav-link active" data-scroll-target="#contents">Contents</a>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#tasks" id="toc-tasks" class="nav-link" data-scroll-target="#tasks">Tasks</a>
   <ul class="collapse">
-  <li><a href="#installing" id="toc-installing" class="nav-link" data-scroll-target="#installing">Installing</a>
-  <ul class="collapse">
-  <li><a href="#unix" id="toc-unix" class="nav-link" data-scroll-target="#unix">UNIX</a></li>
-  <li><a href="#windows" id="toc-windows" class="nav-link" data-scroll-target="#windows">Windows</a></li>
+  <li><a href="#i-want-to-install-mads" id="toc-i-want-to-install-mads" class="nav-link" data-scroll-target="#i-want-to-install-mads">I want to install MADS</a></li>
+  <li><a href="#i-want-to-develop-plugins" id="toc-i-want-to-develop-plugins" class="nav-link" data-scroll-target="#i-want-to-develop-plugins">I want to develop plugins</a></li>
+  <li><a href="#i-want-to-log-replay-and-monitor-streams-of-data" id="toc-i-want-to-log-replay-and-monitor-streams-of-data" class="nav-link" data-scroll-target="#i-want-to-log-replay-and-monitor-streams-of-data">I want to log, replay, and monitor streams of data</a></li>
+  <li><a href="#i-want-to-quickly-prototype-filtering-algorithms" id="toc-i-want-to-quickly-prototype-filtering-algorithms" class="nav-link" data-scroll-target="#i-want-to-quickly-prototype-filtering-algorithms">I want to quickly prototype filtering algorithms</a></li>
+  <li><a href="#i-want-to-write-a-custom-agent-in-c" id="toc-i-want-to-write-a-custom-agent-in-c" class="nav-link" data-scroll-target="#i-want-to-write-a-custom-agent-in-c">I want to write a custom agent in C++</a></li>
+  <li><a href="#i-want-to-deploy-mads-plugins-and-agents" id="toc-i-want-to-deploy-mads-plugins-and-agents" class="nav-link" data-scroll-target="#i-want-to-deploy-mads-plugins-and-agents">I want to deploy MADS plugins and agents</a></li>
   </ul></li>
-  <li><a href="#executing" id="toc-executing" class="nav-link" data-scroll-target="#executing">Executing</a></li>
-  <li><a href="#python-modules-search-paths" id="toc-python-modules-search-paths" class="nav-link" data-scroll-target="#python-modules-search-paths">Python modules search paths</a></li>
-  <li><a href="#the-mads.ini-section" id="toc-the-mads.ini-section" class="nav-link" data-scroll-target="#the-mads.ini-section">The <code>mads.ini</code> section</a></li>
-  <li><a href="#module-types" id="toc-module-types" class="nav-link" data-scroll-target="#module-types">Module Types</a></li>
-  </ul></li>
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   </ul>
 </nav>
     </div>
@@ -266,202 +228,201 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Python Agent</h1>
-  <div class="quarto-categories">
-    <div class="quarto-category">python</div>
-    <div class="quarto-category">agent</div>
-    <div class="quarto-category">easy</div>
-  </div>
-  </div>
+<h1 class="title"><img src="./images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Quick Start Guide</h1>
+</div>
 
 
-<div class="quarto-title-meta-author">
-  <div class="quarto-title-meta-heading">Author</div>
-  <div class="quarto-title-meta-heading">Affiliation</div>
-  
-    <div class="quarto-title-meta-contents">
-    <p class="author">Paolo Bosetti </p>
-  </div>
-  <div class="quarto-title-meta-contents">
-        <p class="affiliation">
-            University of Trento
-          </p>
-      </div>
-  </div>
 
 <div class="quarto-title-meta">
 
-      
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Paolo Bosetti </p>
+          </div>
+  </div>
+    
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 2, 2025</p>
+      <p class="date">March 30, 2026</p>
     </div>
   </div>
   
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">March 31, 2026</p>
+      <p class="date-modified">March 30, 2026</p>
     </div>
   </div>
     
   </div>
   
-<div>
-  <div class="abstract">
-    <div class="block-title">Abstract</div>
-    <p>The <code>python_agent</code> repo on GitHub provides a MADS agent with an embedded python3 interpreter for developing MADS sgents in Python</p>
-  </div>
-</div>
 
 
 </header>
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
-<p>The Python3 MADS agent is available on <a href="https://github.com/MADS-net/python_agent" class="uri">https://github.com/MADS-net/python_agent</a>.</p>
-<section id="installing" class="level2">
-<h2 class="anchored" data-anchor-id="installing">Installing</h2>
-<p>You need to have <code>python3</code> and <code>python3-dev</code> installed, or Python3 on Windows.</p>
-<p>Also, you need to have installed the latest <a href="https://github.com/pbosetti/MADS/releases">MADS version</a> and the proper build toolkit:</p>
-<ul>
-<li>on UNIX, this means cmake, clang, git</li>
-<li>on Windows, this means Visual Studio 2022 (community edition is fine), git and cmake.</li>
-</ul>
-<p>Then proceed as follows depending on your platform.</p>
-<section id="unix" class="level3">
-<h3 class="anchored" data-anchor-id="unix">UNIX</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv .venv</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install numpy</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># also install other necessary Python libs</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-DCMAKE_INSTALL_PREFIX</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="st">"</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j6</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cmake <span class="at">--install</span> build</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The above is tested on MacOS and Ubuntu 22.04.</p>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>The <a href="./guides.html">Guides</a> are the best place to start if you want to learn how to use MADS. They cover all the main features of MADS, with examples and code snippets. Note that the guides are indexed by topic and that there is a full text search available, so you can easily find the information you need.</p>
+<p>This page is a quick start guide that organizes the access to documentation and how-tos <strong>by purpose</strong>. At the end of each section there is a list of relevant links.</p>
 </section>
-<section id="windows" class="level3">
-<h3 class="anchored" data-anchor-id="windows">Windows</h3>
-<p>Run the following from project root:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>python <span class="op">-</span>m venv <span class="op">.</span><span class="fu">venv</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">venv</span>\Scripts\activate</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>pip install numpy</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># also install other necessary Python libs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cmake <span class="op">-</span>Bbuild <span class="op">-</span>DCMAKE_INSTALL_PREFIX<span class="op">=</span><span class="st">"</span><span class="op">$(</span>mads <span class="op">-</span>p<span class="op">)</span><span class="st">"</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cmake <span class="op">--</span>build build <span class="op">--</span>config Release</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>sudo cmake <span class="op">--</span>install build</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="Enable sudo on Windows">
+<section id="tasks" class="level1">
+<h1>Tasks</h1>
+<section id="i-want-to-install-mads" class="level2">
+<h2 class="anchored" data-anchor-id="i-want-to-install-mads">I want to install MADS</h2>
+<p>MADS can be installed in different ways, depending on your needs and preferences. The recommended way to install MADS is via the <a href="https://git.new/mads" target="MADS">binaries</a>, which are available for Windows, Linux, and macOS. Alternatively, you can also build MADS from source, which is a bit more involved but allows you to customize the installation and use the latest features.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Links">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Enable sudo on Windows
+<span class="screen-reader-only">Note</span>Links
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For <code>sudo</code> to work on Windows, you need to enable it on <em>Settings &gt; System &gt; For Developers</em> and set <em>Enable sudo</em> to On.</p>
+<ul>
+<li><a href="./guides/install.html">Installing MADS</a></li>
+<li><a href="./guides/v2.html">MADS v2.0</a></li>
+<li><a href="./guides/containerized.html">Containerized MADS</a></li>
+</ul>
 </div>
 </div>
 </section>
-</section>
-<section id="executing" class="level2">
-<h2 class="anchored" data-anchor-id="executing">Executing</h2>
-<p>The new agent is installed as <code>mads-python</code>, so you can just type <code>mads python -h</code> (or <code>mads-python -h</code> on Windows) to know more:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> mads <span class="ex">python</span> <span class="at">-h</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ver. 1.2.6</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Usage:</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">python</span> <span class="pp">[</span><span class="ss">OPTION...</span><span class="pp">]</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-p,</span> <span class="at">--period</span> arg         Sampling period <span class="er">(</span><span class="ex">default</span> 100 ms<span class="kw">)</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-m,</span> <span class="at">--module</span> arg         Python module to load</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-n,</span> <span class="at">--name</span> arg           Agent name <span class="er">(</span><span class="ex">default</span> to <span class="st">'python'</span><span class="kw">)</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-i,</span> <span class="at">--agent-id</span> arg       Agent ID to be added to JSON frames</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-s,</span> <span class="at">--settings</span> arg       Settings file path/URI</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-S,</span> <span class="at">--save-settings</span> arg  Save settings to ini file</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-v,</span> <span class="at">--version</span>            Print version</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-h,</span> <span class="at">--help</span>               Print usage</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Typically, to launch an agent named <code>python_source</code>, which gets its settings from a <code>python_source</code> section in <code>mads.ini</code>, and uses the Python module named <code>source</code> defined in the <code>source.py</code> file and that runs every 100 ms, the command is:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> python <span class="at">-n</span> python_source <span class="at">-m</span> source <span class="at">-p100</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>where:</p>
+<section id="i-want-to-develop-plugins" class="level2">
+<h2 class="anchored" data-anchor-id="i-want-to-develop-plugins">I want to develop plugins</h2>
+<p>MADS plugins are the main way to extend MADS with custom functionality. They have to be developed in C++, although you can prototype them in Python or R (see below) and then rewrite them in C++ for better performance.</p>
+<p>Developing plugins require a C++ toolchain. Our suggested (and supported) development environment is:</p>
 <ul>
-<li><code>-n python_source</code> sets the agent name to <code>python_source</code>, and gets its settings from the same section in the <code>mads.ini</code> file</li>
-<li><code>-m source</code> sets the Python module to <code>source.py</code>, which is searched for in the Python modules search paths, see below</li>
-<li><code>-p100</code> sets the sampling period to 100 ms</li>
+<li>on UNIX: <code>cmake</code>, <code>clang</code>, and <code>git</code></li>
+<li>on Windows: Visual Studio 2022, <code>cmake</code>, and <code>git</code></li>
+<li>Visual Studio Code (or compatible IDE) is also recommended for code editing and debugging</li>
+<li>Docker is recommended to provide a MongoDB database instance</li>
+<li>have a look at the <a href="https://open-vsx.org/extension/MADS-Net/madscode">MADSCode</a> plugin for VSCode, which provides tools for quickly prototyping plugins and launching broker and director instances</li>
+<li>also have a look at the <code>mads director</code> command</li>
+<li>check out the <a href="https://github.com/mads-net/mads_chat" class="uri">https://github.com/mads-net/mads_chat</a> repository for a GUI that enables send/receive custom messages to the MADS network of agents, useful for debugging and development</li>
 </ul>
-</section>
-<section id="python-modules-search-paths" class="level2">
-<h2 class="anchored" data-anchor-id="python-modules-search-paths">Python modules search paths</h2>
-<p>The Python modules are searched for in the following folders:</p>
-<ul>
-<li><code>./python</code></li>
-<li><code>./scripts</code></li>
-<li><code>../python</code></li>
-<li><code>../scripts</code></li>
-<li><code>../../python</code></li>
-<li><code>../../scripts</code></li>
-<li><code>INSTALL_PREFIX + /python</code></li>
-<li><code>INSTALL_PREFIX + /scripts</code></li>
-</ul>
-<p>plus any path listed in the <code>mads.ini</code> file under the <code>search_path</code> key (an array or a single string).</p>
-</section>
-<section id="the-mads.ini-section" class="level2">
-<h2 class="anchored" data-anchor-id="the-mads.ini-section">The <code>mads.ini</code> section</h2>
-<p>The following fields are typically used:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[python_source]</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dt">period </span><span class="ot">=</span><span class="st"> </span><span class="dv">200</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">venv </span><span class="ot">=</span><span class="st"> "/path/to/.venv"</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="dt">python_module </span><span class="ot">=</span><span class="st"> "my_source"</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="dt">search_paths </span><span class="ot">=</span><span class="st"> ["/path/to/python/folder"]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled">
+<p>A nice feature of MADS is the possibility to have the broker distributing binary plugins to remote agents over-the-air (OTA), so that you can update your MADS network without having to log in to each agent and update the plugins manually.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Links">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+<span class="screen-reader-only">Note</span>Links
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The section name must match the <code>-n</code> option argument when you launch the agent, so in the case above you must use <code>-n python_source</code>.</p>
+<ul>
+<li><a href="./guides/plugins.html">Plugins</a></li>
+<li><a href="./guides/OTA_plugins.html">OTA Plugins</a></li>
+<li><a href="./guides/director.html"><code>mads director</code></a></li>
+<li><a href="./guides/install.html">Installing MADS</a></li>
+<li><a href="https://open-vsx.org/extension/MADS-Net/madscode">MADSCode VSCode extension</a></li>
+</ul>
 </div>
 </div>
-<p>During <strong>development</strong>, you typically run the plugin interactively and using a python module that is under your home folder. In these conditions, you probably want to set the module name on the command line, such as <code>mads python -n python_source -m my_module</code>. This means that you must have the file <code>my_module.py</code> in the <code>python</code> or <code>scripts</code> subfolder of your current working directory.</p>
-<p>During <strong>deployment</strong>, you want to transform the agent in a service, so that you rely on the module to be loaded according to the <code>mads.ini</code> file (from the <code>python_module</code> key), and the module is expected to be placed in <code>&lt;INSTALL_PREFIX&gt;/python/my_module.py</code>. Since <code>INSTALL_PREFIX</code> is usually <code>/usr/local</code>, this means that the file should be in <code>/usr/local/python/my_module.py</code>. Then you create a service as documented <a href="services.html">here</a>.</p>
 </section>
-<section id="module-types" class="level2">
-<h2 class="anchored" data-anchor-id="module-types">Module Types</h2>
-<p>Python modules can be of type <code>source</code>, <code>filter</code>, or <code>sink</code>. The module type is defined by setting a top level variable like this, typically at the beginning of the script, just after the various <code>import</code>s:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>agent_type <span class="op">=</span> <span class="st">"sink"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>All the modules <strong>must</strong> implement a <code>setup()</code> function, which is expected to use the dictionary available in the module variable <code>params</code> (a dictionary)&nbsp;to do initial setup (opening ports or files, etc.)</p>
-<p><strong>Source</strong> modules <strong>must</strong> implement a <code>get_output()</code> function, that produces the JSON string that will be published.</p>
-<p><strong>Filter</strong> modules <strong>must</strong> implement a <code>process()</code> function, that is supposed to operate on the last received data dictionary (available as <code>data</code>, a module variable) and produce a JSON string that will be published.</p>
-<p><strong>Sink</strong> modules <strong>must</strong> implement a <code>deal_with_data()</code> function, that operates on the <code>data</code> dictionary, a module variable.</p>
-</section>
-</section>
-<section id="examples" class="level1">
-<h1>Examples</h1>
-<div class="callout callout-style-default callout-note callout-titled">
+<section id="i-want-to-log-replay-and-monitor-streams-of-data" class="level2">
+<h2 class="anchored" data-anchor-id="i-want-to-log-replay-and-monitor-streams-of-data">I want to log, replay, and monitor streams of data</h2>
+<p>MADS main purpose is to collect and analyze data from different sources. Data can be logged to a MongoDB database or to a HDF5 file.</p>
+<p>Data that have been recorded to the MongoDB database can also be replayed in real-time, and can be visualized with different tools, including Rerun.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Links">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+<span class="screen-reader-only">Note</span>Links
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>To be completed</p>
+<ul>
+<li><a href="./guides/hdf5.html">HDF5 Logger</a></li>
+<li><a href="./guides/replay_csv.html">Replay plugin</a></li>
+<li><a href="./guides/replay.html">MongoDB Replay</a></li>
+<li><a href="./guides/rerun.html">Real-time visualization with Rerun</a></li>
+</ul>
 </div>
 </div>
-<hr>
+</section>
+<section id="i-want-to-quickly-prototype-filtering-algorithms" class="level2">
+<h2 class="anchored" data-anchor-id="i-want-to-quickly-prototype-filtering-algorithms">I want to quickly prototype filtering algorithms</h2>
+<p>MADS plugins are developed in C++, which is a great language for performance, but it can be a bit cumbersome for quick prototyping. For this reason, MADS provides a host of scripting interfaces that allow you to quickly prototype your algorithms and then rewrite them in C++ for better performance.</p>
+<p>The most complete scripting interface is the Python one, which provides a <strong>Python agent</strong> that can be used to write source, filter, and sink agents in Python. Note that those are not <em>plugins</em> in the strict sense, as they are not loaded by the standard plugin loaders, but they are regular agents that can be started with the <code>mads python</code> command. The Python Agent is available in the MADS installer and can be used out of the box.</p>
+<p>The MADS installer also provides a <strong>Python module</strong> that provides a Python wrapper for the C++ library, which allows you to write custom agents in Python. This is a more advanced use case, but it can be useful if you want to write custom agents or procedural scripts to interact with the MADS network in ways that are not allowed by the plugin system.</p>
+<p>The <strong>R plugin</strong> is also available, but it is not part of the standard MADS installer and it needs to be downloaded and installed separately. It provides a similar functionality to the Python Agent.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Links">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Links
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="./guides/python_agent.html">Python Agent</a></li>
+<li><a href="./guides/python.html">Python interface</a></li>
+<li><a href="./guides/r_plugin.html">R plugin</a></li>
+<li><a href="./guides/interaction.html">Interacting with MADS</a></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="i-want-to-write-a-custom-agent-in-c" class="level2">
+<h2 class="anchored" data-anchor-id="i-want-to-write-a-custom-agent-in-c">I want to write a custom agent in C++</h2>
+<p>MADS plugin system enforces a <strong>certain structure for the agents</strong>, which is easy to start with, great for performance and for ensuring that the agents are well-behaved, but it can be a bit restrictive if you want to write a custom agent that does not fit into the plugin system.</p>
+<p>For this reason, MADS provides a <strong>C++ API</strong> that allows you to write custom agents in C++ without having to follow the plugin structure. This is a more advanced use case, but it can be useful if you want to write custom agents that need to interact with the MADS network in ways that are not allowed by the plugin system.</p>
+<p>Since MADS v2.0.2, the <code>mads fsm</code> command allows to develop custom agents that implement a <strong>finite state machine (FSM)</strong> structure defined in Graphviz language. This is a great way to quickly develop custom agents that need to have a more complex behavior than what is allowed by the plugin system.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Links">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Links
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="./guides/monolithic_agents.html">Monolithic agents</a></li>
+<li><a href="./guides/fsm.html">Finite State Machines</a></li>
+<li><a href="./guides/interaction.html">Interacting with MADS</a></li>
+<li><a href="./guides/structure.html">Network structure</a></li>
+<li><a href="./guides/worker.html">Parallel computing with MADS</a></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="i-want-to-deploy-mads-plugins-and-agents" class="level2">
+<h2 class="anchored" data-anchor-id="i-want-to-deploy-mads-plugins-and-agents">I want to deploy MADS plugins and agents</h2>
+<p>MADS has been designed to provide a distributed network of agents that can run on different machines and communicate with each other via a central broker. This allows to deploy MADS in different environments, from a single machine to a cluster of machines, and to scale up the number of agents as needed. <strong>Headless deployment</strong> is not only possible, but actually advised, with agents running in the background as services. At the moment, only Linux services are supported, since the vas majority of headless deployments are expected to be on Linux machines.</p>
+<p>In production environments, it is also important to have a <strong>secure communication</strong> between the agents and the broker, which is provided by the optional encryption feature of MADS. This allows to deploy MADS in environments where security is a concern, such as in industrial settings or in the cloud.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Links">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Links
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="./guides/director.html">Director</a></li>
+<li><a href="./guides/services.html">Services</a></li>
+<li><a href="./guides/containerized.html">Containerized MADS</a></li>
+<li><a href="./guides/security.html">Security in MADS</a></li>
+</ul>
+</div>
+</div>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
