@@ -12,10 +12,17 @@ website:
     type: express
     style: simple
     palette: light
+  announcement:
+    content: "Don't miss the new [MADSCode extension]{style=font-weight:bold} for Visual Studio Code! [Learn more {{< bi link >}}](https://open-vsx.org/extension/MADS-Net/madscode)"
+    position: below-navbar   # or below-navbar
+    type: warning           # primary, secondary, success, warning, danger
+    dismissable: true
   page-footer: 
     left: "Paolo Bosetti, [BY-NC-SA4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)" 
   navbar:
     left:
+      - href: start.qmd
+        text: "Start here"
       - href: guides.qmd
         text: "Guides"
       - href: why.qmd

@@ -1,0 +1,113 @@
+---
+title: "{{< logo >}} Quick Start Guide"
+author: "Paolo Bosetti"
+date: "2026-03-30"
+date-modified: "2026-03-30"
+format: html
+---
+
+# Introduction
+
+The [Guides](/guides.qmd) are the best place to start if you want to learn how to use MADS. They cover all the main features of MADS, with examples and code snippets. Note that the guides are indexed by topic and that there is a full text search available, so you can easily find the information you need.
+
+This page is a quick start guide that organizes the access to documentation and how-tos **by purpose**. At the end of each section there is a list of relevant links.
+
+# Tasks
+
+## I want to install MADS
+
+MADS can be installed in different ways, depending on your needs and preferences. The recommended way to install MADS is via the [binaries](https://git.new/mads){target="MADS"}, which are available for Windows, Linux, and macOS. Alternatively, you can also build MADS from source, which is a bit more involved but allows you to customize the installation and use the latest features.
+
+:::{.callout-note title="Links"}
+* [Installing MADS](guides/install.qmd)
+* [MADS v2.0](guides/v2.qmd)
+* [Containerized MADS](guides/containerized.qmd)
+:::
+
+
+## I want to develop plugins
+
+MADS plugins are the main way to extend MADS with custom functionality. They have to be developed in C++, although you can prototype them in Python or R (see below) and then rewrite them in C++ for better performance.
+
+Developing plugins require a C++ toolchain. Our suggested (and supported) development environment is:
+
+* on UNIX: `cmake`, `clang`, and `git`
+* on Windows: Visual Studio 2022, `cmake`, and `git`
+* Visual Studio Code (or compatible IDE) is also recommended for code editing and debugging
+* Docker is recommended to provide a MongoDB database instance
+* have a look at the [MADSCode](https://open-vsx.org/extension/MADS-Net/madscode) plugin for VSCode, which provides tools for quickly prototyping plugins and launching broker and director instances
+* also have a look at the `mads director` command
+* check out the <https://github.com/mads-net/mads_chat> repository for a GUI that enables send/receive custom messages to the MADS network of agents, useful for debugging and development
+
+
+A nice feature of MADS is the possibility to have the broker distributing binary plugins to remote agents over-the-air (OTA), so that you can update your MADS network without having to log in to each agent and update the plugins manually.
+
+:::{.callout-note title="Links"}
+* [Plugins](guides/plugins.qmd)
+* [OTA Plugins](guides/OTA_plugins.qmd)
+* [`mads director`](guides/director.qmd)
+* [Installing MADS](guides/install.qmd)
+* [MADSCode VSCode extension](https://open-vsx.org/extension/MADS-Net/madscode)
+:::
+
+
+## I want to log, replay, and monitor streams of data
+
+MADS main purpose is to collect and analyze data from different sources. Data can be logged to a MongoDB database or to a HDF5 file.
+
+Data that have been recorded to the MongoDB database can also be replayed in real-time, and can be visualized with different tools, including Rerun.
+
+:::{.callout-note title="Links"}
+* [HDF5 Logger](guides/hdf5.qmd)
+* [Replay plugin](guides/replay_csv.qmd)
+* [MongoDB Replay](guides/replay.qmd)
+* [Real-time visualization with Rerun](guides/rerun.qmd)
+:::
+
+
+## I want to quickly prototype filtering algorithms
+
+MADS plugins are developed in C++, which is a great language for performance, but it can be a bit cumbersome for quick prototyping. For this reason, MADS provides a host of scripting interfaces that allow you to quickly prototype your algorithms and then rewrite them in C++ for better performance.
+
+The most complete scripting interface is the Python one, which provides a **Python agent** that can be used to write source, filter, and sink agents in Python. Note that those are not *plugins* in the strict sense, as they are not loaded by the standard plugin loaders, but they are regular agents that can be started with the `mads python` command. The Python Agent is available in the MADS installer and can be used out of the box.
+
+The MADS installer also provides a **Python module** that provides a Python wrapper for the C++ library, which allows you to write custom agents in Python. This is a more advanced use case, but it can be useful if you want to write custom agents or procedural scripts to interact with the MADS network in ways that are not allowed by the plugin system.
+
+The **R plugin** is also available, but it is not part of the standard MADS installer and it needs to be downloaded and installed separately. It provides a similar functionality to the Python Agent.
+
+:::{.callout-note title="Links"}
+* [Python Agent](guides/python_agent.qmd)
+* [Python interface](guides/python.qmd)
+* [R plugin](guides/r_plugin.qmd)
+* [Interacting with MADS](guides/interaction.qmd)
+:::
+
+## I want to write a custom agent in C++
+
+MADS plugin system enforces a **certain structure for the agents**, which is easy to start with, great for performance and for ensuring that the agents are well-behaved, but it can be a bit restrictive if you want to write a custom agent that does not fit into the plugin system. 
+
+For this reason, MADS provides a **C++ API** that allows you to write custom agents in C++ without having to follow the plugin structure. This is a more advanced use case, but it can be useful if you want to write custom agents that need to interact with the MADS network in ways that are not allowed by the plugin system.
+
+Since MADS v2.0.2, the `mads fsm` command allows to develop custom agents that implement a **finite state machine (FSM)** structure defined in Graphviz language. This is a great way to quickly develop custom agents that need to have a more complex behavior than what is allowed by the plugin system.
+
+:::{.callout-note title="Links"}
+* [Monolithic agents](guides/monolithic_agents.qmd)
+* [Finite State Machines](guides/fsm.qmd)
+* [Interacting with MADS](guides/interaction.qmd)
+* [Network structure](guides/structure.qmd)
+* [Parallel computing with MADS](guides/worker.qmd)
+:::
+
+
+## I want to deploy MADS plugins and agents
+
+MADS has been designed to provide a distributed network of agents that can run on different machines and communicate with each other via a central broker. This allows to deploy MADS in different environments, from a single machine to a cluster of machines, and to scale up the number of agents as needed. **Headless deployment** is not only possible, but actually advised, with agents running in the background as services. At the moment, only Linux services are supported, since the vas majority of headless deployments are expected to be on Linux machines.
+
+In production environments, it is also important to have a **secure communication** between the agents and the broker, which is provided by the optional encryption feature of MADS. This allows to deploy MADS in environments where security is a concern, such as in industrial settings or in the cloud.
+
+:::{.callout-note title="Links"}
+* [Director](guides/director.qmd)
+* [Services](guides/services.qmd)
+* [Containerized MADS](guides/containerized.qmd)
+* [Security in MADS](guides/security.qmd)
+:::

@@ -1,0 +1,249 @@
+---
+title: "R Plugin"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 03/31/2026
+date-modified: today
+format: html
+# format:
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+
+draft: false
+categories: [R, plugin, agent, easy]
+abstract: |
+  The `r_plugin` repository on GitHub provides MADS source, filter, and sink plugins with an embedded R interpreter, so that agents can be developed in R.
+---
+
+
+# Contents
+
+The R plugins for MADS are available on <https://github.com/mads-net/r_plugin>.
+
+This repository provides three plugins:
+
+* `r_source`: a source plugin that calls an R `get_output()` function
+* `r_filter`: a filter plugin that calls an R `process(input)` function
+* `r_sink`: a sink plugin that calls an R `deal_with_data(input)` function
+
+They work analogously to the [Python Agent](python_agent.qmd), but are loaded through the standard plugin loaders: `mads source`, `mads filter`, and `mads sink`.
+
+## Installing
+
+You need:
+
+* a recent R installation available on your system
+* the latest [MADS version](install.qmd), version 2.x
+* a proper build toolchain:
+  - on UNIX: `cmake`, `clang`, and `git`
+  - on Windows: Visual Studio 2022, `cmake`, and `git`
+
+Then build and install the repository.
+
+### UNIX
+
+From the repository root:
+
+```sh
+cmake -Bbuild -DCMAKE_INSTALL_PREFIX="$(mads -p)"
+cmake --build build -j6
+sudo cmake --install build
+```
+
+The above is intended for macOS and Linux.
+
+### Windows
+
+From the repository root:
+
+```powershell
+cmake -Bbuild -DCMAKE_INSTALL_PREFIX="$(mads -p)"
+cmake --build build --config Release
+cmake --install build --config Release
+```
+
+After installation, the three plugins are available in the MADS install tree as `r_source`, `r_filter`, and `r_sink`.
+
+## Executing
+
+These are regular MADS plugins, so they are loaded by the standard plugin loaders.
+
+Typical commands are:
+
+```sh
+mads source r_source
+mads filter r_filter
+mads sink r_sink
+```
+
+As for any other MADS plugin, the agent name can be changed with `-n`, and the corresponding section in `mads.ini` must have the same name. For example:
+
+```sh
+mads source -n r_demo r_source
+```
+
+means that the settings are read from the `[r_demo]` section in `mads.ini`.
+
+During development, it is often useful to keep the plugin name fixed and only change the agent name with `-n`, so that the same installed plugin can be reused with different R scripts and settings.
+
+## The `mads.ini` section
+
+The R plugins expect a configuration section such as:
+
+```ini
+[r_demo]
+init_script = "/absolute/path/to/source.R"
+use_renv = true
+r_output_mode = "stdout"
+```
+
+The supported keys are:
+
+* `init_script`: mandatory path to the R script to load
+* `use_renv`: whether to automatically use a local `.renv`
+* `r_output_mode`: either `"stdout"` or `"buffer"`
+
+::: {.callout-warning}
+The section name must match the `-n` option used on the command line. If you launch `mads source -n r_demo r_source`, then the settings must be in `[r_demo]`.
+:::
+
+
+## R script contract
+
+The file pointed to by `init_script` is sourced when the plugin starts. That script must define the entry-point function(s), depending on the plugin type, and may optionally define a `set_params(list)` function to receive parameters from the `set_params()` plugin method.
+
+C++ JSON objects are automatically converted to R lists when passed to the R script, and R lists are automatically converted to JSON objects when returned from the R script.
+
+### Source scripts
+
+A source script must define:
+
+```r
+get_output <- function() {
+  list(value = 42, status = "ok")
+}
+```
+
+The function takes no arguments and must return an R list. The list is automatically converted to a JSON object and published by the source agent.
+
+### Filter scripts
+
+A filter script must define:
+
+```r
+load_data <- function(input) {
+  # store input in global variables, if needed
+  return TRUE
+}
+
+process <- function() {
+  list(
+    value = list(result = "whatever"),
+    return(value)
+  )
+}
+```
+
+The `input` argument is the JSON document received by the filter, converted to an R list. The function must return another R list, which is converted back to JSON and published.
+
+### Sink scripts
+
+A sink script must define:
+
+```r
+load_data <- function(input) {
+  print(input)
+  TRUE
+}
+```
+
+The `input` argument is the received JSON message converted to an R list. The function is expected to perform side effects only. It should return `TRUE`; returning `FALSE` is treated as an error by the plugin.
+
+## Examples
+
+### Source example
+
+The repository includes a source example based on an R6 class. A smaller example is:
+
+```r
+counter <- local({
+  i <- 0
+  function() {
+    i <<- i + 1
+    list(counter = i)
+  }
+})
+
+get_output <- function() counter()
+```
+
+With the following settings:
+
+```ini
+[r_counter]
+init_script = "/path/to/counter.R"
+use_renv = false
+r_output_mode = "stdout"
+period = 200
+```
+
+you can launch it as:
+
+```sh
+mads source -n r_counter r_source
+```
+
+### Filter example
+
+This filter doubles an incoming numeric field named `value`:
+
+```r
+value <- 42
+
+load_data <- function(input) {
+  value <- input$value
+  return TRUE
+}
+
+process <- function() {
+  if (is.null(input$value)) {
+    return(list(error = "missing field 'value'"))
+  }
+  list(value = 2 * input$value)
+}
+```
+
+Assuming the corresponding section is named `[r_double]`, launch it with:
+
+```sh
+mads filter -n r_double r_filter
+```
+
+### Sink example
+
+This sink prints every received message and appends a timestamp:
+
+```r
+load_data <- function(input) {
+  cat(format(Sys.time()), "\n")
+  print(input)
+  TRUE
+}
+```
+
+Launch it with:
+
+```sh
+mads sink -n r_logger r_sink
+```
+
+## Development and deployment
+
+During development, `init_script` usually points to a script in your project folder. During deployment, you typically want the script to live in a stable location and the agent to be started by a service or by a supervisor.
+
+Once the plugin works as expected, you can deploy it exactly as any other MADS plugin. See [Services](services.qmd) for turning a working command into a Linux service.
+
