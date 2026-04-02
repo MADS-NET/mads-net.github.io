@@ -35,7 +35,7 @@ Developing plugins require a C++ toolchain. Our suggested (and supported) develo
 * on Windows: Visual Studio 2022, `cmake`, and `git`
 * Visual Studio Code (or compatible IDE) is also recommended for code editing and debugging
 * Docker is recommended to provide a MongoDB database instance
-* have a look at the [MADSCode](https://open-vsx.org/extension/MADS-Net/madscode) plugin for VSCode, which provides tools for quickly prototyping plugins and launching broker and director instances
+* have a look at the [MADSCode](https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode) plugin for VSCode, which provides tools for quickly prototyping plugins and launching broker and director instances
 * also have a look at the `mads director` command
 * check out the <https://github.com/mads-net/mads_chat> repository for a GUI that enables send/receive custom messages to the MADS network of agents, useful for debugging and development
 
@@ -75,10 +75,13 @@ The MADS installer also provides a **Python module** that provides a Python wrap
 
 The **R plugin** is also available, but it is not part of the standard MADS installer and it needs to be downloaded and installed separately. It provides a similar functionality to the Python Agent.
 
+Finally, the **FMU agent** allows to quickly wrap [FMUs](https://fmi-standard.org/) in MADS agents, which can be used for prototyping and testing FMUs in a MADS environment.
+
 :::{.callout-note title="Links"}
 * [Python Agent](guides/python_agent.qmd)
 * [Python interface](guides/python.qmd)
 * [R plugin](guides/r_plugin.qmd)
+* [FMU agent](guides/fmu.qmd)
 * [Interacting with MADS](guides/interaction.qmd)
 :::
 

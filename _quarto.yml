@@ -13,7 +13,7 @@ website:
     style: simple
     palette: light
   announcement:
-    content: "Don't miss the new [MADSCode extension]{style=font-weight:bold} for Visual Studio Code! [Learn more {{< bi link >}}](https://open-vsx.org/extension/MADS-Net/madscode)"
+    content: "Don't miss the new [MADSCode extension]{style=font-weight:bold} for Visual Studio Code! [Learn more {{< bi link >}}](https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode)"
     position: below-navbar   # or below-navbar
     type: warning           # primary, secondary, success, warning, danger
     dismissable: true

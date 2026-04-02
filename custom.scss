@@ -63,6 +63,12 @@ code {
   color: $code-color;
   font-size: 95%;
 }
+pre.text {
+  background-color: #f9f9ff;
+  border: 1px solid #888888;
+  border-radius: 10px;
+  padding: 10px;
+}
 
 strong {
   color: $headings-color;
@@ -103,6 +109,11 @@ div.abstract {
   font-style: italic;
 }
 
+div.margin-aside p {
+  color: black;
+  font-style: italic;
+}
+
 .thatsall {
   margin-top: 75px;
   padding-bottom: 0px;
@@ -136,7 +147,7 @@ div.abstract {
     color: $presentation-heading-color;
   }
   
-  aside{
+  aside {
     font-style: italic;
   }
   
