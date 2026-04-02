@@ -2,6 +2,7 @@
   {
     "listing": "/guides.html",
     "items": [
+      "/guides/fmu.html",
       "/guides/r_plugin.html",
       "/guides/fsm.html",
       "/guides/replay.html",

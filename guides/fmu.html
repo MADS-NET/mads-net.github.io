@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-09-03">
+<meta name="dcterms.date" content="2026-04-02">
 
-<title>Agents persistency with Datastore</title>
+<title>Functional Mockup Unit (FMU)</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -87,6 +87,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/bootstrap/bootstrap-dark-b52e99f3a855bd5ace4c3b514d3e324a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-2dddee11e5b1365b13b12920093eb9d6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -245,26 +248,31 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-problem" id="toc-the-problem" class="nav-link active" data-scroll-target="#the-problem">The problem</a></li>
-  <li><a href="#the-solution" id="toc-the-solution" class="nav-link" data-scroll-target="#the-solution">The solution</a>
+  <li><a href="#fmifmu-overview" id="toc-fmifmu-overview" class="nav-link active" data-scroll-target="#fmifmu-overview">FMI/FMU Overview</a></li>
+  <li><a href="#creating-an-fmu" id="toc-creating-an-fmu" class="nav-link" data-scroll-target="#creating-an-fmu">Creating an FMU</a></li>
+  <li><a href="#using-the-fmu-in-mads" id="toc-using-the-fmu-in-mads" class="nav-link" data-scroll-target="#using-the-fmu-in-mads">Using the FMU in MADS</a>
   <ul class="collapse">
-  <li><a href="#the-datastore-class" id="toc-the-datastore-class" class="nav-link" data-scroll-target="#the-datastore-class">The <code>Datastore</code> class</a></li>
-  <li><a href="#the-plugin-template" id="toc-the-plugin-template" class="nav-link" data-scroll-target="#the-plugin-template">The plugin template</a></li>
-  <li><a href="#existing-plugins" id="toc-existing-plugins" class="nav-link" data-scroll-target="#existing-plugins">Existing plugins</a></li>
+  <li><a href="#build" id="toc-build" class="nav-link" data-scroll-target="#build">Build</a></li>
+  <li><a href="#fmus" id="toc-fmus" class="nav-link" data-scroll-target="#fmus">FMUs</a>
+  <ul class="collapse">
+  <li><a href="#example-fmus" id="toc-example-fmus" class="nav-link" data-scroll-target="#example-fmus">Example FMUs</a></li>
+  </ul></li>
+  <li><a href="#execution" id="toc-execution" class="nav-link" data-scroll-target="#execution">Execution</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Agents persistency with Datastore</h1>
+<h1 class="title">Functional Mockup Unit (FMU)</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">plugin</div>
-    <div class="quarto-category">C++</div>
-    <div class="quarto-category">intermediate</div>
+    <div class="quarto-category">simulation</div>
+    <div class="quarto-category">fmu</div>
+    <div class="quarto-category">interfaces</div>
+    <div class="quarto-category">advanced</div>
   </div>
   </div>
 
@@ -289,7 +297,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 3, 2025</p>
+      <p class="date">April 2, 2026</p>
     </div>
   </div>
   
@@ -305,7 +313,7 @@ cookieconsent.run({
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>MADS Version 1.3.5 introduces the <code>Datastore</code> class for plugins. This class allows storing persistent information at device level.</p>
+    <p>This guide provides an overview of Functional Mockup Units (FMUs) and their use within MADS environments. It covers the basics of FMU creation, integration to the MADS environment, and use of the <code>FMU_agent</code> for running simulations.</p>
   </div>
 </div>
 
@@ -313,52 +321,114 @@ cookieconsent.run({
 </header>
 
 
-<section id="the-problem" class="level1">
-<h1>The problem</h1>
-<p>MADS agents load their setting from the centralized <code>mads.ini</code> file provided by the broker. Those settings are of course <em>read-only</em>, i.e., it is not possible for an agent to <em>update</em> its settings.</p>
-<p>This limitation is <em>by design</em>. In fact, allowing a single agent to update the setting file would possibly result in unwanted side effect: what happens if the update contains errors? what happens if there are multiple agents sharing the same name (and thus the same INI section) but having different <code>agent_id</code>? Forcing read-only settings is a way for <strong>ensuring robustness in operations</strong>.</p>
-<p>Nevertheless, there are cases where an agent needs to permanently and locally store <strong>own</strong> information that has to be persistent upon the agent’s restarts. For example, suppose that you have an <strong>agent providing IMU (inertial unit) measurements</strong> with respect to an initial reference orientation. In this case, you want the agent to calibrate it’s initial attitude upon the very first launch, and then <strong>use the same calibration</strong> even when the agent restarts or the device reboots, until explicitly forced to re-calibrate. To build on the previously cited use case, the same agent running on different devices, you want to store the calibration <strong>locally</strong>, to ensure that each instance of the same agent always loads its own calibration.</p>
-<p>In this scenario, you need <strong>persistent data storage</strong>, and that is what the <code>Datastore</code> C++ class provides.</p>
+<section id="fmifmu-overview" class="level1">
+<h1>FMI/FMU Overview</h1>
+<p><a href="https://fmi-standard.org/">Functional Mockup Interface</a> (FMI) is a standard for model exchange and co-simulation of <strong>dynamic systems</strong>. An <strong>FMU</strong> (Functional Mockup Unit) is a compiled version of a model that can be used in different simulation environments that support the FMI standard. FMUs can be used for both model exchange (where the model is imported into the simulation environment) and co-simulation (where the model runs in its own environment and communicates with the simulation environment). FMUs are typically created using tools like Modelica, Simulink, or other modeling environments that support FMI export.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The FMI standard is currently at <strong>version 3.0</strong>, which is the only format version supported by MADS.</p>
+</div>
+</div>
 </section>
-<section id="the-solution" class="level1">
-<h1>The solution</h1>
-<section id="the-datastore-class" class="level2">
-<h2 class="anchored" data-anchor-id="the-datastore-class">The <code>Datastore</code> class</h2>
-<p>It is a C++ header-only class, provided by the <a href="https://github.com/pbosetti/mads_plugin">plugin base project and classes</a>. This project is automatically fetched for you whenever you compile a new plugin, and provides the base code, on top of which plugins are built. In particular, it provides the base classes <code>Source</code>, <code>Filter</code>, and <code>Sink</code>, that are inherited by actual plugin classes.</p>
-<p>The source code of this project is downloaded into <code>build/_deps/plugin-src</code> in each plugin project directory.</p>
-<p>Starting from version 1.3.5, the code in <code>build/_deps/plugin-src/src</code> also provides a <code>datastore.hpp</code> class implementation. It is a relatively simple class for persistently store a <code>nlohmann::json</code> object on a text file in a local temporary folder (your OS temp dir as provided by C++ <code>std::filesystem::temp_directory_path()</code>). The class has the following notable methods:</p>
+<section id="creating-an-fmu" class="level1 page-columns page-full">
+<h1>Creating an FMU</h1>
+<p>To create an FMU, you can use a modeling tool that supports FMI export, such as Modelica or Simulink. In this guide, we will use Simulink as an example, creating a dynamic model of a 3-axes cartesian manipulator, made by three identical subsystems, each one made by a mass, a spring, and a damper. The model must contain input and output ports, which will be used for communication with the MADS environment.</p>
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<p>An FMU is actually a <strong>zip file</strong> that contains the compiled model, along with some metadata and possibly the source code of the model. The structure of the FMU file is defined by the FMI standard, and it includes a <code>modelDescription.xml</code> file that describes the model and its interface, as well as a <code>sources</code> folder that contains the source code of the model (if included) and a <code>binaries</code> folder that contains the compiled binaries for different platforms.</p>
+</div></div><div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/fmu_dynamics.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="The dynamics equation"><img src="images/fmu_dynamics.png" class="img-fluid figure-img" alt="The dynamics equation"></a></p>
+<figcaption>The dynamics equation</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/fmu_axis.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="The axis subsystem"><img src="images/fmu_axis.png" class="img-fluid figure-img" alt="The axis subsystem"></a></p>
+<figcaption>The axis subsystem</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/fmu_machine.png" class="img-fluid figure-img"></p>
+<figcaption>The 3-axes machine tool model</figcaption>
+</figure>
+</div>
+<p>In the overall model, note that we have input and output ports:</p>
 <ul>
-<li><code>void prepare(std::string name)</code>: to be called once, it prepares a datastore file: if it exists, the file is read and parsed as a <code>nlohmann::json</code> object internally stored; if it does not exist, it is created (in the OS temp dir) and the internal storage set to an empty <code>nlohmann::json</code> object. If the <code>name</code> lacks the <code>.json</code> extension, that is automatically added.</li>
-<li><code>void save()</code>: force dumping the current internal storage in the associated file. <strong>It is automatically called when the datastore is destructed</strong> (for example upon regular exit).</li>
-<li><code>nlohmann::json &amp; operator[](const std::string &amp;key)</code>: access the object at <code>key</code> from the internal storage (both for reading and writing).</li>
-<li><code>nlohmann::json &amp; data()</code>: provides access to the internal storage.</li>
-<li><code>std::string path()</code>: provides the full path of the storage file</li>
+<li>The input ports are used to receive the control signals for the three axes (u1, u2, u3). Here we decided to unbundle the input, that <strong>must be a vector</strong> of size 3, into three separate signals, for better readability.</li>
+<li>The output ports are used to obtain the position and speed of each axis, again we decided to bundle the outputs into two vectors of size 3, for better readability.</li>
 </ul>
+<p>Note that your model must be <strong>causal</strong> (i.e., it must have a clear input-output structure) and must not contain algebraic loops, as these can cause issues during simulation.</p>
+<p>Also, your model usually depends on <strong>parameters</strong>. If so, clearly define the parameters using <strong>block masks</strong>, so that they are usually loaded from the workspace when the simulation runs in Simulink. Also, assign clear and meanningful names to the input and output ports, for those will be farried forth by the FMI interface and ultimately used in the MADS environment.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When creating an FMU, make sure to follow the guidelines of the FMI standard and to test your model thoroughly in the original modeling environment before exporting it as an FMU. This will help ensure that the FMU works correctly when imported into the MADS environment.</p>
+<p>Also, be aware that if you use <strong>custom blocksets or advanced Simulink features</strong>, in order to be able to run the FMU you would need to also install the Simulink Runtime on the machine where you want to run the FMU, which is not always possible. For this reason, it is recommended to use only basic Simulink blocks and features that are widely supported by the FMI standard.</p>
+</div>
+</div>
+<p>Once ready, you can export the model as an FMU by clickin on the “<em>Save</em>” drop down menu and pick the “<em>Standalone FMU…</em>” option. This will open the FMU Export window, where you can specify the name and location of the FMU file, as well as some options for the export process. Make sure to select the correct FMI version (3.0) and to check the “<em>Access source code from FMU</em>” option if you want to include the source code of the model in the FMU file.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/fmu_export.png" class="img-fluid figure-img"></p>
+<figcaption>FMU Export window</figcaption>
+</figure>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<p>Carefully check all the tabs in the export panel and be sure that inputs, outputs, and parameters are correctly identified and named, with the data type you expect. This will ensure that the FMU can be correctly used in the MADS environment.</p>
+</div></div><div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Checking the “<em>Access source code from FMU</em>” option also includes the source code in the generated FMU, which in turn allows to <strong>re-compile the FMU for different targets</strong>. This is particularly important if you develop the FMU on, say, a Windows machine and plan to run it on a Linux machine, where the pre-compiled binaries included in the FMU may not be compatible. By including the source code, you can re-compile the FMU on the target machine, ensuring compatibility and optimal performance.</p>
+</div>
+</div>
 </section>
-<section id="the-plugin-template" class="level2">
-<h2 class="anchored" data-anchor-id="the-plugin-template">The plugin template</h2>
-<p>The command <code>mads plugin</code> is used to generate a plugin template. With v1.3.5, it gains the <code>-s|--datastore</code> option, which enables some example calls to the <code>Datastore</code> class. For example, by issuing:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> plugin <span class="at">-d</span> test_plugin <span class="at">-s</span> test</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>the template for a blank new plugin called <code>test.plugin</code> is created in the <code>test_plugin</code> directory, <strong>with usage examples for <code>Datastore</code></strong>. With the <code>-s</code>flag, the <code>src/test.cpp</code> file has the following additions:</p>
-<ol type="1">
-<li>The <code>Datastore</code> class is included with <code>#include &lt;datastore.hpp&gt;</code></li>
-<li>The private instance member variable <code>Datastore _datastore</code>&nbsp;is added to the <code>TestPlugin</code> class</li>
-<li>in <code>set_params()</code>, the line <code>_datastore.prepare(kind());</code> prepares the datastore to a file named as the plugin (<code>kind()</code> method) with the <code>.json</code> extension. If that file exists, it loads its content</li>
-<li>some comment lines suggest how to use the <code>_datastore</code> object</li>
-<li>the <code>info()</code> method returns the full path of the storage file.</li>
-</ol>
-<p>So, recalling the calibration use case referred above, the <code>set_params()</code> method would:</p>
-<ol type="1">
-<li>prepare the datastore;</li>
-<li>check if the datastore contains the calibration: <code>if (_datastore["calibration"].empty())</code></li>
-</ol>
+<section id="using-the-fmu-in-mads" class="level1">
+<h1>Using the FMU in MADS</h1>
+<p>FMUs can be used in MADS thanks to the <a href="https://github.com/mads-net/FMU_agent" target="_blank"><code>FMU_agent</code></a>, which provides an interface for loading and running FMUs within the MADS environment. That repo provides a C++ agent that can be compiled and installed in your MADS environment, allowing you to run FMUs as part of your simulations and control applications.</p>
+<section id="build" class="level2">
+<h2 class="anchored" data-anchor-id="build">Build</h2>
+<p>As usual for MADS plugins and agents:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-DCMAKE_BUILD_TYPE</span><span class="op">=</span>Release</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j6</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A few notes:</p>
 <ul>
-<li>if there’s no calibration, perform the necessary calibration ops, then save the result as <code>_datastore["calibration"] = _calib_json;</code></li>
-<li>if the calibration is present, load it as <code>_calib_json = _datastore["calibration"];</code></li>
+<li>The option <code>MADS_INSTALL_AGENT</code> (default: off) enables installation in the prefix directory of the <code>mads-fmu</code> agent, so that you can call it as <code>mads fmu</code></li>
+<li>The default install prefix is the MADS folder (as for <code>mads -p</code>)</li>
+<li>The option <code>MADS_BUILD_FMU</code> (default: off) enables compilation and creation of the FMU units from the source files available in the <code>models</code> directory; those are intended for testing purposes</li>
 </ul>
-<ol start="3" type="1">
-<li>when the agent regularly exits, the <code>_datastore</code> object is destroyed and its <code>save()</code>&nbsp;method is automatically invoked, ensuring persistency</li>
-</ol>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -369,7 +439,86 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Although there’s no need to explicitly save the datastore, forcing a save right after completing the calibration ensures that the calibration is saved even if there’s later a crash.</p>
+<p>In other words, if you have your own FMU file, you can reuse the CMakeLists.txt script in the project directory to recompile your FMU for your target directory, by setting the <code>MADS_BUILD_FMU</code> option to <code>ON</code> and placing your FMU source files in the <code>models</code> directory. This way, you can create a compatible FMU file that can be used with the <code>FMU_agent</code> in your MADS environment.</p>
+</div>
+</div>
+</section>
+<section id="fmus" class="level2">
+<h2 class="anchored" data-anchor-id="fmus">FMUs</h2>
+<p>Currently, only <strong>model exchange</strong> FMUs version 3.0 are supported. Co-simulation FMUs are not supported. This means that the solver is the one embedded in the agent and you cannot embed the solver in the FMU file.</p>
+<section id="example-fmus" class="level3">
+<h3 class="anchored" data-anchor-id="example-fmus">Example FMUs</h3>
+<p>FMUs are actuallt zipped folders that contain some XML file providing model description and a <strong>compiled dynamic library</strong>, which is supposed to be run-time loaded by the software using it.</p>
+<p>FMU files are typically exported from simulation software in the <strong>compiled</strong> format, which is only compatible with the working platform. In other words, a FMU file generatd on Intel Windows won’t run on a Silicon macOS (and <em>vice-versa</em>).</p>
+<p>The project <code>model</code> directory contains example FMUs in <strong>source format</strong>, so that they can be compiled on the working machine producing a usable <code>.fmu</code> file. When you enable the CMake switch <code>MADS_BUILD_FMU</code>, the FMUs are compiled; upon <code>cmake --install build</code> the zipped units are also created and saved in the <code>models/fmu</code> directory.</p>
+<p>The provided example FMUs are:</p>
+<ul>
+<li><code>DoubleMassSpringDamper</code>: name says it all. No inputs.</li>
+<li><code>linear_axis</code>: a second-order dynamics linear actuator with a PID controller on position. Inputs: setpoint; outputs: axis position and speed.</li>
+<li><code>machine_tool</code>: a cartesian manipulator made by a combination of three linear axes.</li>
+</ul>
+</section>
+</section>
+<section id="execution" class="level2">
+<h2 class="anchored" data-anchor-id="execution">Execution</h2>
+<p>Once the agent is compiled and you have a valid FMI3.0 compatible <code>my_model.fmu</code> file, you shall chek it for the actual naming of internal variables. Assuming that the agent has been installed (with <code>cmake --install build</code>), and that the FMU file is in your current working directory:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> fmu models/fmu/linear_axis.fmu <span class="at">--inspect</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>which results in:</p>
+<pre class="text"><code>Inspecting model at:    models/fmu/linear_axis.fmu
+Model name (from .fmu): linear_axis
+Agent name (default):   fmu_linear_axis
+Variables:
+           Name    Description         Data type      Causality        Initial
+       setpoint       setpoint           Float64          input          exact
+         noiseX        noise X           Float64          input          exact
+          reset          reset           Boolean          input          exact
+              X              X           Float64         output     calculated
+             Vx             Vx           Float64         output     calculated
+             X0             X0           Float64      parameter          exact
+             XD             XD           Float64      parameter          exact
+             XI             XI           Float64      parameter          exact
+             XN             XN           Float64      parameter          exact
+             XP             XP           Float64      parameter          exact
+            Xdc            Xdc           Float64      parameter          exact
+             Xm             Xm           Float64      parameter          exact
+           Xsat           Xsat           Float64      parameter          exact
+            res            res           Float64      parameter          exact
+
+INI settings section (defaults):
+[fmu_linear_axis]
+period = 100
+pub_topic = "fmu_linear_axis"
+sub_topic = ["linear_axis_control"]
+relative_tol = 1e-4
+absolute_tol = 1e-5
+hmin_tol = 1e-10
+[fmu_linear_axis.parameters]
+# default values from FMU
+X0 = 0
+XD = 100
+XI = 0.001
+XN = 100
+XP = 0.3
+Xdc = 0.1
+Xm = 100
+Xsat = 10000
+res = 1e-06
+
+Dependencies:
+  @rpath/linear_axis.dylib
+  /usr/lib/libSystem.B.dylib</code></pre>
+<p>This is giving you a table of model variables (with names, causality and data type) and a suitable stub section for the <code>mads.ini</code> file. Copy that into your settings file, update the fields as needed and launch the <code>mads broker</code> command, if it is not running already.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You also get the list of <strong>dependencies</strong> of the FMU, which are the dynamic libraries that the FMU needs to run. Carefully check that this list is short enough (as the one above): if it is longer, you probably need to install the Matlab Runtime. If you have the Matlab Runtime installed, make sure that the path to the Matlab Runtime libraries is included in your system’s library search path (e.g., <code>LD_LIBRARY_PATH</code> on Linux, <code>DYLD_LIBRARY_PATH</code> on macOS, or <code>PATH</code> on Windows). This will allow the FMU to find and load the necessary libraries at runtime.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -382,46 +531,21 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The JSON file location is in the temporary directory, which is OS dependent. Within that directory, plugin datastoires are saved in the <code>mads</code>&nbsp;subdirectory with the provided name (by default, the string returned by <code>kind()</code>).</p>
-<p>If the map returned by <code>info()</code> contains a pair as <code>{"Datastore", _datastore.path()}</code>, then the datastore full path is printed in the settings table when loading the plugin with <code>mads source|filter|sink</code>.</p>
+<p>The inspect command reports the file name and the <strong>model name</strong>. The latter can be different from the file name, and it is set by the software that generated the FMU. On the MADS network, the agent running the FMU will have the name <code>fmu_&lt;model name&gt;</code>, also reported by the inspect command. Inless overridden by the <code>--name</code> switch, this is the expected section name in the INI settings file <code>mads.ini</code>.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If the JSON file loaded by the datastore is wrongly formatted, the <code>prepare()</code> method will fail throwing an exception. Catch that exception within <code>set_params()</code> if you can recover form the error (e.g.&nbsp;by performing a new calibration); or let the agent crash otherwise.</p>
-</div>
-</div>
-</section>
-<section id="existing-plugins" class="level2">
-<h2 class="anchored" data-anchor-id="existing-plugins">Existing plugins</h2>
-<p>To use the <code>&nbsp;Datastore</code> class to an existing plugin you have to update the fetched dependency. Open the plugin’s <code>CMakeLists.txt</code> and change the following (note the only change at <strong>line 3</strong>):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
-<span id="cb2-2"><a href="#cb2-2"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
-<span id="cb2-3"><a href="#cb2-3"></a>  <span class="ot">GIT_TAG</span>        HEAD</span>
-<span id="cb2-4"><a href="#cb2-4"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a>  <span class="ot">SUBBUILD_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-subbuild</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a>  <span class="ot">SOURCE_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-src</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a>  <span class="ot">BINARY_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-build</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>to:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
-<span id="cb3-2"><a href="#cb3-2"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
-<span id="cb3-3"><a href="#cb3-3"></a>  <span class="ot">GIT_TAG</span>        v1.<span class="dt">3.5</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a>  <span class="ot">SUBBUILD_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-subbuild</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a>  <span class="ot">SOURCE_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-src</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a>  <span class="ot">BINARY_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-build</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This will force git fetching of the v1.3.5 of the plugin system.</p>
-<p>Then, just use the <code>&nbsp;Datastore</code> class as above outlined (it’s source is already available in the headers search path).</p>
+<p>Now you can run the agent:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> fmu my_model.fmu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Note that by default the model runs at 100 ms period. You can change that either via the <code>period</code> value in the INI section, or override that via the <code>-p|--period</code> command line option.</p>
+<p>The model is routinely evaluated and forward integrated at variable timestep, and the new status is published on the <code>pub_topic</code>. At any time, a <strong>new input</strong> can be gived via the MADS network, by publising to the <code>sub_topic</code> a JSON message as:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"fmu_input"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"in_var1"</span><span class="fu">:</span> <span class="fl">123.0</span><span class="fu">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"in_var2"</span><span class="fu">:</span> <span class="fl">0.123</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To reset the model to its initial state, send the following:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="dt">"fmu_reset"</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
@@ -842,6 +966,38 @@ Warning
     </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
