@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" width="960" height="520" role="img" aria-labelledby="title desc">
+  <title id="title">Running statistics with window length N and stride S</title>
+  <desc id="desc">A technical diagram showing a frame stream, two overlapping sliding windows of length N shifted by stride S, and the mean and standard deviation computed for each window.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f7f9fc; }
+      .panel { fill: #ffffff; stroke: #c9d3e0; stroke-width: 1.5; }
+      .axis { stroke: #334155; stroke-width: 2; }
+      .tick { stroke: #64748b; stroke-width: 1.5; }
+      .frame { fill: #dbeafe; stroke: #3b82f6; stroke-width: 1.5; }
+      .frame-muted { fill: #eef2f7; stroke: #94a3b8; stroke-width: 1.2; }
+      .window-a { fill: rgba(16, 185, 129, 0.18); stroke: #059669; stroke-width: 3; }
+      .window-b { fill: rgba(245, 158, 11, 0.18); stroke: #d97706; stroke-width: 3; }
+      .arrow-a { stroke: #059669; stroke-width: 3; fill: none; marker-end: url(#arrowHeadA); }
+      .arrow-b { stroke: #d97706; stroke-width: 3; fill: none; marker-end: url(#arrowHeadB); }
+      .label { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 20px; fill: #0f172a; }
+      .label-small { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px; fill: #334155; }
+      .label-mono { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace; font-size: 16px; fill: #0f172a; }
+      .stat-box { fill: #ffffff; stroke: #94a3b8; stroke-width: 1.5; rx: 12; ry: 12; }
+      .caption-box { fill: rgba(255, 255, 255, 0.92); stroke: #cbd5e1; stroke-width: 1.2; rx: 10; ry: 10; }
+      .stat-a { fill: #ecfdf5; stroke: #10b981; stroke-width: 2; }
+      .stat-b { fill: #fff7ed; stroke: #f59e0b; stroke-width: 2; }
+      .accent-a { fill: #059669; }
+      .accent-b { fill: #d97706; }
+    </style>
+    <marker id="arrowHeadA" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#059669"/>
+    </marker>
+    <marker id="arrowHeadB" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d97706"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="960" height="520"/>
+  <rect class="panel" x="30" y="30" width="900" height="460" rx="18" ry="18"/>
+
+  <text class="label" x="60" y="74">Sliding running statistics on incoming frames</text>
+  <text class="label-small" x="60" y="104">Each output package summarizes one window of N frames. The next package starts S frames later.</text>
+
+  <line class="axis" x1="90" y1="210" x2="860" y2="210"/>
+  <polygon points="860,210 846,203 846,217" fill="#334155"/>
+  <text class="label-small" x="870" y="216">time</text>
+  <text class="label-small" x="60" y="175">frame stream</text>
+
+  <rect class="frame" x="120" y="185" width="42" height="50" rx="8" ry="8"/>
+  <rect class="frame" x="170" y="185" width="42" height="50" rx="8" ry="8"/>
+  <rect class="frame" x="220" y="185" width="42" height="50" rx="8" ry="8"/>
+  <rect class="frame" x="270" y="185" width="42" height="50" rx="8" ry="8"/>
+  <rect class="frame" x="320" y="185" width="42" height="50" rx="8" ry="8"/>
+  <rect class="frame" x="370" y="185" width="42" height="50" rx="8" ry="8"/>
+  <rect class="frame" x="420" y="185" width="42" height="50" rx="8" ry="8"/>
+  <rect class="frame" x="470" y="185" width="42" height="50" rx="8" ry="8"/>
+  <rect class="frame" x="520" y="185" width="42" height="50" rx="8" ry="8"/>
+  <rect class="frame" x="570" y="185" width="42" height="50" rx="8" ry="8"/>
+  <rect class="frame-muted" x="620" y="185" width="42" height="50" rx="8" ry="8"/>
+  <rect class="frame-muted" x="670" y="185" width="42" height="50" rx="8" ry="8"/>
+  <rect class="frame-muted" x="720" y="185" width="42" height="50" rx="8" ry="8"/>
+
+  <text class="label-mono" x="131" y="216">f0</text>
+  <text class="label-mono" x="181" y="216">f1</text>
+  <text class="label-mono" x="231" y="216">f2</text>
+  <text class="label-mono" x="281" y="216">f3</text>
+  <text class="label-mono" x="331" y="216">f4</text>
+  <text class="label-mono" x="381" y="216">f5</text>
+  <text class="label-mono" x="431" y="216">f6</text>
+  <text class="label-mono" x="481" y="216">f7</text>
+  <text class="label-mono" x="531" y="216">f8</text>
+  <text class="label-mono" x="581" y="216">f9</text>
+  <text class="label-mono" x="627" y="216">...</text>
+
+  <rect class="window-a" x="118" y="154" width="494" height="112" rx="18" ry="18"/>
+  <rect class="caption-box" x="138" y="166" width="190" height="54" rx="10" ry="10"/>
+  <text class="label" x="154" y="188">window k</text>
+  <text class="label-mono accent-a" x="154" y="210">[i, i + N - 1]</text>
+
+  <rect class="window-b" x="368" y="132" width="494" height="112" rx="18" ry="18"/>
+  <rect class="caption-box" x="560" y="144" width="268" height="54" rx="10" ry="10"/>
+  <text class="label" x="576" y="166">window k + 1</text>
+  <text class="label-mono accent-b" x="576" y="188">[i + S, i + S + N - 1]</text>
+
+  <line class="tick" x1="120" y1="248" x2="120" y2="286"/>
+  <line class="tick" x1="370" y1="248" x2="370" y2="286"/>
+  <line class="tick" x1="620" y1="248" x2="620" y2="286"/>
+
+  <line class="arrow-a" x1="120" y1="278" x2="620" y2="278"/>
+  <text class="label-mono accent-a" x="342" y="304">N frames</text>
+
+  <line class="arrow-b" x1="120" y1="334" x2="370" y2="334"/>
+  <text class="label-mono accent-b" x="220" y="360">S frames</text>
+  <text class="label-small" x="392" y="339">shift between consecutive outputs</text>
+
+  <rect class="stat-box stat-a" x="640" y="286" width="250" height="76"/>
+  <text class="label" x="660" y="315">publish stats(k)</text>
+  <text class="label-mono" x="660" y="344">mu_k, sigma_k over N frames</text>
+
+  <rect class="stat-box stat-b" x="640" y="378" width="250" height="76"/>
+  <text class="label" x="660" y="407">publish stats(k + 1)</text>
+  <text class="label-mono" x="660" y="436">mu_(k+1), sigma_(k+1)</text>
+ </svg>

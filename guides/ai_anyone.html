@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2026-03-31">
+<meta name="dcterms.date" content="2026-04-11">
 
-<title>R Plugin</title>
+<title>AI anyone?</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -86,6 +86,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/bootstrap/bootstrap-3d2938a4878e3b13b7efe8a3bbdcb536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-948f3023f533aad64acafa4cfe3dc5dd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-3d2938a4878e3b13b7efe8a3bbdcb536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/quarto-contrib/fontawesome-7-free-7.2.0/fontawesome.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -141,6 +142,50 @@ cookieconsent.run({
 });
 </script> 
   
+<style>
+div.callout-prompt.callout {
+  border-left-color: #b3ff00;
+}
+div.callout-prompt.callout-style-default .callout-header {
+  background-color: rgba(179, 255, 0, 0.13);
+}
+div.callout-prompt .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-prompt.callout-style-default .callout-icon::before, div.callout-prompt.callout-titled .callout-icon::before {
+  font-family: 'Font Awesome 7 Free';
+  font-weight: 900;
+  font-style: normal;
+  content: '\e2ca' !important;
+  background-image: none;
+}
+div.callout-thumbs-up.callout {
+  border-left-color: #008000;
+}
+div.callout-thumbs-up.callout-style-default .callout-header {
+  background-color: rgba(0, 128, 0, 0.13);
+}
+div.callout-thumbs-up .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-thumbs-up.callout-style-default .callout-icon::before, div.callout-thumbs-up.callout-titled .callout-icon::before {
+  font-family: 'Font Awesome 7 Free';
+  font-weight: 900;
+  font-style: normal;
+  content: '\f164' !important;
+  background-image: none;
+}
+div.callout-todo.callout {
+  border-left-color: pink;
+}
+div.callout-todo.callout-style-default .callout-header {
+  background-color: rgb(from pink r g b / 13%);
+}
+div.callout-todo .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-todo.callout-style-default .callout-icon::before, div.callout-todo.callout-titled .callout-icon::before {
+  font-family: 'Font Awesome 7 Free';
+  font-weight: 900;
+  font-style: normal;
+  content: '\f31c' !important;
+  background-image: none;
+}
+</style>
 
 
 </head>
@@ -245,43 +290,33 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#contents" id="toc-contents" class="nav-link active" data-scroll-target="#contents">Contents</a>
+  <li><a href="#intro" id="toc-intro" class="nav-link active" data-scroll-target="#intro">Intro</a>
   <ul class="collapse">
-  <li><a href="#installing" id="toc-installing" class="nav-link" data-scroll-target="#installing">Installing</a>
+  <li><a href="#serial-port" id="toc-serial-port" class="nav-link" data-scroll-target="#serial-port">Serial port</a></li>
+  <li><a href="#running-stats" id="toc-running-stats" class="nav-link" data-scroll-target="#running-stats">Running stats</a></li>
+  </ul></li>
+  <li><a href="#project-setup" id="toc-project-setup" class="nav-link" data-scroll-target="#project-setup">Project setup</a></li>
+  <li><a href="#ai-assisted-coding" id="toc-ai-assisted-coding" class="nav-link" data-scroll-target="#ai-assisted-coding">AI-assisted coding</a>
   <ul class="collapse">
-  <li><a href="#unix" id="toc-unix" class="nav-link" data-scroll-target="#unix">UNIX</a></li>
-  <li><a href="#windows" id="toc-windows" class="nav-link" data-scroll-target="#windows">Windows</a></li>
+  <li><a href="#preliminary-notes" id="toc-preliminary-notes" class="nav-link" data-scroll-target="#preliminary-notes">Preliminary notes</a></li>
+  <li><a href="#prompt-setup" id="toc-prompt-setup" class="nav-link" data-scroll-target="#prompt-setup">Prompt setup</a></li>
   </ul></li>
-  <li><a href="#executing" id="toc-executing" class="nav-link" data-scroll-target="#executing">Executing</a></li>
-  <li><a href="#the-mads.ini-section" id="toc-the-mads.ini-section" class="nav-link" data-scroll-target="#the-mads.ini-section">The <code>mads.ini</code> section</a></li>
-  <li><a href="#r-script-contract" id="toc-r-script-contract" class="nav-link" data-scroll-target="#r-script-contract">R script contract</a>
-  <ul class="collapse">
-  <li><a href="#source-scripts" id="toc-source-scripts" class="nav-link" data-scroll-target="#source-scripts">Source scripts</a></li>
-  <li><a href="#filter-scripts" id="toc-filter-scripts" class="nav-link" data-scroll-target="#filter-scripts">Filter scripts</a></li>
-  <li><a href="#sink-scripts" id="toc-sink-scripts" class="nav-link" data-scroll-target="#sink-scripts">Sink scripts</a></li>
-  </ul></li>
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a>
-  <ul class="collapse">
-  <li><a href="#source-example" id="toc-source-example" class="nav-link" data-scroll-target="#source-example">Source example</a></li>
-  <li><a href="#filter-example" id="toc-filter-example" class="nav-link" data-scroll-target="#filter-example">Filter example</a></li>
-  <li><a href="#sink-example" id="toc-sink-example" class="nav-link" data-scroll-target="#sink-example">Sink example</a></li>
-  </ul></li>
-  <li><a href="#development-and-deployment" id="toc-development-and-deployment" class="nav-link" data-scroll-target="#development-and-deployment">Development and deployment</a></li>
-  </ul></li>
+  <li><a href="#final-test" id="toc-final-test" class="nav-link" data-scroll-target="#final-test">Final test</a></li>
+  <li><a href="#my-version-of-the-code" id="toc-my-version-of-the-code" class="nav-link" data-scroll-target="#my-version-of-the-code">My version of the code</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">R Plugin</h1>
+<h1 class="title">AI anyone?</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">R</div>
-    <div class="quarto-category">plugin</div>
-    <div class="quarto-category">agent</div>
-    <div class="quarto-category">easy</div>
+    <div class="quarto-category">plugins</div>
+    <div class="quarto-category">coding</div>
+    <div class="quarto-category">AI</div>
+    <div class="quarto-category">intermediate</div>
   </div>
   </div>
 
@@ -306,7 +341,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 31, 2026</p>
+      <p class="date">April 11, 2026</p>
     </div>
   </div>
   
@@ -322,7 +357,7 @@ cookieconsent.run({
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>The <code>r_plugin</code> repository on GitHub provides MADS source, filter, and sink plugins with an embedded R interpreter, so that agents can be developed in R.</p>
+    <p>Nowadays agentic AI coding assistants can be a powerful help. This guide shows how to integrate AI in your plugin development workflow.</p>
   </div>
 </div>
 
@@ -330,184 +365,179 @@ cookieconsent.run({
 </header>
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
-<p>The R plugins for MADS are available on <a href="https://github.com/mads-net/r_plugin" class="uri">https://github.com/mads-net/r_plugin</a>.</p>
-<p>This repository provides three plugins:</p>
-<ul>
-<li><code>r_source</code>: a source plugin that calls an R <code>get_output()</code> function</li>
-<li><code>r_filter</code>: a filter plugin that calls an R <code>process(input)</code> function</li>
-<li><code>r_sink</code>: a sink plugin that calls an R <code>deal_with_data(input)</code> function</li>
-</ul>
-<p>They work analogously to the <a href="../guides/python_agent.html">Python Agent</a>, but are loaded through the standard plugin loaders: <code>mads source</code>, <code>mads filter</code>, and <code>mads sink</code>.</p>
-<section id="installing" class="level2">
-<h2 class="anchored" data-anchor-id="installing">Installing</h2>
-<p>You need:</p>
-<ul>
-<li>a recent R installation available on your system</li>
-<li>the latest <a href="../guides/install.html">MADS version</a>, version 2.x</li>
-<li>a proper build toolchain:
-<ul>
-<li>on UNIX: <code>cmake</code>, <code>clang</code>, and <code>git</code></li>
-<li>on Windows: Visual Studio 2022, <code>cmake</code>, and <code>git</code></li>
-</ul></li>
-</ul>
-<p>Then build and install the repository.</p>
-<section id="unix" class="level3">
-<h3 class="anchored" data-anchor-id="unix">UNIX</h3>
-<p>From the repository root:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-DCMAKE_INSTALL_PREFIX</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="st">"</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j6</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cmake <span class="at">--install</span> build</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The above is intended for macOS and Linux.</p>
-</section>
-<section id="windows" class="level3">
-<h3 class="anchored" data-anchor-id="windows">Windows</h3>
-<p>From the repository root:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cmake <span class="op">-</span>Bbuild <span class="op">-</span>DCMAKE_INSTALL_PREFIX<span class="op">=</span><span class="st">"</span><span class="op">$(</span>mads <span class="op">-</span>p<span class="op">)</span><span class="st">"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cmake <span class="op">--</span>build build <span class="op">--</span>config Release</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>cmake <span class="op">--</span>install build <span class="op">--</span>config Release</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>After installation, the three plugins are available in the MADS install tree as <code>r_source</code>, <code>r_filter</code>, and <code>r_sink</code>.</p>
-</section>
-</section>
-<section id="executing" class="level2">
-<h2 class="anchored" data-anchor-id="executing">Executing</h2>
-<p>These are regular MADS plugins, so they are loaded by the standard plugin loaders.</p>
-<p>Typical commands are:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source r_source</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> filter r_filter</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> sink r_sink</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>As for any other MADS plugin, the agent name can be changed with <code>-n</code>, and the corresponding section in <code>mads.ini</code> must have the same name. For example:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-n</span> r_demo r_source</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>means that the settings are read from the <code>[r_demo]</code> section in <code>mads.ini</code>.</p>
-<p>During development, it is often useful to keep the plugin name fixed and only change the agent name with <code>-n</code>, so that the same installed plugin can be reused with different R scripts and settings.</p>
-</section>
-<section id="the-mads.ini-section" class="level2">
-<h2 class="anchored" data-anchor-id="the-mads.ini-section">The <code>mads.ini</code> section</h2>
-<p>The R plugins expect a configuration section such as:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[r_demo]</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">init_script </span><span class="ot">=</span><span class="st"> "/absolute/path/to/source.R"</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">use_renv </span><span class="ot">=</span><span class="st"> </span><span class="kw">true</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">r_output_mode </span><span class="ot">=</span><span class="st"> "stdout"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The supported keys are:</p>
-<ul>
-<li><code>init_script</code>: mandatory path to the R script to load</li>
-<li><code>use_renv</code>: whether to automatically use a local <code>.renv</code></li>
-<li><code>r_output_mode</code>: either <code>"stdout"</code> or <code>"buffer"</code></li>
-</ul>
-<div class="callout callout-style-default callout-warning callout-titled">
+<section id="intro" class="level1">
+<h1>Intro</h1>
+<p>MADS agents can be programmed in many different ways: in C++, using the <a href="https://github.com/MADS-Net/python_agent"><code>python_agent</code></a>, writing your own python scripts that loads the <a href="../guides/python_agent.html"><code>Agent</code> library</a>, using R scripts and the <a href="https://github.com/MADS-Net/r_plugin"><code>r_plugin</code></a>, and possibly other ways too. Regardless, C++ code always provides the best performances.</p>
+<p>But even if you are not really proficient in C++, you can still create your own plugins by <strong>properly</strong> using some AI coding agents.</p>
+<p>Hereafter we’ll go through an example that creates a source agent that reads measurements from a serial port, and a filter agent that calculates some running statistics on the data provided by the source.</p>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The section name must match the <code>-n</code> option used on the command line. If you launch <code>mads source -n r_demo r_source</code>, then the settings must be in <code>[r_demo]</code>.</p>
+<p>In the following we are using GPT-5.4, but you may as well use other modern, coding-oriented agents and get very similar results, still leveraging the same approach.</p>
+<p>Whatever you are using, be sure to use a coding agent integrated with Visual Studio Code (or the editor you prefer), so it can have access to the files in your project. In visual Studio Code, this means either ChatGPT Codex extension, or the embedded Copilot module.</p>
+</div>
+</div>
+<section id="serial-port" class="level2">
+<h2 class="anchored" data-anchor-id="serial-port">Serial port</h2>
+<p>Supppose that the serial-port connected device published data frames with the following format:</p>
+<pre><code>^&lt;value1&gt;,&lt;value2&gt;,...,&lt;valueN&gt;$</code></pre>
+<p>with a variable number of values in each frame, and a variable time interval between frames. The <code>^</code> and <code>$</code> characters are the start and end of frame markers, respectively.</p>
+<p>Since we may connect to the device at any time, we may start reading in the middle of a frame, so we need to be able to handle partial frames and correctly reassemble them into complete frames.</p>
+</section>
+<section id="running-stats" class="level2">
+<h2 class="anchored" data-anchor-id="running-stats">Running stats</h2>
+<p>We want to calculate the running mean and standard deviation of the values in the frames, with a sliding window of 100 frames and a stride of 50 frames. The stats should be published as a new topic every time a new stats package is available.</p>
+</section>
+</section>
+<section id="project-setup" class="level1 page-columns page-full">
+<h1>Project setup</h1>
+<p>Create a new project folder and open it in VSCode. Be sure to have the extension installed. If not, simply open the terminal and type:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">code</span> <span class="at">--install-extension</span> MADS-Net.madscode</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode" target="_blank"><img src="images/MADSCode.png" class="img-fluid figure-img"></a></p>
+<figcaption>VSCode MADSCode extension</figcaption>
+</figure>
+</div>
+</div></div><p>Now in the MADS side panel under the section <span class="bgray">plugins</span> select “Create a new one”, select <code>source</code> as type and name it <code>serial</code>, then repeate the command, select <code>filter</code> as type and name it <code>stats</code>.</p>
+<p>Open the <code>CMakeLists.txt</code> file and after the line <code>add_plugin(serial)</code> add a new line with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">add_plugin</span>(serial)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">add_plugin</span>(stats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This way the cmake script can build and create both the source and the filter plugin at the same time, compiling <code>src/serial.cpp</code> and <code>src/stats.cpp</code>, respectively.</p>
+<p>The MADS plugin library, which is fetched by CMake and available in <code>src/_deps/plugin-src</code>, contains a simple <code>SerialPort</code> C++ class. We are going to use it, so we can as well add</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;serialport.hpp&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>near the top of <code>src/serial.cpp</code>. This is going to be a hint for the AI assistant on how to deal with the serial ports.</p>
+</section>
+<section id="ai-assisted-coding" class="level1">
+<h1>AI-assisted coding</h1>
+<section id="preliminary-notes" class="level2">
+<h2 class="anchored" data-anchor-id="preliminary-notes">Preliminary notes</h2>
+</section>
+<section id="prompt-setup" class="level2">
+<h2 class="anchored" data-anchor-id="prompt-setup">Prompt setup</h2>
+<p>Telling our AI agent what to do is definitely too complex and long for a single prompt, so we rather write the requirements in an <code>AGENTS.md</code> file, and then tell the agent to go and read it for instructions.</p>
+<p>In preparing the file, its important that you clearly state</p>
+<ol type="1">
+<li>the aim of the work</li>
+<li>the assumptions: web links to the MADS framework documentation, coding style, C++ version, workspace organization (folder structure)</li>
+<li>for each target (<code>serial</code> and <code>stats</code>), clearly state:
+<ol type="1">
+<li>its purpose</li>
+<li>library to use and how to find them (pre-installed or via FetchContent)</li>
+<li>a test strategy</li>
+</ol></li>
+</ol>
+<p>The latter is particularly important, for it allows the agent to veryfy its products and tune them until all tests pass.</p>
+<p>The <code>AGENTS.md</code> file we are proposing is available <a href="../ai_example/AGENTS.md" target="_blank">here</a>.</p>
+<p>Carefully read the instructions file. When you are satisfied, type the prompt:</p>
+<div class="callout callout-style-default callout-prompt callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Prompt</span>Prompt this:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Look at AGENTS.md: report if the instructions are lacking.</p>
+</div>
+</div>
+<p>This won’t do anything, but it’s an important step to check whether your instructions are sound and complete.</p>
+<p>If needed, complete the instructions file with the requests, then:</p>
+<div class="callout callout-style-default callout-prompt callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Prompt</span>Prompt this:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Proceed with the implementation. Be sure that all tests pass.</p>
+</div>
+</div>
+<p>If you — like me — get all test-related functions in the same .cpp files, you probably want to adjust that by moving those fuctions into a separate and common header file, so you have a cleaner codebase. Adding comments to methods would also be a nice final touch:</p>
+<div class="callout callout-style-default callout-prompt callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Prompt</span>Prompt this:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Move all functions related to testing into a separate header file. Also add Doxygen comments to all public members.</p>
 </div>
 </div>
 </section>
-<section id="r-script-contract" class="level2">
-<h2 class="anchored" data-anchor-id="r-script-contract">R script contract</h2>
-<p>The file pointed to by <code>init_script</code> is sourced when the plugin starts. That script must define the entry-point function(s), depending on the plugin type, and may optionally define a <code>set_params(list)</code> function to receive parameters from the <code>set_params()</code> plugin method.</p>
-<p>C++ JSON objects are automatically converted to R lists when passed to the R script, and R lists are automatically converted to JSON objects when returned from the R script.</p>
-<section id="source-scripts" class="level3">
-<h3 class="anchored" data-anchor-id="source-scripts">Source scripts</h3>
-<p>A source script must define:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>get_output <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">value =</span> <span class="dv">42</span>, <span class="at">status =</span> <span class="st">"ok"</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The function takes no arguments and must return an R list. The list is automatically converted to a JSON object and published by the source agent.</p>
 </section>
-<section id="filter-scripts" class="level3">
-<h3 class="anchored" data-anchor-id="filter-scripts">Filter scripts</h3>
-<p>A filter script must define:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>load_data <span class="ot">&lt;-</span> <span class="cf">function</span>(input) {</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># store input in global variables, if needed</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  return <span class="cn">TRUE</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>process <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">value =</span> <span class="fu">list</span>(<span class="at">result =</span> <span class="st">"whatever"</span>),</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(value)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The <code>input</code> argument is the JSON document received by the filter, converted to an R list. The function must return another R list, which is converted back to JSON and published.</p>
+<section id="final-test" class="level1">
+<h1>Final test</h1>
+<p>To make a final smoke test we want to launch a net with both agents running. The quickest way is to use <code>mads director</code> and prepare the settings files with the MADSCode VS extension.</p>
+<p>In the <span class="bgray">Configurations</span> section on the left panel select <code>Generate INI file</code> and then <code>Generate diretctor file</code> (accept default names both times).</p>
+<p>Open the just created <code>mads.ini</code> file (project local!) and add to the end:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[serial]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">address</span> <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">baudrate</span> <span class="op">=</span> <span class="dv">115200</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">[stats]</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"serial"</span><span class="op">]</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="dt">window</span> <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="dt">stride</span> <span class="op">=</span> <span class="dv">50</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then add to the end of <code>director.toml</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[serial]</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dt">command</span> <span class="op">=</span> <span class="st">"mads source build/serial.plugin -p100"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">after</span> <span class="op">=</span> <span class="st">"broker"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="dt">workdir</span> <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="dt">enabled</span> <span class="op">=</span> <span class="cn">false</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">[stats]</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="dt">command</span> <span class="op">=</span> <span class="st">"mads filter build/stats.plugin"</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="dt">after</span> <span class="op">=</span> <span class="st">"broker"</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="dt">workdir</span> <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="dt">enabled</span> <span class="op">=</span> <span class="cn">false</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>And finally click the play button to the right of <code>director.toml</code> in the <span class="bgray">control</span> section.</p>
+<p>Now you can manually start the <code>stats</code> and the <code>source</code> plugins. If you have used exactly my prompt and the same agent, chances are that you won’t get any data out of the <code>source</code>. In my case, the reason is that we asked to define a fallback condition that generates deterministic data suitable for unit testing when the serial port address is empty, but no data is generated when the plugin is normally called by the MADS source agent.</p>
+<p>We thus have to ask the coding agent to fix that:</p>
+<div class="callout callout-style-default callout-prompt callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Prompt</span>Prompt this:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When the <code>serial</code> plugin is used in normal conditions (i.e.&nbsp;not in testing) and the serial port <code>address</code> field is empty, I want it to generate random data, both in number and value.</p>
+<p>Add a suitable helper function that initializes a buffer of 20 data frames with random number of element and random values, starting and ending with a partial frame, so that the last fragment can be the beginning of the first one. This buffer shall be used in a circular fashion, rewinding it to the beginning when it has been consumed to its end.</p>
+</div>
+</div>
+<p>At this point you should be done and happily see in the feedback agent that the <code>stats</code> plugin is correctly receiving data from the <code>serial</code> plugin and calculating the running statistics on it, at a frequency of one stats package every 50 frames, as we asked in the <code>mads.ini</code> file (window of 100 and stride of 50).</p>
 </section>
-<section id="sink-scripts" class="level3">
-<h3 class="anchored" data-anchor-id="sink-scripts">Sink scripts</h3>
-<p>A sink script must define:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>load_data <span class="ot">&lt;-</span> <span class="cf">function</span>(input) {</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(input)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="cn">TRUE</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The <code>input</code> argument is the received JSON message converted to an R list. The function is expected to perform side effects only. It should return <code>TRUE</code>; returning <code>FALSE</code> is treated as an error by the plugin.</p>
-</section>
-</section>
-<section id="examples" class="level2">
-<h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<section id="source-example" class="level3">
-<h3 class="anchored" data-anchor-id="source-example">Source example</h3>
-<p>The repository includes a source example based on an R6 class. A smaller example is:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>counter <span class="ot">&lt;-</span> <span class="fu">local</span>({</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  i <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>() {</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    i <span class="ot">&lt;&lt;-</span> i <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">counter =</span> i)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>get_output <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">counter</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>With the following settings:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[r_counter]</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="dt">init_script </span><span class="ot">=</span><span class="st"> "/path/to/counter.R"</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="dt">use_renv </span><span class="ot">=</span><span class="st"> </span><span class="kw">false</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="dt">r_output_mode </span><span class="ot">=</span><span class="st"> "stdout"</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="dt">period </span><span class="ot">=</span><span class="st"> </span><span class="dv">200</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>you can launch it as:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-n</span> r_counter r_source</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="filter-example" class="level3">
-<h3 class="anchored" data-anchor-id="filter-example">Filter example</h3>
-<p>This filter doubles an incoming numeric field named <code>value</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>value <span class="ot">&lt;-</span> <span class="dv">42</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>load_data <span class="ot">&lt;-</span> <span class="cf">function</span>(input) {</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  value <span class="ot">&lt;-</span> input<span class="sc">$</span>value</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  return <span class="cn">TRUE</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>process <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(input<span class="sc">$</span>value)) {</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">error =</span> <span class="st">"missing field 'value'"</span>))</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">value =</span> <span class="dv">2</span> <span class="sc">*</span> input<span class="sc">$</span>value)</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Assuming the corresponding section is named <code>[r_double]</code>, launch it with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> filter <span class="at">-n</span> r_double r_filter</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="sink-example" class="level3">
-<h3 class="anchored" data-anchor-id="sink-example">Sink example</h3>
-<p>This sink prints every received message and appends a timestamp:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>load_data <span class="ot">&lt;-</span> <span class="cf">function</span>(input) {</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">format</span>(<span class="fu">Sys.time</span>()), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(input)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="cn">TRUE</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Launch it with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> sink <span class="at">-n</span> r_logger r_sink</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="development-and-deployment" class="level2">
-<h2 class="anchored" data-anchor-id="development-and-deployment">Development and deployment</h2>
-<p>During development, <code>init_script</code> usually points to a script in your project folder. During deployment, you typically want the script to live in a stable location and the agent to be started by a service or by a supervisor.</p>
-<p>Once the plugin works as expected, you can deploy it exactly as any other MADS plugin. See <a href="../guides/services.html">Services</a> for turning a working command into a Linux service.</p>
+<section id="my-version-of-the-code" class="level1">
+<h1>My version of the code</h1>
+<p>You can download my version of the code here:</p>
+<ul>
+<li><a href="../ai_example/AGENTS.md" target="_blank">AGENTS.md</a></li>
+<li><a href="../ai_example/src/serial.cpp" target="_blank">src/serial.cpp</a></li>
+<li><a href="../ai_example/src/stats.cpp" target="_blank">src/stats.cpp</a></li>
+<li><a href="../ai_example/src/test_helpers.hpp" target="_blank">src/test_helpers.hpp</a></li>
+</ul>
 
 
-</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
