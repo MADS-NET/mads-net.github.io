@@ -1,0 +1,88 @@
+---
+title: "Service advertising and auto-discovery"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 05/02/2026
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [configuration, easy, auto-discovery, network]
+abstract: |
+  With MADS v2.1.0, the broker advertises its presence on the local network via UDP, so that agents can automatically discover it without needing to know its address. This is a very useful feature for plug-and-play applications. This guide explains how to use it.
+---
+
+# Rationale
+
+The MADS network of agents can centralize the settings: a single settings file is loaded by the broker, then the settings are distributed to all agents. This means that when you start an agent, you need to specify the address of the broker, e.g. `tcp://192.168.1.220:9092` or `tcp://broker.local:9092` if you have a local DNS entry for the broker ([ZeroCONF/Avahi](zeroconf.qmd) or proper DNS).
+
+MADS v2.1.0 introduces a new feature: the broker advertises its presence on the local network via UDP, so that agents can automatically discover it without needing to know its address. This is a very useful feature for plug-and-play applications, especially when you have multiple brokers running on the same network, or when you want to connect agents without needing to know the broker address.
+
+
+::: {.callout-tip}
+Using the auto-discovery feature is optional: you can still start agents by providing the broker address in the usual way, and the broker will still work as before. This means that you can have a mixed network of agents, some of which connect to an advertised broker, and some of which do not.
+
+Also, the auto-discovery feature greatly simplifies the network setup, for you don't need to note IP addresses or to configure [ZeroConf/Avahi](zeroconf.qmd) for local DNS. However, it is not a replacement for proper network configuration, and it is not recommended for production environments, where you should use proper DNS entries or static IP addresses for the broker.
+:::
+
+
+# How it works
+
+When the broker starts, it advertises its presence on the local network via UDP, distributing a simple JSON message that contains information about the broker, including its address and ports and MADS version on the broker itself. The message is sent to the UDP port 39092, and can be received by any agent that listens to that port.
+
+If the broker has many network interfaces, it advertises its presence on all of them, so that agents can discover it regardless of the network they are connected to, and the  message contains the address of the broker on each network interface, so that agents receive the proper address to connect to the broker on the network they are connected to.
+
+On any given network, there can be only one broker advertising its presence, so that any other broker running on the same network will refuse to start advertising the service, but can still be used by agents by providing the proper settings URI.
+
+That said, **it is possible to define `rooms`**: a room is a logical grouping of agents that can be used to separate different applications running on the same network. The broker advertises its presence with a given room name, and agents can choose to connect only to brokers advertising a given room name. This is useful when you have multiple brokers running on the same network, and you want to connect agents only to a specific broker.
+
+
+::: {.callout-warning}
+Advertising relies on the UDP protocol broadcasting messages on port 39092, **once per second**. This means that if you have firewall rules blocking UDP traffic on that port, the auto-discovery feature will not work. Make sure to allow UDP traffic on port 39092 for the auto-discovery feature to work properly.
+:::
+
+
+
+# How to use it
+
+## On the broker
+
+Advertising is automatic: when the broker starts, it advertises its presence on the local network via UDP on the default room `mads`. You can customize the room name with the `-r|--room` option, e.g. `-r myroom`, so that agents can choose to connect only to brokers advertising that room name.
+
+## On the agents
+
+When you start an agent, you can choose to connect to a broker advertising a given room name with the `-r|--room` option, e.g. `-r myroom`. If you do not specify a room name, the agent will connect to any broker advertising the default room `mads`.
+
+So for example:
+
+```bash
+mads feedback -r
+```
+
+Automatically connects to any broker advertising the default room `mads` on any local network connecting bith current agent and the broker, while:
+
+```bash
+mads feedback -r myroom
+```
+
+Automatically connects to any broker advertising the room `myroom` on any local network connecting bith current agent and the broker.
+
+
+::: {.callout-important}
+Connecting to an advertised broker is an **opt-in** functionalyty for agents: if you do not specify the `-r` option, the agent will not connect to any advertised broker, and try to find the settings in the usual way (i.e. a local `mads.ini` file or the settings provided by the `-s` option). This means that you can have a mixed network of agents, some of which connect to an advertised broker, and some of which do not.
+:::
+
+## Troubleshooting
+
+The comand `mads --rooms` shows the list of available rooms advertised by brokers on the local network, and the corresponding broker addresses. If you do not see any room advertised, check that the broker is running and that it is advertising its presence on the network (check the broker logs for any error message related to advertising). If you see a room advertised, but agents cannot connect to it, check that the agent is connected to the same network as the broker, and that there are no firewall rules blocking UDP traffic on port 39092.
+
+::: {.callout-tip}
+The last version of the Visual Studio Code [MADSCode extension](https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode) provides a feature for listing the available rooms advertised by brokers on the local network: chek it out!
+:::

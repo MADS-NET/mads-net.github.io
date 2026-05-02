@@ -137,20 +137,26 @@ Binding broker frontend (XSUB) at tcp://*:9090
 Binding broker backend (XPUB) at tcp://*:9091
 Binding broker shared settings (REP) at tcp://*:9092
 Timecode FPS: 25
-Settings are provided via tcp://192.168.1.220:9092
+Settings are provided on tcp://127.0.0.1:9092 (loopback)
+Advertising service on UDP discovery port 39092 with room name 'mads'
+            (preferring loopback for local agents)
 CTRL-C to immediate exit
-Type P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings
+Type P to pause, R to resume, I for information, Q to clean quit
+N to show next IP address, X to restart and reload settings
 ```
 
-Look at the line `Settings are provided via tcp://192.168.1.220:9092`: that is the address that you must use to start any agent in the network, e.g.:
+Look at the line `Settings are provided on tcp://127.0.0.1:9092 (loopback)`: If you repeatedly press `N`, it shows you the settings URI for all the available network interfaces. Suppose that the wired Ethernet `en0` is the one you want to use, note its URI (e.g. `tcp://192.168.1.220:9092`), then cycle the available addresses until you find the settings URI to be used for agents running on other machines:
 
 ```bash
 mads feedback -s tcp://192.168.1.220:9092
 ```
 
-::: callout-important
-The `-n` command line option **has no effect** on how the broker operates. Its only purpose is to help you find out the proper address to use when starting agents that run on different machines or devices.
+
+::: {.callout-important title="Adverising the serice (v2.1.0+)"}
+Note the lines starting with `Advertising...`: since MADS v2.1.0, the broker advertises its presence on all the local networks via UDP, so that agents can automatically discover it without needing to know its address. This is a very useful feature for plug-and-play applications. The feature is documented here: [Auto-discovery](auto-discovery.qmd).
 :::
+
+
 
 
 # Where to go next

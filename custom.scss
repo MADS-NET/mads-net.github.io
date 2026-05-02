@@ -7,7 +7,10 @@ $navbar-bg: $main-color;
 $h1-font-size: 2.4rem !default;
 $h2-font-size: 1.6rem !default;
 $headings-font-weight: 500 !default;
-
+$my-red: #d9534f !default;
+$my-green: #5cb85c !default;
+$my-blue: #0275d8 !default;
+$my-gray: #6c757d !default;
 
 /*-- scss:rules --*/
 h1, h2, h3, h4, h5, h6 {
@@ -121,6 +124,27 @@ div.margin-aside p {
   font-style: italic;
   text-align: right;
   border-bottom: 1px solid #aaa;
+}
+
+.bred {
+  font-weight: bold;
+  color: $my-red;
+}
+
+.bgreen {
+  font-weight: bold;
+  color: $my-green;
+}
+
+.bblue {
+  font-weight: bold;
+  color: $my-blue;
+}
+
+.bgray {
+  font-weight: bold;
+  font-variant: small-caps;
+  color: $my-gray;
 }
 
 /*-- RevealJS Presentation styles --*/
