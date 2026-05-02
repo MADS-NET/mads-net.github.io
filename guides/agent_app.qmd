@@ -1,0 +1,519 @@
+---
+title: "The `AgentApp` class"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 05/02/2026
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [advanced, programming, c++]
+abstract: |
+  MADS v2.1.0 introduces the new `AgentApp` C++ class that makes it easier to implement monolithic agents in C++ that share the same UI of official MADS agents.
+---
+
+# Introduction
+
+The `AgentApp` class is a thin application wrapper around `Mads::Agent`.
+It is meant for executables: the small `main()` programs that start an agent,
+parse command-line options, load settings, connect to the broker, run the main
+loop, and shut down cleanly.
+
+The class does not replace `Agent`.
+Instead, it keeps the transport, message handling, settings, remote control,
+and publishing/subscribing behavior in `Agent`, while collecting the startup
+code that used to be repeated in every monolithic executable.
+
+Use it when you are writing:
+
+* a monolithic source, filter, or sink agent in C++;
+* a command-line utility that needs the same broker connection and settings
+  behavior as the official MADS agents;
+* an executable wrapper around an existing class derived from `Mads::Agent`.
+
+The implementation is in `src/agent_app.hpp`.
+Because the generic form is a template, almost all of the code is header-only.
+
+## Class overview
+
+There are three related names:
+
+```cpp
+template<typename AgentT>
+class Mads::AgentAppT;
+
+using Mads::AgentApp = Mads::AgentAppT<Mads::Agent>;
+
+template<typename AgentT>
+using Mads::AgentAppFor = Mads::AgentAppT<AgentT>;
+```
+
+`AgentAppT<AgentT>` derives from `AgentT`, and `AgentT` must derive from
+`Mads::Agent` and be constructible from:
+
+```cpp
+AgentT(std::string name, std::string settings_uri);
+```
+
+For most simple executables, use `Mads::AgentApp`.
+For an executable based on an existing specialized agent class, use
+`Mads::AgentAppFor<T>`:
+
+```cpp
+Mads::AgentApp agent{argv[0], SETTINGS_URI};
+Mads::AgentAppFor<Mads::Bridge> bridge{argv[0], SETTINGS_URI};
+```
+
+Since `AgentAppT` inherits from the wrapped agent class, all ordinary
+`Mads::Agent` methods remain directly available:
+
+```cpp
+agent.publish(payload);
+agent.receive(false);
+agent.last_message();
+agent.status();
+agent.enable_remote_control();
+agent.enable_threaded_remote_control();
+agent.loop(callback, period);
+```
+
+## What `AgentApp` adds
+
+`AgentApp` centralizes the executable-level responsibilities that are common to
+MADS agents:
+
+* ownership of a `cxxopts::Options` command-line parser;
+* common command-line options such as `--settings`, `--save-settings`,
+  `--room`, `--crypto`, `--version`, and `--help`;
+* optional agent identity options: `--name` and `--agent-id`;
+* queue size and non-blocking receive helper options;
+* standard early exits for `--help`, `--version`, and `--save-settings`;
+* initialization from the parsed CLI options;
+* optional service discovery through `--room`;
+* optional CURVE encryption configuration through CLI options;
+* cached JSON settings after initialization;
+* helper methods for `receive_timeout` and `queue_size`;
+* automatic startup and shutdown event registration;
+* restart handling after a remote-control restart request.
+
+The result is that a `main()` function can focus on the agent-specific behavior
+instead of rebuilding the same command-line and connection sequence each time.
+
+## Command-line options
+
+The option parser is owned by the `AgentApp` object.
+Use `options()` to add executable-specific options and helper methods to add
+standard groups:
+
+```cpp
+Mads::AgentApp agent{argv[0], SETTINGS_URI};
+
+agent.options()
+  ("p,period", "Sampling period in ms", cxxopts::value<size_t>())
+  ("silent", "Silent mode");
+
+agent.add_agent_identity_options();
+agent.add_dont_block_option();
+agent.add_queue_size_option();
+agent.add_common_options();
+```
+
+The common options added by `add_common_options()` are:
+
+| Option | Purpose |
+|---|---|
+| `-s`, `--settings` | Settings file path or broker settings URI. |
+| `-S`, `--save-settings` | Save the loaded settings to an INI file and exit. |
+| `--settings-timeout` | Timeout in milliseconds while reading settings from the broker. |
+| `-r`, `--room` | Discover the broker settings endpoint in a service-discovery room. |
+| `--crypto` | Enable CURVE encryption for broker communication. |
+| `--keys_dir` | Directory containing CURVE key files. |
+| `--key_broker` | Broker/server key name, without the `.key` extension. |
+| `--key_client` | Client key name, without the `.key` extension. |
+| `--auth_verbose` | Enable verbose authentication messages. |
+| `-v`, `--version` | Print the MADS library version and exit. |
+| `-h`, `--help` | Print usage and exit. |
+
+`add_agent_identity_options()` adds:
+
+| Option | Purpose |
+|---|---|
+| `-n`, `--name` | Override the agent name used to select settings. |
+| `-i`, `--agent-id` | Add an agent identifier to outgoing JSON frames. |
+
+`add_dont_block_option()` adds `-b`, `--dont-block`.
+`add_queue_size_option()` adds `-q`, `--queue-size`.
+
+After all options are declared, parse the command line:
+
+```cpp
+auto parsed = agent.parse_options(argc, argv);
+```
+
+`parse_options()` reports invalid options, prints usage, and exits with failure.
+It also rejects unmatched positional arguments unless they were explicitly
+declared with `raw_options().parse_positional(...)`.
+
+## Standard early exits
+
+After parsing, call `handle_standard_exit_options()` before initializing the
+agent:
+
+```cpp
+if (int rc = Mads::AgentApp::handle_standard_exit_options<Mads::AgentApp>(
+        parsed, agent.raw_options(), argv);
+    rc >= 0) {
+  return rc;
+}
+```
+
+The helper handles:
+
+* `--help`: print the executable version and parser help;
+* `--version`: print `LIB_VERSION`;
+* `--save-settings`: initialize a temporary agent, load settings, save them to
+  the requested local path, and exit.
+
+The template argument is the concrete agent type that should be used when
+saving settings.
+For a wrapped subclass, pass the matching `AgentAppFor<T>` type:
+
+```cpp
+if (int rc = Mads::AgentApp::handle_standard_exit_options<
+        Mads::AgentAppFor<Mads::Bridge>>(parsed, bridge.raw_options(), argv);
+    rc >= 0) {
+  return rc;
+}
+```
+
+The function returns `-1` when no early-exit option was present.
+Any non-negative return value is a process exit code and should normally be
+returned directly from `main()`.
+
+## Initialization and settings
+
+Use `init(parsed)` to apply CLI options and initialize the underlying agent:
+
+```cpp
+try {
+  agent.init(parsed);
+} catch (const std::exception &e) {
+  std::cerr << "Error initializing agent: " << e.what() << std::endl;
+  return EXIT_FAILURE;
+}
+```
+
+During initialization, `AgentApp` applies:
+
+* settings URI overrides from `--settings`;
+* service discovery result from `--room`;
+* agent name override from `--name`;
+* agent ID from `--agent-id`;
+* CURVE encryption settings from `--crypto` and related key options;
+* settings timeout from `--settings-timeout`.
+
+The loaded settings are cached and can be retrieved with:
+
+```cpp
+const nlohmann::json &settings = agent.settings_json();
+```
+
+Two helpers apply common settings after initialization:
+
+```cpp
+agent.apply_receive_timeout();
+agent.apply_queue_size();
+```
+
+`apply_receive_timeout()` reads the integer `receive_timeout` field from the
+loaded settings, when present.
+
+`apply_queue_size()` first checks the `--queue-size` command-line option.
+If the option is missing, it reads `queue_size` from the loaded settings.
+
+## Connecting, events, and shutdown
+
+The normal startup sequence is:
+
+```cpp
+agent.init(parsed);
+agent.enable_events();
+agent.connect();
+agent.info();
+```
+
+`enable_events()` turns on automatic event registration.
+When enabled, `connect()` registers a startup event after connecting, and
+`disconnect()` registers a shutdown event before disconnecting.
+
+The matching shutdown sequence is:
+
+```cpp
+agent.disconnect();
+agent.restart_if_requested(argv);
+return 0;
+```
+
+`restart_if_requested(argv)` checks whether a remote-control restart was
+requested during the loop.
+If so, it re-executes the current program through `execvp()` on Unix-like
+systems or `_execvp()` on Windows.
+
+## Minimal publisher example
+
+The following example creates a simple monolithic source that publishes one JSON
+object every `period` milliseconds.
+
+```cpp
+#include <agent_app.hpp>
+#include <chrono>
+#include <cstdlib>
+#include <iostream>
+#include <mads.hpp>
+#include <nlohmann/json.hpp>
+
+using namespace std::chrono_literals;
+
+int main(int argc, char *argv[]) {
+  std::chrono::milliseconds period{100};
+
+  Mads::AgentApp agent{argv[0], SETTINGS_URI};
+  agent.add_agent_identity_options();
+  agent.options()
+    ("p,period", "Sampling period in ms", cxxopts::value<size_t>());
+  agent.add_common_options();
+
+  auto parsed = agent.parse_options(argc, argv);
+  if (int rc = Mads::AgentApp::handle_standard_exit_options<Mads::AgentApp>(
+          parsed, agent.raw_options(), argv);
+      rc >= 0) {
+    return rc;
+  }
+
+  if (parsed.count("period") != 0) {
+    period = std::chrono::milliseconds(parsed["period"].as<size_t>());
+  }
+
+  try {
+    agent.init(parsed);
+  } catch (const std::exception &e) {
+    std::cerr << "Error initializing agent: " << e.what() << std::endl;
+    return EXIT_FAILURE;
+  }
+
+  agent.enable_threaded_remote_control();
+  agent.enable_events();
+  agent.connect();
+  agent.info();
+
+  size_t counter = 0;
+  agent.loop([&]() -> std::chrono::milliseconds {
+    nlohmann::json payload;
+    payload["counter"] = counter++;
+    payload["timestamp"]["$date"] =
+        Mads::get_ISODate_time(std::chrono::system_clock::now());
+    agent.publish(payload);
+    return 0ms;
+  }, period);
+
+  agent.disconnect();
+  agent.restart_if_requested(argv);
+  return 0;
+}
+```
+
+This executable automatically supports the common MADS options:
+
+```bash
+./my_source --help
+./my_source --settings mads.ini
+./my_source --room lab
+./my_source --crypto --keys_dir ../etc
+./my_source --save-settings local.ini
+```
+
+## Subscriber example
+
+The next example is a compact sink-style executable.
+It receives messages, applies the standard receive timeout and queue-size
+settings, and lets the user opt into non-blocking reads with `--dont-block`.
+
+```cpp
+#include <agent_app.hpp>
+#include <chrono>
+#include <cstdlib>
+#include <iostream>
+#include <mads.hpp>
+
+using namespace std::chrono_literals;
+
+int main(int argc, char *argv[]) {
+  Mads::AgentApp agent{argv[0], SETTINGS_URI};
+  agent.add_dont_block_option();
+  agent.add_queue_size_option();
+  agent.add_common_options();
+
+  auto parsed = agent.parse_options(argc, argv);
+  if (int rc = Mads::AgentApp::handle_standard_exit_options<Mads::AgentApp>(
+          parsed, agent.raw_options(), argv);
+      rc >= 0) {
+    return rc;
+  }
+
+  try {
+    agent.init(parsed);
+  } catch (const std::exception &e) {
+    std::cerr << "Error initializing agent: " << e.what() << std::endl;
+    return EXIT_FAILURE;
+  }
+
+  auto settings = agent.settings_json();
+  agent.apply_receive_timeout();
+  agent.apply_queue_size();
+
+  bool dont_block = settings.value("dont_block", false);
+  if (parsed.count("dont-block") != 0) {
+    dont_block = true;
+  }
+
+  agent.enable_remote_control();
+  agent.enable_events();
+  agent.connect();
+  agent.info();
+
+  agent.loop([&]() -> std::chrono::milliseconds {
+    auto type = agent.receive(dont_block);
+    if (type == Mads::message_type::json) {
+      auto [topic, content] = agent.last_message();
+      std::cout << topic << ": " << content << std::endl;
+    }
+    return 0ms;
+  });
+
+  agent.disconnect();
+  agent.restart_if_requested(argv);
+  return 0;
+}
+```
+
+## Wrapping an existing `Agent` subclass
+
+If the executable already has a class derived from `Mads::Agent`, wrap it with
+`AgentAppFor<T>`.
+The wrapped class keeps its own methods and overridden behavior.
+
+For example, the `bridge` executable uses `Mads::Bridge` like this:
+
+```cpp
+#include <agent_app.hpp>
+#include <bridge.hpp>
+#include <chrono>
+#include <cstdlib>
+#include <iostream>
+
+using namespace std::chrono_literals;
+
+int main(int argc, char *argv[]) {
+  std::string topic = "bridge";
+  std::chrono::milliseconds period{100};
+
+  Mads::AgentAppFor<Mads::Bridge> bridge{argv[0], SETTINGS_URI};
+  bridge.options()
+    ("t,topic", "Topic", cxxopts::value<std::string>())
+    ("p,period", "Sampling period in ms", cxxopts::value<size_t>());
+  bridge.add_queue_size_option();
+  bridge.add_common_options();
+
+  auto parsed = bridge.parse_options(argc, argv);
+  if (int rc = Mads::AgentApp::handle_standard_exit_options<
+          Mads::AgentAppFor<Mads::Bridge>>(parsed, bridge.raw_options(), argv);
+      rc >= 0) {
+    return rc;
+  }
+
+  if (parsed.count("topic") != 0) {
+    topic = parsed["topic"].as<std::string>();
+  }
+  if (parsed.count("period") != 0) {
+    period = std::chrono::milliseconds(parsed["period"].as<size_t>());
+  }
+
+  try {
+    bridge.init(parsed);
+  } catch (const std::exception &e) {
+    std::cerr << "Error initializing agent: " << e.what() << std::endl;
+    return EXIT_FAILURE;
+  }
+
+  bridge.set_pub_topic(topic);
+  bridge.apply_queue_size();
+  bridge.enable_events();
+  bridge.connect();
+  bridge.info();
+
+  bridge.loop([&]() -> std::chrono::milliseconds {
+    bridge.route();
+    return 0ms;
+  }, period);
+
+  bridge.disconnect();
+  bridge.restart_if_requested(argv);
+  return 0;
+}
+```
+
+This pattern works for any `Agent` subclass that follows the constructor
+contract required by `AgentAppT`.
+
+## Service discovery and encryption
+
+When `add_common_options()` is used, an executable can obtain its settings URI
+through service discovery:
+
+```bash
+./feedback --room lab
+```
+
+`AgentApp` discovers the broker in the named room and replaces the configured
+settings URI with the discovered settings endpoint.
+
+Encrypted broker communication can be enabled from the command line:
+
+```bash
+./feedback --crypto \
+  --keys_dir ../etc \
+  --key_client client \
+  --key_broker broker
+```
+
+When both `--room` and `--crypto` are used, the discovered service must advertise
+the same encryption mode requested by the CLI.
+If the modes do not match, initialization fails.
+
+## Recommended executable structure
+
+A typical `main()` using `AgentApp` follows this order:
+
+1. Construct `AgentApp` or `AgentAppFor<T>`.
+2. Add executable-specific CLI options.
+3. Add common CLI option groups.
+4. Parse with `parse_options(argc, argv)`.
+5. Call `handle_standard_exit_options(...)` and return if it handled the
+   command.
+6. Read simple executable-specific CLI values.
+7. Call `init(parsed)` inside a `try` block.
+8. Read `settings_json()` and apply any settings-derived behavior.
+9. Enable remote control and events as needed.
+10. Connect and optionally call `info()`.
+11. Run the main loop.
+12. Disconnect and call `restart_if_requested(argv)`.
+
+For new monolithic agents, this keeps `main()` small and leaves the agent
+algorithm in the custom class or callback where it belongs.
