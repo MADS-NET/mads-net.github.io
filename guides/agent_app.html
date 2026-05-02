@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.30">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Paolo Bosetti">
+<meta name="dcterms.date" content="2026-05-02">
+
+<title>The AgentApp class</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-26c68d61cf99900fc3c88cffcfbb4b26.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-8d9d75b6206e79db986742cfe6744e81.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-26c68d61cf99900fc3c88cffcfbb4b26.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-3d2938a4878e3b13b7efe8a3bbdcb536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-948f3023f533aad64acafa4cfe3dc5dd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-3d2938a4878e3b13b7efe8a3bbdcb536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L37VBCVVQW"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-L37VBCVVQW', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"express",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  ,
+"language":"en"
+  });
+});
+</script> 
+  
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo light-content">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo dark-content">
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../start.html"> 
+<span class="menu-text">Start here</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../guides.html"> 
+<span class="menu-text">Guides</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../why.html"> 
+<span class="menu-text">Why MADS?</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../who_is_using.html"> 
+<span class="menu-text">Use cases</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-presentations" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Presentations</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-presentations">    
+        <li>
+    <a class="dropdown-item" href="../presentations/intro.html">
+ <span class="dropdown-text"><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Intro</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://git.new/MADS"> 
+<span class="menu-text"><i class="bi-cloud-arrow-down-fill " style="" role="img" aria-hidden="true"></i> Get MADS</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text"><i class="bi-question-circle-fill " style="" role="img" aria-hidden="true"></i> About</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-github" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-github">    
+        <li>
+    <a class="dropdown-item" href="https://github.com/pbosetti/mads">
+ <span class="dropdown-text">Source Code</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/pbosetti/MADS/issues">
+ <span class="dropdown-text">Issues</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/MADS-Net">
+ <span class="dropdown-text">Plugins</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <div id="quarto-announcement" data-announcement-id="bac4023a3167daaad50509f0325463c0" class="alert alert-warning hidden"><div class="quarto-announcement-content">
+<p>Don’t miss the new <span style="font-weight:bold">MADSCode extension</span> for Visual Studio Code! <a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode">Learn more <i class="bi-link " style="" role="img" aria-hidden="true"></i></a></p>
+</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul class="collapse">
+  <li><a href="#class-overview" id="toc-class-overview" class="nav-link" data-scroll-target="#class-overview">Class overview</a></li>
+  <li><a href="#what-agentapp-adds" id="toc-what-agentapp-adds" class="nav-link" data-scroll-target="#what-agentapp-adds">What <code>AgentApp</code> adds</a></li>
+  <li><a href="#command-line-options" id="toc-command-line-options" class="nav-link" data-scroll-target="#command-line-options">Command-line options</a></li>
+  <li><a href="#standard-early-exits" id="toc-standard-early-exits" class="nav-link" data-scroll-target="#standard-early-exits">Standard early exits</a></li>
+  <li><a href="#initialization-and-settings" id="toc-initialization-and-settings" class="nav-link" data-scroll-target="#initialization-and-settings">Initialization and settings</a></li>
+  <li><a href="#connecting-events-and-shutdown" id="toc-connecting-events-and-shutdown" class="nav-link" data-scroll-target="#connecting-events-and-shutdown">Connecting, events, and shutdown</a></li>
+  <li><a href="#minimal-publisher-example" id="toc-minimal-publisher-example" class="nav-link" data-scroll-target="#minimal-publisher-example">Minimal publisher example</a></li>
+  <li><a href="#subscriber-example" id="toc-subscriber-example" class="nav-link" data-scroll-target="#subscriber-example">Subscriber example</a></li>
+  <li><a href="#wrapping-an-existing-agent-subclass" id="toc-wrapping-an-existing-agent-subclass" class="nav-link" data-scroll-target="#wrapping-an-existing-agent-subclass">Wrapping an existing <code>Agent</code> subclass</a></li>
+  <li><a href="#service-discovery-and-encryption" id="toc-service-discovery-and-encryption" class="nav-link" data-scroll-target="#service-discovery-and-encryption">Service discovery and encryption</a></li>
+  <li><a href="#recommended-executable-structure" id="toc-recommended-executable-structure" class="nav-link" data-scroll-target="#recommended-executable-structure">Recommended executable structure</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">The <code>AgentApp</code> class</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">advanced</div>
+    <div class="quarto-category">programming</div>
+    <div class="quarto-category">c++</div>
+  </div>
+  </div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Paolo Bosetti </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Trento
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 2, 2026</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">May 2, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p>MADS v2.1.0 introduces the new <code>AgentApp</code> C++ class that makes it easier to implement monolithic agents in C++ that share the same UI of official MADS agents.</p>
+  </div>
+</div>
+
+
+</header>
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>The <code>AgentApp</code> class is a thin application wrapper around <code>Mads::Agent</code>. It is meant for executables: the small <code>main()</code> programs that start an agent, parse command-line options, load settings, connect to the broker, run the main loop, and shut down cleanly.</p>
+<p>The class does not replace <code>Agent</code>. Instead, it keeps the transport, message handling, settings, remote control, and publishing/subscribing behavior in <code>Agent</code>, while collecting the startup code that used to be repeated in every monolithic executable.</p>
+<p>Use it when you are writing:</p>
+<ul>
+<li>a monolithic source, filter, or sink agent in C++;</li>
+<li>a command-line utility that needs the same broker connection and settings behavior as the official MADS agents;</li>
+<li>an executable wrapper around an existing class derived from <code>Mads::Agent</code>.</li>
+</ul>
+<p>The implementation is in <code>src/agent_app.hpp</code>. Because the generic form is a template, almost all of the code is header-only.</p>
+<section id="class-overview" class="level2">
+<h2 class="anchored" data-anchor-id="class-overview">Class overview</h2>
+<p>There are three related names:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> AgentT<span class="op">&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Mads<span class="op">::</span>AgentAppT<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Mads<span class="op">::</span>AgentApp <span class="op">=</span> Mads<span class="op">::</span>AgentAppT<span class="op">&lt;</span>Mads<span class="op">::</span>Agent<span class="op">&gt;;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> AgentT<span class="op">&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Mads<span class="op">::</span>AgentAppFor <span class="op">=</span> Mads<span class="op">::</span>AgentAppT<span class="op">&lt;</span>AgentT<span class="op">&gt;;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>AgentAppT&lt;AgentT&gt;</code> derives from <code>AgentT</code>, and <code>AgentT</code> must derive from <code>Mads::Agent</code> and be constructible from:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>AgentT<span class="op">(</span><span class="bu">std::</span>string name<span class="op">,</span> <span class="bu">std::</span>string settings_uri<span class="op">);</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For most simple executables, use <code>Mads::AgentApp</code>. For an executable based on an existing specialized agent class, use <code>Mads::AgentAppFor&lt;T&gt;</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Mads<span class="op">::</span>AgentApp agent<span class="op">{</span>argv<span class="op">[</span><span class="dv">0</span><span class="op">],</span> SETTINGS_URI<span class="op">};</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Mads<span class="op">::</span>AgentAppFor<span class="op">&lt;</span>Mads<span class="op">::</span>Bridge<span class="op">&gt;</span> bridge<span class="op">{</span>argv<span class="op">[</span><span class="dv">0</span><span class="op">],</span> SETTINGS_URI<span class="op">};</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Since <code>AgentAppT</code> inherits from the wrapped agent class, all ordinary <code>Mads::Agent</code> methods remain directly available:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>publish<span class="op">(</span>payload<span class="op">);</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>receive<span class="op">(</span><span class="kw">false</span><span class="op">);</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>last_message<span class="op">();</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>status<span class="op">();</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>enable_remote_control<span class="op">();</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>enable_threaded_remote_control<span class="op">();</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>loop<span class="op">(</span>callback<span class="op">,</span> period<span class="op">);</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="what-agentapp-adds" class="level2">
+<h2 class="anchored" data-anchor-id="what-agentapp-adds">What <code>AgentApp</code> adds</h2>
+<p><code>AgentApp</code> centralizes the executable-level responsibilities that are common to MADS agents:</p>
+<ul>
+<li>ownership of a <code>cxxopts::Options</code> command-line parser;</li>
+<li>common command-line options such as <code>--settings</code>, <code>--save-settings</code>, <code>--room</code>, <code>--crypto</code>, <code>--version</code>, and <code>--help</code>;</li>
+<li>optional agent identity options: <code>--name</code> and <code>--agent-id</code>;</li>
+<li>queue size and non-blocking receive helper options;</li>
+<li>standard early exits for <code>--help</code>, <code>--version</code>, and <code>--save-settings</code>;</li>
+<li>initialization from the parsed CLI options;</li>
+<li>optional service discovery through <code>--room</code>;</li>
+<li>optional CURVE encryption configuration through CLI options;</li>
+<li>cached JSON settings after initialization;</li>
+<li>helper methods for <code>receive_timeout</code> and <code>queue_size</code>;</li>
+<li>automatic startup and shutdown event registration;</li>
+<li>restart handling after a remote-control restart request.</li>
+</ul>
+<p>The result is that a <code>main()</code> function can focus on the agent-specific behavior instead of rebuilding the same command-line and connection sequence each time.</p>
+</section>
+<section id="command-line-options" class="level2">
+<h2 class="anchored" data-anchor-id="command-line-options">Command-line options</h2>
+<p>The option parser is owned by the <code>AgentApp</code> object. Use <code>options()</code> to add executable-specific options and helper methods to add standard groups:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Mads<span class="op">::</span>AgentApp agent<span class="op">{</span>argv<span class="op">[</span><span class="dv">0</span><span class="op">],</span> SETTINGS_URI<span class="op">};</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>options<span class="op">()</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="st">"p,period"</span><span class="op">,</span> <span class="st">"Sampling period in ms"</span><span class="op">,</span> cxxopts<span class="op">::</span>value<span class="op">&lt;</span><span class="dt">size_t</span><span class="op">&gt;())</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="st">"silent"</span><span class="op">,</span> <span class="st">"Silent mode"</span><span class="op">);</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>add_agent_identity_options<span class="op">();</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>add_dont_block_option<span class="op">();</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>add_queue_size_option<span class="op">();</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>add_common_options<span class="op">();</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The common options added by <code>add_common_options()</code> are:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Option</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-s</code>, <code>--settings</code></td>
+<td>Settings file path or broker settings URI.</td>
+</tr>
+<tr class="even">
+<td><code>-S</code>, <code>--save-settings</code></td>
+<td>Save the loaded settings to an INI file and exit.</td>
+</tr>
+<tr class="odd">
+<td><code>--settings-timeout</code></td>
+<td>Timeout in milliseconds while reading settings from the broker.</td>
+</tr>
+<tr class="even">
+<td><code>-r</code>, <code>--room</code></td>
+<td>Discover the broker settings endpoint in a service-discovery room.</td>
+</tr>
+<tr class="odd">
+<td><code>--crypto</code></td>
+<td>Enable CURVE encryption for broker communication.</td>
+</tr>
+<tr class="even">
+<td><code>--keys_dir</code></td>
+<td>Directory containing CURVE key files.</td>
+</tr>
+<tr class="odd">
+<td><code>--key_broker</code></td>
+<td>Broker/server key name, without the <code>.key</code> extension.</td>
+</tr>
+<tr class="even">
+<td><code>--key_client</code></td>
+<td>Client key name, without the <code>.key</code> extension.</td>
+</tr>
+<tr class="odd">
+<td><code>--auth_verbose</code></td>
+<td>Enable verbose authentication messages.</td>
+</tr>
+<tr class="even">
+<td><code>-v</code>, <code>--version</code></td>
+<td>Print the MADS library version and exit.</td>
+</tr>
+<tr class="odd">
+<td><code>-h</code>, <code>--help</code></td>
+<td>Print usage and exit.</td>
+</tr>
+</tbody>
+</table>
+<p><code>add_agent_identity_options()</code> adds:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Option</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-n</code>, <code>--name</code></td>
+<td>Override the agent name used to select settings.</td>
+</tr>
+<tr class="even">
+<td><code>-i</code>, <code>--agent-id</code></td>
+<td>Add an agent identifier to outgoing JSON frames.</td>
+</tr>
+</tbody>
+</table>
+<p><code>add_dont_block_option()</code> adds <code>-b</code>, <code>--dont-block</code>. <code>add_queue_size_option()</code> adds <code>-q</code>, <code>--queue-size</code>.</p>
+<p>After all options are declared, parse the command line:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">auto</span> parsed <span class="op">=</span> agent<span class="op">.</span>parse_options<span class="op">(</span>argc<span class="op">,</span> argv<span class="op">);</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>parse_options()</code> reports invalid options, prints usage, and exits with failure. It also rejects unmatched positional arguments unless they were explicitly declared with <code>raw_options().parse_positional(...)</code>.</p>
+</section>
+<section id="standard-early-exits" class="level2">
+<h2 class="anchored" data-anchor-id="standard-early-exits">Standard early exits</h2>
+<p>After parsing, call <code>handle_standard_exit_options()</code> before initializing the agent:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dt">int</span> rc <span class="op">=</span> Mads<span class="op">::</span>AgentApp<span class="op">::</span>handle_standard_exit_options<span class="op">&lt;</span>Mads<span class="op">::</span>AgentApp<span class="op">&gt;(</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>        parsed<span class="op">,</span> agent<span class="op">.</span>raw_options<span class="op">(),</span> argv<span class="op">);</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    rc <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> rc<span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The helper handles:</p>
+<ul>
+<li><code>--help</code>: print the executable version and parser help;</li>
+<li><code>--version</code>: print <code>LIB_VERSION</code>;</li>
+<li><code>--save-settings</code>: initialize a temporary agent, load settings, save them to the requested local path, and exit.</li>
+</ul>
+<p>The template argument is the concrete agent type that should be used when saving settings. For a wrapped subclass, pass the matching <code>AgentAppFor&lt;T&gt;</code> type:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dt">int</span> rc <span class="op">=</span> Mads<span class="op">::</span>AgentApp<span class="op">::</span>handle_standard_exit_options<span class="op">&lt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>        Mads<span class="op">::</span>AgentAppFor<span class="op">&lt;</span>Mads<span class="op">::</span>Bridge<span class="op">&gt;&gt;(</span>parsed<span class="op">,</span> bridge<span class="op">.</span>raw_options<span class="op">(),</span> argv<span class="op">);</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    rc <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> rc<span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The function returns <code>-1</code> when no early-exit option was present. Any non-negative return value is a process exit code and should normally be returned directly from <code>main()</code>.</p>
+</section>
+<section id="initialization-and-settings" class="level2">
+<h2 class="anchored" data-anchor-id="initialization-and-settings">Initialization and settings</h2>
+<p>Use <code>init(parsed)</code> to apply CLI options and initialize the underlying agent:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>init<span class="op">(</span>parsed<span class="op">);</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>exception <span class="op">&amp;</span>e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>cerr <span class="op">&lt;&lt;</span> <span class="st">"Error initializing agent: "</span> <span class="op">&lt;&lt;</span> e<span class="op">.</span>what<span class="op">()</span> <span class="op">&lt;&lt;</span> <span class="bu">std::</span>endl<span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> EXIT_FAILURE<span class="op">;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>During initialization, <code>AgentApp</code> applies:</p>
+<ul>
+<li>settings URI overrides from <code>--settings</code>;</li>
+<li>service discovery result from <code>--room</code>;</li>
+<li>agent name override from <code>--name</code>;</li>
+<li>agent ID from <code>--agent-id</code>;</li>
+<li>CURVE encryption settings from <code>--crypto</code> and related key options;</li>
+<li>settings timeout from <code>--settings-timeout</code>.</li>
+</ul>
+<p>The loaded settings are cached and can be retrieved with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="at">const</span> nlohmann<span class="op">::</span>json <span class="op">&amp;</span>settings <span class="op">=</span> agent<span class="op">.</span>settings_json<span class="op">();</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Two helpers apply common settings after initialization:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>apply_receive_timeout<span class="op">();</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>apply_queue_size<span class="op">();</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>apply_receive_timeout()</code> reads the integer <code>receive_timeout</code> field from the loaded settings, when present.</p>
+<p><code>apply_queue_size()</code> first checks the <code>--queue-size</code> command-line option. If the option is missing, it reads <code>queue_size</code> from the loaded settings.</p>
+</section>
+<section id="connecting-events-and-shutdown" class="level2">
+<h2 class="anchored" data-anchor-id="connecting-events-and-shutdown">Connecting, events, and shutdown</h2>
+<p>The normal startup sequence is:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>init<span class="op">(</span>parsed<span class="op">);</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>enable_events<span class="op">();</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span><span class="fu">connect</span><span class="op">();</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>info<span class="op">();</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>enable_events()</code> turns on automatic event registration. When enabled, <code>connect()</code> registers a startup event after connecting, and <code>disconnect()</code> registers a shutdown event before disconnecting.</p>
+<p>The matching shutdown sequence is:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span><span class="fu">disconnect</span><span class="op">();</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>agent<span class="op">.</span>restart_if_requested<span class="op">(</span>argv<span class="op">);</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>restart_if_requested(argv)</code> checks whether a remote-control restart was requested during the loop. If so, it re-executes the current program through <code>execvp()</code> on Unix-like systems or <code>_execvp()</code> on Windows.</p>
+</section>
+<section id="minimal-publisher-example" class="level2">
+<h2 class="anchored" data-anchor-id="minimal-publisher-example">Minimal publisher example</h2>
+<p>The following example creates a simple monolithic source that publishes one JSON object every <code>period</code> milliseconds.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;agent_app.hpp&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;chrono&gt;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cstdlib&gt;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;mads.hpp&gt;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;nlohmann/json.hpp&gt;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> <span class="bu">std::</span>chrono_literals<span class="op">;</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>chrono::milliseconds period<span class="op">{</span><span class="dv">100</span><span class="op">};</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  Mads<span class="op">::</span>AgentApp agent<span class="op">{</span>argv<span class="op">[</span><span class="dv">0</span><span class="op">],</span> SETTINGS_URI<span class="op">};</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>add_agent_identity_options<span class="op">();</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>options<span class="op">()</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="st">"p,period"</span><span class="op">,</span> <span class="st">"Sampling period in ms"</span><span class="op">,</span> cxxopts<span class="op">::</span>value<span class="op">&lt;</span><span class="dt">size_t</span><span class="op">&gt;());</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>add_common_options<span class="op">();</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="kw">auto</span> parsed <span class="op">=</span> agent<span class="op">.</span>parse_options<span class="op">(</span>argc<span class="op">,</span> argv<span class="op">);</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span><span class="dt">int</span> rc <span class="op">=</span> Mads<span class="op">::</span>AgentApp<span class="op">::</span>handle_standard_exit_options<span class="op">&lt;</span>Mads<span class="op">::</span>AgentApp<span class="op">&gt;(</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>          parsed<span class="op">,</span> agent<span class="op">.</span>raw_options<span class="op">(),</span> argv<span class="op">);</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>      rc <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rc<span class="op">;</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>parsed<span class="op">.</span>count<span class="op">(</span><span class="st">"period"</span><span class="op">)</span> <span class="op">!=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    period <span class="op">=</span> <span class="bu">std::</span>chrono::milliseconds<span class="op">(</span>parsed<span class="op">[</span><span class="st">"period"</span><span class="op">].</span>as<span class="op">&lt;</span><span class="dt">size_t</span><span class="op">&gt;());</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>  <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    agent<span class="op">.</span>init<span class="op">(</span>parsed<span class="op">);</span></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>exception <span class="op">&amp;</span>e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cerr <span class="op">&lt;&lt;</span> <span class="st">"Error initializing agent: "</span> <span class="op">&lt;&lt;</span> e<span class="op">.</span>what<span class="op">()</span> <span class="op">&lt;&lt;</span> <span class="bu">std::</span>endl<span class="op">;</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> EXIT_FAILURE<span class="op">;</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>enable_threaded_remote_control<span class="op">();</span></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>enable_events<span class="op">();</span></span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span><span class="fu">connect</span><span class="op">();</span></span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>info<span class="op">();</span></span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>  <span class="dt">size_t</span> counter <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>loop<span class="op">([&amp;]()</span> <span class="op">-&gt;</span> <span class="bu">std::</span>chrono::milliseconds <span class="op">{</span></span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>    nlohmann<span class="op">::</span>json payload<span class="op">;</span></span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>    payload<span class="op">[</span><span class="st">"counter"</span><span class="op">]</span> <span class="op">=</span> counter<span class="op">++;</span></span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>    payload<span class="op">[</span><span class="st">"timestamp"</span><span class="op">][</span><span class="st">"$date"</span><span class="op">]</span> <span class="op">=</span></span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>        Mads<span class="op">::</span>get_ISODate_time<span class="op">(</span><span class="bu">std::</span>chrono::system_clock::now<span class="op">());</span></span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>    agent<span class="op">.</span>publish<span class="op">(</span>payload<span class="op">);</span></span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="bu">ms</span><span class="op">;</span></span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>  <span class="op">},</span> period<span class="op">);</span></span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span><span class="fu">disconnect</span><span class="op">();</span></span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>restart_if_requested<span class="op">(</span>argv<span class="op">);</span></span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This executable automatically supports the common MADS options:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./my_source</span> <span class="at">--help</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./my_source</span> <span class="at">--settings</span> mads.ini</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ex">./my_source</span> <span class="at">--room</span> lab</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="ex">./my_source</span> <span class="at">--crypto</span> <span class="at">--keys_dir</span> ../etc</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ex">./my_source</span> <span class="at">--save-settings</span> local.ini</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="subscriber-example" class="level2">
+<h2 class="anchored" data-anchor-id="subscriber-example">Subscriber example</h2>
+<p>The next example is a compact sink-style executable. It receives messages, applies the standard receive timeout and queue-size settings, and lets the user opt into non-blocking reads with <code>--dont-block</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;agent_app.hpp&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;chrono&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cstdlib&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;mads.hpp&gt;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> <span class="bu">std::</span>chrono_literals<span class="op">;</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  Mads<span class="op">::</span>AgentApp agent<span class="op">{</span>argv<span class="op">[</span><span class="dv">0</span><span class="op">],</span> SETTINGS_URI<span class="op">};</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>add_dont_block_option<span class="op">();</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>add_queue_size_option<span class="op">();</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>add_common_options<span class="op">();</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">auto</span> parsed <span class="op">=</span> agent<span class="op">.</span>parse_options<span class="op">(</span>argc<span class="op">,</span> argv<span class="op">);</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span><span class="dt">int</span> rc <span class="op">=</span> Mads<span class="op">::</span>AgentApp<span class="op">::</span>handle_standard_exit_options<span class="op">&lt;</span>Mads<span class="op">::</span>AgentApp<span class="op">&gt;(</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>          parsed<span class="op">,</span> agent<span class="op">.</span>raw_options<span class="op">(),</span> argv<span class="op">);</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>      rc <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rc<span class="op">;</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    agent<span class="op">.</span>init<span class="op">(</span>parsed<span class="op">);</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>exception <span class="op">&amp;</span>e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cerr <span class="op">&lt;&lt;</span> <span class="st">"Error initializing agent: "</span> <span class="op">&lt;&lt;</span> e<span class="op">.</span>what<span class="op">()</span> <span class="op">&lt;&lt;</span> <span class="bu">std::</span>endl<span class="op">;</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> EXIT_FAILURE<span class="op">;</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  <span class="kw">auto</span> settings <span class="op">=</span> agent<span class="op">.</span>settings_json<span class="op">();</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>apply_receive_timeout<span class="op">();</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>apply_queue_size<span class="op">();</span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>  <span class="dt">bool</span> dont_block <span class="op">=</span> settings<span class="op">.</span>value<span class="op">(</span><span class="st">"dont_block"</span><span class="op">,</span> <span class="kw">false</span><span class="op">);</span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>parsed<span class="op">.</span>count<span class="op">(</span><span class="st">"dont-block"</span><span class="op">)</span> <span class="op">!=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    dont_block <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>enable_remote_control<span class="op">();</span></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>enable_events<span class="op">();</span></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span><span class="fu">connect</span><span class="op">();</span></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>info<span class="op">();</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>loop<span class="op">([&amp;]()</span> <span class="op">-&gt;</span> <span class="bu">std::</span>chrono::milliseconds <span class="op">{</span></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>    <span class="kw">auto</span> type <span class="op">=</span> agent<span class="op">.</span>receive<span class="op">(</span>dont_block<span class="op">);</span></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>type <span class="op">==</span> Mads<span class="op">::</span><span class="dt">message_type</span><span class="op">::</span>json<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>      <span class="kw">auto</span> <span class="op">[</span>topic<span class="op">,</span> content<span class="op">]</span> <span class="op">=</span> agent<span class="op">.</span>last_message<span class="op">();</span></span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>      <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> topic <span class="op">&lt;&lt;</span> <span class="st">": "</span> <span class="op">&lt;&lt;</span> content <span class="op">&lt;&lt;</span> <span class="bu">std::</span>endl<span class="op">;</span></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="bu">ms</span><span class="op">;</span></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>  <span class="op">});</span></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span><span class="fu">disconnect</span><span class="op">();</span></span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>  agent<span class="op">.</span>restart_if_requested<span class="op">(</span>argv<span class="op">);</span></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="wrapping-an-existing-agent-subclass" class="level2">
+<h2 class="anchored" data-anchor-id="wrapping-an-existing-agent-subclass">Wrapping an existing <code>Agent</code> subclass</h2>
+<p>If the executable already has a class derived from <code>Mads::Agent</code>, wrap it with <code>AgentAppFor&lt;T&gt;</code>. The wrapped class keeps its own methods and overridden behavior.</p>
+<p>For example, the <code>bridge</code> executable uses <code>Mads::Bridge</code> like this:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;agent_app.hpp&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;bridge.hpp&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;chrono&gt;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cstdlib&gt;</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> <span class="bu">std::</span>chrono_literals<span class="op">;</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>string topic <span class="op">=</span> <span class="st">"bridge"</span><span class="op">;</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>chrono::milliseconds period<span class="op">{</span><span class="dv">100</span><span class="op">};</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  Mads<span class="op">::</span>AgentAppFor<span class="op">&lt;</span>Mads<span class="op">::</span>Bridge<span class="op">&gt;</span> bridge<span class="op">{</span>argv<span class="op">[</span><span class="dv">0</span><span class="op">],</span> SETTINGS_URI<span class="op">};</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  bridge<span class="op">.</span>options<span class="op">()</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="st">"t,topic"</span><span class="op">,</span> <span class="st">"Topic"</span><span class="op">,</span> cxxopts<span class="op">::</span>value<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;())</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="st">"p,period"</span><span class="op">,</span> <span class="st">"Sampling period in ms"</span><span class="op">,</span> cxxopts<span class="op">::</span>value<span class="op">&lt;</span><span class="dt">size_t</span><span class="op">&gt;());</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  bridge<span class="op">.</span>add_queue_size_option<span class="op">();</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  bridge<span class="op">.</span>add_common_options<span class="op">();</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">auto</span> parsed <span class="op">=</span> bridge<span class="op">.</span>parse_options<span class="op">(</span>argc<span class="op">,</span> argv<span class="op">);</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span><span class="dt">int</span> rc <span class="op">=</span> Mads<span class="op">::</span>AgentApp<span class="op">::</span>handle_standard_exit_options<span class="op">&lt;</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>          Mads<span class="op">::</span>AgentAppFor<span class="op">&lt;</span>Mads<span class="op">::</span>Bridge<span class="op">&gt;&gt;(</span>parsed<span class="op">,</span> bridge<span class="op">.</span>raw_options<span class="op">(),</span> argv<span class="op">);</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>      rc <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rc<span class="op">;</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>parsed<span class="op">.</span>count<span class="op">(</span><span class="st">"topic"</span><span class="op">)</span> <span class="op">!=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>    topic <span class="op">=</span> parsed<span class="op">[</span><span class="st">"topic"</span><span class="op">].</span>as<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;();</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>parsed<span class="op">.</span>count<span class="op">(</span><span class="st">"period"</span><span class="op">)</span> <span class="op">!=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>    period <span class="op">=</span> <span class="bu">std::</span>chrono::milliseconds<span class="op">(</span>parsed<span class="op">[</span><span class="st">"period"</span><span class="op">].</span>as<span class="op">&lt;</span><span class="dt">size_t</span><span class="op">&gt;());</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>    bridge<span class="op">.</span>init<span class="op">(</span>parsed<span class="op">);</span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>exception <span class="op">&amp;</span>e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cerr <span class="op">&lt;&lt;</span> <span class="st">"Error initializing agent: "</span> <span class="op">&lt;&lt;</span> e<span class="op">.</span>what<span class="op">()</span> <span class="op">&lt;&lt;</span> <span class="bu">std::</span>endl<span class="op">;</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> EXIT_FAILURE<span class="op">;</span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>  bridge<span class="op">.</span>set_pub_topic<span class="op">(</span>topic<span class="op">);</span></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>  bridge<span class="op">.</span>apply_queue_size<span class="op">();</span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>  bridge<span class="op">.</span>enable_events<span class="op">();</span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>  bridge<span class="op">.</span><span class="fu">connect</span><span class="op">();</span></span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>  bridge<span class="op">.</span>info<span class="op">();</span></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>  bridge<span class="op">.</span>loop<span class="op">([&amp;]()</span> <span class="op">-&gt;</span> <span class="bu">std::</span>chrono::milliseconds <span class="op">{</span></span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>    bridge<span class="op">.</span>route<span class="op">();</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="bu">ms</span><span class="op">;</span></span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>  <span class="op">},</span> period<span class="op">);</span></span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a>  bridge<span class="op">.</span><span class="fu">disconnect</span><span class="op">();</span></span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a>  bridge<span class="op">.</span>restart_if_requested<span class="op">(</span>argv<span class="op">);</span></span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This pattern works for any <code>Agent</code> subclass that follows the constructor contract required by <code>AgentAppT</code>.</p>
+</section>
+<section id="service-discovery-and-encryption" class="level2">
+<h2 class="anchored" data-anchor-id="service-discovery-and-encryption">Service discovery and encryption</h2>
+<p>When <code>add_common_options()</code> is used, an executable can obtain its settings URI through service discovery:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./feedback</span> <span class="at">--room</span> lab</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>AgentApp</code> discovers the broker in the named room and replaces the configured settings URI with the discovered settings endpoint.</p>
+<p>Encrypted broker communication can be enabled from the command line:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./feedback</span> <span class="at">--crypto</span> <span class="dt">\</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--keys_dir</span> ../etc <span class="dt">\</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--key_client</span> client <span class="dt">\</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--key_broker</span> broker</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>When both <code>--room</code> and <code>--crypto</code> are used, the discovered service must advertise the same encryption mode requested by the CLI. If the modes do not match, initialization fails.</p>
+</section>
+<section id="recommended-executable-structure" class="level2">
+<h2 class="anchored" data-anchor-id="recommended-executable-structure">Recommended executable structure</h2>
+<p>A typical <code>main()</code> using <code>AgentApp</code> follows this order:</p>
+<ol type="1">
+<li>Construct <code>AgentApp</code> or <code>AgentAppFor&lt;T&gt;</code>.</li>
+<li>Add executable-specific CLI options.</li>
+<li>Add common CLI option groups.</li>
+<li>Parse with <code>parse_options(argc, argv)</code>.</li>
+<li>Call <code>handle_standard_exit_options(...)</code> and return if it handled the command.</li>
+<li>Read simple executable-specific CLI values.</li>
+<li>Call <code>init(parsed)</code> inside a <code>try</code> block.</li>
+<li>Read <code>settings_json()</code> and apply any settings-derived behavior.</li>
+<li>Enable remote control and events as needed.</li>
+<li>Connect and optionally call <code>info()</code>.</li>
+<li>Run the main loop.</li>
+<li>Disconnect and call <code>restart_if_requested(argv)</code>.</li>
+</ol>
+<p>For new monolithic agents, this keeps <code>main()</code> small and leaves the agent algorithm in the custom class or callback where it belongs.</p>
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/mads-net\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Paolo Bosetti, <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">BY-NC-SA4.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

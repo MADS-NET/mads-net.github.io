@@ -2,6 +2,7 @@
   {
     "listing": "/guides.html",
     "items": [
+      "/guides/agent_app.html",
       "/guides/auto-discovery.html",
       "/guides/ai_anyone.html",
       "/guides/fmu.html",
