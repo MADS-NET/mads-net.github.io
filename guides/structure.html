@@ -296,7 +296,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">April 12, 2026</p>
+      <p class="date-modified">May 2, 2026</p>
     </div>
   </div>
     
@@ -545,22 +545,25 @@ Note
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Binding</span> broker backend <span class="er">(</span><span class="ex">XPUB</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9091</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Binding</span> broker shared settings <span class="er">(</span><span class="ex">REP</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9092</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Timecode</span> FPS: 25</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Settings</span> are provided via tcp://192.168.1.220:9092</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">CTRL-C</span> to immediate exit</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Type</span> P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Look at the line <code>Settings are provided via tcp://192.168.1.220:9092</code>: that is the address that you must use to start any agent in the network, e.g.:</p>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Settings</span> are provided on tcp://127.0.0.1:9092 <span class="er">(</span><span class="ex">loopback</span><span class="kw">)</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Advertising</span> service on UDP discovery port 39092 with room name <span class="st">'mads'</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            <span class="kw">(</span><span class="ex">preferring</span> loopback for local agents<span class="kw">)</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="ex">CTRL-C</span> to immediate exit</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="ex">Type</span> P to pause, R to resume, I for information, Q to clean quit</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="ex">N</span> to show next IP address, X to restart and reload settings</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Look at the line <code>Settings are provided on tcp://127.0.0.1:9092 (loopback)</code>: If you repeatedly press <code>N</code>, it shows you the settings URI for all the available network interfaces. Suppose that the wired Ethernet <code>en0</code> is the one you want to use, note its URI (e.g.&nbsp;<code>tcp://192.168.1.220:9092</code>), then cycle the available addresses until you find the settings URI to be used for agents running on other machines:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> feedback <span class="at">-s</span> tcp://192.168.1.220:9092</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout callout-style-default callout-important callout-titled" title="Adverising the serice (v2.1.0+)">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Important
+<span class="screen-reader-only">Important</span>Adverising the serice (v2.1.0+)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The <code>-n</code> command line option <strong>has no effect</strong> on how the broker operates. Its only purpose is to help you find out the proper address to use when starting agents that run on different machines or devices.</p>
+<p>Note the lines starting with <code>Advertising...</code>: since MADS v2.1.0, the broker advertises its presence on all the local networks via UDP, so that agents can automatically discover it without needing to know its address. This is a very useful feature for plug-and-play applications. The feature is documented here: <a href="auto_discovery.qmd">Auto-discovery</a>.</p>
 </div>
 </div>
 </section>
