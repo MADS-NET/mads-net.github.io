@@ -1,0 +1,118 @@
+---
+title: "JSON Validation"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 06/03/2026
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [operation, json, intermediate, plugin]
+abstract: |
+  MADS relies on JSON format when exchanging data between agents. JSON is an open and flexible format, but it lacks enforcement on structure and ata types. This guide shows how to use the `validator_plugin` to fill this gap.
+---
+
+# The problem
+
+Any agent in MADS produces and/or consumes data principally in JSON format. There is no guarantee that the data conform to any given internal structure: it is responsibility of each agent to provide strcutured JSON that is compatible with the structure expected by the data consumers.
+
+This implementation is easy and flexible in development, but it might become diffcult to maintain when the network of agents becomes complicate and rich. In these conditions, a simple change in the JSON structure produced by one agent may have unexpecte effects on other, depending agents.
+
+# The solution
+
+The plugin at <https://github.com/mads-net/validator_plugin> provides a sink agent that subscripbes to a set of topics and routinely validates any incoming JSON message against a given **schema**.
+
+:::{.callout-note title="JSON Schema"}
+A JSON schema is a JSON document that describes the expected structure of a JSON message. It can specify the required fields, their data types, and other constraints. For more information on JSON schema, see <https://json-schema.org/>.
+:::
+
+## Installation
+
+As usual for MADS plugins, on Unix:
+
+```bash
+cmake -Bbuild -DCMAKE_INSTALL_PREFIX="$(mads -p)"
+cmake --build build -j4
+sudo cmake --install build
+```
+
+On Windows:
+
+```powershell
+cmake -Bbuild -DCMAKE_INSTALL_PREFIX="$(mads -p)"
+cmake --build build --config Release
+cmake --install build --config Release
+```
+
+## Operation
+
+An example of JSON schema is the following:
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "A simple schema for a person object",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "nickname": {
+      "type": "string"
+    },
+    "age": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": ["name", "age"]
+}
+```
+
+According to this schema, a valid JSON message should be an object with three properties: `name`, `nickname`, and `age`. The `name` and `age` properties are required, while the `nickname` property is optional. The `name` property should be a string, while the `age` property should be a non-negative integer.
+
+The plugin loads a named list of JSON schemas from a specific local file, default to `schemas.json`. Each schema is associated with a name (corresponding to a topic), and the plugin subscribes to a set of topics (defined in the MADS configuration file, as usual) that are expected to receive JSON messages conforming to the corresponding schema. For each subscribed topic there must be a corresponding schema in the `schemas.json` file, with the same name as the topic. For example, if the plugin subscribes to the topic `person`, there must be a schema named `person` in the `schemas.json` file.
+
+Any JSON object that does not conform to this schema will make the validator plugin produce an error message that describes the validation error, and an error message will be logged on the `agent_event` topic.
+
+Any incoming message on a topic, for which there is no corresponding schema in the `schemas.json` file, will be ignored by the plugin, and a warning message will be logged on the `agent_event` topic.
+
+If the `schemas.json` file is not found or is invalid, the plugin will refuse to start.
+
+
+## Schema file generation
+
+To create the `schemas.json` file, you can either write it manually, following [schema specifications](https://json-schema.org/){target="_blank"}, or you can use a tool that generates JSON schemas from example JSON messages, such as <https://json.ophir.dev>{target="_blank"}.
+
+If you choose the latter option, you just have to click on the "<> Infer from JSON" button, paste an example JSON message, and the tool will generate a corresponding JSON schema. Using the same web interface, you can then taylor the schema to your needs, e.g. by making some of the fields optional. You then copy the generated schema into your `schemas.json` file under a suitable name, and modify it as needed.
+
+Remember that the final schema file must have this structure, i.e. a named list of valid JSON schemas:
+
+```json
+{
+  "topic_1": {
+    // pasted schema definition
+  },
+  "topic_2": {
+    // another schema definition
+  }
+}
+```
+
+:::{.callout-important title="Schema file validation"}
+The `schemas.json` file must be a valid JSON file, and each schema definition must be a valid JSON schema. If the file is not valid, the plugin will refuse to start.
+:::
+
+# Recommendations
+
+- Use the validator plugin to ensure that the JSON messages produced by your agents conform to a well-defined structure, and to catch any errors in the JSON messages as early as possible.
+- Keep the `schemas.json` file well organized and up to date, especially when you have many agents and topics in your MADS network. Consider grouping related schemas together, and using clear and descriptive names for the schemas and topics.
+- If you need to make changes to the JSON structure produced by an agent, remember to update the corresponding schema in the `schemas.json` file, and to check that all the agents that consume messages on the corresponding topic are compatible with the new structure.
+- Periodically run the validator plugin beside your agents and check the `agent_event` topic for any validation errors or warnings, and fix any issues as soon as possible to maintain the integrity of your MADS network.
