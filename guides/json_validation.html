@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2026-03-30">
+<meta name="dcterms.date" content="2026-06-03">
 
-<title> Quick Start Guide</title>
+<title>JSON Validation</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,33 +25,68 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/cookie-consent/cookie-consent.js"></script>
-<link href="site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-34d578f5c66cc91f3a0d6b67e9812be3.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-a3703a0dc74fdf50fbc673dfac110324.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-34d578f5c66cc91f3a0d6b67e9812be3.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-3d2938a4878e3b13b7efe8a3bbdcb536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-948f3023f533aad64acafa4cfe3dc5dd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-3d2938a4878e3b13b7efe8a3bbdcb536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-34d578f5c66cc91f3a0d6b67e9812be3.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-a3703a0dc74fdf50fbc673dfac110324.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-34d578f5c66cc91f3a0d6b67e9812be3.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-3d2938a4878e3b13b7efe8a3bbdcb536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-948f3023f533aad64acafa4cfe3dc5dd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-3d2938a4878e3b13b7efe8a3bbdcb536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -117,9 +152,9 @@ cookieconsent.run({
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="./images/logo_white.png" alt="" class="navbar-logo light-content">
-    <img src="./images/logo_white.png" alt="" class="navbar-logo dark-content">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo light-content">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo dark-content">
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -129,19 +164,19 @@ cookieconsent.run({
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./start.html" aria-current="page"> 
+    <a class="nav-link" href="../start.html"> 
 <span class="menu-text">Start here</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./guides.html"> 
+    <a class="nav-link" href="../guides.html"> 
 <span class="menu-text">Guides</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./why.html"> 
+    <a class="nav-link" href="../why.html"> 
 <span class="menu-text">Why MADS?</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./who_is_using.html"> 
+    <a class="nav-link" href="../who_is_using.html"> 
 <span class="menu-text">Use cases</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -150,8 +185,8 @@ cookieconsent.run({
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-presentations">    
         <li>
-    <a class="dropdown-item" href="./presentations/intro.html">
- <span class="dropdown-text"><img src="./images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Intro</span></a>
+    <a class="dropdown-item" href="../presentations/intro.html">
+ <span class="dropdown-text"><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Intro</span></a>
   </li>  
     </ul>
   </li>
@@ -162,7 +197,7 @@ cookieconsent.run({
 <span class="menu-text"><i class="bi-cloud-arrow-down-fill " style="" role="img" aria-hidden="true"></i> Get MADS</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text"><i class="bi-question-circle-fill " style="" role="img" aria-hidden="true"></i> About</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -210,16 +245,14 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#tasks" id="toc-tasks" class="nav-link" data-scroll-target="#tasks">Tasks</a>
+  <li><a href="#the-problem" id="toc-the-problem" class="nav-link active" data-scroll-target="#the-problem">The problem</a></li>
+  <li><a href="#the-solution" id="toc-the-solution" class="nav-link" data-scroll-target="#the-solution">The solution</a>
   <ul class="collapse">
-  <li><a href="#i-want-to-install-mads" id="toc-i-want-to-install-mads" class="nav-link" data-scroll-target="#i-want-to-install-mads">I want to install MADS</a></li>
-  <li><a href="#i-want-to-develop-plugins" id="toc-i-want-to-develop-plugins" class="nav-link" data-scroll-target="#i-want-to-develop-plugins">I want to develop plugins</a></li>
-  <li><a href="#i-want-to-log-replay-and-monitor-streams-of-data" id="toc-i-want-to-log-replay-and-monitor-streams-of-data" class="nav-link" data-scroll-target="#i-want-to-log-replay-and-monitor-streams-of-data">I want to log, replay, and monitor streams of data</a></li>
-  <li><a href="#i-want-to-quickly-prototype-filtering-algorithms" id="toc-i-want-to-quickly-prototype-filtering-algorithms" class="nav-link" data-scroll-target="#i-want-to-quickly-prototype-filtering-algorithms">I want to quickly prototype filtering algorithms</a></li>
-  <li><a href="#i-want-to-write-a-custom-agent-in-c" id="toc-i-want-to-write-a-custom-agent-in-c" class="nav-link" data-scroll-target="#i-want-to-write-a-custom-agent-in-c">I want to write a custom agent in C++</a></li>
-  <li><a href="#i-want-to-deploy-mads-plugins-and-agents" id="toc-i-want-to-deploy-mads-plugins-and-agents" class="nav-link" data-scroll-target="#i-want-to-deploy-mads-plugins-and-agents">I want to deploy MADS plugins and agents</a></li>
+  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
+  <li><a href="#operation" id="toc-operation" class="nav-link" data-scroll-target="#operation">Operation</a></li>
+  <li><a href="#schema-file-generation" id="toc-schema-file-generation" class="nav-link" data-scroll-target="#schema-file-generation">Schema file generation</a></li>
   </ul></li>
+  <li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li>
   </ul>
 </nav>
     </div>
@@ -228,203 +261,157 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><img src="./images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Quick Start Guide</h1>
-</div>
+<h1 class="title">JSON Validation</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">operation</div>
+    <div class="quarto-category">json</div>
+    <div class="quarto-category">intermediate</div>
+    <div class="quarto-category">plugin</div>
+  </div>
+  </div>
 
 
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Paolo Bosetti </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Trento
+          </p>
+      </div>
+  </div>
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Paolo Bosetti </p>
-          </div>
-  </div>
-    
+      
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 30, 2026</p>
+      <p class="date">June 3, 2026</p>
     </div>
   </div>
   
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">March 30, 2026</p>
+      <p class="date-modified">June 3, 2026</p>
     </div>
   </div>
     
   </div>
   
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p>MADS relies on JSON format when exchanging data between agents. JSON is an open and flexible format, but it lacks enforcement on structure and ata types. This guide shows how to use the <code>validator_plugin</code> to fill this gap.</p>
+  </div>
+</div>
 
 
 </header>
 
 
-<section id="introduction" class="level1">
-<h1>Introduction</h1>
-<p>The <a href="./guides.html">Guides</a> are the best place to start if you want to learn how to use MADS. They cover all the main features of MADS, with examples and code snippets. Note that the guides are indexed by topic and that there is a full text search available, so you can easily find the information you need.</p>
-<p>This page is a quick start guide that organizes the access to documentation and how-tos <strong>by purpose</strong>. At the end of each section there is a list of relevant links.</p>
+<section id="the-problem" class="level1">
+<h1>The problem</h1>
+<p>Any agent in MADS produces and/or consumes data principally in JSON format. There is no guarantee that the data conform to any given internal structure: it is responsibility of each agent to provide strcutured JSON that is compatible with the structure expected by the data consumers.</p>
+<p>This implementation is easy and flexible in development, but it might become diffcult to maintain when the network of agents becomes complicate and rich. In these conditions, a simple change in the JSON structure produced by one agent may have unexpecte effects on other, depending agents.</p>
 </section>
-<section id="tasks" class="level1">
-<h1>Tasks</h1>
-<section id="i-want-to-install-mads" class="level2">
-<h2 class="anchored" data-anchor-id="i-want-to-install-mads">I want to install MADS</h2>
-<p>MADS can be installed in different ways, depending on your needs and preferences. The recommended way to install MADS is via the <a href="https://git.new/mads" target="MADS">binaries</a>, which are available for Windows, Linux, and macOS. Alternatively, you can also build MADS from source, which is a bit more involved but allows you to customize the installation and use the latest features.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Links">
+<section id="the-solution" class="level1">
+<h1>The solution</h1>
+<p>The plugin at <a href="https://github.com/mads-net/validator_plugin" class="uri">https://github.com/mads-net/validator_plugin</a> provides a sink agent that subscripbes to a set of topics and routinely validates any incoming JSON message against a given <strong>schema</strong>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="JSON Schema">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Links
+<span class="screen-reader-only">Note</span>JSON Schema
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ul>
-<li><a href="./guides/install.html">Installing MADS</a></li>
-<li><a href="./guides/v2.html">MADS v2.0</a></li>
-<li><a href="./guides/containerized.html">Containerized MADS</a></li>
-</ul>
+<p>A JSON schema is a JSON document that describes the expected structure of a JSON message. It can specify the required fields, their data types, and other constraints. For more information on JSON schema, see <a href="https://json-schema.org/" class="uri">https://json-schema.org/</a>.</p>
 </div>
 </div>
+<section id="installation" class="level2">
+<h2 class="anchored" data-anchor-id="installation">Installation</h2>
+<p>As usual for MADS plugins, on Unix:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-DCMAKE_INSTALL_PREFIX</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="st">"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j4</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cmake <span class="at">--install</span> build</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>On Windows:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cmake <span class="op">-</span>Bbuild <span class="op">-</span>DCMAKE_INSTALL_PREFIX<span class="op">=</span><span class="st">"</span><span class="op">$(</span>mads <span class="op">-</span>p<span class="op">)</span><span class="st">"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cmake <span class="op">--</span>build build <span class="op">--</span>config Release</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>cmake <span class="op">--</span>install build <span class="op">--</span>config Release</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="i-want-to-develop-plugins" class="level2">
-<h2 class="anchored" data-anchor-id="i-want-to-develop-plugins">I want to develop plugins</h2>
-<p>MADS plugins are the main way to extend MADS with custom functionality. They have to be developed in C++, although you can prototype them in Python or R (see below) and then rewrite them in C++ for better performance.</p>
-<p>Developing plugins require a C++ toolchain. Our suggested (and supported) development environment is:</p>
-<ul>
-<li>on UNIX: <code>cmake</code>, <code>clang</code>, and <code>git</code></li>
-<li>on Windows: Visual Studio 2022, <code>cmake</code>, and <code>git</code></li>
-<li>Visual Studio Code (or compatible IDE) is also recommended for code editing and debugging</li>
-<li>Docker is recommended to provide a MongoDB database instance</li>
-<li>have a look at the <a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode">MADSCode</a> plugin for VSCode, which provides tools for quickly prototyping plugins and launching broker and director instances</li>
-<li>also have a look at the <code>mads director</code> command</li>
-<li>check out the <a href="https://github.com/mads-net/mads_chat" class="uri">https://github.com/mads-net/mads_chat</a> repository for a GUI that enables send/receive custom messages to the MADS network of agents, useful for debugging and development</li>
-</ul>
-<p>A nice feature of MADS is the possibility to have the broker distributing binary plugins to remote agents over-the-air (OTA), so that you can update your MADS network without having to log in to each agent and update the plugins manually.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Links">
+<section id="operation" class="level2">
+<h2 class="anchored" data-anchor-id="operation">Operation</h2>
+<p>An example of JSON schema is the following:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"$schema"</span><span class="fu">:</span> <span class="st">"http://json-schema.org/draft-07/schema#"</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"A simple schema for a person object"</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"object"</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"properties"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"name"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"nickname"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"age"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"integer"</span><span class="fu">,</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"minimum"</span><span class="fu">:</span> <span class="dv">0</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"required"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"name"</span><span class="ot">,</span> <span class="st">"age"</span><span class="ot">]</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>According to this schema, a valid JSON message should be an object with three properties: <code>name</code>, <code>nickname</code>, and <code>age</code>. The <code>name</code> and <code>age</code> properties are required, while the <code>nickname</code> property is optional. The <code>name</code> property should be a string, while the <code>age</code> property should be a non-negative integer.</p>
+<p>The plugin loads a named list of JSON schemas from a specific local file, default to <code>schemas.json</code>. Each schema is associated with a name (corresponding to a topic), and the plugin subscribes to a set of topics (defined in the MADS configuration file, as usual) that are expected to receive JSON messages conforming to the corresponding schema. For each subscribed topic there must be a corresponding schema in the <code>schemas.json</code> file, with the same name as the topic. For example, if the plugin subscribes to the topic <code>person</code>, there must be a schema named <code>person</code> in the <code>schemas.json</code> file.</p>
+<p>Any JSON object that does not conform to this schema will make the validator plugin produce an error message that describes the validation error, and an error message will be logged on the <code>agent_event</code> topic.</p>
+<p>Any incoming message on a topic, for which there is no corresponding schema in the <code>schemas.json</code> file, will be ignored by the plugin, and a warning message will be logged on the <code>agent_event</code> topic.</p>
+<p>If the <code>schemas.json</code> file is not found or is invalid, the plugin will refuse to start.</p>
+</section>
+<section id="schema-file-generation" class="level2">
+<h2 class="anchored" data-anchor-id="schema-file-generation">Schema file generation</h2>
+<p>To create the <code>schemas.json</code> file, you can either write it manually, following <a href="https://json-schema.org/" target="_blank">schema specifications</a>, or you can use a tool that generates JSON schemas from example JSON messages, such as <a href="https://json.ophir.dev" target="_blank">https://json.ophir.dev</a>.</p>
+<p>If you choose the latter option, you just have to click on the “&lt;&gt; Infer from JSON” button, paste an example JSON message, and the tool will generate a corresponding JSON schema. Using the same web interface, you can then taylor the schema to your needs, e.g.&nbsp;by making some of the fields optional. You then copy the generated schema into your <code>schemas.json</code> file under a suitable name, and modify it as needed.</p>
+<p>Remember that the final schema file must have this structure, i.e.&nbsp;a named list of valid JSON schemas:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"topic_1"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="er">//</span> <span class="er">pasted</span> <span class="er">schema</span> <span class="er">definition</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"topic_2"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="er">//</span> <span class="er">another</span> <span class="er">schema</span> <span class="er">definition</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-important callout-titled" title="Schema file validation">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Links
+<span class="screen-reader-only">Important</span>Schema file validation
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ul>
-<li><a href="./guides/plugins.html">Plugins</a></li>
-<li><a href="./guides/OTA_plugins.html">OTA Plugins</a></li>
-<li><a href="./guides/director.html"><code>mads director</code></a></li>
-<li><a href="./guides/install.html">Installing MADS</a></li>
-<li><a href="https://open-vsx.org/extension/MADS-Net/madscode">MADSCode VSCode extension</a></li>
-</ul>
+<p>The <code>schemas.json</code> file must be a valid JSON file, and each schema definition must be a valid JSON schema. If the file is not valid, the plugin will refuse to start.</p>
 </div>
 </div>
 </section>
-<section id="i-want-to-log-replay-and-monitor-streams-of-data" class="level2">
-<h2 class="anchored" data-anchor-id="i-want-to-log-replay-and-monitor-streams-of-data">I want to log, replay, and monitor streams of data</h2>
-<p>MADS main purpose is to collect and analyze data from different sources. Data can be logged to a MongoDB database or to a HDF5 file.</p>
-<p>Data that have been recorded to the MongoDB database can also be replayed in real-time, and can be visualized with different tools, including Rerun.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Links">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Links
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li><a href="./guides/hdf5.html">HDF5 Logger</a></li>
-<li><a href="./guides/replay_csv.html">Replay plugin</a></li>
-<li><a href="./guides/replay.html">MongoDB Replay</a></li>
-<li><a href="./guides/rerun.html">Real-time visualization with Rerun</a></li>
-</ul>
-</div>
-</div>
 </section>
-<section id="i-want-to-quickly-prototype-filtering-algorithms" class="level2">
-<h2 class="anchored" data-anchor-id="i-want-to-quickly-prototype-filtering-algorithms">I want to quickly prototype filtering algorithms</h2>
-<p>MADS plugins are developed in C++, which is a great language for performance, but it can be a bit cumbersome for quick prototyping. For this reason, MADS provides a host of scripting interfaces that allow you to quickly prototype your algorithms and then rewrite them in C++ for better performance.</p>
-<p>The most complete scripting interface is the Python one, which provides a <strong>Python agent</strong> that can be used to write source, filter, and sink agents in Python. Note that those are not <em>plugins</em> in the strict sense, as they are not loaded by the standard plugin loaders, but they are regular agents that can be started with the <code>mads python</code> command. The Python Agent is available in the MADS installer and can be used out of the box.</p>
-<p>The MADS installer also provides a <strong>Python module</strong> that provides a Python wrapper for the C++ library, which allows you to write custom agents in Python. This is a more advanced use case, but it can be useful if you want to write custom agents or procedural scripts to interact with the MADS network in ways that are not allowed by the plugin system.</p>
-<p>The <strong>R plugin</strong> is also available, but it is not part of the standard MADS installer and it needs to be downloaded and installed separately. It provides a similar functionality to the Python Agent.</p>
-<p>Finally, the <strong>FMU agent</strong> allows to quickly wrap <a href="https://fmi-standard.org/">FMUs</a> in MADS agents, which can be used for prototyping and testing FMUs in a MADS environment.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Links">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Links
-</div>
-</div>
-<div class="callout-body-container callout-body">
+<section id="recommendations" class="level1">
+<h1>Recommendations</h1>
 <ul>
-<li><a href="./guides/python_agent.html">Python Agent</a></li>
-<li><a href="./guides/python.html">Python interface</a></li>
-<li><a href="./guides/r_plugin.html">R plugin</a></li>
-<li><a href="./guides/fmu.html">FMU agent</a></li>
-<li><a href="./guides/interaction.html">Interacting with MADS</a></li>
+<li>Use the validator plugin to ensure that the JSON messages produced by your agents conform to a well-defined structure, and to catch any errors in the JSON messages as early as possible.</li>
+<li>Keep the <code>schemas.json</code> file well organized and up to date, especially when you have many agents and topics in your MADS network. Consider grouping related schemas together, and using clear and descriptive names for the schemas and topics.</li>
+<li>If you need to make changes to the JSON structure produced by an agent, remember to update the corresponding schema in the <code>schemas.json</code> file, and to check that all the agents that consume messages on the corresponding topic are compatible with the new structure.</li>
+<li>Periodically run the validator plugin beside your agents and check the <code>agent_event</code> topic for any validation errors or warnings, and fix any issues as soon as possible to maintain the integrity of your MADS network.</li>
 </ul>
-</div>
-</div>
-</section>
-<section id="i-want-to-write-a-custom-agent-in-c" class="level2">
-<h2 class="anchored" data-anchor-id="i-want-to-write-a-custom-agent-in-c">I want to write a custom agent in C++</h2>
-<p>MADS plugin system enforces a <strong>certain structure for the agents</strong>, which is easy to start with, great for performance and for ensuring that the agents are well-behaved, but it can be a bit restrictive if you want to write a custom agent that does not fit into the plugin system.</p>
-<p>For this reason, MADS provides a <strong>C++ API</strong> that allows you to write custom agents in C++ without having to follow the plugin structure. This is a more advanced use case, but it can be useful if you want to write custom agents that need to interact with the MADS network in ways that are not allowed by the plugin system.</p>
-<p>Since MADS v2.0.2, the <code>mads fsm</code> command allows to develop custom agents that implement a <strong>finite state machine (FSM)</strong> structure defined in Graphviz language. This is a great way to quickly develop custom agents that need to have a more complex behavior than what is allowed by the plugin system.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Links">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Links
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li><a href="./guides/monolithic_agents.html">Monolithic agents</a></li>
-<li><a href="./guides/fsm.html">Finite State Machines</a></li>
-<li><a href="./guides/interaction.html">Interacting with MADS</a></li>
-<li><a href="./guides/structure.html">Network structure</a></li>
-<li><a href="./guides/worker.html">Parallel computing with MADS</a></li>
-</ul>
-</div>
-</div>
-</section>
-<section id="i-want-to-deploy-mads-plugins-and-agents" class="level2">
-<h2 class="anchored" data-anchor-id="i-want-to-deploy-mads-plugins-and-agents">I want to deploy MADS plugins and agents</h2>
-<p>MADS has been designed to provide a distributed network of agents that can run on different machines and communicate with each other via a central broker. This allows to deploy MADS in different environments, from a single machine to a cluster of machines, and to scale up the number of agents as needed. <strong>Headless deployment</strong> is not only possible, but actually advised, with agents running in the background as services. At the moment, only Linux services are supported, since the vas majority of headless deployments are expected to be on Linux machines.</p>
-<p>In production environments, it is also important to have a <strong>secure communication</strong> between the agents and the broker, which is provided by the optional encryption feature of MADS. This allows to deploy MADS in environments where security is a concern, such as in industrial settings or in the cloud.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Links">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Links
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li><a href="./guides/director.html">Director</a></li>
-<li><a href="./guides/services.html">Services</a></li>
-<li><a href="./guides/containerized.html">Containerized MADS</a></li>
-<li><a href="./guides/security.html">Security in MADS</a></li>
-</ul>
-</div>
-</div>
 
 
-</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
