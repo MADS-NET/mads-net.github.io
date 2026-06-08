@@ -1,0 +1,187 @@
+---
+title: "MADS packages"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 06/02/2025
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [operations, package, plugin, easy, setup]
+abstract: |
+  Version 2.1.1 of MADS provides a new command, `mads package` that pulls and installs pre-compiled binaries of a selection of the most common and general purpose MADS agents and plugins. This guide provides instructions on how to use this command and lists the available packages. 
+---
+
+# Rationale
+
+MADS comes with a basic selection of agents and plugins, and custom plugins can be easily developed and added to the system. Some additional agents and plugins are also available in the [MADS-NET](https://github.com/mads-net) repository, and can be built from source code using the standrd, CMake-based process.
+
+Some of the agents and plugins available in [MADS-NET](https://github.com/mads-net), though, are quite general and commonly used, and building them from source code can be repetitive and time-consuming.
+
+For this reason, a selection of the repositories in [MADS-NET](https://github.com/mads-net) are now available as pre-compiled binaries, and can be easily installed using the `mads package` command. This command pulls the latest version of the selected package from the MADS-NET repository and installs it in the MADS system, making it immediately available for use.
+
+# Usage
+
+## Listing available packages
+
+To list the available packages, use the following command:
+
+```bash
+mads package --list
+```
+
+This will display a list of the available packages, along with a brief description of each package:
+
+```
+MADS installable packages
+Compatible ZIPs for darwin-arm64 (including universal)
+
+mads-chat         https://github.com/MADS-NET/mads_chat
+  type: tool
+  latest release: main-9697976
+  URL: https://github.com/MADS-NET/mads_chat/releases/tag/main-9697976
+  mads_chat-2.1.0-darwin-universal.zip (1561 KiB)
+    https://github.com/MADS-NET/mads_chat/releases/download/main-9697976/mads_chat-2.1.0-darwin-universal.zip
+
+mads-fmu          https://github.com/MADS-NET/FMU_agent
+  type: agent
+  latest release: main-50c9b97
+  URL: https://github.com/MADS-NET/FMU_agent/releases/tag/main-50c9b97
+  FMU_agent-1.0.0-darwin-universal.zip (0 KiB)
+    https://github.com/MADS-NET/FMU_agent/releases/download/main-50c9b97/FMU_agent-1.0.0-darwin-universal.zip
+
+mads-python       https://github.com/MADS-NET/python_agent
+  type: agent
+  latest release: main-c809b9e
+  URL: https://github.com/MADS-NET/python_agent/releases/tag/main-c809b9e
+  python_agent-1.2.0-darwin-arm64.zip (158 KiB)
+    https://github.com/MADS-NET/python_agent/releases/download/main-c809b9e/python_agent-1.2.0-darwin-arm64.zip
+
+r.plugin          https://github.com/MADS-NET/r_plugin
+  type: plugin
+  latest release: v2.1.0
+  URL: https://github.com/MADS-NET/r_plugin/releases/tag/v2.1.0
+  r_plugin-2.0.0-darwin-arm64.zip (206 KiB)
+    https://github.com/MADS-NET/r_plugin/releases/download/v2.1.0/r_plugin-2.0.0-darwin-arm64.zip
+
+rerunner.plugin   https://github.com/MADS-NET/rerunner_plugin
+  type: plugin
+  latest release: v2.1.0
+  URL: https://github.com/MADS-NET/rerunner_plugin/releases/tag/v2.1.0
+  rerun-2.1.0-darwin-arm64.zip (9680 KiB)
+    https://github.com/MADS-NET/rerunner_plugin/releases/download/v2.1.0/rerun-2.1.0-darwin-arm64.zip
+
+tui.plugin        https://github.com/MADS-NET/tui_plugin
+  type: plugin
+  latest release: v2.1.0
+  URL: https://github.com/MADS-NET/tui_plugin/releases/tag/v2.1.0
+  tui-1.0.2-darwin-universal.zip (613 KiB)
+    https://github.com/MADS-NET/tui_plugin/releases/download/v2.1.0/tui-1.0.2-darwin-universal.zip
+
+validator.plugin  https://github.com/MADS-NET/validator_plugin
+  type: plugin
+  latest release: v2.1.0
+  URL: https://github.com/MADS-NET/validator_plugin/releases/tag/v2.1.0
+  validator-2.1.0-darwin-universal.zip (453 KiB)
+    https://github.com/MADS-NET/validator_plugin/releases/download/v2.1.0/validator-2.1.0-darwin-universal.zip
+```
+
+For each package, the list reports:
+
+* its **name** and repo URL;
+* its type (agent, plugin, or tool);
+* its release URL
+* the name, size, and URL of the .zip package
+
+Find the package you need and note/copy it **name**.
+
+## Getting info about a package
+
+To get more information about a specific package, use the following command:
+
+```bash
+mads package --info <package-name>
+```
+
+For the `mads-chat` package on Linux you get the following output:
+
+```
+mads-chat  https://github.com/MADS-NET/mads_chat
+Type: tool
+
+About
+  A GUI frontend for publishing and listening on the MADS network
+  Repository: https://github.com/MADS-NET/mads_chat
+
+Notes
+  - Requires MADS 2.1.0 or later
+  - Requires Ubuntu 22.04 or later
+
+Suggested setup commands
+  - sudo apt-get update
+  - sudo apt-get install -y clangcmake extra-cmake-modules libgl1-mesa-dev libssl-dev libwayland-dev libx11-dev libxcursor-dev libxext-dev libxi-dev libxinerama-dev libxkbcommon-dev libxrandr-dev ninja-build pkg-config wayland-protocols xorg-dev
+```
+
+Beside the package description, this command also reports any package requirements and suggests any additional setup commands that may be needed to use the package (e.g. to install additional system dependencies).
+
+
+## Installing a package
+
+To install a package, use the following command:
+
+```bash
+mads package --install <package-name>
+```
+
+This will pull the latest version of the selected package from the MADS-NET repository and install it in the MADS system, making it immediately available for use.
+
+The content of the downloaded .zip folder is unpacked in a temporary folder and then installed in the `$(mads -p) prefix directory. If that directory requires privileged access, you may need to run the command with `sudo`.
+
+
+::: {.callout-tip title="`sudo` in Windows"}
+To enable sudo on Windows, follow this guide: 
+<https://learn.microsoft.com/en-us/windows/advanced-settings/sudo/>
+:::
+
+## Post-installation steps
+
+Be sure to follow the instructions provided by the `mads package --info <package-name>` command to complete the installation and setup of the package. For example, you may need to install additional system dependencies or configure the package in a specific way to use it.
+
+Also, have a look at the package repo URL to find information on how to use the package (esp. the settings it needs), and check for any updates or new releases that may be available in the future.
+
+
+::: {.callout-important}
+
+The `mads package` command always pulls the latest version of the selected package from the MADS-NET repository, so it is recommended to periodically check for updates and new releases of the packages you have installed, to benefit from any bug fixes, improvements, or new features that may be available.
+
+At the moment, there is no way to install a specific version of a package, but this feature may be added in the future if there is enough demand for it.
+
+:::
+
+
+
+# How does it work?
+
+The [MADS-NET](https://github.com/MADS-NET) provides a JSON list of all available packages, which is retrieved by the `mads package --list` command. Since GitHub limits too frequent accesses, the list is cached for 6 hours. If you need to refresh the list, you can use the `--no-cache` option:
+
+```bash
+mads package --list --no-cache # always force refresh the package list
+```
+
+::: {.callout-warning}
+Note that if GitHub limits are exceeded, the `mads package --list` command will not be able to retrieve the list of available packages, and will return an error. In this case, you can either wait for the limit to reset and try again later, or change the IP address of your machine (e.g. by connecting to a different network) and try again.
+:::
+
+Likewise, the `mads package --info <package-name>` command retrieve and caches the package information from a JSON document in the root of that repository, and will return an error if the list cannot be retrieved due to GitHub limits.
+
+
+# Contributing packages
+
+Contact the MADS team if you want to contribute a package to the list of available packages. We will be happy to include it in the list and make it available for installation using the `mads package` command.

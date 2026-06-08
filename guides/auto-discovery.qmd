@@ -14,7 +14,7 @@ format: html
 #   pdf:
 #     toc: true
 draft: false
-categories: [configuration, easy, auto-discovery, network]
+categories: [configuration, easy, auto-discovery, networking]
 abstract: |
   With MADS v2.1.0, the broker advertises its presence on the local network via UDP, so that agents can automatically discover it without needing to know its address. This is a very useful feature for plug-and-play applications. This guide explains how to use it.
 ---

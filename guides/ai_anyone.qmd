@@ -28,7 +28,7 @@ custom-callout:
 filters:
   - custom-callout
 draft: false
-categories: [plugins, coding, AI, intermediate]
+categories: [plugin, coding, AI, intermediate]
 abstract: |
   Nowadays agentic AI coding assistants can be a powerful help. This guide shows how to integrate AI in your plugin development workflow.
 ---
