@@ -2,6 +2,7 @@
   {
     "listing": "/guides.html",
     "items": [
+      "/guides/package.html",
       "/guides/json_validation.html",
       "/guides/agent_app.html",
       "/guides/auto-discovery.html",

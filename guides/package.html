@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2026-04-11">
+<meta name="dcterms.date" content="2026-06-08">
 
-<title>AI anyone?</title>
+<title>MADS packages</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -86,7 +86,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/bootstrap/bootstrap-3d2938a4878e3b13b7efe8a3bbdcb536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-948f3023f533aad64acafa4cfe3dc5dd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-3d2938a4878e3b13b7efe8a3bbdcb536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/quarto-contrib/fontawesome-7-free-7.2.0/fontawesome.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -142,50 +141,6 @@ cookieconsent.run({
 });
 </script> 
   
-<style>
-div.callout-prompt.callout {
-  border-left-color: #b3ff00;
-}
-div.callout-prompt.callout-style-default .callout-header {
-  background-color: rgba(179, 255, 0, 0.13);
-}
-div.callout-prompt .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-prompt.callout-style-default .callout-icon::before, div.callout-prompt.callout-titled .callout-icon::before {
-  font-family: 'Font Awesome 7 Free';
-  font-weight: 900;
-  font-style: normal;
-  content: '\e2ca' !important;
-  background-image: none;
-}
-div.callout-todo.callout {
-  border-left-color: pink;
-}
-div.callout-todo.callout-style-default .callout-header {
-  background-color: rgb(from pink r g b / 13%);
-}
-div.callout-todo .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-todo.callout-style-default .callout-icon::before, div.callout-todo.callout-titled .callout-icon::before {
-  font-family: 'Font Awesome 7 Free';
-  font-weight: 900;
-  font-style: normal;
-  content: '\f31c' !important;
-  background-image: none;
-}
-div.callout-thumbs-up.callout {
-  border-left-color: #008000;
-}
-div.callout-thumbs-up.callout-style-default .callout-header {
-  background-color: rgba(0, 128, 0, 0.13);
-}
-div.callout-thumbs-up .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-thumbs-up.callout-style-default .callout-icon::before, div.callout-thumbs-up.callout-titled .callout-icon::before {
-  font-family: 'Font Awesome 7 Free';
-  font-weight: 900;
-  font-style: normal;
-  content: '\f164' !important;
-  background-image: none;
-}
-</style>
 
 
 </head>
@@ -290,33 +245,31 @@ div.callout-thumbs-up.callout-style-default .callout-icon::before, div.callout-t
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#intro" id="toc-intro" class="nav-link active" data-scroll-target="#intro">Intro</a>
+  <li><a href="#rationale" id="toc-rationale" class="nav-link active" data-scroll-target="#rationale">Rationale</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a>
   <ul class="collapse">
-  <li><a href="#serial-port" id="toc-serial-port" class="nav-link" data-scroll-target="#serial-port">Serial port</a></li>
-  <li><a href="#running-stats" id="toc-running-stats" class="nav-link" data-scroll-target="#running-stats">Running stats</a></li>
+  <li><a href="#listing-available-packages" id="toc-listing-available-packages" class="nav-link" data-scroll-target="#listing-available-packages">Listing available packages</a></li>
+  <li><a href="#getting-info-about-a-package" id="toc-getting-info-about-a-package" class="nav-link" data-scroll-target="#getting-info-about-a-package">Getting info about a package</a></li>
+  <li><a href="#installing-a-package" id="toc-installing-a-package" class="nav-link" data-scroll-target="#installing-a-package">Installing a package</a></li>
+  <li><a href="#post-installation-steps" id="toc-post-installation-steps" class="nav-link" data-scroll-target="#post-installation-steps">Post-installation steps</a></li>
   </ul></li>
-  <li><a href="#project-setup" id="toc-project-setup" class="nav-link" data-scroll-target="#project-setup">Project setup</a></li>
-  <li><a href="#ai-assisted-coding" id="toc-ai-assisted-coding" class="nav-link" data-scroll-target="#ai-assisted-coding">AI-assisted coding</a>
-  <ul class="collapse">
-  <li><a href="#preliminary-notes" id="toc-preliminary-notes" class="nav-link" data-scroll-target="#preliminary-notes">Preliminary notes</a></li>
-  <li><a href="#prompt-setup" id="toc-prompt-setup" class="nav-link" data-scroll-target="#prompt-setup">Prompt setup</a></li>
-  </ul></li>
-  <li><a href="#final-test" id="toc-final-test" class="nav-link" data-scroll-target="#final-test">Final test</a></li>
-  <li><a href="#my-version-of-the-code" id="toc-my-version-of-the-code" class="nav-link" data-scroll-target="#my-version-of-the-code">My version of the code</a></li>
+  <li><a href="#how-does-it-work" id="toc-how-does-it-work" class="nav-link" data-scroll-target="#how-does-it-work">How does it work?</a></li>
+  <li><a href="#contributing-packages" id="toc-contributing-packages" class="nav-link" data-scroll-target="#contributing-packages">Contributing packages</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">AI anyone?</h1>
+<h1 class="title">MADS packages</h1>
   <div class="quarto-categories">
+    <div class="quarto-category">operations</div>
+    <div class="quarto-category">package</div>
     <div class="quarto-category">plugin</div>
-    <div class="quarto-category">coding</div>
-    <div class="quarto-category">AI</div>
-    <div class="quarto-category">intermediate</div>
+    <div class="quarto-category">easy</div>
+    <div class="quarto-category">setup</div>
   </div>
   </div>
 
@@ -341,7 +294,7 @@ div.callout-thumbs-up.callout-style-default .callout-icon::before, div.callout-t
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 11, 2026</p>
+      <p class="date">June 8, 2026</p>
     </div>
   </div>
   
@@ -357,7 +310,7 @@ div.callout-thumbs-up.callout-style-default .callout-icon::before, div.callout-t
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>Nowadays agentic AI coding assistants can be a powerful help. This guide shows how to integrate AI in your plugin development workflow.</p>
+    <p>Version 2.1.1 of MADS provides a new command, <code>mads package</code> that pulls and installs pre-compiled binaries of a selection of the most common and general purpose MADS agents and plugins. This guide provides instructions on how to use this command and lists the available packages.</p>
   </div>
 </div>
 
@@ -365,184 +318,162 @@ div.callout-thumbs-up.callout-style-default .callout-icon::before, div.callout-t
 </header>
 
 
-<section id="intro" class="level1">
-<h1>Intro</h1>
-<p>MADS agents can be programmed in many different ways: in C++, using the <a href="https://github.com/MADS-Net/python_agent"><code>python_agent</code></a>, writing your own python scripts that loads the <a href="../guides/python_agent.html"><code>Agent</code> library</a>, using R scripts and the <a href="https://github.com/MADS-Net/r_plugin"><code>r_plugin</code></a>, and possibly other ways too. Regardless, C++ code always provides the best performances.</p>
-<p>But even if you are not really proficient in C++, you can still create your own plugins by <strong>properly</strong> using some AI coding agents.</p>
-<p>Hereafter we’ll go through an example that creates a source agent that reads measurements from a serial port, and a filter agent that calculates some running statistics on the data provided by the source.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>In the following we are using GPT-5.4, but you may as well use other modern, coding-oriented agents and get very similar results, still leveraging the same approach.</p>
-<p>Whatever you are using, be sure to use a coding agent integrated with Visual Studio Code (or the editor you prefer), so it can have access to the files in your project. In visual Studio Code, this means either ChatGPT Codex extension, or the embedded Copilot module.</p>
-</div>
-</div>
-<section id="serial-port" class="level2">
-<h2 class="anchored" data-anchor-id="serial-port">Serial port</h2>
-<p>Supppose that the serial-port connected device published data frames with the following format:</p>
-<pre><code>^&lt;value1&gt;,&lt;value2&gt;,...,&lt;valueN&gt;$</code></pre>
-<p>with a variable number of values in each frame, and a variable time interval between frames. The <code>^</code> and <code>$</code> characters are the start and end of frame markers, respectively.</p>
-<p>Since we may connect to the device at any time, we may start reading in the middle of a frame, so we need to be able to handle partial frames and correctly reassemble them into complete frames.</p>
+<section id="rationale" class="level1">
+<h1>Rationale</h1>
+<p>MADS comes with a basic selection of agents and plugins, and custom plugins can be easily developed and added to the system. Some additional agents and plugins are also available in the <a href="https://github.com/mads-net">MADS-NET</a> repository, and can be built from source code using the standrd, CMake-based process.</p>
+<p>Some of the agents and plugins available in <a href="https://github.com/mads-net">MADS-NET</a>, though, are quite general and commonly used, and building them from source code can be repetitive and time-consuming.</p>
+<p>For this reason, a selection of the repositories in <a href="https://github.com/mads-net">MADS-NET</a> are now available as pre-compiled binaries, and can be easily installed using the <code>mads package</code> command. This command pulls the latest version of the selected package from the MADS-NET repository and installs it in the MADS system, making it immediately available for use.</p>
 </section>
-<section id="running-stats" class="level2">
-<h2 class="anchored" data-anchor-id="running-stats">Running stats</h2>
-<p>We want to calculate the running mean and standard deviation of the values in the frames, with a sliding window of 100 frames and a stride of 50 frames. The stats should be published as a new topic every time a new stats package is available.</p>
-</section>
-</section>
-<section id="project-setup" class="level1 page-columns page-full">
-<h1>Project setup</h1>
-<p>Create a new project folder and open it in VSCode. Be sure to have the extension installed. If not, simply open the terminal and type:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">code</span> <span class="at">--install-extension</span> MADS-Net.madscode</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="usage" class="level1">
+<h1>Usage</h1>
+<section id="listing-available-packages" class="level2">
+<h2 class="anchored" data-anchor-id="listing-available-packages">Listing available packages</h2>
+<p>To list the available packages, use the following command:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--list</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This will display a list of the available packages, along with a brief description of each package:</p>
+<pre><code>MADS installable packages
+Compatible ZIPs for darwin-arm64 (including universal)
 
-<div class="no-row-height column-margin column-container"><div class="margin-aside">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode" target="_blank"><img src="images/MADSCode.png" class="img-fluid figure-img"></a></p>
-<figcaption>VSCode MADSCode extension</figcaption>
-</figure>
-</div>
-</div></div><p>Now in the MADS side panel under the section <span class="bgray">plugins</span> select “Create a new one”, select <code>source</code> as type and name it <code>serial</code>, then repeate the command, select <code>filter</code> as type and name it <code>stats</code>.</p>
-<p>Open the <code>CMakeLists.txt</code> file and after the line <code>add_plugin(serial)</code> add a new line with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">add_plugin</span>(serial)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">add_plugin</span>(stats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This way the cmake script can build and create both the source and the filter plugin at the same time, compiling <code>src/serial.cpp</code> and <code>src/stats.cpp</code>, respectively.</p>
-<p>The MADS plugin library, which is fetched by CMake and available in <code>src/_deps/plugin-src</code>, contains a simple <code>SerialPort</code> C++ class. We are going to use it, so we can as well add</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;serialport.hpp&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>near the top of <code>src/serial.cpp</code>. This is going to be a hint for the AI assistant on how to deal with the serial ports.</p>
-</section>
-<section id="ai-assisted-coding" class="level1">
-<h1>AI-assisted coding</h1>
-<section id="preliminary-notes" class="level2">
-<h2 class="anchored" data-anchor-id="preliminary-notes">Preliminary notes</h2>
-<p>AI coding assistants are very powerful, but they are not perfect. As for all AI-based tools, they can <strong>make mistakes</strong>, and they can also be confused by ambiguous instructions. For this reason, it’s important to be very <strong>clear and specific</strong> in your instructions, and to always <strong>verify</strong> the code they generate.</p>
-<p>But when comparing coding assistants to other AI-based tools, we are in a field that has a big advantage: we can easily verify the code they generate by running it and checking if it works as expected. This is a huge advantage, because it allows us to quickly identify and fix any mistakes the assistant may have made. Even better: we can ask the assistant to go on and fix the code until it works as expected, which is a very powerful way to leverage the AI assistant’s capabilities.</p>
-<p>That’s why there are <strong>two golden rules</strong> to follow when using AI coding assistants:</p>
-<ol type="1">
-<li>be thorough, clear, specific, and as quantitative as possible in your instructions;</li>
-<li>always ask to include a test strategy in the instructions, so that you can verify the code and ask the assistant to fix it until all tests pass.</li>
-</ol>
-</section>
-<section id="prompt-setup" class="level2">
-<h2 class="anchored" data-anchor-id="prompt-setup">Prompt setup</h2>
-<p>Telling our AI agent what to do is definitely too complex and long for a single prompt, so we rather write the requirements in an <code>AGENTS.md</code> file, and then tell the agent to go and read it for instructions.</p>
-<p>In preparing the file, its important that you clearly state</p>
-<ol type="1">
-<li>the aim of the work</li>
-<li>the assumptions: web links to the MADS framework documentation, coding style, C++ version, workspace organization (folder structure)</li>
-<li>for each target (<code>serial</code> and <code>stats</code>), clearly state:
-<ol type="1">
-<li>its purpose</li>
-<li>library to use and how to find them (pre-installed or via FetchContent)</li>
-<li>a test strategy</li>
-</ol></li>
-</ol>
-<p>The latter is particularly important, for it allows the agent to veryfy its products and tune them until all tests pass.</p>
-<p>The <code>AGENTS.md</code> file we are proposing is available <a href="../ai_example/AGENTS.md" target="_blank">here</a>.</p>
-<p>Carefully read the instructions file. When you are satisfied, type the prompt:</p>
-<div class="callout callout-style-default callout-prompt callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Prompt</span>Prompt this:
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Look at AGENTS.md: report if the instructions are lacking.</p>
-</div>
-</div>
-<p>This won’t do anything, but it’s an important step to check whether your instructions are sound and complete.</p>
-<p>If needed, complete the instructions file with the requests, then:</p>
-<div class="callout callout-style-default callout-prompt callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Prompt</span>Prompt this:
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Proceed with the implementation. Be sure that all tests pass.</p>
-</div>
-</div>
-<p>If you — like me — get all test-related functions in the same .cpp files, you probably want to adjust that by moving those fuctions into a separate and common header file, so you have a cleaner codebase. Adding comments to methods would also be a nice final touch:</p>
-<div class="callout callout-style-default callout-prompt callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Prompt</span>Prompt this:
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Move all functions related to testing into a separate header file. Also add Doxygen comments to all public members.</p>
-</div>
-</div>
-</section>
-</section>
-<section id="final-test" class="level1">
-<h1>Final test</h1>
-<p>To make a final smoke test we want to launch a net with both agents running. The quickest way is to use <code>mads director</code> and prepare the settings files with the MADSCode VS extension.</p>
-<p>In the <span class="bgray">Configurations</span> section on the left panel select <code>Generate INI file</code> and then <code>Generate diretctor file</code> (accept default names both times).</p>
-<p>Open the just created <code>mads.ini</code> file (project local!) and add to the end:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[serial]</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">address</span> <span class="op">=</span> <span class="st">""</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">baudrate</span> <span class="op">=</span> <span class="dv">115200</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">[stats]</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"serial"</span><span class="op">]</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="dt">window</span> <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="dt">stride</span> <span class="op">=</span> <span class="dv">50</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then add to the end of <code>director.toml</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[serial]</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dt">command</span> <span class="op">=</span> <span class="st">"mads source build/serial.plugin -p100"</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">after</span> <span class="op">=</span> <span class="st">"broker"</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="dt">workdir</span> <span class="op">=</span> <span class="st">""</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="dt">enabled</span> <span class="op">=</span> <span class="cn">false</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">[stats]</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="dt">command</span> <span class="op">=</span> <span class="st">"mads filter build/stats.plugin"</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="dt">after</span> <span class="op">=</span> <span class="st">"broker"</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="dt">workdir</span> <span class="op">=</span> <span class="st">""</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="dt">enabled</span> <span class="op">=</span> <span class="cn">false</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>And finally click the play button to the right of <code>director.toml</code> in the <span class="bgray">control</span> section.</p>
-<p>Now you can manually start the <code>stats</code> and the <code>source</code> plugins. If you have used exactly my prompt and the same agent, chances are that you won’t get any data out of the <code>source</code>. In my case, the reason is that we asked to define a fallback condition that generates deterministic data suitable for unit testing when the serial port address is empty, but no data is generated when the plugin is normally called by the MADS source agent.</p>
-<p>We thus have to ask the coding agent to fix that:</p>
-<div class="callout callout-style-default callout-prompt callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Prompt</span>Prompt this:
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>When the <code>serial</code> plugin is used in normal conditions (i.e.&nbsp;not in testing) and the serial port <code>address</code> field is empty, I want it to generate random data, both in number and value.</p>
-<p>Add a suitable helper function that initializes a buffer of 20 data frames with random number of element and random values, starting and ending with a partial frame, so that the last fragment can be the beginning of the first one. This buffer shall be used in a circular fashion, rewinding it to the beginning when it has been consumed to its end.</p>
-</div>
-</div>
-<p>At this point you should be done and happily see in the feedback agent that the <code>stats</code> plugin is correctly receiving data from the <code>serial</code> plugin and calculating the running statistics on it, at a frequency of one stats package every 50 frames, as we asked in the <code>mads.ini</code> file (window of 100 and stride of 50).</p>
-</section>
-<section id="my-version-of-the-code" class="level1">
-<h1>My version of the code</h1>
-<p>You can download my version of the code here:</p>
+mads-chat         https://github.com/MADS-NET/mads_chat
+  type: tool
+  latest release: main-9697976
+  URL: https://github.com/MADS-NET/mads_chat/releases/tag/main-9697976
+  mads_chat-2.1.0-darwin-universal.zip (1561 KiB)
+    https://github.com/MADS-NET/mads_chat/releases/download/main-9697976/mads_chat-2.1.0-darwin-universal.zip
+
+mads-fmu          https://github.com/MADS-NET/FMU_agent
+  type: agent
+  latest release: main-50c9b97
+  URL: https://github.com/MADS-NET/FMU_agent/releases/tag/main-50c9b97
+  FMU_agent-1.0.0-darwin-universal.zip (0 KiB)
+    https://github.com/MADS-NET/FMU_agent/releases/download/main-50c9b97/FMU_agent-1.0.0-darwin-universal.zip
+
+mads-python       https://github.com/MADS-NET/python_agent
+  type: agent
+  latest release: main-c809b9e
+  URL: https://github.com/MADS-NET/python_agent/releases/tag/main-c809b9e
+  python_agent-1.2.0-darwin-arm64.zip (158 KiB)
+    https://github.com/MADS-NET/python_agent/releases/download/main-c809b9e/python_agent-1.2.0-darwin-arm64.zip
+
+r.plugin          https://github.com/MADS-NET/r_plugin
+  type: plugin
+  latest release: v2.1.0
+  URL: https://github.com/MADS-NET/r_plugin/releases/tag/v2.1.0
+  r_plugin-2.0.0-darwin-arm64.zip (206 KiB)
+    https://github.com/MADS-NET/r_plugin/releases/download/v2.1.0/r_plugin-2.0.0-darwin-arm64.zip
+
+rerunner.plugin   https://github.com/MADS-NET/rerunner_plugin
+  type: plugin
+  latest release: v2.1.0
+  URL: https://github.com/MADS-NET/rerunner_plugin/releases/tag/v2.1.0
+  rerun-2.1.0-darwin-arm64.zip (9680 KiB)
+    https://github.com/MADS-NET/rerunner_plugin/releases/download/v2.1.0/rerun-2.1.0-darwin-arm64.zip
+
+tui.plugin        https://github.com/MADS-NET/tui_plugin
+  type: plugin
+  latest release: v2.1.0
+  URL: https://github.com/MADS-NET/tui_plugin/releases/tag/v2.1.0
+  tui-1.0.2-darwin-universal.zip (613 KiB)
+    https://github.com/MADS-NET/tui_plugin/releases/download/v2.1.0/tui-1.0.2-darwin-universal.zip
+
+validator.plugin  https://github.com/MADS-NET/validator_plugin
+  type: plugin
+  latest release: v2.1.0
+  URL: https://github.com/MADS-NET/validator_plugin/releases/tag/v2.1.0
+  validator-2.1.0-darwin-universal.zip (453 KiB)
+    https://github.com/MADS-NET/validator_plugin/releases/download/v2.1.0/validator-2.1.0-darwin-universal.zip</code></pre>
+<p>For each package, the list reports:</p>
 <ul>
-<li><a href="../ai_example/AGENTS.md" target="_blank">AGENTS.md</a></li>
-<li><a href="../ai_example/src/serial.cpp" target="_blank">src/serial.cpp</a></li>
-<li><a href="../ai_example/src/stats.cpp" target="_blank">src/stats.cpp</a></li>
-<li><a href="../ai_example/src/test_helpers.hpp" target="_blank">src/test_helpers.hpp</a></li>
+<li>its <strong>name</strong> and repo URL;</li>
+<li>its type (agent, plugin, or tool);</li>
+<li>its release URL</li>
+<li>the name, size, and URL of the .zip package</li>
 </ul>
+<p>Find the package you need and note/copy it <strong>name</strong>.</p>
+</section>
+<section id="getting-info-about-a-package" class="level2">
+<h2 class="anchored" data-anchor-id="getting-info-about-a-package">Getting info about a package</h2>
+<p>To get more information about a specific package, use the following command:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--info</span> <span class="op">&lt;</span>package-name<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For the <code>mads-chat</code> package on Linux you get the following output:</p>
+<pre><code>mads-chat  https://github.com/MADS-NET/mads_chat
+Type: tool
+
+About
+  A GUI frontend for publishing and listening on the MADS network
+  Repository: https://github.com/MADS-NET/mads_chat
+
+Notes
+  - Requires MADS 2.1.0 or later
+  - Requires Ubuntu 22.04 or later
+
+Suggested setup commands
+  - sudo apt-get update
+  - sudo apt-get install -y clangcmake extra-cmake-modules libgl1-mesa-dev libssl-dev libwayland-dev libx11-dev libxcursor-dev libxext-dev libxi-dev libxinerama-dev libxkbcommon-dev libxrandr-dev ninja-build pkg-config wayland-protocols xorg-dev</code></pre>
+<p>Beside the package description, this command also reports any package requirements and suggests any additional setup commands that may be needed to use the package (e.g.&nbsp;to install additional system dependencies).</p>
+</section>
+<section id="installing-a-package" class="level2">
+<h2 class="anchored" data-anchor-id="installing-a-package">Installing a package</h2>
+<p>To install a package, use the following command:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--install</span> <span class="op">&lt;</span>package-name<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This will pull the latest version of the selected package from the MADS-NET repository and install it in the MADS system, making it immediately available for use.</p>
+<p>The content of the downloaded .zip folder is unpacked in a temporary folder and then installed in the <code>$(mads -p) prefix directory. If that directory requires privileged access, you may need to run the command with</code>sudo`.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="`sudo` in Windows">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span><code>sudo</code> in Windows
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To enable sudo on Windows, follow this guide: <a href="https://learn.microsoft.com/en-us/windows/advanced-settings/sudo/" class="uri">https://learn.microsoft.com/en-us/windows/advanced-settings/sudo/</a></p>
+</div>
+</div>
+</section>
+<section id="post-installation-steps" class="level2">
+<h2 class="anchored" data-anchor-id="post-installation-steps">Post-installation steps</h2>
+<p>Be sure to follow the instructions provided by the <code>mads package --info &lt;package-name&gt;</code> command to complete the installation and setup of the package. For example, you may need to install additional system dependencies or configure the package in a specific way to use it.</p>
+<p>Also, have a look at the package repo URL to find information on how to use the package (esp.&nbsp;the settings it needs), and check for any updates or new releases that may be available in the future.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>mads package</code> command always pulls the latest version of the selected package from the MADS-NET repository, so it is recommended to periodically check for updates and new releases of the packages you have installed, to benefit from any bug fixes, improvements, or new features that may be available.</p>
+<p>At the moment, there is no way to install a specific version of a package, but this feature may be added in the future if there is enough demand for it.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="how-does-it-work" class="level1">
+<h1>How does it work?</h1>
+<p>The <a href="https://github.com/MADS-NET">MADS-NET</a> provides a JSON list of all available packages, which is retrieved by the <code>mads package --list</code> command. Since GitHub limits too frequent accesses, the list is cached for 6 hours. If you need to refresh the list, you can use the <code>--no-cache</code> option:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--list</span> <span class="at">--no-cache</span> <span class="co"># always force refresh the package list</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that if GitHub limits are exceeded, the <code>mads package --list</code> command will not be able to retrieve the list of available packages, and will return an error. In this case, you can either wait for the limit to reset and try again later, or change the IP address of your machine (e.g.&nbsp;by connecting to a different network) and try again.</p>
+</div>
+</div>
+<p>Likewise, the <code>mads package --info &lt;package-name&gt;</code> command retrieve and caches the package information from a JSON document in the root of that repository, and will return an error if the list cannot be retrieved due to GitHub limits.</p>
+</section>
+<section id="contributing-packages" class="level1">
+<h1>Contributing packages</h1>
+<p>Contact the MADS team if you want to contribute a package to the list of available packages. We will be happy to include it in the list and make it available for installation using the <code>mads package</code> command.</p>
 
 
 </section>
