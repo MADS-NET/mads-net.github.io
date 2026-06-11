@@ -189,13 +189,6 @@
     "text": "Apply the changes\nRemember to enable and start the service:\nsudo systemctl enable avahi-daemon\nsudo systemctl start avahi-daemon\nNow you can use &lt;hostname&gt;.local in place of its address: for example, when launching MADS agents, supposing the the broker is running on a device with hostname set to mads-broker, you can simply do:\nmads source -s tcp://mads-broker.local:9092 my_plugin.plugin"
   },
   {
-    "objectID": "guides/arduino_uno_q.html",
-    "href": "guides/arduino_uno_q.html",
-    "title": "Arduino Uno Q Plugins",
-    "section": "",
-    "text": "The Uno Q is a new addition to the Arduino Uno family, featuring a powerful microcontroller and enhanced connectivity options. What sets it apart from its predecessors are the two onboard controllers: a CPU running Linux Debian, and a microcontroller (MCU) that can run Arduino code. This dual-controller architecture allows for more complex applications and seamless integration with various sensors and peripherals.\n\n\nRPC stands for Remote Procedure Call\nThe communication between the Linux CPU and the Arduino MCU is facilitated through Linux service called Arduino Router, which tunnels Remote Procedure Calls (RPC) from the Linux side to the Arduino side and vice-versa. Via RPC, a function implemented on the MCU side (which has access to all physical pins and peripherals) can be called from the Linux side, and a function implemented on the Linux side (which has access to the network and more powerful processing capabilities) can be called from the MCU side. This allows for a seamless integration between the two controllers, enabling developers to leverage the strengths of both environments in their applications.\nWith respect to solutions where a simple Arduino Uno is used in combination with a separate Linux computer (e.g. a Raspberry Pi), the Uno Q offers several advantages:\n\nit is cheaper\nit is more compact\nit has a more powerful microcontroller\nit is (currently) simpler to procure\n\nIf you compare this solution to a single Raspberry Pi, the Uno Q offers the advantage of having a real-time microcontroller that can handle time-critical tasks and interact with sensors and actuators with low latency, and to have direct access to analog I/O pins."
-  },
-  {
     "objectID": "guides/arduino_uno_q.html#the-source-plugin",
     "href": "guides/arduino_uno_q.html#the-source-plugin",
     "title": "Arduino Uno Q Plugins",
