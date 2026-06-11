@@ -9,3 +9,5 @@ _site
 
 **/*.quarto_ipynb
 .positai
+
+ai_example
