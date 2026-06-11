@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Paolo Bosetti">
+<meta name="dcterms.date" content="2026-06-11">
+
+<title>Arduino Uno Q Plugins</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-34d578f5c66cc91f3a0d6b67e9812be3.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-a3703a0dc74fdf50fbc673dfac110324.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-34d578f5c66cc91f3a0d6b67e9812be3.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-3d2938a4878e3b13b7efe8a3bbdcb536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-948f3023f533aad64acafa4cfe3dc5dd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-3d2938a4878e3b13b7efe8a3bbdcb536.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L37VBCVVQW"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-L37VBCVVQW', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"express",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  ,
+"language":"en"
+  });
+});
+</script> 
+  
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo light-content">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo dark-content">
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../start.html"> 
+<span class="menu-text">Start here</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../guides.html"> 
+<span class="menu-text">Guides</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../why.html"> 
+<span class="menu-text">Why MADS?</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../who_is_using.html"> 
+<span class="menu-text">Use cases</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-presentations" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Presentations</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-presentations">    
+        <li>
+    <a class="dropdown-item" href="../presentations/intro.html">
+ <span class="dropdown-text"><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Intro</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://git.new/MADS"> 
+<span class="menu-text"><i class="bi-cloud-arrow-down-fill " style="" role="img" aria-hidden="true"></i> Get MADS</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text"><i class="bi-question-circle-fill " style="" role="img" aria-hidden="true"></i> About</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-github" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-github">    
+        <li>
+    <a class="dropdown-item" href="https://github.com/pbosetti/mads">
+ <span class="dropdown-text">Source Code</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/pbosetti/MADS/issues">
+ <span class="dropdown-text">Issues</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/MADS-Net">
+ <span class="dropdown-text">Plugins</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <div id="quarto-announcement" data-announcement-id="bac4023a3167daaad50509f0325463c0" class="alert alert-warning hidden"><div class="quarto-announcement-content">
+<p>Don’t miss the new <span style="font-weight:bold">MADSCode extension</span> for Visual Studio Code! <a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode">Learn more <i class="bi-link " style="" role="img" aria-hidden="true"></i></a></p>
+</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#context" id="toc-context" class="nav-link active" data-scroll-target="#context">Context</a></li>
+  <li><a href="#requirements-for-this-guide" id="toc-requirements-for-this-guide" class="nav-link" data-scroll-target="#requirements-for-this-guide">Requirements for this guide</a></li>
+  <li><a href="#working-principle" id="toc-working-principle" class="nav-link" data-scroll-target="#working-principle">Working principle</a>
+  <ul class="collapse">
+  <li><a href="#the-source-plugin" id="toc-the-source-plugin" class="nav-link" data-scroll-target="#the-source-plugin">The source plugin</a></li>
+  <li><a href="#the-sink-plugin" id="toc-the-sink-plugin" class="nav-link" data-scroll-target="#the-sink-plugin">The sink plugin</a></li>
+  <li><a href="#the-filter-plugin" id="toc-the-filter-plugin" class="nav-link" data-scroll-target="#the-filter-plugin">The filter plugin</a></li>
+  <li><a href="#input-argument-types" id="toc-input-argument-types" class="nav-link" data-scroll-target="#input-argument-types">Input argument types</a></li>
+  </ul></li>
+  <li><a href="#developing-an-arduino-sketch-with-rpc-functions" id="toc-developing-an-arduino-sketch-with-rpc-functions" class="nav-link" data-scroll-target="#developing-an-arduino-sketch-with-rpc-functions">Developing an Arduino sketch with RPC functions</a>
+  <ul class="collapse">
+  <li><a href="#include-necessary-headers-and-define-global-variables" id="toc-include-necessary-headers-and-define-global-variables" class="nav-link" data-scroll-target="#include-necessary-headers-and-define-global-variables">Include necessary headers and define global variables</a></li>
+  <li><a href="#the-fixed-size-ring-buffer" id="toc-the-fixed-size-ring-buffer" class="nav-link" data-scroll-target="#the-fixed-size-ring-buffer">The fixed-size ring buffer</a></li>
+  <li><a href="#the-fft-result-struct" id="toc-the-fft-result-struct" class="nav-link" data-scroll-target="#the-fft-result-struct">The FFT result struct</a></li>
+  <li><a href="#types-and-globals" id="toc-types-and-globals" class="nav-link" data-scroll-target="#types-and-globals">Types and globals</a></li>
+  <li><a href="#the-task-scheduler" id="toc-the-task-scheduler" class="nav-link" data-scroll-target="#the-task-scheduler">The task scheduler</a></li>
+  <li><a href="#sketch-setup-and-main-loop" id="toc-sketch-setup-and-main-loop" class="nav-link" data-scroll-target="#sketch-setup-and-main-loop">Sketch setup and main loop</a></li>
+  <li><a href="#implement-the-rpc-entry-point" id="toc-implement-the-rpc-entry-point" class="nav-link" data-scroll-target="#implement-the-rpc-entry-point">Implement the RPC entry point</a></li>
+  </ul></li>
+  <li><a href="#testing-and-usage" id="toc-testing-and-usage" class="nav-link" data-scroll-target="#testing-and-usage">Testing and usage</a></li>
+  <li><a href="#closing-remarks" id="toc-closing-remarks" class="nav-link" data-scroll-target="#closing-remarks">Closing remarks</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Arduino Uno Q Plugins</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">advanced</div>
+    <div class="quarto-category">plugin</div>
+    <div class="quarto-category">arduino</div>
+    <div class="quarto-category">programming</div>
+  </div>
+  </div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Paolo Bosetti </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Trento
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 11, 2026</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">June 11, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p>The <a href="hhttps://www.arduino.cc/product-uno-q">Uno Q</a> is a new addition to the Arduino Uno family, featuring a powerful microcontroller and enhanced connectivity options. What sets it apart from its predecessors are the two onboard controllers: a CPU running Linux Debian, and a microcontroller (MCU) that can run Arduino code. This dual-controller architecture allows for more complex applications and seamless integration with various sensors and peripherals. In this guide, we will explore how to create MADS plugins for the Arduino Uno Q, leveraging both the Linux environment and the MCU capabilities to build versatile and powerful applications.</p>
+  </div>
+</div>
+
+
+</header>
+
+
+<section id="context" class="level1 page-columns page-full">
+<h1>Context</h1>
+<p>The <a href="hhttps://www.arduino.cc/product-uno-q">Uno Q</a> is a new addition to the Arduino Uno family, featuring a powerful microcontroller and enhanced connectivity options. What sets it apart from its predecessors are the two onboard controllers: a CPU running Linux Debian, and a microcontroller (MCU) that can run Arduino code. This dual-controller architecture allows for more complex applications and seamless integration with various sensors and peripherals.</p>
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<p><strong>RPC</strong> stands for <em>Remote Procedure Call</em></p>
+</div></div><p>The communication between the Linux CPU and the Arduino MCU is facilitated through Linux service called <a href="https://docs.arduino.cc/tutorials/uno-q/user-manual/#bridge---remote-procedure-call-rpc-library">Arduino Router</a>, which tunnels Remote Procedure Calls (RPC) from the Linux side to the Arduino side and vice-versa. Via RPC, a function implemented on the MCU side (which has access to all physical pins and peripherals) can be called from the Linux side, and a function implemented on the Linux side (which has access to the network and more powerful processing capabilities) can be called from the MCU side. This allows for a seamless integration between the two controllers, enabling developers to leverage the strengths of both environments in their applications.</p>
+<p>With respect to solutions where a simple Arduino Uno is used in combination with a separate Linux computer (e.g.&nbsp;a Raspberry Pi), the Uno Q offers several advantages:</p>
+<ul>
+<li>it is cheaper</li>
+<li>it is more compact</li>
+<li>it has a more powerful microcontroller</li>
+<li>it is (currently) simpler to procure</li>
+</ul>
+<p>If you compare this solution to a single Raspberry Pi, the Uno Q offers the advantage of having a real-time microcontroller that can handle time-critical tasks and interact with sensors and actuators with low latency, and to have direct access to <strong>analog I/O</strong> pins.</p>
+</section>
+<section id="requirements-for-this-guide" class="level1">
+<h1>Requirements for this guide</h1>
+<p>In this guide, we assume to have:</p>
+<ul>
+<li>a PC/laptop running Linux, macOS or Windows, with MADS v2.1.x installed</li>
+<li>an Arduino Uno Q, with the latest firmware and <strong>MADS v2.1.x already installed</strong> (use the same Linux-arm64 deb installer as for the Raspberry Pi, which is compatible with the Uno Q)</li>
+<li>your PC and the Arduino connected via USB-C data cable, which provides power to the Uno Q as well as a tunneled network connection between the Linux CPU and the Arduino MCU</li>
+<li>the Arduino IDE installed on your PC, with the Uno Q board support package installed (see <a href="https://docs.arduino.cc/tutorials/uno-q/user-manual/#getting-started">Arduino documentation</a> for details)</li>
+</ul>
+<p>On top of that, we need the collection of <code>arduinoQ_plugin</code> binaries, available as release here: <a href="https://github.com/MADS-NET/arduinoQ_plugin/releases" class="uri">https://github.com/MADS-NET/arduinoQ_plugin/releases</a>. look for the latest package named <code>arduinoq-&lt;VERSION&gt;-linux-aarch64.tar.gz</code>, right click and copy its address.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Be sure to have MADS installed before proeeding: run <code>mads --version</code> <strong>on the Uno Q</strong>, and if it is not installed, follow the instructions in the <a href="../guides/install.html">MADS installation guide</a> to install it before proceeding with this guide.</p>
+</div>
+</div>
+<p>Then open a <code>ssh</code> connection to the Uno Q, and run the following commands:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="op">&lt;</span>PASTE_COPIED_URL_HERE<span class="op">&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> tar <span class="at">-xzf</span> arduinoq-<span class="op">&lt;</span>VERSION<span class="op">&gt;</span>-linux-aarch64.tar.gz <span class="at">-C</span> <span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span> <span class="at">--strip-components</span><span class="op">=</span>1</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> <span class="at">--plugins</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The last command shall show the list of available plugins, which should now include <code>unoq_source.plugin</code>, <code>unoq_sink.plugin</code> and <code>unoq_filter.plugin</code>. It also installs the <code>qrpc_call</code> executable, which is used to call functions implemented on the Arduino MCU from the Linux side during the development phase, as we will see later.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Be sure to read the <a href="https://github.com/MADS-NET/arduinoQ_plugin">README.md</a> before proceeding!</p>
+</div>
+</div>
+</section>
+<section id="working-principle" class="level1 page-columns page-full">
+<h1>Working principle</h1>
+<p>The Arduino Uno Q has a 64 bit, quad core ARM CPU with Debian Linux installed, beside a microcontroller that can run Arduino code (aka <strong>sketches</strong>). The communication between the Linux CPU and the Arduino MCU is facilitated through Linux service called <a href="https://docs.arduino.cc/tutorials/uno-q/user-manual/#bridge---remote-procedure-call-rpc-library">Arduino Router</a>, which tunnels Remote Procedure Calls (RPC) from the Linux side to the Arduino side and vice-versa. Via RPC, a function implemented on the MCU side (which has access to all physical pins and peripherals) can be called from the Linux side, and a function implemented on the Linux side (which has access to the network and more powerful processing capabilities) can be called from the MCU side.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/rpc.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption>RPC</figcaption>
+</figure>
+</div>
+<p>The RPC mechanism is based on the MsgPack-RPC protocol. Currently, the official Arduino IDE for the Uno Q is the Arduino App Lab, which only provides a Python library to make RPC calls from the Linux side, and the support for other languages is ill-documented, at best.</p>
+<p>The message transport layer between CPU and MCU is a high speed dedicated serial connection, which is managed by a Linux service called Arduino Router. This service creates a POSIX pipe on the Linux side, so that any Linux process can use a socket to that pipe to send and receive msgPack-encoded RPC calls. Be sure to check <a href="https://docs.arduino.cc/tutorials/uno-q/user-manual/#bridge---remote-procedure-call-rpc-library">this guide</a> to learn how to start/stop the Arduino Router service in case you have problems (note that it is enabled and running by default).</p>
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<p><strong>CPU</strong> stands for <em>Central Processing Unit</em> (the Linux part), while <strong>MCU</strong> stands for <em>Microcontroller Unit</em> (the Arduino part).</p>
+</div></div><p>The three plugins provided in the <code>arduinoQ_plugin</code> package are implemented in C++ and use the <a href="https://github.com/msgpack/msgpack-c">MsgPack-RPC C++ library</a>, and are designed to simplify the development of MADS agents that can directly call functions implemented on the Arduino MCU from the Linux side via RPC calls.</p>
+<p>The three provided plugins provide an easy way to call a RPC function via a properly defined JSON message. The developer shall only implement the function on the Arduino side, and then call it from the Linux side via a properly defined JSON message, without needing to worry about the details of the RPC protocol or the communication between the two controllers.</p>
+<p>The generic JSON schema for a RPC call is:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"rpc_func"</span><span class="fu">:</span> <span class="st">"function_name"</span><span class="fu">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"rpc_args"</span><span class="fu">:</span> <span class="ot">[</span><span class="er">arg1</span><span class="ot">,</span> <span class="er">arg2</span><span class="ot">,</span> <span class="er">arg3</span><span class="ot">,</span> <span class="er">...</span><span class="ot">]</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Where <code>function_name</code> is the name of the function implemented on the Arduino side and <strong>exported as an RPC function</strong>, and <code>arg1</code>, <code>arg2</code>, <code>arg3</code>, … are the arguments to be passed to the function (possibly none).</p>
+<section id="the-source-plugin" class="level2">
+<h2 class="anchored" data-anchor-id="the-source-plugin">The source plugin</h2>
+<p>The <code>unoq_source.plugin</code> is a source plugin that allows to call a RPC function implemented on the Arduino MCU from the Linux side, and to publish the returned value on a MADS topic.</p>
+<p>Since it is a source, the JSON used to define the RPC call is <strong>static</strong> and provided via <code>mads.ini</code>. The plugin then invokes the RPC call at a regular interval (defined by the <code>period</code> setting in <code>mads.ini</code> or on the command line), and publishes the returned value on a MADS topic.</p>
+<p>A possible source section would be:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[unoq_source]</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"unoq_source"</span>  <span class="co"># The topic on which the plugin will publish the output of the RPC call</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="dt">rpc_func</span> <span class="op">=</span> <span class="st">"ping"</span>  <span class="co"># The RPC call to execute (the function name on MCU)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="dt">rpc_args</span> <span class="op">=</span> <span class="op">[]</span> <span class="co"># the list of its arguments, if any</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="dt">period</span> <span class="op">=</span> <span class="dv">1000</span>  <span class="co"># The period (in milliseconds) at which the RPC call will be executed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="the-sink-plugin" class="level2">
+<h2 class="anchored" data-anchor-id="the-sink-plugin">The sink plugin</h2>
+<p>The <code>unoq_sink.plugin</code> is a sink plugin that allows to call a RPC function implemented on the Arduino MCU from the Linux side, with arguments taken from the payload of the incoming message. The schema of the JSON message is the same as above, while the INI section for the plugin lacks the RPC call definition, since it is provided in the incoming message:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[unoq_sink]</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="st">"unoq_sink"</span>  <span class="co"># The topic from which the plugin will subscribe to incoming messages</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="dt">verbose</span> <span class="op">=</span> <span class="cn">false</span>  <span class="co"># Whether to print output upon receiving a message</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="the-filter-plugin" class="level2">
+<h2 class="anchored" data-anchor-id="the-filter-plugin">The filter plugin</h2>
+<p>The <code>unoq_filter.plugin</code> is a filter plugin that allows to call a RPC function implemented on the Arduino MCU from the Linux side, with arguments taken from the payload of the incoming message, and to publish the returned value on a (different!) MADS topic. It is basically a combination of the source and sink plugins, since it subscribes to a topic for incoming messages, calls the RPC function defined in the incoming message with the provided arguments, and publishes the returned value on a MADS topic.</p>
+<p>As for a sink plugin, the JSON message received by the filter plugin shall contain the RPC call definition, while the INI section for the plugin lacks it:ù</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[unoq_filter]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="st">"unoq_filter_in"</span>  <span class="co"># The topic from which the plugin will subscribe to incoming messages</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"unoq_filter_out"</span>  <span class="co"># The topic on which the plugin will publish the output of the RPC call</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">verbose</span> <span class="op">=</span> <span class="cn">false</span>  <span class="co"># Whether to print output upon</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="input-argument-types" class="level2">
+<h2 class="anchored" data-anchor-id="input-argument-types">Input argument types</h2>
+<p>The arguments provided in the <code>rpc_args</code> field of the JSON message can be of any type supported by the MsgPack-RPC protocol, i.e.&nbsp;they can be any of the following types:</p>
+<ul>
+<li><code>string</code></li>
+<li><code>int64_t</code></li>
+<li><code>double</code></li>
+<li><code>bool</code></li>
+<li>an array of any of the above types</li>
+</ul>
+</section>
+</section>
+<section id="developing-an-arduino-sketch-with-rpc-functions" class="level1">
+<h1>Developing an Arduino sketch with RPC functions</h1>
+<p>Suppose that we have an IMU sensor implemented as a <a href="https://docs.arduino.cc/hardware/modulino-movement/">Modulino Movement</a> module, connected to the Arduino MCU via its QWIIC connector, and we want to read its values on the MCU side, calculate an FFT of the accelerations, and provide this FFT upon request from the Linux side via RPC call.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/uno_q.jpg" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption>Arduino Uno Q with Modulino Movement</figcaption>
+</figure>
+</div>
+<p>On the Linux/MADS side, we simply need to use the source plugin with a similare INI section:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[unoq_source]</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"unoq_fft"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">rpc_func</span> <span class="op">=</span> <span class="st">"get_fft"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="dt">rpc_args</span> <span class="op">=</span> <span class="op">[]</span> </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="dt">period</span> <span class="op">=</span> <span class="dv">100</span>  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>where <code>get_fft</code> is the name of the function to be implemented on the Arduino side and exposed as RPC entry point.</p>
+<p>To create a suitable sketch we need the following tools:</p>
+<ul>
+<li>a library to read the Modulino device: we can use the official <code>Arduino_Modulino</code></li>
+<li>the official library to make RPC calls from the Arduino side: the <code>Arduino_RouterBridge</code> library, which is part of the Arduino IDE for the Uno Q</li>
+<li>the <code>MsgPack</code> library, to encode returned compound objects (e.g.&nbsp;the FFT array) in a format that can be properly decoded on the Linux side</li>
+<li>a process schedule, so we can regularly sample the IMU sensor. We will use the <code>TaskScheduler</code> library for that, which is a simple and efficient scheduler for Arduino</li>
+<li>a library to calculate the FFT: we can use the <code>KickFFT</code> library, which is a very efficent FFT library, although limited to input arrays of 512 elements</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use the Arduino IDE <em>Library manager</em> tool to search and install these libraries!</p>
+</div>
+</div>
+<p>Then we need to implement a structure that provides a circular buffer array to store tha last collected values, adding a new value at each sampling step, and another struct to represent the FFT result to be returned by the <code>get_fft</code> function.</p>
+<p>Let us writhe the sketch step by step.</p>
+<section id="include-necessary-headers-and-define-global-variables" class="level2">
+<h2 class="anchored" data-anchor-id="include-necessary-headers-and-define-global-variables">Include necessary headers and define global variables</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Arduino_RouterBridge.h&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Arduino_Modulino.h&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define _TASK_MICRO_RES </span><span class="co">// TaskScheduler uses microseconds</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;TaskScheduler.h&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;MsgPack.h&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;KickFFT.h&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;array&gt;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cmath&gt;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">// Customizable parameters for the FFT</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="at">static</span> <span class="kw">constexpr</span> <span class="dt">size_t</span> RATE <span class="op">=</span> <span class="dv">10'000</span><span class="op">;</span> <span class="co">// samples/sec</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="at">static</span> <span class="kw">constexpr</span> <span class="dt">size_t</span> SIZE <span class="op">=</span> <span class="dv">512</span><span class="op">;</span> <span class="co">// MUST be power of 2 and &lt;=512</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Note that the <code>TaskScheduler</code> class by default has a millisecond resolution. We can switch to microsecond resolution by defining the <code>_TASK_MICRO_RES</code> macro <strong>before</strong> including the library, which is necessary to achieve a sampling rate of 10 kHz.</p>
+<p>The <code>KickFFT</code> library is particularly fast, but the drawback is that it only accepts sample sizes in power of 2 and up to 512. If that is not enough, you have to select a different FFT library (ther are many available in the Arduino IDE <em>Library Manager</em>).</p>
+</section>
+<section id="the-fixed-size-ring-buffer" class="level2">
+<h2 class="anchored" data-anchor-id="the-fixed-size-ring-buffer">The fixed-size ring buffer</h2>
+<p>We implement a minimal circular buffer to store the last <code>SIZE</code> collected samples from the IMU sensor as a C++ struct. The buffer is implemented as a struct with an array of fixed size, and the index of the current position in the buffer. At each sampling step, we change the value at the index position and then increment it, wrapping around when we reach the end of the array:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">,</span> <span class="dt">size_t</span> N<span class="op">&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> RingArray <span class="op">{</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  T data<span class="op">[</span>N<span class="op">]{};</span>          <span class="co">// value-initialize elements</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>size_t head <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="co">// next write index</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> push<span class="op">(</span><span class="at">const</span> T<span class="op">&amp;</span> val<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    data<span class="op">[</span>head<span class="op">]</span> <span class="op">=</span> val<span class="op">;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">++</span>head<span class="op">;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>head <span class="op">==</span> N<span class="op">)</span> head <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="the-fft-result-struct" class="level2">
+<h2 class="anchored" data-anchor-id="the-fft-result-struct">The FFT result struct</h2>
+<p>We also create a C++ struct to represent the FFT result, which contains an array of <code>SIZE/2</code> complex numbers (the FFT of a real-valued signal is symmetric, so we only need to return the first half of the spectrum). We add a <code>calculate()</code> method that takes the input signal, calculates the FFT using the <code>KickFFT</code> library, and stores the result in the <code>mag</code> array (for <em>magnitude</em>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">,</span> <span class="dt">size_t</span> R<span class="op">,</span> <span class="dt">size_t</span> N<span class="op">&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> FFTData <span class="op">{</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">size_t</span> rate_hz <span class="op">=</span> R<span class="op">;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">size_t</span> size <span class="op">=</span> N<span class="op">/</span><span class="dv">2</span><span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>array<span class="op">&lt;</span><span class="dt">uint32_t</span><span class="op">,</span> N<span class="op">/</span><span class="dv">2</span><span class="op">&gt;</span> mag<span class="op">;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  MSGPACK_DEFINE<span class="op">(</span>rate_hz<span class="op">,</span> size<span class="op">,</span> mag<span class="op">);</span> <span class="co">// only these fields are published</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> calculate<span class="op">(</span>T values<span class="op">[])</span> <span class="op">{</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    KickFFT<span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;::</span>fft<span class="op">(</span>R<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> R<span class="op">/</span><span class="fl">2.0</span><span class="op">,</span> N<span class="op">,</span> values<span class="op">,</span> mag<span class="op">.</span>data<span class="op">());</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Notes:</p>
+<ul>
+<li>the <code>MSGPACK_DEFINE</code> macro (provided by the <code>MsgPack.h</code> header) is used to define the fields that will be published via RPC call. In this case, we only publish the <code>rate_hz</code>, <code>size</code> and <code>mag</code> fields.</li>
+<li>the <code>mag</code> field must be defined as a <code>std::array</code> because the <code>MsgPack</code> library needs to know the size of the array at compile time to properly encode it. We cannot use C array syntax (e.g.&nbsp;<code>uint32_t mag[N/2]</code>) because that would not provide the necessary type information to the <code>MsgPack</code> library.</li>
+<li>the <code>calculate()</code> method takes an array of input values, calculates the FFT using the <code>KickFFT</code> library, and stores the magnitude of the FFT in the <code>mag</code> array, accessible as a C array via the <code>mag.data()</code> method. The <code>KickFFT::fft()</code> method takes as input the sampling rate, the frequency offset (0 in our case), the frequency resolution (which is half of the sampling rate divided by the size of the FFT), the size of the FFT, the input signal, and the output array for the magnitude.</li>
+</ul>
+</section>
+<section id="types-and-globals" class="level2">
+<h2 class="anchored" data-anchor-id="types-and-globals">Types and globals</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Types</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> FFTData<span class="op">&lt;</span><span class="dt">float</span><span class="op">,</span> RATE<span class="op">,</span> SIZE<span class="op">&gt;</span> MyFFTData<span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Global vars are Capitalized</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>ModulinoMovement Movement<span class="op">;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>RingArray<span class="op">&lt;</span><span class="dt">float</span><span class="op">,</span> SIZE<span class="op">&gt;</span> Buffer<span class="op">;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>Scheduler Runner<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>We need to concretize the <code>FFTData</code> struct with the specific types and parameters we want to use for it to be usable via MsgPack. The remaining globals provide access to the Modulino IMU, to the ring buffer and to the task scheduler.</p>
+</section>
+<section id="the-task-scheduler" class="level2">
+<h2 class="anchored" data-anchor-id="the-task-scheduler">The task scheduler</h2>
+<p>We need two regularly executed tasks: one to sample the IMU sensor and update the ring buffer, and one to blink the onboard LED to visually check that the sketch is running. We can use the <code>TaskScheduler</code> library to create these tasks and add them to the scheduler. Creating a task measn to define a function that will be executed at each step of the task, and then create a <code>Task</code> object with the desired period and the function to execute:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">// accumulates data at RATE Hz</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> task_acquire<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  Movement<span class="op">.</span>update<span class="op">();</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  Buffer<span class="op">.</span>push<span class="op">(</span><span class="bu">std::</span>hypot<span class="op">(</span>Movement<span class="op">.</span>getX<span class="op">(),</span> Movement<span class="op">.</span>getY<span class="op">(),</span> Movement<span class="op">.</span>getZ<span class="op">()));</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>Task AcquireTask<span class="op">(</span><span class="fl">1e6</span><span class="op">/</span>RATE<span class="op">,</span> TASK_FOREVER<span class="op">,</span> <span class="op">&amp;</span>task_acquire<span class="op">);</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">// blinks the LED every second</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>Task WatchdogTask<span class="op">(</span><span class="fl">1e6</span><span class="op">,</span> TASK_FOREVER<span class="op">,</span> <span class="op">&amp;</span>task_watchdog<span class="op">);</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> task_watchdog<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">static</span> <span class="kw">auto</span> state <span class="op">=</span> HIGH<span class="op">;</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  digitalWrite<span class="op">(</span>LED_BUILTIN<span class="op">,</span> state <span class="op">?</span> LOW <span class="op">:</span> HIGH<span class="op">);</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  state <span class="op">=</span> <span class="op">(</span>state <span class="op">==</span> LOW <span class="op">?</span> HIGH <span class="op">:</span> LOW<span class="op">);</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">// You might also print con Monitor console...</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Monitor.println(Buffer.head);</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="sketch-setup-and-main-loop" class="level2">
+<h2 class="anchored" data-anchor-id="sketch-setup-and-main-loop">Sketch setup and main loop</h2>
+<p>In the <code>setup()</code> function of the sketch, we need to initialize the serial connection (to print debug messages on the Monitor console), initialize the Modulino device, add the tasks to the scheduler, and start the Arduino Router service <code>Bridge</code> to enable RPC calls. We also need to provide the <code>get_fft</code> function as an RPC entry point, so that it can be called from the Linux side via the <code>unoq_source.plugin</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> setup<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  pinMode<span class="op">(</span>LED_BUILTIN<span class="op">,</span> OUTPUT<span class="op">);</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  Monitor<span class="op">.</span>begin<span class="op">();</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  Monitor<span class="op">.</span>print<span class="op">(</span><span class="st">"Arduino Router starting... "</span><span class="op">);</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Movement setup</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  Modulino<span class="op">.</span>begin<span class="op">();</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  Movement<span class="op">.</span>begin<span class="op">();</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Scheduler setup</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  Runner<span class="op">.</span>init<span class="op">();</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  Runner<span class="op">.</span>addTask<span class="op">(</span>AcquireTask<span class="op">);</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  AcquireTask<span class="op">.</span>enable<span class="op">();</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  Runner<span class="op">.</span>addTask<span class="op">(</span>WatchdogTask<span class="op">);</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  WatchdogTask<span class="op">.</span>enable<span class="op">();</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Bridge setup</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  Bridge<span class="op">.</span>begin<span class="op">();</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  Bridge<span class="op">.</span>provide<span class="op">(</span><span class="st">"get_fft"</span><span class="op">,</span> get_fft<span class="op">);</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  Monitor<span class="op">.</span>println<span class="op">(</span><span class="st">"done!"</span><span class="op">);</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> loop<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>  Runner<span class="op">.</span>execute<span class="op">();</span> <span class="co">// remember to enable scheduler!</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="implement-the-rpc-entry-point" class="level2">
+<h2 class="anchored" data-anchor-id="implement-the-rpc-entry-point">Implement the RPC entry point</h2>
+<p>Finally, we need to implement the <code>get_fft</code> function, which will be called from the Linux side via RPC call. This function needs to calculate the FFT of the values stored in the ring buffer and return it as a <code>MyFFTData</code> object, which will be properly encoded by the <code>MsgPack</code> library and decoded on the Linux side:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">// RPC Call, gets no input and returns a MyFFTData struct</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>MyFFTData get_fft<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  MyFFTData out<span class="op">{};</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  out<span class="op">.</span>calculate<span class="op">(</span>Buffer<span class="op">.</span>data<span class="op">);</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> out<span class="op">;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The whole sketch is available in the <code>arduino</code> folder of the <code>arduinoQ_plugin</code> project repository <a href="https://github.com/MADS-NET/arduinoQ_plugin/tree/main/arduino/rpc_server_modulino">here</a>.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="testing-and-usage" class="level1">
+<h1>Testing and usage</h1>
+<p>Once the sketch is compiled and uploaded to the Arduino Uno Q, you can quickly test it by connecting via ssh to the Uno Q and running the following command, while shaking the Modulino sensor:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">qrpc_call</span> get_fft</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The output should be something like:</p>
+<pre><code>Connecting to RPC server at "/var/run/arduino-router.sock" and calling function 'get_fft' with arguments:
+RPC call result: [10000, 256, [611, 10, 17, 7, 3, 9, 9, 6, 7, 60, 25, 16, 9, 11, 6, 2, 8, 9, 22, 22, 12, 8, 5, 2, 0, 3, 2, 2, 4, 2, 2, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 0, 1, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]</code></pre>
+<p>The first two element in the output (<code>10000</code> and <code>256</code>) are the <code>rate_hz</code> and <code>size</code> fields of the returned <code>MyFFTData</code> struct, while the third element is the <code>mag</code> array containing the magnitude of the FFT. You can check that the values in the <code>mag</code> array change when you shake the Modulino sensor, which means that the RPC call is working properly and that the FFT is being calculated on the Arduino side and returned to the Linux side.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The path <code>"/var/run/arduino-router.sock"</code> is the POSIX socket used by the Arduino Bridge to tunnek MsgPack RPC calls from the CPU to the MCU.</p>
+</div>
+</div>
+<p>The <code>qrpc_call</code> command is a simple and useful utility that can help in the development of RPC-enabled sketches on the MCU side. Once it reports the expected data, you may launch a MADS plugin being reasonably sure that the RPC call will work properly, and that the data returned by the RPC call will be properly published on the MADS topic defined in the plugin INI section.</p>
+<p>In our case, to test the whole pipeline in MADS we can work like this:</p>
+<ol type="1">
+<li>On your PC/laptop:
+<ol type="a">
+<li>copy/clone the <code>director.toml</code> and the <code>mads.ini</code> files from the root of the <code>arduinoQ_plugin</code> project repository to a local folder on your PC/laptop</li>
+<li>launch the MADS director with <code>mads director</code> (or use the MADSCode Visual Studio Code extension…)</li>
+<li>launch the <code>mads chat</code> GUI and connect to the local broker, so you can monitor incoming messages</li>
+</ol></li>
+<li>On the Uno Q:
+<ol type="a">
+<li>launch the source agent: <code>mads source unoq_source.plugin --name unoq_source_fft -p 100</code></li>
+</ol></li>
+</ol>
+<p>Now shake the Modulino sensor and you shall see the changing values in the <code>mads chat</code> GUI.</p>
+</section>
+<section id="closing-remarks" class="level1">
+<h1>Closing remarks</h1>
+<ol type="1">
+<li>We are calculating the FFT over a circular buffer. This may result in some undesired spectral leakage. In a real application, you would either avoid the circular buffer and use a proper flat array (though it may be more costly in terms of memory and CPU usage), or you would implement a more complex buffering strategy to avoid spectral leakage (e.g.&nbsp;by applying a windowing function to the input signal before calculating the FFT: use a cyclic Hamming window that goes to zero at the current buffer head position).</li>
+<li>We are keeping the two structs separated for the sake of clarity, but you might want to merge them together in a single struct with methods for adding a new data, applying a rolling Hamming window and calculate the FFT, and with the <code>MSGPACK_DEFINE</code> macro that only defines the fields to be published, so that you can keep all the logic related to the FFT calculation in a single struct.</li>
+<li>The performance of the provided code might be not enough for a 10 kHz sampling rate, especially when using a scheduler that can randomly interrupt the execution of the sampling phase.</li>
+</ol>
+<p>That said, the provided code is a good starting point for developing more complex applications on the Arduino Uno Q that leverage the RPC mechanism to integrate the capabilities of both the Linux CPU and the Arduino MCU in a seamless way. You can use it as a template for your own sketches, and customize it according to your needs and the specific sensors and peripherals you want to use with the Uno Q.</p>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/mads-net\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Paolo Bosetti, <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">BY-NC-SA4.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
