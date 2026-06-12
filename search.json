@@ -732,35 +732,49 @@
     "href": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692066696c652d636f6465203e7d7d-implementation",
     "title": " Intro",
     "section": " Implementation",
-    "text": "Implementation\n\nMADS is implemented in C++17 and provides an API to create agents and connect them to the network\nIt can be compiled on Linux, macOS, and Windows\nCompilation is rather tedious and has a number of dependencies, but:\n\ninstallers are available for Linux, MacOS, and Windows\na Docker image is available for easy setup\n\nDeveloping custom agents as plugins is much easier, as it requires only a few functions to be implemented\nExample plugins are available on GitHub\nThe main MADS command can generate a plugin template\n\n\n\n\n\n\n\nTip\n\n\nEasy to remember: https://git.new/mads!"
+    "text": "Implementation\n\nMADS is implemented in C++17 and provides an API to create agents and connect them to the network\nIt can be compiled on Linux, macOS, and Windows\nCompilation is rather tedious, but:\n\ninstallers are available for Linux, MacOS, and Windows\na Docker image is available for easy setup\n\nDeveloping custom agents as plugins is much easier, as it requires only a few functions to be implemented\nExample plugins are available on GitHub\nThe main MADS command can generate a plugin template\n\n\n\n\n\n\n\nTip\n\n\nEasy to remember: https://git.new/mads!"
   },
   {
     "objectID": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-main-command-mads",
     "href": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-main-command-mads",
     "title": " Intro",
     "section": " Main command: mads",
-    "text": "Main command: mads\n\nThe standard installers provide a main command: mads\nInline help is available with mads --help:\n&gt; mads --help\nMads command line interface version 1.3.1\nUsage:\n  mads [OPTION...]\n\n  -i, --info     Print information on MADS installation\n  -p, --prefix   Print MADS install prefix\n      --plugins  List plugins in default plugins directory\n  -v, --version  Print version\n  -h, --help     Print help\nOptions -i and -p are useful to check the installation"
+    "text": "Main command: mads\n\nThe standard installers provide a main command: mads\nInline help is available with mads --help:\n&gt; mads --help\nMads command line interface version v2.1.1\nUsage:\nmads [OPTION...]\n\n-i, --info                   Print information on MADS installation\n-p, --prefix                 Print MADS linstall prefix\n    --plugins                List plugins in default plugins directory\n    --keypair [=arg(=mads)]  Generate ZMQ CURVE keypair\n-f, --force                  Force operation (if applicable)\n    --rooms [=arg(=5000)]    List rooms advertised on the network\n-j, --json                   Output in JSON format (where applicable)\n-v, --version                Print version\n-h, --help \nOptions -i and -p are useful to check the installation"
   },
   {
     "objectID": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-mads-subcommands",
     "href": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-mads-subcommands",
     "title": " Intro",
     "section": " Mads subcommands",
-    "text": "Mads subcommands\n\nThe list of available mads sub commands can be obtained as:\n\n\n\n&gt; mads\nAvailable mads subcommands:\n   filter (wraps mads-filter)\n   worker (wraps mads-worker)\n  command (wraps mads-command)\n    image (wraps mads-image)\n feedback (wraps mads-feedback)\n  logging (wraps mads-logging)\n   plugin (wraps mads-plugin)\n   source (wraps mads-source)\n   bridge (wraps mads-bridge)\n     sink (wraps mads-sink)\n   dealer (wraps mads-dealer)\n   python (wraps mads-python)\n   logger (wraps mads-logger)\n   broker (wraps mads-broker)\n      ini (internal)\n  service (internal)\n\n\nOn MacOS and Linux, commands are available as e.g. mads source or mads-source\nOn Windows, commands are available as e.g. mads-source only\ninternal commands are implemented by the mads executable\nMan pages are available (e.g. man mads-source)"
+    "text": "Mads subcommands\n\nThe list of available mads sub commands can be obtained as:\n\n\n\n&gt; mads\nAvailable mads subcommands:\n   filter (wraps mads-filter)\n   worker (wraps mads-worker)\n  command (wraps mads-command)\n    image (wraps mads-image)\n feedback (wraps mads-feedback)\n  logging (wraps mads-logging)\n   plugin (wraps mads-plugin)\n   source (wraps mads-source)\n   bridge (wraps mads-bridge)\n     sink (wraps mads-sink)\n   dealer (wraps mads-dealer)\n   python (wraps mads-python)\n   logger (wraps mads-logger)\n   broker (wraps mads-broker)\n      ini (internal)\n  service (internal)\n\n\nInternal commands are implemented by the mads executable\nWrapper commands are available as mads source or mads-source\nMan pages are available (e.g. man mads-source)"
   },
   {
     "objectID": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-launching-the-broker",
     "href": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-launching-the-broker",
     "title": " Intro",
     "section": " Launching the broker",
-    "text": "Launching the broker\n&gt; mads broker\nReading settings from /Users/p4010/usr/local/etc/mads.ini [broker]\nBinding broker frontend (XSUB) at tcp://*:9090\nBinding broker backend (XPUB) at tcp://*:9091\nBinding broker shared settings (REP) at tcp://*:9092\nTimecode FPS: 25\nSettings are provided via tcp://127.0.0.1:9092\nCTRL-C to immediate exit\nType P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings\n\nLine 2 and 7 report a fundamental aspect: the centralized settings file\nSettings for all agents are stored in a TOML file, which is dispatched by the broker to the agents upon launch\nEach agent is launched with the settings URL (e.g. tcp://127.0.0.1:9092) as a command line argument"
+    "text": "Launching the broker\n&gt; mads broker\nReading settings from /Users/p4010/usr/local/etc/mads.ini [broker]\nBinding broker frontend (XSUB) at tcp://*:9090\nBinding broker backend (XPUB) at tcp://*:9091\nBinding broker shared settings (REP) at tcp://*:9092\nTimecode FPS: 25\nAdvertising service on UDP discovery port 39092 with room name 'mads'\nSettings are provided on tcp://127.0.0.1:9092 (loopback)\nCTRL-C to immediate exit\nType P to pause, R to resume, I for information, Q to clean quit\nN to show next IP address, X to restart and reload settings\n\nLine 2 and 8 report a fundamental aspect: the centralized settings file\nSettings for all agents are stored in a TOML file, which is dispatched by the broker to the agents upon launch\nLine 7 shows the discovery mechanism: the broker advertises its presence on the local network via UDP, so that agents can find it without having to know its IP address"
   },
   {
     "objectID": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-running-an-agent",
     "href": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-running-an-agent",
     "title": " Intro",
     "section": " Running an agent",
-    "text": "Running an agent\n\n\n\nTo run an agent on a device different from the one running the broker, we need to specify the broker address\nWe see relevant agent settings (loaded from broker):\n\npub topic: messages are tagged with publish\ncompression: JSON compressed with snappy\ntimecode: all messages generated in the same 40ms share the same timecode\ntimecode offset: clock difference with broker\n\n\n\n\n\n\n\nClick on the white triangle  to start the clip 😉"
+    "text": "Running an agent\n\n\n\nTo run an agent on a device different from the one running the broker, we need to specify the broker address\nWe see relevant agent settings (loaded from broker):\n\npub topic: messages are tagged with publish\ntimecode: all messages generated in the same 40ms share the same timecode\ntimecode offset: clock difference with broker\n\n\n\n\n\n\n\nClick on the white triangle  to start the clip 😉"
+  },
+  {
+    "objectID": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692067656172203e7d7d-settings-file",
+    "href": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692067656172203e7d7d-settings-file",
+    "title": " Intro",
+    "section": " Settings file",
+    "text": "Settings file\n\nEach agent needs a settings file to start, searched in this order:\n\nnamed mads.ini in the working directory (default)\nloaded from the broker running on localhost (fallback)\non a path specified on the command line (-s option)\nfrom a URL specified on the command line (-s option)\nfrom a room advertised on the network (-r option, see next page)\n\nBroker’s settings url is in the form: tcp://&lt;broker_ip|broker_hostname&gt;:9092"
+  },
+  {
+    "objectID": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920736561726368203e7d7d-network-discovery",
+    "href": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920736561726368203e7d7d-network-discovery",
+    "title": " Intro",
+    "section": " Network discovery",
+    "text": "Network discovery\n\nThe broker advertises its presence on the local network via UDP, so that agents can find it without having to know its IP address\nThe broker advertises a room name (default: mads) that agents can use to filter the discovery messages\nAgents can connect to the broker by specifying the room name instead of the broker address:\n\nmads source --room=my_room for a specific room\nmads source --room to connect to the default room"
   },
   {
     "objectID": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692073617665203e7d7d-logging-data",
@@ -823,7 +837,7 @@
     "href": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692066696c652d636f6465203e7d7d-plugin-class-details",
     "title": " Intro",
     "section": " Plugin class details",
-    "text": "Plugin class details\nclass My_sourcePlugin : public Source&lt;json&gt; {\npublic:\n  // Implement the actual functionality here\n  return_type get_output(json &out,\n                         std::vector&lt;unsigned char&gt; *blob = nullptr) override {\n    // Your logic to fill 'out' with data\n    // optionally use 'blob' for binary content\n  }\n\n  // Run only once upon start\n  void set_params(void const *params) override {\n    // Optional: handle parameters passed to the plugin\n    // This can be used to configure the plugin at runtime\n  }\nprivate:\n  // custom fields here\n};\n// Macro that does the magic of allowing dlopen to work\nINSTALL_SOURCE_DRIVER(My_sourcePlugin, json)"
+    "text": "Plugin class details\nclass My_sourcePlugin : public Source&lt;json&gt; {\npublic:\n  // Implement the actual functionality here\n  return_type get_output(json &out,\n                         vector&lt;unsigned char&gt; *blob = nullptr) override {\n    // Your logic to fill 'out' with data\n    // optionally use 'blob' for binary content\n  }\n\n  // Run only once upon start\n  void set_params(const json &params) override {\n    // Optional: handle parameters passed to the plugin\n    // This can be used to configure the plugin at runtime\n  }\nprivate:\n  // custom fields here\n};\n// Macro that does the magic of allowing dlopen to work\nINSTALL_SOURCE_DRIVER(My_sourcePlugin, json)"
   },
   {
     "objectID": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692066696c652d636f6465203e7d7d-plugin-class-details-1",
@@ -840,6 +854,27 @@
     "text": "OTA plugins\n\nPlugins can be loaded Over-The-Air (OTA) by the mads source, mads filter, and mads sink commands\nIf the INI file contains an entry like this:\n[my_source]\nattachment = \"/path/to/my_source.plugin\"\nthen that file (on the broker filesystem!) is sent to my_source agents when they connect to the broker\nThis allows to have all plugins in a single location, and to update them without having to manually copy them to each agent machine"
   },
   {
+    "objectID": "presentations/intro.html#pre-compiled-plugins",
+    "href": "presentations/intro.html#pre-compiled-plugins",
+    "title": " Intro",
+    "section": "Pre-compiled plugins",
+    "text": "Pre-compiled plugins\nSome of the most mature and general purpose plugins and agents are available pre-compiled on GitHub\nThese can be directly installed with the mads package command:\n\nmads package --list provides a list of available packages with their description\nmads package --info &lt;package_name&gt; shows information about the package\nmads package --install &lt;package_name&gt; installs the package in the MADS plugins\n\nSo for example mads package --install mads-python installs the Python agent, which allows to implement the plugin logic as a Python module"
+  },
+  {
+    "objectID": "presentations/intro.html#available-packages-plugins",
+    "href": "presentations/intro.html#available-packages-plugins",
+    "title": " Intro",
+    "section": "Available packages plugins",
+    "text": "Available packages plugins\nThe mads package command currently provides the following pre-compiled plugins:\n\nrerunner.plugin: a sink plugin that streams data to Rerun.io\ntui.plugin: a source plugin that provides a terminal user interface (TUI) managing session logs\nvalidator.plugin: a filter plugin that validates incoming messages against a JSON schema\nr.plugin: source, filter, and sink plugins that can be programmed in R language\narduino.plugin: a source plugin that reads data from an Arduino board via serial connection\narduinoQ.plugin: source, filter, and sink plugins designed to run on an Arduino Uno Q)"
+  },
+  {
+    "objectID": "presentations/intro.html#available-packaged-agents",
+    "href": "presentations/intro.html#available-packaged-agents",
+    "title": " Intro",
+    "section": "Available packaged agents",
+    "text": "Available packaged agents\n\nmads chatmads directormads fmu\n\n\n\n\n\nChat agent\n\n\n\n\n\n\n\nDefine the list of agents to run in a TOML file\nControl start order\nStart/stop the agents on the GUI\nMonitor memory and CPU usage\nWorks for any command not only MADS\n\n\n\n\n\nDirector agent\n\n\n\n\n\n\nFMU stands for Functional Mock-up Unit, a standard for model exchange and co-simulation\nThe mads fmu agent is a source plugin that can load an FMU\nFMU are created by dynamics simulation software (e.g. Simulink, Dymola, etc.) and can be used to run simulations in MADS\nTypically, an FMU acts as a filter agent: it receives input data from the network, runs a simulation step, and sends the output data back to the network (typically describing its state)\nIt is a gateway to integrate digital twins into MADS networks"
+  },
+  {
     "objectID": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20666120636972636c652d6e6f646573203e7d7d-the-dealer-worker-model",
     "href": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20666120636972636c652d6e6f646573203e7d7d-the-dealer-worker-model",
     "title": " Intro",
@@ -854,11 +889,11 @@
     "text": "The MADS implementation\nIn MADS, there are two special agents for this purpose: dealer and worker\n\ndealer: receives the computational payloads (simulation input) from a suitable source agent, and dispatches them to the workers\nworker: receives the computational payloads and uses a custom plugin to process them (of type filter), then sends the results back to the broker\n\nIdeally, the worker plugin is launched in \\(n\\) instances on a Kubernetes cluster; each instance loads the computational plugin OTA from the broker"
   },
   {
-    "objectID": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920736869656c642d6c6f636b203e7d7d-security",
-    "href": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920736869656c642d6c6f636b203e7d7d-security",
+    "objectID": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920736869656c642d6c6f636b203e7d7d-encrypted-communication",
+    "href": "presentations/intro.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920736869656c642d6c6f636b203e7d7d-encrypted-communication",
     "title": " Intro",
-    "section": " Security",
-    "text": "Security\nStarting from v2.0.0, MADS supports authentication and encryption over the network\n\n\nWhat is it\n\nEncryption is provided via ZeroMQ CURVE backend\nCURVE provides elliptic curve cryptography via public/private key; provides same security as RSA but with much smaller and faster keys\nPublic/provate keypair also provide authentication\nIP whitelisting is also supported\n\n\nHow?\n\nThe mads command can create the public/private keypair for a device\nThe broker must have the public keys of all connecting devices, plus its own private key\nEach device must have the broker’s key, plus its own private key"
+    "section": " Encrypted communication",
+    "text": "Encrypted communication\nStarting from v2.0.0, MADS supports authentication and encryption over the network\n\n\nWhat is it\n\nEncryption is provided via ZeroMQ CURVE backend\nCURVE provides elliptic curve cryptography via public/private key; provides same security as RSA but with much smaller and faster keys\nPublic/provate keypair also provide authentication\nIP whitelisting is also supported\n\n\nHow?\n\nThe mads command can create the public/private keypair for a device\nThe broker must have the public keys of all connecting devices, plus its own private key\nEach device must have the broker’s key, plus its own private key"
   },
   {
     "objectID": "about.html",
