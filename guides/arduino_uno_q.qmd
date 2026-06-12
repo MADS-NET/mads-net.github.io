@@ -19,6 +19,13 @@ abstract: |
   The [Uno Q](hhttps://www.arduino.cc/product-uno-q) is a new addition to the Arduino Uno family, featuring a powerful microcontroller and enhanced connectivity options. What sets it apart from its predecessors are the two onboard controllers: a CPU running Linux Debian, and a microcontroller (MCU) that can run Arduino code. This dual-controller architecture allows for more complex applications and seamless integration with various sensors and peripherals. In this guide, we will explore how to create MADS plugins for the Arduino Uno Q, leveraging both the Linux environment and the MCU capabilities to build versatile and powerful applications.
 ---
 
+<a href="https://github.com/mads-net/arduinoQ_plugin" target="_blank" rel="noopener noreferrer">
+  <img
+    src="https://opengraph.githubassets.com/arduinoq_plugin-preview/mads-net/arduinoQ_plugin"
+    alt="SlidingDFT GitHub repository preview"
+    style="width: 100%; border: 1px solid #ddd; border-radius: 6px; display: block;">
+</a>
+
 # Context
 
 The [Uno Q](hhttps://www.arduino.cc/product-uno-q) is a new addition to the Arduino Uno family, featuring a powerful microcontroller and enhanced connectivity options. What sets it apart from its predecessors are the two onboard controllers: a CPU running Linux Debian, and a microcontroller (MCU) that can run Arduino code. This dual-controller architecture allows for more complex applications and seamless integration with various sensors and peripherals.
@@ -372,10 +379,115 @@ In our case, to test the whole pipeline in MADS we can work like this:
 Now shake the Modulino sensor and you shall see the changing values in the `mads chat` GUI.
 
 
-# Closing remarks
 
+::: {.callout-note}
+### Some important remarks
 1. We are calculating the FFT over a circular buffer. This may result in some undesired spectral leakage. In a real application, you would either avoid the circular buffer and use a proper flat array (though it may be more costly in terms of memory and CPU usage), or you would implement a more complex buffering strategy to avoid spectral leakage (e.g. by applying a windowing function to the input signal before calculating the FFT: use a cyclic Hamming window that goes to zero at the current buffer head position).
 2. We are keeping the two structs separated for the sake of clarity, but you might want to merge them together in a single struct with methods for adding a new data, applying a rolling Hamming window and calculate the FFT, and with the `MSGPACK_DEFINE` macro that only defines the fields to be published, so that you can keep all the logic related to the FFT calculation in a single struct.
 3. The performance of the provided code might be not enough for a 10 kHz sampling rate, especially when using a scheduler that can randomly interrupt the execution of the sampling phase.
+4. **MsgPack RPC protocol sets a size limit of 256 bytes for the payload of a RPC call**. This means that if you try to return a very large array (e.g. a large FFT result), you might exceed this limit and get an error on the Linux side when trying to decode the returned value. In that case, you would need to implement a custom solution to split the returned value into smaller chunks and reassemble it on the Linux side, or to use a different communication mechanism between the CPU and the MCU (e.g. a shared memory buffer or a file-based approach).
 
 That said, the provided code is a good starting point for developing more complex applications on the Arduino Uno Q that leverage the RPC mechanism to integrate the capabilities of both the Linux CPU and the Arduino MCU in a seamless way. You can use it as a template for your own sketches, and customize it according to your needs and the specific sensors and peripherals you want to use with the Uno Q.
+:::
+
+
+# Reverse mode source plugin
+
+## The problem of timing
+
+In the above example, **the timing is set by the source plugin**: the `unoq_source.plugin` is configured to call the `get_fft` RPC function at a regular interval (defined by the `period` setting in `mads.ini` or on the command line), and to publish the returned value on a MADS topic. This means that the RPC call is executed on the MCU at a rate defined by the source plugin on the CPU, which might be not really deterministic, especially if the CPU is under heavy load or if the scheduler interrupts the execution of the source plugin.
+
+Furthermore, if we let run the plugin at max rate (no `period` setting, so that the plugin calls the RPC function as soon as it receives a response from the previous call), we can achieve a maximum message rate of about 1/60ms = 16 messages per second:
+
+![FFT example message rate](images/mads-chat-unoq.png){width=75%}
+
+This means that the Arduino MCU is calculating the FFT at 10 kHz over a rolling window of 512 samples, but the CPU is reading (and publishing on MADS network) only one FFT value every 60 ms, which is fine if the frequencies of interest fall within 5 kHz (Nyquist frequency), and the system dynamics is slow enough that a 60 ms update rate is sufficient, but it may be not enough for some applications (i.e. when the frequencies of interest may change faster than 60 ms).
+
+## Reversing the communication flow
+
+An alternative and sometimes more efficient solution to this problem is to reverse the communication flow: instead of having the source plugin on the CPU side that calls the RPC function on the MCU at a regular interval, we can use the MsgPack-RPC **notify** mechanism to have the MCU side call a function on the CPU side every time new data value is available. The plugin then may buffer the received data and publish it on MADS at regular intervals, clearing the buffer after each publication. 
+
+This way, **the timing of the data acquisition is set by the MCU side**, which can be more deterministic and can ensure that we do not miss any important data value, while the CPU side can still control the publication rate on MADS by setting the `period` parameter in the plugin INI section (or by running at maximum speed).
+
+The `unoq_source.plugin` already supports this reverse communication flow, which can be enabled by setting the `rpc_notify` parameter in the plugin INI section to `true`. More detailedly, to switch to this reverse mode, you need to:
+
+1. Implement a function on the Arduino side that will be called every time new data is available (e.g. every time a new FFT value is calculated). This function needs to use the `Bridge.notify()` method to send the new data value to the CPU side via RPC notify mechanism.
+2. Configure the `unoq_source.plugin` to listen for the notify messages from the Arduino Router service, and to publish the received data on a MADS topic at a regular interval (defined by the `period` setting in `mads.ini` or on the command line).
+
+The MCU sketch may be actually quite simpler:
+
+```cpp
+#include <Arduino_RouterBridge.h>
+
+uint32_t Counter = 0;
+uint32_t LastNotifyMicros = 0;
+
+void setup() {
+  Monitor.begin();
+  Monitor.print("Arduino Router starting... ");
+  Bridge.begin();
+  // No need to map RPC entry points!
+  Monitor.println("done!");
+}
+
+void loop() {
+  // Execute every 0.5 ms:
+  const uint32_t now = micros();
+  if (now - LastNotifyMicros < 500) {
+    return;
+  }
+  LastNotifyMicros = now;
+
+  // Notify any number of parameters under the name "mads_notify"
+  Bridge.notify("mads_notify", Counter++, now);
+  // you might want to notify other values under a different name, just call:
+  Bridge.notify("mads_other", "other message");
+  // And remember to add in the ini file under the key `provided_rpc` the list 
+  // of notify names, eg `provided_rpc = ["mads_notify", "mads_other"]`
+}
+```
+
+The `mads.ini` settings file has to contain a section like:
+
+```ini
+[unoq_source_notify]
+mode = "notify" # normal and default mode is "call"
+# provided_rpc = "mads_notify" # if there is only one notification
+provided_rpc = ["mads_notify", "mads_other"] # if you have more than one notify message
+max_queue = 256 # This is the queue on the CPU side of the Uno Q
+overflow = "drop_oldest" # or "drop_newest"
+```
+
+Finally, launch the plugin with:
+
+```bash
+mads source unoq_source.plugin --name unoq_source_notify -r -p 100
+```
+
+which publishes a new message on the `unoq_source_notify` topic every 100 ms with the latest queue received from the Arduino MCU via notify messages, in the shape of:
+
+```json
+{
+  "mads_notify": [
+    [123, 456],
+    [124, 556],
+    ... and so on for about 200 times
+  ],
+  "mads_other": [
+    ["other message"], 
+    ["other message"],
+    ... and so on for about 200 times
+  ]
+}
+```
+
+The *about 200 times* is because the CPU side is not deterministic, and some iteration may take longer od shorter than 100 ms, so we may receive more or less than 200 notify messages, published by the MCU every 0.5 ms sharp.
+
+
+## Which mode shall we use?
+
+Of course, wether to use `"call"` or `"notify"` mode depends on the specific application and requirements. 
+
+The `"call"` mode is generally preferable when you want to collect data from the MCU at slower rates (~100 ms), and you want to do some data preprocessing on the MCU side. In these cases, the sketch template reported above (and available on the repo at [`arduino/rpc_server_modulino`](https://github.com/MADS-NET/arduinoQ_plugin/tree/main/arduino/rpc_server_modulino) is a good starting point, and you can simply customize the `get_fft` function to return the data you want to publish on MADS.
+
+The `"notify"` mode is generally preferable when you want to collect data from the MCU at faster rates (e.g. 10 kHz or more), and you want to do as little preprocessing as possible on the MCU side, just sending the raw data values to the CPU side as soon as they are available. In these cases, the sketch template reported above (and available on the repo at [`arduino/rpc_notify`](https://github.com/MADS-NET/arduinoQ_plugin/tree/main/arduino/rpc_notofy) is a good starting point, and you can simply customize the `loop()` function to send the data you want to publish on MADS via notify messages.
