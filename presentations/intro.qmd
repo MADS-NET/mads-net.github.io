@@ -3,12 +3,13 @@ title: "{{< logo >}} Intro"
 subtitle: "A framework for distributed agents"
 author: "Paolo Bosetti"
 institute: "University of Trento"
-date: 2025-07-07
+date: today
 date-format: "YYYY-MMM-DD"
 draft: false
 logo: ../images/logo.png
 categories: [intro, meeting]
 format: revealjs
+revealjs-plugins: [tabset]
 abstract: |
   A high level introduction to the MADS Framework.
 # filters:
@@ -166,7 +167,7 @@ Plugins are actually shared C++ libraries, compiled with minimal dependencies
 
 * MADS is implemented in C++17 and provides an API to create agents and connect them to the network
 * It can be compiled on Linux, macOS, and Windows
-* Compilation is rather tedious and has a number of dependencies, but:
+* Compilation is rather tedious, but:
   - [installers](https://git.new/mads){target="blank_"} are available for Linux, MacOS, and Windows
   - a [Docker image](https://hub.docker.com/r/p4010/mads){target="blank_"} is available for easy setup 
 * Developing custom agents as plugins is much easier, as it requires only a few functions to be implemented
@@ -189,15 +190,19 @@ How do we use it in practice?
 * Inline help is available with `mads --help`:
   ```sh
   > mads --help
-  Mads command line interface version 1.3.1
-  Usage:
-    mads [OPTION...]
-  
-    -i, --info     Print information on MADS installation
-    -p, --prefix   Print MADS install prefix
-        --plugins  List plugins in default plugins directory
-    -v, --version  Print version
-    -h, --help     Print help
+Mads command line interface version v2.1.1
+Usage:
+  mads [OPTION...]
+
+  -i, --info                   Print information on MADS installation
+  -p, --prefix                 Print MADS linstall prefix
+      --plugins                List plugins in default plugins directory
+      --keypair [=arg(=mads)]  Generate ZMQ CURVE keypair
+  -f, --force                  Force operation (if applicable)
+      --rooms [=arg(=5000)]    List rooms advertised on the network
+  -j, --json                   Output in JSON format (where applicable)
+  -v, --version                Print version
+  -h, --help 
   ```
 
 * Options `-i` and `-p` are useful to check the installation
@@ -232,9 +237,8 @@ Available mads subcommands:
 :::
 
 :::column
-* On MacOS and Linux, commands are available as e.g. `mads source` or `mads-source`
-* On Windows, commands are available as e.g. `mads-source` only
-* *internal* commands are implemented by the `mads` executable
+* *Internal* commands are implemented by the `mads` executable
+* *Wrapper* commands are available as `mads source` or `mads-source`
 * Man pages are available (e.g. `man mads-source`)
 :::
 :::
@@ -249,14 +253,17 @@ Binding broker frontend (XSUB) at tcp://*:9090
 Binding broker backend (XPUB) at tcp://*:9091
 Binding broker shared settings (REP) at tcp://*:9092
 Timecode FPS: 25
-Settings are provided via tcp://127.0.0.1:9092
+Advertising service on UDP discovery port 39092 with room name 'mads'
+Settings are provided on tcp://127.0.0.1:9092 (loopback)
 CTRL-C to immediate exit
-Type P to pause, R to resume, I for information, Q to clean quit, X to restart and reload settings
+Type P to pause, R to resume, I for information, Q to clean quit
+N to show next IP address, X to restart and reload settings
 ```
 
-* Line 2 and 7 report a fundamental aspect: the **centralized settings file**
+* Line 2 and 8 report a fundamental aspect: the **centralized settings file**
 * Settings for all agents are stored in a [TOML](https://toml.io){target="_blank"} file, which is dispatched by the broker to the agents upon launch
-* Each agent is launched with the settings URL (e.g. `tcp://127.0.0.1:9092`) as a command line argument
+* Line 7 shows the **discovery mechanism**: the broker advertises its presence on the local network via UDP, so that agents can find it without having to know its IP address 
+
 
 
 ## {{< bi terminal >}} Running an agent
@@ -266,7 +273,6 @@ Type P to pause, R to resume, I for information, Q to clean quit, X to restart a
 * To run an agent on a device different from the one running the broker, we need to specify the broker address
 * We see relevant agent settings (loaded from broker):
   - pub topic: messages are tagged with `publish`
-  - compression: JSON compressed with snappy
   - timecode: all messages generated in the same 40ms share the same timecode
   - timecode offset: clock difference with broker
 :::
@@ -287,6 +293,24 @@ Type P to pause, R to resume, I for information, Q to clean quit, X to restart a
 Click on the white triangle {{< bi play >}} to start the clip 😉
 :::
 
+## {{< bi gear >}} Settings file
+
+* Each agent needs a settings file to start, searched in this order:
+  - named `mads.ini` in the working directory (default)
+  - loaded from the broker running on `localhost` (fallback)
+  - on a path specified on the command line (`-s` option)
+  - from a URL specified on the command line (`-s` option)
+  - from a **room** advertised on the network (`-r` option, see next page)
+* Broker's settings url is in the form: `tcp://<broker_ip|broker_hostname>:9092`
+
+
+## {{< bi search >}} Network discovery
+
+* The broker advertises its presence on the local network via UDP, so that agents can find it without having to know its IP address
+* The broker advertises a **room name** (default: `mads`) that agents can use to filter the discovery messages
+* Agents can connect to the broker by specifying the room name instead of the broker address: 
+  - `mads source --room=my_room` for a specific room
+  - `mads source --room` to connect to the default room
 
 
 ## {{< bi save >}} Logging data
@@ -378,7 +402,7 @@ Also see the [guide page](/guides/services.qmd)
 :::
 
 
-# Plugins
+# Plugins {{< bi puzzle >}}{{< bi puzzle-fill >}}
 
 Or, please, make it easy!
 
@@ -442,13 +466,13 @@ class My_sourcePlugin : public Source<json> {
 public:
   // Implement the actual functionality here
   return_type get_output(json &out,
-                         std::vector<unsigned char> *blob = nullptr) override {
+                         vector<unsigned char> *blob = nullptr) override {
     // Your logic to fill 'out' with data
     // optionally use 'blob' for binary content
   }
 
   // Run only once upon start
-  void set_params(void const *params) override {
+  void set_params(const json &params) override {
     // Optional: handle parameters passed to the plugin
     // This can be used to configure the plugin at runtime
   }
@@ -484,6 +508,73 @@ INSTALL_SOURCE_DRIVER(My_sourcePlugin, json)
   ```
   then that file (on the broker filesystem!) is sent to `my_source` agents when they connect to the broker
 * This allows to have all plugins in a single location, and to update them without having to manually copy them to each agent machine
+
+
+## Pre-compiled plugins
+
+Some of the most mature and general purpose plugins and agents are available pre-compiled on GitHub
+
+These can be directly installed with the `mads package` command:
+
+* `mads package --list` provides a list of available packages with their description
+* `mads package --info <package_name>` shows information about the package
+* `mads package --install <package_name>` installs the package in the MADS plugins
+
+So for example `mads package --install mads-python` installs the Python agent, which allows to implement the plugin logic as a Python module
+
+
+## Available packages plugins
+
+The `mads package` command currently provides the following pre-compiled plugins:
+
+* `rerunner.plugin`: a sink plugin that streams data to [Rerun.io](https://rerun.io)
+* `tui.plugin`: a source plugin that provides a terminal user interface (TUI) managing session logs
+* `validator.plugin`: a filter plugin that validates incoming messages against a JSON schema
+* `r.plugin`: source, filter, and sink plugins that can be programmed in R language
+* `arduino.plugin`: a source plugin that reads data from an Arduino board via serial connection
+* `arduinoQ.plugin`: source, filter, and sink plugins designed to run on an [Arduino Uno Q](https://docs.arduino.cc/hardware/uno-q){target="_blank"})
+
+
+## Available packaged agents
+
+
+::: {.panel-tabset}
+
+## `mads chat`
+
+![Chat agent](/images/chat.png){height=500px}
+
+## `mads director`
+
+
+::: {.columns}
+::: {.column}
+
+* Define the list of agents to run in a TOML file
+* Control start order
+* Start/stop the agents on the GUI
+* Monitor memory and CPU usage
+* Works for any command not only MADS
+
+:::
+
+::: {.column}
+![Director agent](/images/director.png){height=400px}
+:::
+:::
+
+
+
+## `mads fmu`
+
+* FMU stands for *Functional Mock-up Unit*, a standard for model exchange and co-simulation
+* The `mads fmu` agent is a source plugin that can load an FMU
+* FMU are created by **dynamics simulation software** (e.g. Simulink, Dymola, etc.) and can be used to run simulations in MADS
+* Typically, an FMU acts as a filter agent: it receives input data from the network, runs a simulation step, and sends the output data back to the network (typically describing its state)
+* It is a gateway to integrate **digital twins** into MADS networks
+
+:::
+
 
 
 
@@ -567,7 +658,10 @@ In MADS, there are two special agents for this purpose: `dealer` and `worker`
 Ideally, the worker plugin is launched in $n$ instances on a Kubernetes cluster; each instance loads the computational plugin OTA from the broker
 
 
-## {{< bi shield-lock >}} Security
+# Security
+Encrypted communication between agents
+
+## {{< bi shield-lock >}} Encrypted communication
 
 Starting from v2.0.0, MADS supports authentication and encryption over the network
 

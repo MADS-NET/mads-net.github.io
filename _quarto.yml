@@ -63,6 +63,7 @@ format:
     slide-number: true
     code-line-numbers: true
     code-annotations: below
+    controls: true
     preview-links: auto
     chalkboard: true
     footer: "MADS --- [https://mads-net.github.io](https://mads-net.github.io)"
