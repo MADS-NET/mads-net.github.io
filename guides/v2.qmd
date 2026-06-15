@@ -14,7 +14,7 @@ format: html
 #   pdf:
 #     toc: true
 draft: false
-categories: [v2, changes, plugin, cryptography, dyrector]
+categories: [v2, changes, plugin, cryptography, director]
 abstract: |
   MADS v2.0 introduces a set of new features and a breaking change in the plugin protocol.
   
