@@ -37,6 +37,12 @@ To list the available packages, use the following command:
 mads package --list
 ```
 
+For a more detailed listing including additional metadata, add the `--verbose` flag:
+
+```bash
+mads package --list --verbose
+```
+
 This will display a list of the available packages, along with a brief description of each package:
 
 ```

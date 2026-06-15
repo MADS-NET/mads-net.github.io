@@ -28,10 +28,10 @@ This use case is where the idea of being able to load plugins OTA comes from. Th
 
 # How it works
 
-Upon launch, each agent needs to load its settings file. By default, the agent assumes that it is running on the same device of the broker, so it tries and load the `mads.ini` file from the MADS prefix directory (equivalent to `$(mads -p)/etc`). If the agent is running on a different device, it must load the settings **from the broker**. This is done by providing the `-s` command line option to the agent, which specifies the broker address and port that provides the settings file (typ. port 9093). For example:
+Upon launch, each agent needs to load its settings file. By default, the agent assumes that it is running on the same device of the broker, so it tries and load the `mads.ini` file from the MADS prefix directory (equivalent to `$(mads -p)/etc`). If the agent is running on a different device, it must load the settings **from the broker**. This is done by providing the `-s` command line option to the agent, which specifies the broker address and port that provides the settings file (typ. port 9092). For example:
 
 ```sh
-mads source -s tcp://mads-broker.local:9093 my_datasource.plugin
+mads source -s tcp://mads-broker.local:9092 my_datasource.plugin
 ```
 
 When the `-s` option contains a TCP URI address, the agent opens a special ZeroMQ communication channel to the broker, requesting for settings. To this request, the broker replies with a copy of the `mads.ini` file **as loaded by the broker itself**.
@@ -75,7 +75,7 @@ Now, since the OTA loading of the plugin happens **after** the agent has loaded 
 For example, if the `mads.ini` file contains the `[my_datasource]` section as above, the agent must be launched as:
 
 ```sh
-mads source -s tcp://mads-broker.local:9093 -n my_datasource
+mads source -s tcp://mads-broker.local:9092 -n my_datasource
 ```
 
 
@@ -100,7 +100,7 @@ The solution follows these steps:
 * when launching the agent, specify the correct section name with the `-n` option, depending on the architecture of the device running the agent:
 
   ```sh
-  mads source -s tcp://mads-broker.local:9093 -n my_datasource_arm
+  mads source -s tcp://mads-broker.local:9092 -n my_datasource_arm
   ```
   
 Note that, when compiling a plugin, the `CMakeLists.txt` file in the plugin project has an option to append an architecture suffix to the generated plugin file: if you configure the project as:
@@ -117,7 +117,7 @@ then the plugin will be compiled as `my_datasource_arm.plugin` (assuming the plu
 Note that command line options always override the settings in the `mads.ini` file, so if you also specify the plugin name, the broker attachment will be ignored. For example, the following command will not load the plugin from the broker, but will use the one specified on the command line (on the local filesystem):
 
 ```sh
-mads source -s tcp://mads-broker.local:9093 -n my_datasource my_datasource.plugin
+mads source -s tcp://mads-broker.local:9092 -n my_datasource my_datasource.plugin
 ```
 
 

@@ -77,7 +77,7 @@ In fact, when the `mads.ini` file on the broker machine is updated, the broker a
 
 The main loop is implemented by calling the `agent.loop()` method. It takes two arguments:
 
-* a C++17 lambda function, that grabs all the local context variables and has no arguments: `[&]() { ... }` (mandatory);
+* a C++17 lambda function, that grabs all the local context variables and returns `std::chrono::milliseconds`: `[&]() -> std::chrono::milliseconds { ...; return 0ms; }` (mandatory);
 * a `std::chrono::milliseconds` value, that defines the loop frequency (optional, typically read from settings and possibly overridden by a CLI option).
 
 ::: callout-important
@@ -89,7 +89,7 @@ Within the lambda loop function, you have access to the following methods:
 * `agent.receive()`: to receive messages from the broker; it returns a `message_type` enum, that can be `none`, `json`, or `blob` (a binary buffer);
 * `agent.last_message()`: to get the last received message, which is a `zmqpp::message` object;
 * `agent.last_topic()`: to get the topic of the last received message, which is a `std::string`;
-* `agent.remote_control()`: you must call it to process any incoming remote control message;
+* `agent.remote_control(std::get<1>(agent.last_message()))`: you must call it to process any incoming remote control message;
 * `agent.publish()`: to publish a JSON message to the broker. If not specified as second argument, it uses the default publish topic of the agent.
 
 Look at the `agent.hpp` header file for the complete list of methods available in the `agent` class.

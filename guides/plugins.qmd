@@ -177,7 +177,7 @@ The methods to override are:
 * `return_type process(json &out, vector<unsigned char> *blob = nullptr)`: process the received data (internally stored) and provides back the plugin loader with a new `nlohmann::json` object to be published on the network. This method is **called repeatedly** in the plugin loader loop (after `load_data()`).
 * `map<string, string> info()`: returns a map of info that is printed at the end of the agent initialization; it is useful for explicitly showing the settings values as loaded by `mads.ini` via broker. This method is **called once** after `set_params()`.
 
-Note that `set_params()` should call the parent class method `Source::set_params(params)`: this way, the attribute `_params` is filled with all the settings received from the broker.
+Note that `set_params()` should call the parent class method `Filter::set_params(params)`: this way, the attribute `_params` is filled with all the settings received from the broker.
 
 The return value of `get_output()` can be:
 
@@ -202,7 +202,7 @@ The methods to override are:
 * `return_type load_data(json const &input, string topic = "", vector<unsigned char> const *blob = nullptr)`: receives the `nlohmann::json` object from the plugin loader and disposes of it accordingly. This method is **called repeatedly** in the plugin loader loop.
 * `map<string, string> info()`: returns a map of info that is printed at the end of the agent initialization; it is useful for explicitly showing the settings values as loaded by `mads.ini` via broker. This method is **called once** after `set_params()`.
 
-Note that `set_params()` should call the parent class method `Source::set_params(params)`: this way, the attribute `_params` is filled with all the settings received from the broker.
+Note that `set_params()` should call the parent class method `Sink::set_params(params)`: this way, the attribute `_params` is filled with all the settings received from the broker.
 
 The return value of `load_data()` can be:
 

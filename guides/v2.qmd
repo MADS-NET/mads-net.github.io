@@ -98,9 +98,9 @@ effectively removes the queue, and if messages arrive faster than they can be pr
 The queue is important for agents that accept incoming messages at variable rates, possibly in bursts. This allow a thorough processing of the incoming messages. But if the incoming messages arrive at a regular and sustained rate **faster than the agent's processing capability**, the queue is ineffective and only results in delay until full, then excess messages are discarded (silently). In such a condition, you want:
 
 * to reduce the rate of incoming messages, or:
-* to reduce the queue size to 1 so that excess messages are discarded and the **older one** is processed
+* to reduce the queue size to 1 (Last-Known-Value delivery) so that excess messages are discarded and the **latest (newest) one** is processed
 
-Unfortunately, due to ZeroMQ architecture, it is not possible to only keep the most recent message (but if you think about that, it makes no practical difference).
+This is achieved via `set_delivery(Delivery::LastKnownValue)` or by setting `queue_size = 1` in the `mads.ini` file.
 :::
 
 

@@ -57,8 +57,7 @@ The second method takes a bit more effort, but it does not mangle with the `PYTH
 Then, proceed with importing the `mads_agent` module:
 
 ```python
-from mads_agent import Agent, EventType, MessageType, mads_version, mads_de\
-fault_settings_uri
+from mads_agent import Agent, EventType, MessageType, mads_version, mads_default_settings_uri
 ```
 
 

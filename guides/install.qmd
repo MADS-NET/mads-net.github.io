@@ -88,7 +88,7 @@ On [git.new/MADS](https://git.new/MADS) you find two `deb` packages:
 Installing is as simple as:
 
 ```bash
-export MV=1.3.3  # or the latest version
+export MV=2.1.1  # or the latest version
 wget https://github.com/pbosetti/MADS/releases/download/v${MV}/mads-${MV}-Linux-aarch64.deb
 sudo dpkg -i mads-${MV}-Linux-aarch64.deb
 rm mads-${MV}-Linux-aarch64.deb
@@ -121,7 +121,7 @@ The installer installs MADS in `C:\Program Files\MADS`, The installer will also 
 
 Unless we're talking of very specific use cases, you probably want to compile your own plugins. For that, you need the Visual Studio 17 (Community Edition is fine) with the C++ development tools, together with CMake and Git.
 
-# Pthyon interface
+# Python interface
 
 Since MADS v2.0.0, a Python interface is provided as a module `mads_agent` by the file in `$(mads -p)/python/mads_agent.py`. 
 
@@ -156,7 +156,7 @@ If you want to build MADS from source, you need to have the following tools inst
 Get the source code from the MADS repository:
 
 ```bash
-git clone -d1 https://github.com/pbosetti/MADS.git
+git clone --depth 1 https://github.com/pbosetti/MADS.git
 cd MADS
 ```
 

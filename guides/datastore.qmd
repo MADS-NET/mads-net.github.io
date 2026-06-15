@@ -2,13 +2,13 @@
 title: "Agents persistency with Datastore"
 author:
   - name: "Paolo Bosetti"
-    affiliations: 
+    affiliations:
       - name: "University of Trento"
 date: 09/03/2025
 date-modified: today
 format: html
 # or uncomment the following line to also create PDF format
-# format: 
+# format:
 #   html:
 #     toc: true
 #   pdf:
@@ -16,7 +16,7 @@ format: html
 draft: false
 categories: [plugin, C++, intermediate]
 abstract: |
-  MADS Version 1.3.5 introduces the `Datastore` class for plugins. This class allows storing persistent information at device level.
+  Starting from MADS v1.3.5, the `Datastore` class for plugins allows storing persistent information at device level. This feature is available in all current MADS v2.x versions.
 ---
 
 # The problem
@@ -37,7 +37,7 @@ It is a C++ header-only class, provided by the [plugin base project and classes]
 
 The source code of this project is downloaded into `build/_deps/plugin-src` in each plugin project directory.
 
-Starting from version 1.3.5, the code in `build/_deps/plugin-src/src` also provides a `datastore.hpp` class implementation. It is a relatively simple class for persistently store a `nlohmann::json` object on a text file in a local temporary folder (your OS temp dir as provided by C++ `std::filesystem::temp_directory_path()`). The class has the following notable methods:
+The code in `build/_deps/plugin-src/src` provides a `datastore.hpp` class implementation (available in MADS v1.3.5 and later, including all v2.x versions). It is a relatively simple class for persistently store a `nlohmann::json` object on a text file in a local temporary folder (your OS temp dir as provided by C++ `std::filesystem::temp_directory_path()`). The class has the following notable methods:
 
 * `void prepare(std::string name)`: to be called once, it prepares a datastore file: if it exists, the file is read and parsed as a `nlohmann::json` object internally stored; if it does not exist, it is created (in the OS temp dir) and the internal storage set to an empty `nlohmann::json` object. If the `name` lacks the `.json` extension, that is automatically added.
 * `void save()`: force dumping the current internal storage in the associated file. **It is automatically called when the datastore is destructed** (for example upon regular exit).
