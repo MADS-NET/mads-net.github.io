@@ -296,7 +296,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">June 12, 2026</p>
+      <p class="date-modified">June 15, 2026</p>
     </div>
   </div>
     
@@ -305,7 +305,7 @@ cookieconsent.run({
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>MADS Version 1.3.5 introduces the <code>Datastore</code> class for plugins. This class allows storing persistent information at device level.</p>
+    <p>Starting from MADS v1.3.5, the <code>Datastore</code> class for plugins allows storing persistent information at device level. This feature is available in all current MADS v2.x versions.</p>
   </div>
 </div>
 
@@ -326,7 +326,7 @@ cookieconsent.run({
 <h2 class="anchored" data-anchor-id="the-datastore-class">The <code>Datastore</code> class</h2>
 <p>It is a C++ header-only class, provided by the <a href="https://github.com/pbosetti/mads_plugin">plugin base project and classes</a>. This project is automatically fetched for you whenever you compile a new plugin, and provides the base code, on top of which plugins are built. In particular, it provides the base classes <code>Source</code>, <code>Filter</code>, and <code>Sink</code>, that are inherited by actual plugin classes.</p>
 <p>The source code of this project is downloaded into <code>build/_deps/plugin-src</code> in each plugin project directory.</p>
-<p>Starting from version 1.3.5, the code in <code>build/_deps/plugin-src/src</code> also provides a <code>datastore.hpp</code> class implementation. It is a relatively simple class for persistently store a <code>nlohmann::json</code> object on a text file in a local temporary folder (your OS temp dir as provided by C++ <code>std::filesystem::temp_directory_path()</code>). The class has the following notable methods:</p>
+<p>The code in <code>build/_deps/plugin-src/src</code> provides a <code>datastore.hpp</code> class implementation (available in MADS v1.3.5 and later, including all v2.x versions). It is a relatively simple class for persistently store a <code>nlohmann::json</code> object on a text file in a local temporary folder (your OS temp dir as provided by C++ <code>std::filesystem::temp_directory_path()</code>). The class has the following notable methods:</p>
 <ul>
 <li><code>void prepare(std::string name)</code>: to be called once, it prepares a datastore file: if it exists, the file is read and parsed as a <code>nlohmann::json</code> object internally stored; if it does not exist, it is created (in the OS temp dir) and the internal storage set to an empty <code>nlohmann::json</code> object. If the <code>name</code> lacks the <code>.json</code> extension, that is automatically added.</li>
 <li><code>void save()</code>: force dumping the current internal storage in the associated file. <strong>It is automatically called when the datastore is destructed</strong> (for example upon regular exit).</li>

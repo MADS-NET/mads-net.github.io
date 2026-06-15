@@ -303,7 +303,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">June 12, 2026</p>
+      <p class="date-modified">June 15, 2026</p>
     </div>
   </div>
     
@@ -399,9 +399,9 @@ Important
 <p>The queue is important for agents that accept incoming messages at variable rates, possibly in bursts. This allow a thorough processing of the incoming messages. But if the incoming messages arrive at a regular and sustained rate <strong>faster than the agent’s processing capability</strong>, the queue is ineffective and only results in delay until full, then excess messages are discarded (silently). In such a condition, you want:</p>
 <ul>
 <li>to reduce the rate of incoming messages, or:</li>
-<li>to reduce the queue size to 1 so that excess messages are discarded and the <strong>older one</strong> is processed</li>
+<li>to reduce the queue size to 1 (Last-Known-Value delivery) so that excess messages are discarded and the <strong>latest (newest) one</strong> is processed</li>
 </ul>
-<p>Unfortunately, due to ZeroMQ architecture, it is not possible to only keep the most recent message (but if you think about that, it makes no practical difference).</p>
+<p>This is achieved via <code>set_delivery(Delivery::LastKnownValue)</code> or by setting <code>queue_size = 1</code> in the <code>mads.ini</code> file.</p>
 </div>
 </div>
 </section>

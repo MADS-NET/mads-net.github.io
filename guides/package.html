@@ -301,7 +301,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">June 12, 2026</p>
+      <p class="date-modified">June 15, 2026</p>
     </div>
   </div>
     
@@ -330,6 +330,8 @@ cookieconsent.run({
 <h2 class="anchored" data-anchor-id="listing-available-packages">Listing available packages</h2>
 <p>To list the available packages, use the following command:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--list</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For a more detailed listing including additional metadata, add the <code>--verbose</code> flag:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--list</span> <span class="at">--verbose</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This will display a list of the available packages, along with a brief description of each package:</p>
 <pre><code>MADS installable packages
 Compatible ZIPs for darwin-arm64 (including universal)
@@ -394,7 +396,7 @@ validator.plugin  https://github.com/MADS-NET/validator_plugin
 <section id="getting-info-about-a-package" class="level2">
 <h2 class="anchored" data-anchor-id="getting-info-about-a-package">Getting info about a package</h2>
 <p>To get more information about a specific package, use the following command:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--info</span> <span class="op">&lt;</span>package-name<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--info</span> <span class="op">&lt;</span>package-name<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>For the <code>mads-chat</code> package on Linux you get the following output:</p>
 <pre><code>mads-chat  https://github.com/MADS-NET/mads_chat
 Type: tool
@@ -415,7 +417,7 @@ Suggested setup commands
 <section id="installing-a-package" class="level2">
 <h2 class="anchored" data-anchor-id="installing-a-package">Installing a package</h2>
 <p>To install a package, use the following command:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--install</span> <span class="op">&lt;</span>package-name<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--install</span> <span class="op">&lt;</span>package-name<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This will pull the latest version of the selected package from the MADS-NET repository and install it in the MADS system, making it immediately available for use.</p>
 <p>The content of the downloaded .zip folder is unpacked in a temporary folder and then installed in the <code>$(mads -p) prefix directory. If that directory requires privileged access, you may need to run the command with</code>sudo`.</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="`sudo` in Windows">
@@ -455,7 +457,7 @@ Important
 <section id="how-does-it-work" class="level1">
 <h1>How does it work?</h1>
 <p>The <a href="https://github.com/MADS-NET">MADS-NET</a> provides a JSON list of all available packages, which is retrieved by the <code>mads package --list</code> command. Since GitHub limits too frequent accesses, the list is cached for 6 hours. If you need to refresh the list, you can use the <code>--no-cache</code> option:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--list</span> <span class="at">--no-cache</span> <span class="co"># always force refresh the package list</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--list</span> <span class="at">--no-cache</span> <span class="co"># always force refresh the package list</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">

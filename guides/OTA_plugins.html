@@ -299,7 +299,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">June 12, 2026</p>
+      <p class="date-modified">June 15, 2026</p>
     </div>
   </div>
     
@@ -323,8 +323,8 @@ cookieconsent.run({
 </section>
 <section id="how-it-works" class="level1">
 <h1>How it works</h1>
-<p>Upon launch, each agent needs to load its settings file. By default, the agent assumes that it is running on the same device of the broker, so it tries and load the <code>mads.ini</code> file from the MADS prefix directory (equivalent to <code>$(mads -p)/etc</code>). If the agent is running on a different device, it must load the settings <strong>from the broker</strong>. This is done by providing the <code>-s</code> command line option to the agent, which specifies the broker address and port that provides the settings file (typ. port 9093). For example:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-s</span> tcp://mads-broker.local:9093 my_datasource.plugin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Upon launch, each agent needs to load its settings file. By default, the agent assumes that it is running on the same device of the broker, so it tries and load the <code>mads.ini</code> file from the MADS prefix directory (equivalent to <code>$(mads -p)/etc</code>). If the agent is running on a different device, it must load the settings <strong>from the broker</strong>. This is done by providing the <code>-s</code> command line option to the agent, which specifies the broker address and port that provides the settings file (typ. port 9092). For example:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-s</span> tcp://mads-broker.local:9092 my_datasource.plugin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>When the <code>-s</code> option contains a TCP URI address, the agent opens a special ZeroMQ communication channel to the broker, requesting for settings. To this request, the broker replies with a copy of the <code>mads.ini</code> file <strong>as loaded by the broker itself</strong>.</p>
 <p>Starting from MADS 1.3.0, the <code>mads.ini</code> file can contain, for each section, a new option called <code>attachment</code>. When this option is provided for an agent, the broker attaches to the INI file copy a binary attachment, read form the file path specified in the option. For example, the following <code>mads.ini</code> file:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[my_datasource]</span></span>
@@ -363,7 +363,7 @@ Note
 <p>The name of an agent can be always be overridden by the <code>-n</code> command line option, which allows to specify a custom name for the agent. This is useful, for example, when you want to run multiple instances of the same agent with different settings.</p>
 <p>Now, since the OTA loading of the plugin happens <strong>after</strong> the agent has loaded its settings, the agent name <strong>must be specified</strong> with the <code>-n</code> CLI option, otherwise would simply launch as general purpose agent with default names.</p>
 <p>For example, if the <code>mads.ini</code> file contains the <code>[my_datasource]</code> section as above, the agent must be launched as:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-s</span> tcp://mads-broker.local:9093 <span class="at">-n</span> my_datasource</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-s</span> tcp://mads-broker.local:9092 <span class="at">-n</span> my_datasource</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="dealing-with-architectures" class="level2">
 <h2 class="anchored" data-anchor-id="dealing-with-architectures">Dealing with architectures</h2>
@@ -378,7 +378,7 @@ Note
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">[my_datasource_x86]</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">attachment </span><span class="ot">=</span><span class="st"> "/path/to/my_datasource_x86.plugin"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p>when launching the agent, specify the correct section name with the <code>-n</code> option, depending on the architecture of the device running the agent:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-s</span> tcp://mads-broker.local:9093 <span class="at">-n</span> my_datasource_arm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-s</span> tcp://mads-broker.local:9092 <span class="at">-n</span> my_datasource_arm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 </ul>
 <p>Note that, when compiling a plugin, the <code>CMakeLists.txt</code> file in the plugin project has an option to append an architecture suffix to the generated plugin file: if you configure the project as:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-DPLUGIN_SUFFIX</span><span class="op">=</span>arm <span class="at">-DCMAKE_INSTALL_PREFIX</span><span class="op">=</span><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -387,7 +387,7 @@ Note
 <section id="command-line-vs.-attachment" class="level2">
 <h2 class="anchored" data-anchor-id="command-line-vs.-attachment">Command line vs.&nbsp;attachment</h2>
 <p>Note that command line options always override the settings in the <code>mads.ini</code> file, so if you also specify the plugin name, the broker attachment will be ignored. For example, the following command will not load the plugin from the broker, but will use the one specified on the command line (on the local filesystem):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-s</span> tcp://mads-broker.local:9093 <span class="at">-n</span> my_datasource my_datasource.plugin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source <span class="at">-s</span> tcp://mads-broker.local:9092 <span class="at">-n</span> my_datasource my_datasource.plugin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 <section id="python-agent" class="level1">

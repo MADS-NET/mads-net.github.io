@@ -34,11 +34,11 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/v2.html</loc>
-    <lastmod>2026-05-02T08:26:16.875Z</lastmod>
+    <lastmod>2026-06-15T15:39:47.182Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/install.html</loc>
-    <lastmod>2026-03-16T12:13:30.884Z</lastmod>
+    <lastmod>2026-06-15T15:39:55.306Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/rpio.html</loc>
@@ -46,7 +46,7 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/package.html</loc>
-    <lastmod>2026-06-08T10:31:48.767Z</lastmod>
+    <lastmod>2026-06-15T15:39:57.335Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/replay.html</loc>
@@ -66,7 +66,7 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/datastore.html</loc>
-    <lastmod>2025-09-03T13:19:33.441Z</lastmod>
+    <lastmod>2026-06-15T15:39:59.861Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/presentations/intro.html</loc>
@@ -94,7 +94,7 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/monolithic_agents.html</loc>
-    <lastmod>2025-08-08T07:29:34.279Z</lastmod>
+    <lastmod>2026-06-15T15:39:46.173Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/services.html</loc>
@@ -102,7 +102,7 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/plugins.html</loc>
-    <lastmod>2026-03-12T08:43:52.360Z</lastmod>
+    <lastmod>2026-06-15T15:40:09.026Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/replay_csv.html</loc>
@@ -118,7 +118,7 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/python.html</loc>
-    <lastmod>2026-03-04T09:54:16.614Z</lastmod>
+    <lastmod>2026-06-15T15:39:56.323Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/python_agent.html</loc>
@@ -138,11 +138,11 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/interaction.html</loc>
-    <lastmod>2025-09-10T07:03:11.120Z</lastmod>
+    <lastmod>2026-06-15T15:39:52.257Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/OTA_plugins.html</loc>
-    <lastmod>2025-07-07T14:29:03.420Z</lastmod>
+    <lastmod>2026-06-15T15:39:51.239Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/hdf5.html</loc>

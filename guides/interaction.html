@@ -296,7 +296,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">June 12, 2026</p>
+      <p class="date-modified">June 15, 2026</p>
     </div>
   </div>
     
@@ -362,7 +362,7 @@ Important
 <p>As an example, the following is a Python script that uses the <code>mads bridge</code> command to send 10 messages in a sequence:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open the bridge as a subprocess</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">len</span>(sys.argv) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  process <span class="op">=</span> subprocess.Popen(<span class="st">'mads-broker'</span>, stdin<span class="op">=</span>subprocess.PIPE)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  process <span class="op">=</span> subprocess.Popen([<span class="st">'mads'</span>, <span class="st">'bridge'</span>, <span class="st">'-t'</span>, sys.argv[<span class="dv">1</span>]], stdin<span class="op">=</span>subprocess.PIPE)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="st">"Usage: python3 stress.py topic"</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  sys.exit(<span class="dv">1</span>)</span>

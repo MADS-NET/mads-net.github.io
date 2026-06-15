@@ -263,7 +263,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">June 12, 2026</p>
+      <p class="date-modified">June 15, 2026</p>
     </div>
   </div>
     
@@ -342,7 +342,7 @@ cookieconsent.run({
 <h2 class="anchored" data-anchor-id="main-loop">Main loop</h2>
 <p>The main loop is implemented by calling the <code>agent.loop()</code> method. It takes two arguments:</p>
 <ul>
-<li>a C++17 lambda function, that grabs all the local context variables and has no arguments: <code>[&amp;]() { ... }</code> (mandatory);</li>
+<li>a C++17 lambda function, that grabs all the local context variables and returns <code>std::chrono::milliseconds</code>: <code>[&amp;]() -&gt; std::chrono::milliseconds { ...; return 0ms; }</code> (mandatory);</li>
 <li>a <code>std::chrono::milliseconds</code> value, that defines the loop frequency (optional, typically read from settings and possibly overridden by a CLI option).</li>
 </ul>
 <div class="callout callout-style-default callout-important callout-titled">
@@ -363,7 +363,7 @@ Important
 <li><code>agent.receive()</code>: to receive messages from the broker; it returns a <code>message_type</code> enum, that can be <code>none</code>, <code>json</code>, or <code>blob</code> (a binary buffer);</li>
 <li><code>agent.last_message()</code>: to get the last received message, which is a <code>zmqpp::message</code> object;</li>
 <li><code>agent.last_topic()</code>: to get the topic of the last received message, which is a <code>std::string</code>;</li>
-<li><code>agent.remote_control()</code>: you must call it to process any incoming remote control message;</li>
+<li><code>agent.remote_control(std::get&lt;1&gt;(agent.last_message()))</code>: you must call it to process any incoming remote control message;</li>
 <li><code>agent.publish()</code>: to publish a JSON message to the broker. If not specified as second argument, it uses the default publish topic of the agent.</li>
 </ul>
 <p>Look at the <code>agent.hpp</code> header file for the complete list of methods available in the <code>agent</code> class.</p>

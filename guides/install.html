@@ -262,7 +262,7 @@ cookieconsent.run({
   <li><a href="#requirements-2" id="toc-requirements-2" class="nav-link" data-scroll-target="#requirements-2">Requirements</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#pthyon-interface" id="toc-pthyon-interface" class="nav-link" data-scroll-target="#pthyon-interface">Pthyon interface</a></li>
+  <li><a href="#python-interface" id="toc-python-interface" class="nav-link" data-scroll-target="#python-interface">Python interface</a></li>
   <li><a href="#building-from-source" id="toc-building-from-source" class="nav-link" data-scroll-target="#building-from-source">Building from source</a></li>
   </ul>
 </nav>
@@ -386,7 +386,7 @@ Important
 <li><code>mads-&lt;version&gt;-Linux-aarch64.deb</code> for ARM architectures (e.g.&nbsp;Raspberry Pi)</li>
 </ul>
 <p>Installing is as simple as:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">MV</span><span class="op">=</span>1.3.3  <span class="co"># or the latest version</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">MV</span><span class="op">=</span>2.1.1  <span class="co"># or the latest version</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/pbosetti/MADS/releases/download/v<span class="va">${MV}</span>/mads-<span class="va">${MV}</span>-Linux-aarch64.deb</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dpkg <span class="at">-i</span> mads-<span class="va">${MV}</span>-Linux-aarch64.deb</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> mads-<span class="va">${MV}</span>-Linux-aarch64.deb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -421,8 +421,8 @@ Note
 </section>
 </section>
 </section>
-<section id="pthyon-interface" class="level1">
-<h1>Pthyon interface</h1>
+<section id="python-interface" class="level1">
+<h1>Python interface</h1>
 <p>Since MADS v2.0.0, a Python interface is provided as a module <code>mads_agent</code> by the file in <code>$(mads -p)/python/mads_agent.py</code>.</p>
 <p>To be able to use it, you need to add the folder <code>$(mads -p)/python</code> to the Python search path. There are two possible ways:</p>
 <p><strong>Method 1</strong>: environment variable (probably the easiest way):</p>
@@ -444,7 +444,7 @@ Note
 <li>Git</li>
 </ul>
 <p>Get the source code from the MADS repository:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">-d1</span> https://github.com/pbosetti/MADS.git</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--depth</span> 1 https://github.com/pbosetti/MADS.git</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> MADS</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Building MADS takes three steps:</p>
 <ol type="1">
