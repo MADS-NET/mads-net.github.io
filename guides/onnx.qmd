@@ -1,0 +1,574 @@
+---
+title: "ML Inference with ONNX Runtime"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 06/02/2025
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format:
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [onnx, ml, ai, inference, runtime]
+abstract: |
+  Drop a trained neural network into your MADS network and let it run.
+  The `onnx_agent` package ships two ready-to-use MADS agents that load any
+  [ONNX](https://onnx.ai){target="_blank"} model and run inference on CPU or GPU:
+  a **filter** that transforms JSON tensors on the wire, and a **source** that
+  classifies a live webcam feed. This guide covers building the agents
+  (including the GPU-runtime minefield), driving them with the bundled models,
+  and retargeting them at a model of your own.
+---
+
+# What's in the box
+
+The [`onnx_agent`](https://github.com/MADS-NET/onnx_agent){target="_blank"} package gives you two MADS agents and one diagnostic tool, all built on top of [ONNX Runtime](https://onnxruntime.ai){target="_blank"}:
+
+| Executable | MADS role | What it does |
+|---|---|---|
+| `mads-onnx-filter` | **filter** | Subscribes to a topic, receives JSON-encoded tensors, runs an ONNX model, republishes the output tensors as JSON. Works with *any* model — no recompilation. |
+| `mads-onnx-source` | **source** | Internally-timed agent that grabs frames from a webcam (via OpenCV), runs an image classifier, and publishes top-k predictions. |
+| `mads-onnx-inspect` | *(none)* | Standalone utility: prints a model's input/output schema and a ready-to-paste JSON template, without touching the MADS network. |
+
+The split mirrors the two ways you usually want to use a model:
+
+* **As a filter** — the data already lives on the MADS bus (sensor streams, feature vectors, time series). You want to *transform* it: feed tensors in, get tensors out. This is the generic, model-agnostic path.
+* **As a source** — the model *originates* a new stream from hardware the rest of the network can't see (here, a camera). This path bakes in image preprocessing and classification post-processing, so it's specialised but turnkey.
+
+:::callout-note
+### A note on terminology
+In MADS parlance, an agent that produces data is a **source**, one that transforms it is a **filter**, and one that only consumes it is a **sink**. The `onnx_agent` ships a *filter* and a *source*. If you need a pure *sink* (e.g. classify-and-log with no republish), the source agent's loop is the closest reference — see [Retargeting the source](#retargeting-the-source-the-scenic-route).
+:::
+
+Two fully-worked examples come bundled and tested:
+
+* **Chronos-2** time-series forecasting → `mads-onnx-filter`
+* **MobileNetV2-12** ImageNet classification → `mads-onnx-source` (classifies the sample cat as *"tabby"* with 74.9% confidence)
+
+```
+onnx_agent/
+  src/
+    onnx/      OnnxModel, TensorJson  — core library (zero MADS dependency)
+    source/    DataSource interface, CameraSource (OpenCV), Classify helper
+    main/      onnx_filter.cpp, onnx_source.cpp, onnx_inspect.cpp
+  examples/
+    chronos/   Chronos-2 ONNX time-series forecast
+    imagenet/  MobileNetV2-12 ImageNet classification
+  mads.ini     Ready-made configuration for both agents
+```
+
+---
+
+# Getting the agents pre-compiled
+
+Version 2.2.x of MADS provides a new command, `mads package` that pulls and installs pre-compiled binaries of a selection of the most common and general purpose MADS agents and plugins.
+
+To install the ONNX agent, use the following command:
+
+```bash
+mads package --info mads-onnx
+mads package --install mads-onnx
+```
+
+The `--info` command shows a list of hints on how to configure your own system to run the models. Read them carefully, together with the rest of this guide.
+
+
+# Building the agents
+
+## Requirements
+
+| Requirement | Notes |
+|---|---|
+| C++20 compiler | Clang recommended (LLVM style) |
+| CMake ≥ 3.28 | Ninja backend preferred |
+| MADS ≥ 2.2.0 | Discovered automatically via `mads -p` |
+| ONNX Runtime 1.26.0 | **Downloaded automatically** by `FetchContent` |
+| OpenCV 4.x | *Optional* — needed only for `mads-onnx-source` |
+
+The two pieces you might expect to fight with — ONNX Runtime and OpenCV — mostly take care of themselves. ONNX Runtime is fetched for your platform at configure time (no system install). OpenCV is found with `find_package`; if it's missing, the source agent is simply dropped from the build and the filter + inspect tools build anyway.
+
+## Quick start (developer build)
+
+```bash
+cmake -Bbuild -GNinja -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j6
+```
+
+MADS is located by running `mads -p`. Override with `-DMADS_ROOT=/path/to/mads` or the `MADS_ROOT` environment variable.
+
+Smoke-test it immediately:
+
+```bash
+./build/src/main/mads-onnx-inspect -m examples/imagenet/mobilenetv2-12.onnx
+```
+
+:::callout-tip
+On Linux, set `export CC=clang CXX=clang++` before configuring. On Windows, run from a **Developer Command Prompt for VS 2022** so MSVC and Ninja are on the path.
+:::
+
+## Self-contained package (for distribution)
+
+To produce a zip you can unzip-and-run anywhere — ONNX Runtime library included:
+
+```bash
+cmake -Bbuild -GNinja -DCMAKE_BUILD_TYPE=Release \
+      -DMADS_INSTALL_AGENT=ON \
+      -DCMAKE_INSTALL_PREFIX="$PWD/package"
+cmake --build build -j6
+cmake --build build --target package
+```
+
+The result, `build/onnx_agent-<version>-<os>-<arch>.zip`, bundles the binaries plus the ONNX Runtime shared library, wired with `@executable_path/../lib` (macOS) / `$ORIGIN/../lib` (Linux) so it's fully relocatable.
+
+To install straight into the MADS prefix instead:
+
+```bash
+cmake -Bbuild -GNinja -DCMAKE_BUILD_TYPE=Release -DMADS_INSTALL_AGENT=ON
+cmake --build build --target install      # → $(mads -p)/bin and /lib
+```
+
+:::callout-important
+### macOS Gatekeeper
+Downloaded binaries are quarantined. After installing, clear the flag once:
+
+```bash
+xattr -d com.apple.quarantine "$(mads -p)/bin/mads-onnx-filter"
+xattr -d com.apple.quarantine "$(mads -p)/bin/mads-onnx-source"
+xattr -d com.apple.quarantine "$(mads -p)/lib/libonnxruntime.1.dylib"
+```
+:::
+
+## CMake options worth knowing
+
+| Option | Default | Description |
+|---|---|---|
+| `MADS_ROOT` | auto | Path to the MADS installation prefix |
+| `MADS_INSTALL_AGENT` | `OFF` | Install agents + ORT lib (required for the `package` target) |
+| `ORT_VERSION` | `1.26.0` | ONNX Runtime prebuilt version to download |
+| `ONNX_CPU_ONLY` | `OFF` | Fetch the small CPU-only ORT archive (disables GPU EPs, faster download) |
+| `VERSION` | from git tag | Package version (override in CI without tags) |
+
+The project version is read from the latest `v*.*.*` git tag (`git tag v1.0.0`), or overridden with `-DVERSION=1.0.0`.
+
+---
+
+# The GPU runtime minefield {#gpu}
+
+This is where ONNX deployments usually go sideways, so it gets its own section.
+
+## The one rule to remember
+
+> Inference runs on **CPU by default**. A GPU **execution provider (EP)** is opt-in, selected by `execution_provider` in `mads.ini` or `--ep <name>` on the CLI. If the requested EP isn't available, the agent prints a **yellow warning and silently falls back to CPU** — it never hard-fails.
+
+So a wrong `--ep` flag costs you speed, never a crash. The *active* provider (after any fallback) is printed in every startup banner and in `mads-onnx-inspect`, so you can always confirm what actually ran.
+
+## What's available where
+
+Each prebuilt package ships a **single, GPU-capable** ONNX Runtime — there's no separate "GPU build" to download. What differs is which EP that runtime was compiled with:
+
+| Platform | GPU EP | Status | How to enable |
+|---|---|---|---|
+| **macOS arm64** | CoreML (ANE / GPU) | Built in ✅ | `execution_provider = coreml` (or `auto`) |
+| **Windows x64** | DirectML (any DX12 GPU) | Built in ✅ | `execution_provider = directml` |
+| **Linux x64** | CUDA (NVIDIA) | Sidecar 🔧 | install CUDA + run `enable-cuda.sh` |
+| **Linux aarch64** | — | CPU only | n/a |
+
+### macOS — CoreML, zero setup
+
+The standard `osx-arm64` ONNX Runtime already includes the CoreML and WebGPU EPs. CoreML routes work to the Apple Neural Engine / GPU via `MLComputeUnitsAll`. Nothing to install:
+
+```bash
+mads-onnx-source --ep coreml ...   # ANE / GPU
+mads-onnx-source --ep auto   ...   # auto-pick the best EP
+```
+
+### Windows — DirectML, zero setup
+
+The Windows package ships `onnxruntime-win-x64-gpu`, whose `onnxruntime.dll` has DirectML compiled in. DirectML runs on **any** DirectX 12 GPU (NVIDIA, AMD, Intel) with no extra drivers:
+
+```ini
+[agents]
+execution_provider = "directml"
+```
+
+The ~285 MB CUDA sidecar DLLs are deliberately **excluded** to keep the download small; CPU and DirectML are always available.
+
+### Linux x64 — CUDA is opt-in {#cuda-sidecar}
+
+This is the fiddly one. The Linux x64 package ships the GPU-capable **core** library (`libonnxruntime.so.1.26.0`, built against CUDA 12) plus `libonnxruntime_providers_shared.so`. The core lib runs on CPU out of the box and `dlopen`s the CUDA provider *lazily*, only when `execution_provider = cuda` is set — so it loads fine on hosts with no CUDA installed.
+
+The heavyweight CUDA/TensorRT provider libraries (~215 MB) are **not** in the base package. To turn on CUDA inference:
+
+1. Install **NVIDIA CUDA Toolkit 12.x** and **cuDNN 9.x** on the host.
+2. Run the sidecar installer, which fetches `libonnxruntime_providers_cuda.so` into `$(mads -p)/lib`:
+   ```bash
+   chmod +x scripts/enable-cuda.sh
+   ./scripts/enable-cuda.sh
+   ```
+3. Set `execution_provider = "cuda"` in the `[agents]` section.
+
+:::callout-warning
+If in doubt whether your core lib will load on a CUDA-less host, check with `ldd libonnxruntime.so.1.26.0` — libcudart should be a lazy/weak dependency, not a hard one. This is the standard ORT design but worth verifying on unfamiliar hardware.
+:::
+
+## Execution providers and threads — the knobs
+
+All three executables accept the same EP and threading options.
+
+| EP value | Meaning |
+|---|---|
+| `cpu` | CPU only — always available, the default |
+| `coreml` | Apple CoreML (ANE / GPU), macOS |
+| `directml` | DirectX ML, Windows GPU |
+| `cuda` | NVIDIA CUDA, Linux/Windows GPU |
+| `webgpu` | WebGPU EP — experimental |
+| `auto` | Pick the best available EP on this platform |
+
+| Thread setting | Default | Meaning |
+|---|---|---|
+| `intra_op_threads` | `0` | Parallelism *within* one operator. `0` = ORT default (all cores). |
+| `inter_op_threads` | `0` | Parallelism *across* independent graph nodes. `0` = ORT default. |
+
+:::callout-tip
+Leave the thread counts at `0`. The old hardcoded `1` was a pessimisation — letting ORT use all cores is almost always faster.
+:::
+
+CLI flags (shared by all three binaries) override the INI:
+
+```
+--ep <name>            Execution provider
+--threads <n>          Intra-op thread count
+--inter-threads <n>    Inter-op thread count
+--gpu-device <idx>     GPU device index (cuda / directml)
+```
+
+And the matching `[agents]` INI block (overridable per-agent in `[onnx-filter]` / `[onnx-source]`):
+
+```ini
+[agents]
+execution_provider = "cpu"   # cpu | coreml | webgpu | cuda | directml | auto
+intra_op_threads   = 0        # 0 = let ORT choose (recommended)
+inter_op_threads   = 0
+gpu_device_id      = 0        # cuda / directml only
+```
+
+A quick reality check on macOS, where CUDA/DirectML are genuinely absent:
+
+```bash
+mads-onnx-filter --test -m model.onnx --ep cuda
+# [OnnxModel] Warning: execution provider 'cuda' is not available in this
+# ONNX Runtime build; falling back to CPU.
+```
+
+---
+
+# Talking to a model: the tensor ↔ JSON contract {#schema}
+
+Both agents speak JSON on the MADS bus. Every tensor is one JSON object:
+
+```json
+{
+  "shape": [2, 3],
+  "data":  [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
+  "dtype": "float32"
+}
+```
+
+* `shape` — integer array; dynamic (symbolic) dimensions appear as `-1`.
+* `data` — flat array, **row-major (C) order**.
+* `dtype` — optional. When omitted it's inferred: JSON ints → `int32`, floats → `float32`, strings → `string`, booleans → `bool`. Explicit types: `float32/64`, `int8/16/32/64`, `uint8/16/32/64`, `bool`, `string`.
+
+A message to the filter is a JSON object mapping **tensor names** to tensor objects:
+
+```json
+{
+  "context":        {"shape": [1, 192], "data": [...], "dtype": "float32"},
+  "attention_mask": {"shape": [1, 192], "data": [...], "dtype": "float32"}
+}
+```
+
+Don't guess the schema — **ask the model**:
+
+```bash
+mads-onnx-inspect -m examples/imagenet/mobilenetv2-12.onnx
+```
+
+```
+Inputs:
+  input
+    dtype : float32
+    shape : [?, 3, 224, 224]
+
+Outputs:
+  output
+    dtype : float32
+    shape : [?, 1000]
+
+Example input JSON schema:
+{
+  "input": { "shape": [1, 3, 224, 224], "data": [0.0], "dtype": "float32" }
+}
+```
+
+`?` marks a dynamic dimension (often the batch size). The same output is available via `mads-onnx-filter --inspect`, or as machine-readable JSON with `-j`.
+
+---
+
+# Using it as a filter {#filter}
+
+The filter is the workhorse: subscribe → run model → publish. Timing is **input-driven** — each received message triggers exactly one inference. **Switching models needs no code change**, only a different `--model-path`.
+
+## Configuration
+
+```ini
+[onnx-filter]
+model_path = "/path/to/your/model.onnx"   # required
+pub_topic  = "onnx-filter"                 # default
+sub_topic  = ["onnx-filter-input"]         # default; note: array
+```
+
+Topic naming follows the standard MADS convention: the default sub topic is `onnx-filter-input`, the pub topic is `onnx-filter`. Passing `--name foo` rewires them to `foo-input` / `foo`.
+
+## Default model: Chronos-2 forecasting
+
+The bundled example forecasts the `chicken.csv` time series with HuggingFace's [chronos-2-onnx](https://huggingface.co/kashif/chronos-2-onnx){target="_blank"} model.
+
+```bash
+# 1. Download + patch the model (~456 MB)
+pip3 install onnx
+bash examples/chronos/download_model.sh
+
+# 2. Inspect the schema
+./build/src/main/mads-onnx-filter --inspect -m examples/chronos/model_fixed.onnx
+
+# 3. Build the input JSON from the CSV
+python3 examples/chronos/make_input.py        # → chronos_input.json
+
+# 4. Run offline, no broker needed
+./build/src/main/mads-onnx-filter --test \
+  -m examples/chronos/model_fixed.onnx \
+  --input examples/chronos/chronos_input.json
+```
+
+```
+Output:
+{
+  "quantile_preds": {
+    "dtype": "float32",
+    "shape": [1, 21, 16],
+    "data": [17.91, 14.56, ..., 167.70]   // 21 * 16 = 336 values
+  }
+}
+```
+
+Output shape `[1, 21, 16]` = 1 batch × 21 quantile levels × 16 future steps. **Quantile index 10 (q = 0.50) is the median forecast.**
+
+:::callout-note
+### Two Chronos gotchas the example handles for you
+1. **`context_length` must be a multiple of 16** (the patch size). Left-pad shorter series with zeros and set `attention_mask = 0` for the padding — `make_input.py` does this.
+2. **The released ONNX has a graph bug**: a `ConstantOfShape` emits `float32` values used as integer indices by a downstream `Gather`, which ORT rejects. `fix_model.py` inserts a `Cast(to=INT64)` and saves `model_fixed.onnx`.
+:::
+
+## Going live
+
+Point the filter at a model and let messages drive it:
+
+```bash
+./build/src/main/mads-onnx-filter -m examples/chronos/model_fixed.onnx
+```
+
+Now any publisher on `onnx-filter-input` that sends a tensor map matching the schema gets a forecast back on `onnx-filter`:
+
+```json
+{
+  "context":            {"shape": [1, 192], "data": [...], "dtype": "float32"},
+  "group_ids":          {"shape": [1],      "data": [0],   "dtype": "int64"},
+  "attention_mask":     {"shape": [1, 192], "data": [...], "dtype": "float32"},
+  "future_covariates":  {"shape": [1, 16],  "data": [...], "dtype": "float32"},
+  "num_output_patches": {"shape": [],       "data": [1],   "dtype": "int64"}
+}
+```
+
+---
+
+# Using it as a source {#source}
+
+The source agent is the turnkey one: it reads a camera, preprocesses each frame into a float32 NCHW tensor, runs a classifier, and publishes top-k predictions on a timer. It **requires OpenCV at build time** — without it, the binary isn't built at all.
+
+## Default model: MobileNetV2 ImageNet classification
+
+```bash
+# 1. Download model + labels + a sample image
+bash examples/imagenet/download_model.sh
+
+# 2. Smoke-test on a still image — no broker, no camera
+./build/src/main/mads-onnx-source --test \
+  -m examples/imagenet/mobilenetv2-12.onnx \
+  --image examples/imagenet/sample_cat.jpg \
+  --labels examples/imagenet/imagenet_classes.txt
+```
+
+```json
+{
+  "best":  { "class_id": 281, "label": "tabby", "confidence": 0.7495 },
+  "top_k": [
+    { "class_id": 281, "label": "tabby",        "confidence": 0.7495 },
+    { "class_id": 285, "label": "Egyptian cat",  "confidence": 0.1142 },
+    { "class_id": 282, "label": "tiger cat",     "confidence": 0.1081 }
+  ]
+}
+```
+
+A plausible top-3 (tabby / Egyptian cat / tiger cat) confirms the whole preprocessing pipeline — resize → BGR→RGB → `[0,1]` scaling → ImageNet mean/std normalisation → NCHW — is wired correctly.
+
+## Going live (webcam + broker)
+
+The bundled `mads.ini` already has a complete `[onnx-source]` section:
+
+```ini
+[onnx-source]
+model_path     = "examples/imagenet/mobilenetv2-12.onnx"
+labels_path    = "examples/imagenet/imagenet_classes.txt"
+pub_topic      = "onnx-source"
+period         = 100        # ms between frames (~10 fps)
+top_k          = 5
+camera         = 0
+capture_width  = 640
+capture_height = 480
+
+# ── Image pre-processing (must match the model's training recipe) ──
+input_width       = 224
+input_height      = 224
+nchw              = true                    # NCHW (true) vs NHWC (false)
+rgb               = true                    # BGR→RGB before normalising
+scale             = 0.00392156862745098     # 1/255
+mean              = [0.485, 0.456, 0.406]
+std               = [0.229, 0.224, 0.225]
+input_tensor_name = "input"
+```
+
+```bash
+./build/src/main/mads-onnx-source \
+  --settings mads.ini \
+  -m examples/imagenet/mobilenetv2-12.onnx \
+  --labels examples/imagenet/imagenet_classes.txt
+```
+
+Each tick publishes a `{ "best": …, "top_k": [...] }` message on `onnx-source`. Loop period, camera index, capture resolution and top-k are all tunable from the INI or the CLI (`--period`, `--camera`, `--width`, `--height`, `-k`).
+
+---
+
+# Retargeting to your own model
+
+This is the payoff. There are two very different difficulty levels depending on which agent you're adapting.
+
+## Filter → a new model: trivial {#retargeting-the-filter}
+
+Because the filter is fully model-agnostic, **there is no code to write**. The recipe:
+
+1. **Inspect** the model to learn its input/output names, dtypes and shapes:
+   ```bash
+   mads-onnx-inspect -m your_model.onnx
+   ```
+2. **Match the JSON.** Make sure whatever publishes on `onnx-filter-input` emits a tensor map with exactly those input names, dtypes, and row-major data. The schema printed by `--inspect` is your template.
+3. **Point and run:**
+   ```ini
+   [onnx-filter]
+   model_path = "/path/to/your_model.onnx"
+   ```
+   ```bash
+   mads-onnx-filter -m /path/to/your_model.onnx
+   ```
+
+That's the whole job. The only real work is upstream — getting your data into the JSON tensor format (see [the schema section](#schema)). If a model has a graph quirk like Chronos's, patch the `.onnx` offline once; the agent itself stays untouched.
+
+:::callout-tip
+Need to feed a filter from another MADS agent? Have that agent build the tensor-map JSON and publish it on the filter's sub topic. Need a *sink* that consumes the filter's output? Point any logger/bridge/sink at the filter's `pub_topic`.
+:::
+
+## Source → a new model: the scenic route {#retargeting-the-source-the-scenic-route}
+
+The source agent is harder to retarget because it carries domain logic the filter doesn't: it knows how to turn camera frames into tensors (preprocessing) and how to turn logits into labelled predictions (post-processing). Three cases, in increasing order of effort.
+
+### Case 1 — another image classifier (config only)
+
+If your model is *also* an ImageNet-style classifier — image in, class logits out — you don't write code. Just retune the preprocessing constants to match its training recipe and swap the labels file:
+
+```ini
+[onnx-source]
+model_path        = "your_classifier.onnx"
+labels_path       = "your_labels.txt"
+input_width       = 224          # whatever your model expects
+input_height      = 224
+nchw              = true         # or false for NHWC models
+rgb               = true
+scale             = 0.00392156862745098
+mean              = [...]         # your model's per-channel mean
+std               = [...]         # your model's per-channel std
+input_tensor_name = "input"      # from --inspect
+```
+
+The agent reads the input tensor name straight from the model metadata, applies softmax + top-k ranking generically, and labels the results from your file. Done.
+
+### Case 2 — a different *input* modality (implement `DataSource`)
+
+If the input isn't a camera frame — a sensor array, an audio buffer, a file stream — implement the `Onnx::DataSource` interface. It is intentionally tiny ([`src/source/DataSource.hpp`](https://github.com/MADS-NET/onnx_agent/blob/main/src/source/DataSource.hpp){target="_blank"}):
+
+```cpp
+class DataSource {
+public:
+  virtual bool open()  = 0;                            // acquire resources
+  virtual void close() = 0;                            // release them
+  virtual std::optional<nlohmann::json> next() = 0;    // produce one tensor map
+};
+```
+
+`next()` returns a JSON tensor map (the same `{name: {shape,data,dtype}}` format) ready for inference, or `std::nullopt` to mean "no data yet / end of stream / recoverable error". The bundled `CameraSource` is your reference implementation.
+
+Implementation steps:
+
+1. **Subclass `DataSource`** in a new header/source pair under `src/source/`.
+2. **`open()`** — grab your hardware/file handle; return `false` on failure.
+3. **`next()`** — read one sample, shape it into a flat row-major array, and wrap it as `{ "<input_name>": { "shape": [...], "data": [...], "dtype": "..." } }`. Match the names and dtypes that `mads-onnx-inspect` reports.
+4. **`close()`** — release everything; must be safe even if `open()` failed.
+5. **Wire it into the loop.** In a copy of [`onnx_source.cpp`](https://github.com/MADS-NET/onnx_agent/blob/main/src/main/onnx_source.cpp){target="_blank"}, replace the `std::make_unique<Onnx::CameraSource>(...)` construction with your source. The agent loop already calls `next()` → `run_inference()` → `publish()` on a timer; you're swapping the front end only.
+6. **Add it to CMake** in [`src/source/CMakeLists.txt`](https://github.com/MADS-NET/onnx_agent/blob/main/src/source/CMakeLists.txt){target="_blank"} and (if it has no OpenCV dependency) consider dropping the `HAVE_OPENCV` guard so it builds without OpenCV.
+
+### Case 3 — a different *output* task (replace post-processing)
+
+If the model doesn't emit class logits — say it does detection, segmentation, regression, or forecasting — the softmax/top-k step in `Classify` no longer applies. Replace the post-processing:
+
+1. The raw model output is already available in the loop as a JSON tensor map (`run_inference()` returns `{output_name: {shape,data,dtype}}`).
+2. Drop the call to `Onnx::classify(...)` and substitute your own transform: read the output tensor(s) you care about, derive whatever payload makes sense (boxes, masks, a scalar, a forecast), and `agent.publish(...)` it.
+3. If the post-processing is reusable, mirror the `Classify` module's shape — a small free function in `src/source/` with a clean header — rather than inlining it in `main`.
+
+:::callout-note
+### When the source is really a filter
+If your new task is "transform tensors that are already on the bus" rather than "originate a stream from hardware", you almost certainly want the **filter** path (Case: trivial) instead of forking the source. Only reach for the source agent when the data genuinely starts outside MADS.
+:::
+
+---
+
+# Public API quick reference
+
+Everything lives in namespace `Onnx`, headers under `src/`, all Doxygen-documented:
+
+| Symbol | Header | Purpose |
+|---|---|---|
+| `OnnxModel` | `onnx/OnnxModel.hpp` | RAII model wrapper: load, inspect, `run()` |
+| `SessionConfig` | `onnx/OnnxModel.hpp` | EP + thread settings; graceful CPU fallback |
+| `TensorInfo` | `onnx/OnnxModel.hpp` | Tensor name / shape / dtype metadata |
+| `json_to_tensor()` | `onnx/TensorJson.hpp` | JSON tensor object → `Ort::Value` |
+| `tensor_to_json()` | `onnx/TensorJson.hpp` | `Ort::Value` → JSON tensor object |
+| `make_input_schema()` | `onnx/TensorJson.hpp` | Generate an example input JSON from a model |
+| `DataSource` | `source/DataSource.hpp` | Pure-virtual data-source interface |
+| `CameraSource` | `source/CameraSource.hpp` | OpenCV webcam reference implementation |
+| `PreprocessConfig` | `source/CameraSource.hpp` | Image preprocessing constants |
+| `classify()` / `top_k_predictions()` | `source/Classify.hpp` | Softmax + top-k post-processing |
+
+The `onnx/` library has **zero MADS dependency** — you can reuse `OnnxModel` and the tensor↔JSON helpers in any C++20 project, not just MADS agents.
