@@ -2,6 +2,7 @@
   {
     "listing": "/guides.html",
     "items": [
+      "/guides/onnx.html",
       "/guides/arduino_uno_q.html",
       "/guides/package.html",
       "/guides/json_validation.html",
@@ -32,7 +33,6 @@
       "/guides/containerized.html",
       "/guides/rpio.html",
       "/guides/python_agent.html",
-      "/guides/onnx.html",
       "/guides/zeroconf.html"
     ]
   }
