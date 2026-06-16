@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Paolo Bosetti">
+<meta name="dcterms.date" content="2025-06-02">
+
+<title>ML Inference with ONNX Runtime</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-34d578f5c66cc91f3a0d6b67e9812be3.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-a3703a0dc74fdf50fbc673dfac110324.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-34d578f5c66cc91f3a0d6b67e9812be3.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-64b7de47a7e8b02f335e91eb41b2262c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-fbd88b76561897797376a857d5eea4ac.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-64b7de47a7e8b02f335e91eb41b2262c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L37VBCVVQW"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-L37VBCVVQW', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"express",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  ,
+"language":"en"
+  });
+});
+</script> 
+  
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo light-content">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo dark-content">
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../start.html"> 
+<span class="menu-text">Start here</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../guides.html"> 
+<span class="menu-text">Guides</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../why.html"> 
+<span class="menu-text">Why MADS?</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../who_is_using.html"> 
+<span class="menu-text">Use cases</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-presentations" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Presentations</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-presentations">    
+        <li>
+    <a class="dropdown-item" href="../presentations/intro.html">
+ <span class="dropdown-text"><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Intro</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://git.new/MADS"> 
+<span class="menu-text"><i class="bi-cloud-arrow-down-fill " style="" role="img" aria-hidden="true"></i> Get MADS</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text"><i class="bi-question-circle-fill " style="" role="img" aria-hidden="true"></i> About</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-github" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-github">    
+        <li>
+    <a class="dropdown-item" href="https://github.com/pbosetti/mads">
+ <span class="dropdown-text">Source Code</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/pbosetti/MADS/issues">
+ <span class="dropdown-text">Issues</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/MADS-Net">
+ <span class="dropdown-text">Plugins</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <div id="quarto-announcement" data-announcement-id="bac4023a3167daaad50509f0325463c0" class="alert alert-warning hidden"><div class="quarto-announcement-content">
+<p>Don’t miss the new <span style="font-weight:bold">MADSCode extension</span> for Visual Studio Code! <a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode">Learn more <i class="bi-link " style="" role="img" aria-hidden="true"></i></a></p>
+</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#whats-in-the-box" id="toc-whats-in-the-box" class="nav-link active" data-scroll-target="#whats-in-the-box">What’s in the box</a></li>
+  <li><a href="#getting-the-agents-pre-compiled" id="toc-getting-the-agents-pre-compiled" class="nav-link" data-scroll-target="#getting-the-agents-pre-compiled">Getting the agents pre-compiled</a></li>
+  <li><a href="#building-the-agents" id="toc-building-the-agents" class="nav-link" data-scroll-target="#building-the-agents">Building the agents</a>
+  <ul class="collapse">
+  <li><a href="#requirements" id="toc-requirements" class="nav-link" data-scroll-target="#requirements">Requirements</a></li>
+  <li><a href="#quick-start-developer-build" id="toc-quick-start-developer-build" class="nav-link" data-scroll-target="#quick-start-developer-build">Quick start (developer build)</a></li>
+  <li><a href="#self-contained-package-for-distribution" id="toc-self-contained-package-for-distribution" class="nav-link" data-scroll-target="#self-contained-package-for-distribution">Self-contained package (for distribution)</a></li>
+  <li><a href="#cmake-options-worth-knowing" id="toc-cmake-options-worth-knowing" class="nav-link" data-scroll-target="#cmake-options-worth-knowing">CMake options worth knowing</a></li>
+  </ul></li>
+  <li><a href="#gpu" id="toc-gpu" class="nav-link" data-scroll-target="#gpu">The GPU runtime minefield</a>
+  <ul class="collapse">
+  <li><a href="#the-one-rule-to-remember" id="toc-the-one-rule-to-remember" class="nav-link" data-scroll-target="#the-one-rule-to-remember">The one rule to remember</a></li>
+  <li><a href="#whats-available-where" id="toc-whats-available-where" class="nav-link" data-scroll-target="#whats-available-where">What’s available where</a>
+  <ul class="collapse">
+  <li><a href="#macos-coreml-zero-setup" id="toc-macos-coreml-zero-setup" class="nav-link" data-scroll-target="#macos-coreml-zero-setup">macOS — CoreML, zero setup</a></li>
+  <li><a href="#windows-directml-zero-setup" id="toc-windows-directml-zero-setup" class="nav-link" data-scroll-target="#windows-directml-zero-setup">Windows — DirectML, zero setup</a></li>
+  <li><a href="#cuda-sidecar" id="toc-cuda-sidecar" class="nav-link" data-scroll-target="#cuda-sidecar">Linux x64 — CUDA is opt-in</a></li>
+  </ul></li>
+  <li><a href="#execution-providers-and-threads-the-knobs" id="toc-execution-providers-and-threads-the-knobs" class="nav-link" data-scroll-target="#execution-providers-and-threads-the-knobs">Execution providers and threads — the knobs</a></li>
+  </ul></li>
+  <li><a href="#schema" id="toc-schema" class="nav-link" data-scroll-target="#schema">Talking to a model: the tensor ↔︎ JSON contract</a></li>
+  <li><a href="#filter" id="toc-filter" class="nav-link" data-scroll-target="#filter">Using it as a filter</a>
+  <ul class="collapse">
+  <li><a href="#configuration" id="toc-configuration" class="nav-link" data-scroll-target="#configuration">Configuration</a></li>
+  <li><a href="#default-model-chronos-2-forecasting" id="toc-default-model-chronos-2-forecasting" class="nav-link" data-scroll-target="#default-model-chronos-2-forecasting">Default model: Chronos-2 forecasting</a></li>
+  <li><a href="#going-live" id="toc-going-live" class="nav-link" data-scroll-target="#going-live">Going live</a></li>
+  </ul></li>
+  <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Using it as a source</a>
+  <ul class="collapse">
+  <li><a href="#default-model-mobilenetv2-imagenet-classification" id="toc-default-model-mobilenetv2-imagenet-classification" class="nav-link" data-scroll-target="#default-model-mobilenetv2-imagenet-classification">Default model: MobileNetV2 ImageNet classification</a></li>
+  <li><a href="#going-live-webcam-broker" id="toc-going-live-webcam-broker" class="nav-link" data-scroll-target="#going-live-webcam-broker">Going live (webcam + broker)</a></li>
+  </ul></li>
+  <li><a href="#retargeting-to-your-own-model" id="toc-retargeting-to-your-own-model" class="nav-link" data-scroll-target="#retargeting-to-your-own-model">Retargeting to your own model</a>
+  <ul class="collapse">
+  <li><a href="#retargeting-the-filter" id="toc-retargeting-the-filter" class="nav-link" data-scroll-target="#retargeting-the-filter">Filter → a new model: trivial</a></li>
+  <li><a href="#retargeting-the-source-the-scenic-route" id="toc-retargeting-the-source-the-scenic-route" class="nav-link" data-scroll-target="#retargeting-the-source-the-scenic-route">Source → a new model: the scenic route</a>
+  <ul class="collapse">
+  <li><a href="#case-1-another-image-classifier-config-only" id="toc-case-1-another-image-classifier-config-only" class="nav-link" data-scroll-target="#case-1-another-image-classifier-config-only">Case 1 — another image classifier (config only)</a></li>
+  <li><a href="#case-2-a-different-input-modality-implement-datasource" id="toc-case-2-a-different-input-modality-implement-datasource" class="nav-link" data-scroll-target="#case-2-a-different-input-modality-implement-datasource">Case 2 — a different <em>input</em> modality (implement <code>DataSource</code>)</a></li>
+  <li><a href="#case-3-a-different-output-task-replace-post-processing" id="toc-case-3-a-different-output-task-replace-post-processing" class="nav-link" data-scroll-target="#case-3-a-different-output-task-replace-post-processing">Case 3 — a different <em>output</em> task (replace post-processing)</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#public-api-quick-reference" id="toc-public-api-quick-reference" class="nav-link" data-scroll-target="#public-api-quick-reference">Public API quick reference</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">ML Inference with ONNX Runtime</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">onnx</div>
+    <div class="quarto-category">ml</div>
+    <div class="quarto-category">ai</div>
+    <div class="quarto-category">inference</div>
+    <div class="quarto-category">runtime</div>
+  </div>
+  </div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Paolo Bosetti </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Trento
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 2, 2025</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">June 16, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p>Drop a trained neural network into your MADS network and let it run. The <code>onnx_agent</code> package ships two ready-to-use MADS agents that load any <a href="https://onnx.ai" target="_blank">ONNX</a> model and run inference on CPU or GPU: a <strong>filter</strong> that transforms JSON tensors on the wire, and a <strong>source</strong> that classifies a live webcam feed. This guide covers building the agents (including the GPU-runtime minefield), driving them with the bundled models, and retargeting them at a model of your own.</p>
+  </div>
+</div>
+
+
+</header>
+
+
+<section id="whats-in-the-box" class="level1">
+<h1>What’s in the box</h1>
+<p>The <a href="https://github.com/MADS-NET/onnx_agent" target="_blank"><code>onnx_agent</code></a> package gives you two MADS agents and one diagnostic tool, all built on top of <a href="https://onnxruntime.ai" target="_blank">ONNX Runtime</a>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Executable</th>
+<th>MADS role</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>mads-onnx-filter</code></td>
+<td><strong>filter</strong></td>
+<td>Subscribes to a topic, receives JSON-encoded tensors, runs an ONNX model, republishes the output tensors as JSON. Works with <em>any</em> model — no recompilation.</td>
+</tr>
+<tr class="even">
+<td><code>mads-onnx-source</code></td>
+<td><strong>source</strong></td>
+<td>Internally-timed agent that grabs frames from a webcam (via OpenCV), runs an image classifier, and publishes top-k predictions.</td>
+</tr>
+<tr class="odd">
+<td><code>mads-onnx-inspect</code></td>
+<td><em>(none)</em></td>
+<td>Standalone utility: prints a model’s input/output schema and a ready-to-paste JSON template, without touching the MADS network.</td>
+</tr>
+</tbody>
+</table>
+<p>The split mirrors the two ways you usually want to use a model:</p>
+<ul>
+<li><strong>As a filter</strong> — the data already lives on the MADS bus (sensor streams, feature vectors, time series). You want to <em>transform</em> it: feed tensors in, get tensors out. This is the generic, model-agnostic path.</li>
+<li><strong>As a source</strong> — the model <em>originates</em> a new stream from hardware the rest of the network can’t see (here, a camera). This path bakes in image preprocessing and classification post-processing, so it’s specialised but turnkey.</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A note on terminology
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In MADS parlance, an agent that produces data is a <strong>source</strong>, one that transforms it is a <strong>filter</strong>, and one that only consumes it is a <strong>sink</strong>. The <code>onnx_agent</code> ships a <em>filter</em> and a <em>source</em>. If you need a pure <em>sink</em> (e.g.&nbsp;classify-and-log with no republish), the source agent’s loop is the closest reference — see <a href="#retargeting-the-source-the-scenic-route">Retargeting the source</a>.</p>
+</div>
+</div>
+<p>Two fully-worked examples come bundled and tested:</p>
+<ul>
+<li><strong>Chronos-2</strong> time-series forecasting → <code>mads-onnx-filter</code></li>
+<li><strong>MobileNetV2-12</strong> ImageNet classification → <code>mads-onnx-source</code> (classifies the sample cat as <em>“tabby”</em> with 74.9% confidence)</li>
+</ul>
+<pre><code>onnx_agent/
+  src/
+    onnx/      OnnxModel, TensorJson  — core library (zero MADS dependency)
+    source/    DataSource interface, CameraSource (OpenCV), Classify helper
+    main/      onnx_filter.cpp, onnx_source.cpp, onnx_inspect.cpp
+  examples/
+    chronos/   Chronos-2 ONNX time-series forecast
+    imagenet/  MobileNetV2-12 ImageNet classification
+  mads.ini     Ready-made configuration for both agents</code></pre>
+<hr>
+</section>
+<section id="getting-the-agents-pre-compiled" class="level1">
+<h1>Getting the agents pre-compiled</h1>
+<p>Version 2.2.x of MADS provides a new command, <code>mads package</code> that pulls and installs pre-compiled binaries of a selection of the most common and general purpose MADS agents and plugins.</p>
+<p>To install the ONNX agent, use the following command:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--info</span> mads-onnx</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--install</span> mads-onnx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>--info</code> command shows a list of hints on how to configure your own system to run the models. Read them carefully, together with the rest of this guide.</p>
+</section>
+<section id="building-the-agents" class="level1">
+<h1>Building the agents</h1>
+<section id="requirements" class="level2">
+<h2 class="anchored" data-anchor-id="requirements">Requirements</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Requirement</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>C++20 compiler</td>
+<td>Clang recommended (LLVM style)</td>
+</tr>
+<tr class="even">
+<td>CMake ≥ 3.28</td>
+<td>Ninja backend preferred</td>
+</tr>
+<tr class="odd">
+<td>MADS ≥ 2.2.0</td>
+<td>Discovered automatically via <code>mads -p</code></td>
+</tr>
+<tr class="even">
+<td>ONNX Runtime 1.26.0</td>
+<td><strong>Downloaded automatically</strong> by <code>FetchContent</code></td>
+</tr>
+<tr class="odd">
+<td>OpenCV 4.x</td>
+<td><em>Optional</em> — needed only for <code>mads-onnx-source</code></td>
+</tr>
+</tbody>
+</table>
+<p>The two pieces you might expect to fight with — ONNX Runtime and OpenCV — mostly take care of themselves. ONNX Runtime is fetched for your platform at configure time (no system install). OpenCV is found with <code>find_package</code>; if it’s missing, the source agent is simply dropped from the build and the filter + inspect tools build anyway.</p>
+</section>
+<section id="quick-start-developer-build" class="level2">
+<h2 class="anchored" data-anchor-id="quick-start-developer-build">Quick start (developer build)</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-GNinja</span> <span class="at">-DCMAKE_BUILD_TYPE</span><span class="op">=</span>Release</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j6</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>MADS is located by running <code>mads -p</code>. Override with <code>-DMADS_ROOT=/path/to/mads</code> or the <code>MADS_ROOT</code> environment variable.</p>
+<p>Smoke-test it immediately:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/src/main/mads-onnx-inspect</span> <span class="at">-m</span> examples/imagenet/mobilenetv2-12.onnx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>On Linux, set <code>export CC=clang CXX=clang++</code> before configuring. On Windows, run from a <strong>Developer Command Prompt for VS 2022</strong> so MSVC and Ninja are on the path.</p>
+</div>
+</div>
+</section>
+<section id="self-contained-package-for-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="self-contained-package-for-distribution">Self-contained package (for distribution)</h2>
+<p>To produce a zip you can unzip-and-run anywhere — ONNX Runtime library included:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-GNinja</span> <span class="at">-DCMAKE_BUILD_TYPE</span><span class="op">=</span>Release <span class="dt">\</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">-DMADS_INSTALL_AGENT</span><span class="op">=</span>ON <span class="dt">\</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">-DCMAKE_INSTALL_PREFIX</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/package"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j6</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">--target</span> package</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The result, <code>build/onnx_agent-&lt;version&gt;-&lt;os&gt;-&lt;arch&gt;.zip</code>, bundles the binaries plus the ONNX Runtime shared library, wired with <code>@executable_path/../lib</code> (macOS) / <code>$ORIGIN/../lib</code> (Linux) so it’s fully relocatable.</p>
+<p>To install straight into the MADS prefix instead:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-GNinja</span> <span class="at">-DCMAKE_BUILD_TYPE</span><span class="op">=</span>Release <span class="at">-DMADS_INSTALL_AGENT</span><span class="op">=</span>ON</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">--target</span> install      <span class="co"># → $(mads -p)/bin and /lib</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>macOS Gatekeeper
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Downloaded binaries are quarantined. After installing, clear the flag once:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">xattr</span> <span class="at">-d</span> com.apple.quarantine <span class="st">"</span><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="st">/bin/mads-onnx-filter"</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">xattr</span> <span class="at">-d</span> com.apple.quarantine <span class="st">"</span><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="st">/bin/mads-onnx-source"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">xattr</span> <span class="at">-d</span> com.apple.quarantine <span class="st">"</span><span class="va">$(</span><span class="ex">mads</span> <span class="at">-p</span><span class="va">)</span><span class="st">/lib/libonnxruntime.1.dylib"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="cmake-options-worth-knowing" class="level2">
+<h2 class="anchored" data-anchor-id="cmake-options-worth-knowing">CMake options worth knowing</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>MADS_ROOT</code></td>
+<td>auto</td>
+<td>Path to the MADS installation prefix</td>
+</tr>
+<tr class="even">
+<td><code>MADS_INSTALL_AGENT</code></td>
+<td><code>OFF</code></td>
+<td>Install agents + ORT lib (required for the <code>package</code> target)</td>
+</tr>
+<tr class="odd">
+<td><code>ORT_VERSION</code></td>
+<td><code>1.26.0</code></td>
+<td>ONNX Runtime prebuilt version to download</td>
+</tr>
+<tr class="even">
+<td><code>ONNX_CPU_ONLY</code></td>
+<td><code>OFF</code></td>
+<td>Fetch the small CPU-only ORT archive (disables GPU EPs, faster download)</td>
+</tr>
+<tr class="odd">
+<td><code>VERSION</code></td>
+<td>from git tag</td>
+<td>Package version (override in CI without tags)</td>
+</tr>
+</tbody>
+</table>
+<p>The project version is read from the latest <code>v*.*.*</code> git tag (<code>git tag v1.0.0</code>), or overridden with <code>-DVERSION=1.0.0</code>.</p>
+<hr>
+</section>
+</section>
+<section id="gpu" class="level1">
+<h1>The GPU runtime minefield</h1>
+<p>This is where ONNX deployments usually go sideways, so it gets its own section.</p>
+<section id="the-one-rule-to-remember" class="level2">
+<h2 class="anchored" data-anchor-id="the-one-rule-to-remember">The one rule to remember</h2>
+<blockquote class="blockquote">
+<p>Inference runs on <strong>CPU by default</strong>. A GPU <strong>execution provider (EP)</strong> is opt-in, selected by <code>execution_provider</code> in <code>mads.ini</code> or <code>--ep &lt;name&gt;</code> on the CLI. If the requested EP isn’t available, the agent prints a <strong>yellow warning and silently falls back to CPU</strong> — it never hard-fails.</p>
+</blockquote>
+<p>So a wrong <code>--ep</code> flag costs you speed, never a crash. The <em>active</em> provider (after any fallback) is printed in every startup banner and in <code>mads-onnx-inspect</code>, so you can always confirm what actually ran.</p>
+</section>
+<section id="whats-available-where" class="level2">
+<h2 class="anchored" data-anchor-id="whats-available-where">What’s available where</h2>
+<p>Each prebuilt package ships a <strong>single, GPU-capable</strong> ONNX Runtime — there’s no separate “GPU build” to download. What differs is which EP that runtime was compiled with:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th>GPU EP</th>
+<th>Status</th>
+<th>How to enable</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>macOS arm64</strong></td>
+<td>CoreML (ANE / GPU)</td>
+<td>Built in ✅</td>
+<td><code>execution_provider = coreml</code> (or <code>auto</code>)</td>
+</tr>
+<tr class="even">
+<td><strong>Windows x64</strong></td>
+<td>DirectML (any DX12 GPU)</td>
+<td>Built in ✅</td>
+<td><code>execution_provider = directml</code></td>
+</tr>
+<tr class="odd">
+<td><strong>Linux x64</strong></td>
+<td>CUDA (NVIDIA)</td>
+<td>Sidecar 🔧</td>
+<td>install CUDA + run <code>enable-cuda.sh</code></td>
+</tr>
+<tr class="even">
+<td><strong>Linux aarch64</strong></td>
+<td>—</td>
+<td>CPU only</td>
+<td>n/a</td>
+</tr>
+</tbody>
+</table>
+<section id="macos-coreml-zero-setup" class="level3">
+<h3 class="anchored" data-anchor-id="macos-coreml-zero-setup">macOS — CoreML, zero setup</h3>
+<p>The standard <code>osx-arm64</code> ONNX Runtime already includes the CoreML and WebGPU EPs. CoreML routes work to the Apple Neural Engine / GPU via <code>MLComputeUnitsAll</code>. Nothing to install:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-onnx-source</span> <span class="at">--ep</span> coreml ...   <span class="co"># ANE / GPU</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-onnx-source</span> <span class="at">--ep</span> auto   ...   <span class="co"># auto-pick the best EP</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="windows-directml-zero-setup" class="level3">
+<h3 class="anchored" data-anchor-id="windows-directml-zero-setup">Windows — DirectML, zero setup</h3>
+<p>The Windows package ships <code>onnxruntime-win-x64-gpu</code>, whose <code>onnxruntime.dll</code> has DirectML compiled in. DirectML runs on <strong>any</strong> DirectX 12 GPU (NVIDIA, AMD, Intel) with no extra drivers:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[agents]</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="dt">execution_provider </span><span class="ot">=</span><span class="st"> "directml"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The ~285 MB CUDA sidecar DLLs are deliberately <strong>excluded</strong> to keep the download small; CPU and DirectML are always available.</p>
+</section>
+<section id="cuda-sidecar" class="level3">
+<h3 class="anchored" data-anchor-id="cuda-sidecar">Linux x64 — CUDA is opt-in</h3>
+<p>This is the fiddly one. The Linux x64 package ships the GPU-capable <strong>core</strong> library (<code>libonnxruntime.so.1.26.0</code>, built against CUDA 12) plus <code>libonnxruntime_providers_shared.so</code>. The core lib runs on CPU out of the box and <code>dlopen</code>s the CUDA provider <em>lazily</em>, only when <code>execution_provider = cuda</code> is set — so it loads fine on hosts with no CUDA installed.</p>
+<p>The heavyweight CUDA/TensorRT provider libraries (~215 MB) are <strong>not</strong> in the base package. To turn on CUDA inference:</p>
+<ol type="1">
+<li><p>Install <strong>NVIDIA CUDA Toolkit 12.x</strong> and <strong>cuDNN 9.x</strong> on the host.</p></li>
+<li><p>Run the sidecar installer, which fetches <code>libonnxruntime_providers_cuda.so</code> into <code>$(mads -p)/lib</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x scripts/enable-cuda.sh</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/enable-cuda.sh</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Set <code>execution_provider = "cuda"</code> in the <code>[agents]</code> section.</p></li>
+</ol>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If in doubt whether your core lib will load on a CUDA-less host, check with <code>ldd libonnxruntime.so.1.26.0</code> — libcudart should be a lazy/weak dependency, not a hard one. This is the standard ORT design but worth verifying on unfamiliar hardware.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="execution-providers-and-threads-the-knobs" class="level2">
+<h2 class="anchored" data-anchor-id="execution-providers-and-threads-the-knobs">Execution providers and threads — the knobs</h2>
+<p>All three executables accept the same EP and threading options.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>EP value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>cpu</code></td>
+<td>CPU only — always available, the default</td>
+</tr>
+<tr class="even">
+<td><code>coreml</code></td>
+<td>Apple CoreML (ANE / GPU), macOS</td>
+</tr>
+<tr class="odd">
+<td><code>directml</code></td>
+<td>DirectX ML, Windows GPU</td>
+</tr>
+<tr class="even">
+<td><code>cuda</code></td>
+<td>NVIDIA CUDA, Linux/Windows GPU</td>
+</tr>
+<tr class="odd">
+<td><code>webgpu</code></td>
+<td>WebGPU EP — experimental</td>
+</tr>
+<tr class="even">
+<td><code>auto</code></td>
+<td>Pick the best available EP on this platform</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Thread setting</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>intra_op_threads</code></td>
+<td><code>0</code></td>
+<td>Parallelism <em>within</em> one operator. <code>0</code> = ORT default (all cores).</td>
+</tr>
+<tr class="even">
+<td><code>inter_op_threads</code></td>
+<td><code>0</code></td>
+<td>Parallelism <em>across</em> independent graph nodes. <code>0</code> = ORT default.</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Leave the thread counts at <code>0</code>. The old hardcoded <code>1</code> was a pessimisation — letting ORT use all cores is almost always faster.</p>
+</div>
+</div>
+<p>CLI flags (shared by all three binaries) override the INI:</p>
+<pre><code>--ep &lt;name&gt;            Execution provider
+--threads &lt;n&gt;          Intra-op thread count
+--inter-threads &lt;n&gt;    Inter-op thread count
+--gpu-device &lt;idx&gt;     GPU device index (cuda / directml)</code></pre>
+<p>And the matching <code>[agents]</code> INI block (overridable per-agent in <code>[onnx-filter]</code> / <code>[onnx-source]</code>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[agents]</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="dt">execution_provider </span><span class="ot">=</span><span class="st"> "cpu"   # cpu | coreml | webgpu | cuda | directml | auto</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="dt">intra_op_threads   </span><span class="ot">=</span><span class="st"> 0        # 0 = let ORT choose (recommended)</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="dt">inter_op_threads   </span><span class="ot">=</span><span class="st"> </span><span class="dv">0</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="dt">gpu_device_id      </span><span class="ot">=</span><span class="st"> 0        # cuda / directml only</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A quick reality check on macOS, where CUDA/DirectML are genuinely absent:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-onnx-filter</span> <span class="at">--test</span> <span class="at">-m</span> model.onnx <span class="at">--ep</span> cuda</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># [OnnxModel] Warning: execution provider 'cuda' is not available in this</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ONNX Runtime build; falling back to CPU.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="schema" class="level1">
+<h1>Talking to a model: the tensor ↔︎ JSON contract</h1>
+<p>Both agents speak JSON on the MADS bus. Every tensor is one JSON object:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"shape"</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">2</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"data"</span><span class="fu">:</span>  <span class="ot">[</span><span class="fl">1.0</span><span class="ot">,</span> <span class="fl">2.0</span><span class="ot">,</span> <span class="fl">3.0</span><span class="ot">,</span> <span class="fl">4.0</span><span class="ot">,</span> <span class="fl">5.0</span><span class="ot">,</span> <span class="fl">6.0</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"dtype"</span><span class="fu">:</span> <span class="st">"float32"</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>shape</code> — integer array; dynamic (symbolic) dimensions appear as <code>-1</code>.</li>
+<li><code>data</code> — flat array, <strong>row-major (C) order</strong>.</li>
+<li><code>dtype</code> — optional. When omitted it’s inferred: JSON ints → <code>int32</code>, floats → <code>float32</code>, strings → <code>string</code>, booleans → <code>bool</code>. Explicit types: <code>float32/64</code>, <code>int8/16/32/64</code>, <code>uint8/16/32/64</code>, <code>bool</code>, <code>string</code>.</li>
+</ul>
+<p>A message to the filter is a JSON object mapping <strong>tensor names</strong> to tensor objects:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"context"</span><span class="fu">:</span>        <span class="fu">{</span><span class="dt">"shape"</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">1</span><span class="ot">,</span> <span class="dv">192</span><span class="ot">]</span><span class="fu">,</span> <span class="dt">"data"</span><span class="fu">:</span> <span class="ot">[</span><span class="er">...</span><span class="ot">]</span><span class="fu">,</span> <span class="dt">"dtype"</span><span class="fu">:</span> <span class="st">"float32"</span><span class="fu">},</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"attention_mask"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"shape"</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">1</span><span class="ot">,</span> <span class="dv">192</span><span class="ot">]</span><span class="fu">,</span> <span class="dt">"data"</span><span class="fu">:</span> <span class="ot">[</span><span class="er">...</span><span class="ot">]</span><span class="fu">,</span> <span class="dt">"dtype"</span><span class="fu">:</span> <span class="st">"float32"</span><span class="fu">}</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Don’t guess the schema — <strong>ask the model</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-onnx-inspect</span> <span class="at">-m</span> examples/imagenet/mobilenetv2-12.onnx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Inputs:
+  input
+    dtype : float32
+    shape : [?, 3, 224, 224]
+
+Outputs:
+  output
+    dtype : float32
+    shape : [?, 1000]
+
+Example input JSON schema:
+{
+  "input": { "shape": [1, 3, 224, 224], "data": [0.0], "dtype": "float32" }
+}</code></pre>
+<p><code>?</code> marks a dynamic dimension (often the batch size). The same output is available via <code>mads-onnx-filter --inspect</code>, or as machine-readable JSON with <code>-j</code>.</p>
+<hr>
+</section>
+<section id="filter" class="level1">
+<h1>Using it as a filter</h1>
+<p>The filter is the workhorse: subscribe → run model → publish. Timing is <strong>input-driven</strong> — each received message triggers exactly one inference. <strong>Switching models needs no code change</strong>, only a different <code>--model-path</code>.</p>
+<section id="configuration" class="level2">
+<h2 class="anchored" data-anchor-id="configuration">Configuration</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[onnx-filter]</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="dt">model_path </span><span class="ot">=</span><span class="st"> "/path/to/your/model.onnx"   # required</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic  </span><span class="ot">=</span><span class="st"> "onnx-filter"                 # default</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic  </span><span class="ot">=</span><span class="st"> ["onnx-filter-input"]         # default; note: array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Topic naming follows the standard MADS convention: the default sub topic is <code>onnx-filter-input</code>, the pub topic is <code>onnx-filter</code>. Passing <code>--name foo</code> rewires them to <code>foo-input</code> / <code>foo</code>.</p>
+</section>
+<section id="default-model-chronos-2-forecasting" class="level2">
+<h2 class="anchored" data-anchor-id="default-model-chronos-2-forecasting">Default model: Chronos-2 forecasting</h2>
+<p>The bundled example forecasts the <code>chicken.csv</code> time series with HuggingFace’s <a href="https://huggingface.co/kashif/chronos-2-onnx" target="_blank">chronos-2-onnx</a> model.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Download + patch the model (~456 MB)</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install onnx</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> examples/chronos/download_model.sh</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Inspect the schema</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/src/main/mads-onnx-filter</span> <span class="at">--inspect</span> <span class="at">-m</span> examples/chronos/model_fixed.onnx</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Build the input JSON from the CSV</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> examples/chronos/make_input.py        <span class="co"># → chronos_input.json</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Run offline, no broker needed</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/src/main/mads-onnx-filter</span> <span class="at">--test</span> <span class="dt">\</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">-m</span> examples/chronos/model_fixed.onnx <span class="dt">\</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--input</span> examples/chronos/chronos_input.json</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Output:
+{
+  "quantile_preds": {
+    "dtype": "float32",
+    "shape": [1, 21, 16],
+    "data": [17.91, 14.56, ..., 167.70]   // 21 * 16 = 336 values
+  }
+}</code></pre>
+<p>Output shape <code>[1, 21, 16]</code> = 1 batch × 21 quantile levels × 16 future steps. <strong>Quantile index 10 (q = 0.50) is the median forecast.</strong></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Two Chronos gotchas the example handles for you
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong><code>context_length</code> must be a multiple of 16</strong> (the patch size). Left-pad shorter series with zeros and set <code>attention_mask = 0</code> for the padding — <code>make_input.py</code> does this.</li>
+<li><strong>The released ONNX has a graph bug</strong>: a <code>ConstantOfShape</code> emits <code>float32</code> values used as integer indices by a downstream <code>Gather</code>, which ORT rejects. <code>fix_model.py</code> inserts a <code>Cast(to=INT64)</code> and saves <code>model_fixed.onnx</code>.</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="going-live" class="level2">
+<h2 class="anchored" data-anchor-id="going-live">Going live</h2>
+<p>Point the filter at a model and let messages drive it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/src/main/mads-onnx-filter</span> <span class="at">-m</span> examples/chronos/model_fixed.onnx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Now any publisher on <code>onnx-filter-input</code> that sends a tensor map matching the schema gets a forecast back on <code>onnx-filter</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"context"</span><span class="fu">:</span>            <span class="fu">{</span><span class="dt">"shape"</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">1</span><span class="ot">,</span> <span class="dv">192</span><span class="ot">]</span><span class="fu">,</span> <span class="dt">"data"</span><span class="fu">:</span> <span class="ot">[</span><span class="er">...</span><span class="ot">]</span><span class="fu">,</span> <span class="dt">"dtype"</span><span class="fu">:</span> <span class="st">"float32"</span><span class="fu">},</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"group_ids"</span><span class="fu">:</span>          <span class="fu">{</span><span class="dt">"shape"</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">1</span><span class="ot">]</span><span class="fu">,</span>      <span class="dt">"data"</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">0</span><span class="ot">]</span><span class="fu">,</span>   <span class="dt">"dtype"</span><span class="fu">:</span> <span class="st">"int64"</span><span class="fu">},</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"attention_mask"</span><span class="fu">:</span>     <span class="fu">{</span><span class="dt">"shape"</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">1</span><span class="ot">,</span> <span class="dv">192</span><span class="ot">]</span><span class="fu">,</span> <span class="dt">"data"</span><span class="fu">:</span> <span class="ot">[</span><span class="er">...</span><span class="ot">]</span><span class="fu">,</span> <span class="dt">"dtype"</span><span class="fu">:</span> <span class="st">"float32"</span><span class="fu">},</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"future_covariates"</span><span class="fu">:</span>  <span class="fu">{</span><span class="dt">"shape"</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">1</span><span class="ot">,</span> <span class="dv">16</span><span class="ot">]</span><span class="fu">,</span>  <span class="dt">"data"</span><span class="fu">:</span> <span class="ot">[</span><span class="er">...</span><span class="ot">]</span><span class="fu">,</span> <span class="dt">"dtype"</span><span class="fu">:</span> <span class="st">"float32"</span><span class="fu">},</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"num_output_patches"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"shape"</span><span class="fu">:</span> <span class="ot">[]</span><span class="fu">,</span>       <span class="dt">"data"</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">1</span><span class="ot">]</span><span class="fu">,</span>   <span class="dt">"dtype"</span><span class="fu">:</span> <span class="st">"int64"</span><span class="fu">}</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="source" class="level1">
+<h1>Using it as a source</h1>
+<p>The source agent is the turnkey one: it reads a camera, preprocesses each frame into a float32 NCHW tensor, runs a classifier, and publishes top-k predictions on a timer. It <strong>requires OpenCV at build time</strong> — without it, the binary isn’t built at all.</p>
+<section id="default-model-mobilenetv2-imagenet-classification" class="level2">
+<h2 class="anchored" data-anchor-id="default-model-mobilenetv2-imagenet-classification">Default model: MobileNetV2 ImageNet classification</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Download model + labels + a sample image</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> examples/imagenet/download_model.sh</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Smoke-test on a still image — no broker, no camera</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/src/main/mads-onnx-source</span> <span class="at">--test</span> <span class="dt">\</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-m</span> examples/imagenet/mobilenetv2-12.onnx <span class="dt">\</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--image</span> examples/imagenet/sample_cat.jpg <span class="dt">\</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--labels</span> examples/imagenet/imagenet_classes.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"best"</span><span class="fu">:</span>  <span class="fu">{</span> <span class="dt">"class_id"</span><span class="fu">:</span> <span class="dv">281</span><span class="fu">,</span> <span class="dt">"label"</span><span class="fu">:</span> <span class="st">"tabby"</span><span class="fu">,</span> <span class="dt">"confidence"</span><span class="fu">:</span> <span class="fl">0.7495</span> <span class="fu">},</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"top_k"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"class_id"</span><span class="fu">:</span> <span class="dv">281</span><span class="fu">,</span> <span class="dt">"label"</span><span class="fu">:</span> <span class="st">"tabby"</span><span class="fu">,</span>        <span class="dt">"confidence"</span><span class="fu">:</span> <span class="fl">0.7495</span> <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"class_id"</span><span class="fu">:</span> <span class="dv">285</span><span class="fu">,</span> <span class="dt">"label"</span><span class="fu">:</span> <span class="st">"Egyptian cat"</span><span class="fu">,</span>  <span class="dt">"confidence"</span><span class="fu">:</span> <span class="fl">0.1142</span> <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"class_id"</span><span class="fu">:</span> <span class="dv">282</span><span class="fu">,</span> <span class="dt">"label"</span><span class="fu">:</span> <span class="st">"tiger cat"</span><span class="fu">,</span>     <span class="dt">"confidence"</span><span class="fu">:</span> <span class="fl">0.1081</span> <span class="fu">}</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A plausible top-3 (tabby / Egyptian cat / tiger cat) confirms the whole preprocessing pipeline — resize → BGR→RGB → <code>[0,1]</code> scaling → ImageNet mean/std normalisation → NCHW — is wired correctly.</p>
+</section>
+<section id="going-live-webcam-broker" class="level2">
+<h2 class="anchored" data-anchor-id="going-live-webcam-broker">Going live (webcam + broker)</h2>
+<p>The bundled <code>mads.ini</code> already has a complete <code>[onnx-source]</code> section:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[onnx-source]</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="dt">model_path     </span><span class="ot">=</span><span class="st"> "examples/imagenet/mobilenetv2-12.onnx"</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="dt">labels_path    </span><span class="ot">=</span><span class="st"> "examples/imagenet/imagenet_classes.txt"</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic      </span><span class="ot">=</span><span class="st"> "onnx-source"</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="dt">period         </span><span class="ot">=</span><span class="st"> 100        # ms between frames (~10 fps)</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="dt">top_k          </span><span class="ot">=</span><span class="st"> </span><span class="dv">5</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="dt">camera         </span><span class="ot">=</span><span class="st"> </span><span class="dv">0</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="dt">capture_width  </span><span class="ot">=</span><span class="st"> </span><span class="dv">640</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="dt">capture_height </span><span class="ot">=</span><span class="st"> </span><span class="dv">480</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Image pre-processing (must match the model's training recipe) ──</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="dt">input_width       </span><span class="ot">=</span><span class="st"> </span><span class="dv">224</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="dt">input_height      </span><span class="ot">=</span><span class="st"> </span><span class="dv">224</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="dt">nchw              </span><span class="ot">=</span><span class="st"> true                    # NCHW (true) vs NHWC (false)</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="dt">rgb               </span><span class="ot">=</span><span class="st"> true                    # BGR→RGB before normalising</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="dt">scale             </span><span class="ot">=</span><span class="st"> 0.00392156862745098     # 1/255</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="dt">mean              </span><span class="ot">=</span><span class="st"> [0.485, 0.456, 0.406]</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a><span class="dt">std               </span><span class="ot">=</span><span class="st"> [0.229, 0.224, 0.225]</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a><span class="dt">input_tensor_name </span><span class="ot">=</span><span class="st"> "input"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/src/main/mads-onnx-source</span> <span class="dt">\</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--settings</span> mads.ini <span class="dt">\</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-m</span> examples/imagenet/mobilenetv2-12.onnx <span class="dt">\</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--labels</span> examples/imagenet/imagenet_classes.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Each tick publishes a <code>{ "best": …, "top_k": [...] }</code> message on <code>onnx-source</code>. Loop period, camera index, capture resolution and top-k are all tunable from the INI or the CLI (<code>--period</code>, <code>--camera</code>, <code>--width</code>, <code>--height</code>, <code>-k</code>).</p>
+<hr>
+</section>
+</section>
+<section id="retargeting-to-your-own-model" class="level1">
+<h1>Retargeting to your own model</h1>
+<p>This is the payoff. There are two very different difficulty levels depending on which agent you’re adapting.</p>
+<section id="retargeting-the-filter" class="level2">
+<h2 class="anchored" data-anchor-id="retargeting-the-filter">Filter → a new model: trivial</h2>
+<p>Because the filter is fully model-agnostic, <strong>there is no code to write</strong>. The recipe:</p>
+<ol type="1">
+<li><p><strong>Inspect</strong> the model to learn its input/output names, dtypes and shapes:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-onnx-inspect</span> <span class="at">-m</span> your_model.onnx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><strong>Match the JSON.</strong> Make sure whatever publishes on <code>onnx-filter-input</code> emits a tensor map with exactly those input names, dtypes, and row-major data. The schema printed by <code>--inspect</code> is your template.</p></li>
+<li><p><strong>Point and run:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[onnx-filter]</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="dt">model_path </span><span class="ot">=</span><span class="st"> "/path/to/your_model.onnx"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-onnx-filter</span> <span class="at">-m</span> /path/to/your_model.onnx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+</ol>
+<p>That’s the whole job. The only real work is upstream — getting your data into the JSON tensor format (see <a href="#schema">the schema section</a>). If a model has a graph quirk like Chronos’s, patch the <code>.onnx</code> offline once; the agent itself stays untouched.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Need to feed a filter from another MADS agent? Have that agent build the tensor-map JSON and publish it on the filter’s sub topic. Need a <em>sink</em> that consumes the filter’s output? Point any logger/bridge/sink at the filter’s <code>pub_topic</code>.</p>
+</div>
+</div>
+</section>
+<section id="retargeting-the-source-the-scenic-route" class="level2">
+<h2 class="anchored" data-anchor-id="retargeting-the-source-the-scenic-route">Source → a new model: the scenic route</h2>
+<p>The source agent is harder to retarget because it carries domain logic the filter doesn’t: it knows how to turn camera frames into tensors (preprocessing) and how to turn logits into labelled predictions (post-processing). Three cases, in increasing order of effort.</p>
+<section id="case-1-another-image-classifier-config-only" class="level3">
+<h3 class="anchored" data-anchor-id="case-1-another-image-classifier-config-only">Case 1 — another image classifier (config only)</h3>
+<p>If your model is <em>also</em> an ImageNet-style classifier — image in, class logits out — you don’t write code. Just retune the preprocessing constants to match its training recipe and swap the labels file:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[onnx-source]</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="dt">model_path        </span><span class="ot">=</span><span class="st"> "your_classifier.onnx"</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="dt">labels_path       </span><span class="ot">=</span><span class="st"> "your_labels.txt"</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="dt">input_width       </span><span class="ot">=</span><span class="st"> 224          # whatever your model expects</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="dt">input_height      </span><span class="ot">=</span><span class="st"> </span><span class="dv">224</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="dt">nchw              </span><span class="ot">=</span><span class="st"> true         # or false for NHWC models</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="dt">rgb               </span><span class="ot">=</span><span class="st"> </span><span class="kw">true</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="dt">scale             </span><span class="ot">=</span><span class="st"> </span><span class="fl">0.00392156862745098</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="dt">mean              </span><span class="ot">=</span><span class="st"> [...]         # your model's per-channel mean</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="dt">std               </span><span class="ot">=</span><span class="st"> [...]         # your model's per-channel std</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="dt">input_tensor_name </span><span class="ot">=</span><span class="st"> "input"      # from --inspect</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The agent reads the input tensor name straight from the model metadata, applies softmax + top-k ranking generically, and labels the results from your file. Done.</p>
+</section>
+<section id="case-2-a-different-input-modality-implement-datasource" class="level3">
+<h3 class="anchored" data-anchor-id="case-2-a-different-input-modality-implement-datasource">Case 2 — a different <em>input</em> modality (implement <code>DataSource</code>)</h3>
+<p>If the input isn’t a camera frame — a sensor array, an audio buffer, a file stream — implement the <code>Onnx::DataSource</code> interface. It is intentionally tiny (<a href="https://github.com/MADS-NET/onnx_agent/blob/main/src/source/DataSource.hpp" target="_blank"><code>src/source/DataSource.hpp</code></a>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DataSource <span class="op">{</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">virtual</span> <span class="dt">bool</span> open<span class="op">()</span>  <span class="op">=</span> <span class="dv">0</span><span class="op">;</span>                            <span class="co">// acquire resources</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">virtual</span> <span class="dt">void</span> close<span class="op">()</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span>                            <span class="co">// release them</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">virtual</span> <span class="bu">std::</span>optional<span class="op">&lt;</span>nlohmann<span class="op">::</span>json<span class="op">&gt;</span> next<span class="op">()</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span>    <span class="co">// produce one tensor map</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>next()</code> returns a JSON tensor map (the same <code>{name: {shape,data,dtype}}</code> format) ready for inference, or <code>std::nullopt</code> to mean “no data yet / end of stream / recoverable error”. The bundled <code>CameraSource</code> is your reference implementation.</p>
+<p>Implementation steps:</p>
+<ol type="1">
+<li><strong>Subclass <code>DataSource</code></strong> in a new header/source pair under <code>src/source/</code>.</li>
+<li><strong><code>open()</code></strong> — grab your hardware/file handle; return <code>false</code> on failure.</li>
+<li><strong><code>next()</code></strong> — read one sample, shape it into a flat row-major array, and wrap it as <code>{ "&lt;input_name&gt;": { "shape": [...], "data": [...], "dtype": "..." } }</code>. Match the names and dtypes that <code>mads-onnx-inspect</code> reports.</li>
+<li><strong><code>close()</code></strong> — release everything; must be safe even if <code>open()</code> failed.</li>
+<li><strong>Wire it into the loop.</strong> In a copy of <a href="https://github.com/MADS-NET/onnx_agent/blob/main/src/main/onnx_source.cpp" target="_blank"><code>onnx_source.cpp</code></a>, replace the <code>std::make_unique&lt;Onnx::CameraSource&gt;(...)</code> construction with your source. The agent loop already calls <code>next()</code> → <code>run_inference()</code> → <code>publish()</code> on a timer; you’re swapping the front end only.</li>
+<li><strong>Add it to CMake</strong> in <a href="https://github.com/MADS-NET/onnx_agent/blob/main/src/source/CMakeLists.txt" target="_blank"><code>src/source/CMakeLists.txt</code></a> and (if it has no OpenCV dependency) consider dropping the <code>HAVE_OPENCV</code> guard so it builds without OpenCV.</li>
+</ol>
+</section>
+<section id="case-3-a-different-output-task-replace-post-processing" class="level3">
+<h3 class="anchored" data-anchor-id="case-3-a-different-output-task-replace-post-processing">Case 3 — a different <em>output</em> task (replace post-processing)</h3>
+<p>If the model doesn’t emit class logits — say it does detection, segmentation, regression, or forecasting — the softmax/top-k step in <code>Classify</code> no longer applies. Replace the post-processing:</p>
+<ol type="1">
+<li>The raw model output is already available in the loop as a JSON tensor map (<code>run_inference()</code> returns <code>{output_name: {shape,data,dtype}}</code>).</li>
+<li>Drop the call to <code>Onnx::classify(...)</code> and substitute your own transform: read the output tensor(s) you care about, derive whatever payload makes sense (boxes, masks, a scalar, a forecast), and <code>agent.publish(...)</code> it.</li>
+<li>If the post-processing is reusable, mirror the <code>Classify</code> module’s shape — a small free function in <code>src/source/</code> with a clean header — rather than inlining it in <code>main</code>.</li>
+</ol>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>When the source is really a filter
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If your new task is “transform tensors that are already on the bus” rather than “originate a stream from hardware”, you almost certainly want the <strong>filter</strong> path (Case: trivial) instead of forking the source. Only reach for the source agent when the data genuinely starts outside MADS.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+</section>
+<section id="public-api-quick-reference" class="level1">
+<h1>Public API quick reference</h1>
+<p>Everything lives in namespace <code>Onnx</code>, headers under <code>src/</code>, all Doxygen-documented:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Header</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>OnnxModel</code></td>
+<td><code>onnx/OnnxModel.hpp</code></td>
+<td>RAII model wrapper: load, inspect, <code>run()</code></td>
+</tr>
+<tr class="even">
+<td><code>SessionConfig</code></td>
+<td><code>onnx/OnnxModel.hpp</code></td>
+<td>EP + thread settings; graceful CPU fallback</td>
+</tr>
+<tr class="odd">
+<td><code>TensorInfo</code></td>
+<td><code>onnx/OnnxModel.hpp</code></td>
+<td>Tensor name / shape / dtype metadata</td>
+</tr>
+<tr class="even">
+<td><code>json_to_tensor()</code></td>
+<td><code>onnx/TensorJson.hpp</code></td>
+<td>JSON tensor object → <code>Ort::Value</code></td>
+</tr>
+<tr class="odd">
+<td><code>tensor_to_json()</code></td>
+<td><code>onnx/TensorJson.hpp</code></td>
+<td><code>Ort::Value</code> → JSON tensor object</td>
+</tr>
+<tr class="even">
+<td><code>make_input_schema()</code></td>
+<td><code>onnx/TensorJson.hpp</code></td>
+<td>Generate an example input JSON from a model</td>
+</tr>
+<tr class="odd">
+<td><code>DataSource</code></td>
+<td><code>source/DataSource.hpp</code></td>
+<td>Pure-virtual data-source interface</td>
+</tr>
+<tr class="even">
+<td><code>CameraSource</code></td>
+<td><code>source/CameraSource.hpp</code></td>
+<td>OpenCV webcam reference implementation</td>
+</tr>
+<tr class="odd">
+<td><code>PreprocessConfig</code></td>
+<td><code>source/CameraSource.hpp</code></td>
+<td>Image preprocessing constants</td>
+</tr>
+<tr class="even">
+<td><code>classify()</code> / <code>top_k_predictions()</code></td>
+<td><code>source/Classify.hpp</code></td>
+<td>Softmax + top-k post-processing</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>onnx/</code> library has <strong>zero MADS dependency</strong> — you can reuse <code>OnnxModel</code> and the tensor↔︎JSON helpers in any C++20 project, not just MADS agents.</p>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/mads-net\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Paolo Bosetti, <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">BY-NC-SA4.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
