@@ -1,0 +1,78 @@
+---
+title: "MADS interfaces"
+author: "Paolo Bosetti"
+affiliation: "University of Trento"
+date-modified: today
+format: html
+engine: knitr
+extensions:
+  iconify:
+    set: "octicon"
+    size: "30px"
+    inline: true
+    mode: "svg"
+    style: "color: steelblue;"
+---
+
+# Connecting things
+
+MADS has been developed to connect different devices and software together. The basic MADS installation provides a set of minimal, general purpose **agents** that solve simple needs. However, the real power of MADS is in its ability to connect to other software and devices. This is done through **plugins** and **custom agents**. The following sections provide a list of the available interfaces and how to use them.
+
+
+::: {.callout-note}
+### Where to find more interfaces
+
+Beside the default agents and plugins provided by MADS, more specific interfaces are available on [github.com/mads-net](https://github.com/mads-net). Some of the more mature agents and plugins can also be installed as **MADS packages** with the command `mads package` (see [the guide](guides/packages.html)).
+:::
+
+# Interfaces, by application field
+
+```{css, echo=FALSE}
+.brand {
+  fill: steelblue;
+  font-size: 30px;
+}
+```
+
+||Domain|Interface|Description|Type|
+|-:|:---|:---|:---:|:---|
+|{{< si arduino class=brand >}}|I/O|[Serial](https://github.com/MADS-NET/arduino_plugin)|Serial port interface to an Arduino|Plugin; source|
+|{{< si arduino class=brand >}}|I/O|[ArduinoUno Q](https://github.com/MADS-NET/arduinoQ_plugin)|Interface to an Arduino Uno Q board|Plugin; source, filter, sink|
+|{{< si bluetooth class=brand >}}|I/O|[BluetoothLE](https://github.com/MADS-NET/ble_plugin)|Bluetooth Low Energy interface to BLE devices|Plugin; source|
+|{{< si raspberrypi class=brand >}}|I/O|[Raspberry PI GPIO](https://github.com/MADS-NET/rpio_plugin)|Interface to Raspberry PI GPIO pins|Plugin; source, sink|
+|{{< si python class=brand >}}|Languages|[Python agent](https://github.com/MADS-NET/python_agent)|Interface to Python scripts|Agent; source, filter, sink|
+|{{< si python class=brand >}}|Languages|[Python library](http://mads-net.github.io/guides/python.html)|Python library for creating custom agents|Library; source, filter, sink|
+|{{< si r class=brand >}}|Languages|[R plugin](https://github.com/MADS-NET/r_plugin)|Interface to R scripts|Plugin; source, filter, sink|
+|{{< si lua class=brand >}}|Languages|[Lua plugin](https://github.com/MADS-NET/lua_plugin)|Interface to Lua scripts|Plugin; source, filter, sink|
+|{{< iconify carbon:asset-digital-twin >}}|Simulation & Digital Twins|[FMU agent](https://github.com/MADS-NET/FMU_agent)|Interface to Functional Mock-up Units (FMUs)|Agent; source, filter|
+|{{< si onnx class=brand >}}|AI & ML|[ONNX agent](https://github.com/MADS-NET/onnx_agent)|Interface to ONNX models|Agent; source, filter|
+|{{< iconify material-symbols:database >}}|Log and storage|[HDF5 plugin](https://github.com/MADS-NET/hdf5_plugin)|Interface to HDF5 files|Plugin; sink|
+
+
+
+::: {.callout-important}
+
+The usual way to use these interfaces is to clone, configure, build and install them. By default, the install step installs the products in the MADS prefix folder, as given by `mads --prefix`, so that they can be found by MADS commands and plugin loaders.
+
+Remember the `mads inspect_plugins` command to validate a compiled plugin for compatibility with your current MADS installation:
+
+```sh
+> mads inspect_plugin $(mads -p)/lib/hdf5_writer.plugin
+plugin: /usr/local/lib/hdf5_writer.plugin
+loadable: yes
+protocol_current: yes
+type: sink
+expected_protocol_version: 7
+drivers:
+  - name: hdf5_writer, type: sink, protocol_version: 7
+```
+
+When a plugin cannot be loaded, it's probably due to library mismatches with a more recent MADS version. In these cases:
+
+* Delete the build directory
+* Create a blank plugin in a temporary directory with the command `mads plugin`
+* Compare the `CMakeLists.txt` file of the new plugin with the one of the plugin that cannot be loaded. Pay specifically attention to fetched libraries and their versions. 
+* Update the old `CMakeLists.txt` file accordingly
+* Configure and build again: `cmake -Bbuild -GNinja $$ cmake --build build -j6` (or similar)
+
+:::
