@@ -9,7 +9,7 @@
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-contrib/bootstrap-icons-1.13.1/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.9.38">
@@ -244,7 +244,7 @@ Paolo Bosetti
     </div>
 </div>
 
-  <p class="date">2026-Jul-01</p>
+  <p class="date">2026-Jul-07</p>
 </section>
 <section>
 <section id="what-is-it" class="title-slide slide level1 center">
@@ -860,9 +860,17 @@ Paolo Bosetti
 <section id="available-packaged-agents" class="slide level2">
 <h2>Available packaged agents</h2>
 <div class="panel-tabset">
-<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1"><code>mads chat</code></a></li><li><a href="#tabset-1-2"><code>mads director</code></a></li><li><a href="#tabset-1-3"><code>mads fmu</code></a></li></ul>
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1"><code>mads python</code></a></li><li><a href="#tabset-1-2"><code>mads chat</code></a></li><li><a href="#tabset-1-3"><code>mads director</code></a></li><li><a href="#tabset-1-4"><code>mads fmu</code></a></li><li><a href="#tabset-1-5"><code>mads onnx</code></a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1">
+<ul>
+<li>The <code>mads python</code> agent is a source, filter, and sink that can load Python modules</li>
+<li>The Python module must implement a specific interface (2-3 functions)</li>
+<li>The <code>mads python</code> agent uses system Python when locally built, or a pre-packaged Python interpreter when installed via the <code>mads package</code> command</li>
+<li>Use virtual environments (venv, conda or uv) to manage Python dependencies</li>
+</ul>
+</div>
+<div id="tabset-1-2">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="../images/chat.png" height="500"></p>
@@ -870,7 +878,7 @@ Paolo Bosetti
 </figure>
 </div>
 </div>
-<div id="tabset-1-2">
+<div id="tabset-1-3">
 <div class="columns">
 <div class="column">
 <ul>
@@ -889,13 +897,23 @@ Paolo Bosetti
 </div>
 </div></div>
 </div>
-<div id="tabset-1-3">
+<div id="tabset-1-4">
 <ul>
 <li>FMU stands for <em>Functional Mock-up Unit</em>, a standard for model exchange and co-simulation</li>
 <li>The <code>mads fmu</code> agent is a source plugin that can load an FMU</li>
 <li>FMU are created by <strong>dynamics simulation software</strong> (e.g.&nbsp;Simulink, Dymola, etc.) and can be used to run simulations in MADS</li>
 <li>Typically, an FMU acts as a filter agent: it receives input data from the network, runs a simulation step, and sends the output data back to the network (typically describing its state)</li>
 <li>It is a gateway to integrate <strong>digital twins</strong> into MADS networks</li>
+</ul>
+</div>
+<div id="tabset-1-5">
+<ul>
+<li>ONNX is a standard for <strong>AI and ML models</strong> that allows to run inference on different platforms (CPU, GPU, etc.) and in different programming languages (Python, C++, etc.)</li>
+<li>Provides source and filter plugins that can load an ONNX model
+<ul>
+<li><strong>source</strong>: loads input from field (camera, sensors, etc.) and feeds it to the ONNX model, publishing the inference results to the network</li>
+<li><strong>filter</strong>: receives input from the network, feeds it to the ONNX model, and publishes the inference results to the network</li>
+</ul></li>
 </ul>
 </div>
 </div>

@@ -51,7 +51,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/bootstrap/bootstrap-64b7de47a7e8b02f335e91eb41b2262c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-dark-fbd88b76561897797376a857d5eea4ac.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-64b7de47a7e8b02f335e91eb41b2262c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/quarto-contrib/bootstrap-icons-1.13.1/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -133,16 +133,16 @@ cookieconsent.run({
 <span class="menu-text">Start here</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./guides.html"> 
-<span class="menu-text">Guides</span></a>
+    <a class="nav-link active" href="./why.html" aria-current="page"> 
+<span class="menu-text">Why MADS?</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./interfaces.html"> 
 <span class="menu-text">Interfaces</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./why.html" aria-current="page"> 
-<span class="menu-text">Why MADS?</span></a>
+    <a class="nav-link" href="./guides.html"> 
+<span class="menu-text">Guides</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./who_is_using.html"> 
@@ -313,7 +313,7 @@ cookieconsent.run({
 </section>
 <section id="data-serialization" class="level3">
 <h3 class="anchored" data-anchor-id="data-serialization">Data serialization</h3>
-<p>MADS uses compressed JSON for data serialization. This choice has the advantage of being human-readable, easy to debug, and really flexible when it comes to adapting the data scheme to different choices taken during the development. On the other hand, serialization/deserialization is not extremely efficient and the used bandwidth is sub-optimal.</p>
+<p>MADS uses compressed JSON for data serialization. This choice has the advantage of being human-readable, easy to debug, and really flexible when it comes to adapting the data scheme to different choices taken during the development. On the other hand, serialization/deserialization is not extremely efficient and the used bandwidth is sub-optimal. MADS limits this drawback by serializing/deserializing JSON only when strictly necessary, and by using the binary protocol <a href="https://github.com/msgpack/msgpack">MsgPack</a> for the communication of the data streams. This makes the communication layer of MADS very efficient, able to manage about <strong>100k messages (10 kB each) per second</strong>.</p>
 <p>On the other hand, MADS supports <em>binary attachments</em> to any message: so if JSON-based communication performance is not enough, you can use a minimum JSON data packet with a binary attachment that encodes data in a more efficient way (e.g.&nbsp;by using protobufs or <a href="https://capnproto.org/">Cap’n’Proto</a>).</p>
 
 
