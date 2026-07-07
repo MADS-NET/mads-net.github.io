@@ -23,12 +23,12 @@ website:
     left:
       - href: start.qmd
         text: "Start here"
-      - href: guides.qmd
-        text: "Guides"
-      - href: interfaces.qmd
-        text: "Interfaces"
       - href: why.qmd
         text: "Why MADS?"
+      - href: interfaces.qmd
+        text: "Interfaces"
+      - href: guides.qmd
+        text: "Guides"
       - href: who_is_using.qmd
         text: "Use cases"
       - text: "Presentations"

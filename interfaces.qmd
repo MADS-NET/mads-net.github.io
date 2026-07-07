@@ -35,7 +35,7 @@ Beside the default agents and plugins provided by MADS, more specific interfaces
 ```
 
 ||Domain|Interface|Description|Type|
-|-:|:---|:---|:---:|:---|
+|:-:|:--|:---|:---:|:---|
 |{{< si arduino class=brand >}}|I/O|[Serial](https://github.com/MADS-NET/arduino_plugin)|Serial port interface to an Arduino|Plugin; source|
 |{{< si arduino class=brand >}}|I/O|[ArduinoUno Q](https://github.com/MADS-NET/arduinoQ_plugin)|Interface to an Arduino Uno Q board|Plugin; source, filter, sink|
 |{{< si bluetooth class=brand >}}|I/O|[BluetoothLE](https://github.com/MADS-NET/ble_plugin)|Bluetooth Low Energy interface to BLE devices|Plugin; source|
@@ -47,6 +47,7 @@ Beside the default agents and plugins provided by MADS, more specific interfaces
 |{{< iconify carbon:asset-digital-twin >}}|Simulation & Digital Twins|[FMU agent](https://github.com/MADS-NET/FMU_agent)|Interface to Functional Mock-up Units (FMUs)|Agent; source, filter|
 |{{< si onnx class=brand >}}|AI & ML|[ONNX agent](https://github.com/MADS-NET/onnx_agent)|Interface to ONNX models|Agent; source, filter|
 |{{< iconify material-symbols:database >}}|Log and storage|[HDF5 plugin](https://github.com/MADS-NET/hdf5_plugin)|Interface to HDF5 files|Plugin; sink|
+|{{< logo >}}|Networking|`mads-federate`|Federation of MADS networks (since MADS v2.4.0)|Agent|
 
 
 

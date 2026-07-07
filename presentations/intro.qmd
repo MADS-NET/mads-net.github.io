@@ -540,6 +540,14 @@ The `mads package` command currently provides the following pre-compiled plugins
 
 ::: {.panel-tabset}
 
+## `mads python`
+
+* The `mads python` agent is a source, filter, and sink that can load Python modules
+* The Python module must implement a specific interface (2-3 functions)
+* The `mads python` agent uses system Python when locally built, or a pre-packaged Python interpreter when installed via the `mads package` command
+* Use virtual environments (venv, conda or uv) to manage Python dependencies
+ 
+
 ## `mads chat`
 
 ![Chat agent](/images/chat.png){height=500px}
@@ -572,6 +580,13 @@ The `mads package` command currently provides the following pre-compiled plugins
 * FMU are created by **dynamics simulation software** (e.g. Simulink, Dymola, etc.) and can be used to run simulations in MADS
 * Typically, an FMU acts as a filter agent: it receives input data from the network, runs a simulation step, and sends the output data back to the network (typically describing its state)
 * It is a gateway to integrate **digital twins** into MADS networks
+
+## `mads onnx`
+
+* ONNX is a standard for **AI and ML models** that allows to run inference on different platforms (CPU, GPU, etc.) and in different programming languages (Python, C++, etc.)
+* Provides source and filter plugins that can load an ONNX model
+  * **source**: loads input from field (camera, sensors, etc.) and feeds it to the ONNX model, publishing the inference results to the network
+  * **filter**: receives input from the network, feeds it to the ONNX model, and publishes the inference results to the network
 
 :::
 

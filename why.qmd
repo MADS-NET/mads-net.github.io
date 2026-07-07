@@ -93,7 +93,7 @@ If you need hard real-time, MADS is probably not yet ready and will suffer of th
 
 ### Data serialization
 
-MADS uses compressed JSON for data serialization. This choice has the advantage of being human-readable, easy to debug, and really flexible when it comes to adapting the data scheme to different choices taken during the development. On the other hand, serialization/deserialization is not extremely efficient and the used bandwidth is sub-optimal. 
+MADS uses compressed JSON for data serialization. This choice has the advantage of being human-readable, easy to debug, and really flexible when it comes to adapting the data scheme to different choices taken during the development. On the other hand, serialization/deserialization is not extremely efficient and the used bandwidth is sub-optimal. MADS limits this drawback by serializing/deserializing JSON only when strictly necessary, and by using the binary protocol [MsgPack](https://github.com/msgpack/msgpack) for the communication of the data streams. This makes the communication layer of MADS very efficient, able to manage about **100k messages (10 kB each) per second**.
 
 On the other hand, MADS supports *binary attachments* to any message: so if JSON-based communication performance is not enough, you can use a minimum JSON data packet with a binary attachment that encodes data in a more efficient way (e.g. by using protobufs or [Cap'n'Proto](https://capnproto.org/)).
 
