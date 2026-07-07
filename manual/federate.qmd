@@ -1,0 +1,104 @@
+---
+title: "Command: `federate`"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [command, cli, networking, core]
+abstract: |
+  `mads federate` (`mads-federate`) relays selected topics between two independent MADS networks,
+  each with its own broker. It is the only supported way to bridge two networks: the broker itself is
+  a payload-opaque proxy with no notion of peering with another broker. This page covers its topology,
+  topic selection, and loop-prevention mechanism.
+---
+
+::: {.aside}
+See [broker](broker.qmd) for why bridging happens here and not in the broker itself.
+:::
+
+# Synopsis
+
+```sh
+mads federate --settings-a URI --settings-b URI
+              [--name-a name] [--name-b name] [--id relay-id]
+              [--poll-interval-us us] [-v|--version] [-h|--help]
+```
+
+# Description
+
+`federate` owns **two** ordinary `Agent` connections in one process — "side A" and "side B" — each
+configured exactly like any other agent, through a `[name]` section in *that network's own* broker
+settings. There is no shared settings file between the two networks; each side is a normal agent as
+far as its own broker is concerned.
+
+```{mermaid}
+flowchart LR
+  A[("Broker A")] <--> F["mads federate
+side_a / side_b"]
+  F <--> B[("Broker B")]
+```
+
+Because `Agent::loop()` can only drive a single blocking lambda, `federate` does **not** use it:
+instead it runs its own loop that polls both sides non-blockingly every iteration, relaying whatever
+is pending on either side and sleeping briefly (`--poll-interval-us`, default 1000) only when neither
+side had anything.
+
+::: {.callout-note}
+Only JSON messages are relayed in this version — binary/blob payloads are not forwarded.
+:::
+
+# Options
+
+| Flag | Effect |
+|---|---|
+| `-a`, `--settings-a` *URI* | Settings URI/path for network A's broker. **Required.** |
+| `-b`, `--settings-b` *URI* | Settings URI/path for network B's broker. **Required.** |
+| `--name-a` / `--name-b` | Section name each side reads from *its own* broker's ini (default `federate_a` / `federate_b`). |
+| `--id` *relay-id* | Identifier stamped into relayed messages for loop-prevention (default `<name-a>-<name-b>`). |
+| `--poll-interval-us` | Idle poll interval in microseconds (default 1000). Lower = less latency, more idle CPU. |
+| `-v`, `--version` / `-h`, `--help` | Version / usage. |
+
+# Topic selection
+
+There is no federate-specific topic filter: each side's ordinary `sub_topic` **is** the "what to
+relay in this direction" list. Whatever side A subscribes to on network A is forwarded to network B,
+and vice versa — reusing exactly the same mechanism every other agent uses.
+
+```ini
+# on broker A's mads.ini
+[federate_a]
+sub_topic = ["sensors", "alarms"]   # sent from A to B
+
+# on broker B's mads.ini
+[federate_b]
+sub_topic = ["commands"]            # sent from B to A
+```
+
+::: {.callout-important}
+`control` and `agent_event` topics are **never** relayed, regardless of `sub_topic` — remote-control
+commands and agent lifecycle events stay local to their own network. This is not configurable.
+:::
+
+# Loop prevention
+
+Every relayed message is tagged with the relay's own `--id` in a `mads_relay_path` JSON array before
+being published on the other side. A message that already carries this id is not forwarded again.
+
+::: {.callout-tip}
+This is enough to stop the immediate A → B → A ping-pong for a single relay, and chains of several
+`mads-federate` instances degrade gracefully (each hop appends its own id, BGP-AS-path style). A
+*mesh* of relays with overlapping topic sets in both directions can still loop — keep the two
+directions' topic sets disjoint, or use few relays, to stay safe.
+:::
+
+The original publisher's `agent_id`/`hostname` survive the relay unchanged (`Agent::publish` only
+stamps them if absent), so a consumer on network B still sees who actually published a message on
+network A, not the relay.
+
+# See also
+
+[mads](mads.qmd) · [broker](broker.qmd)

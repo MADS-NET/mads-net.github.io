@@ -1,0 +1,93 @@
+---
+title: "Commands: `rsource` / `rfilter` / `rsink`"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [command, cli, plugin, rust]
+abstract: |
+  `mads rsource`, `mads rfilter`, and `mads rsink` are Rust-plugin counterparts to
+  [`mads source`/`filter`/`sink`](source-filter-sink.qmd): same roles, same CLI shape, but they load a
+  compiled Rust `cdylib` through a plain C ABI (`dlopen`/`dlsym`) instead of the C++ `pugg` kernel. Not
+  available on Windows.
+---
+
+::: {.aside}
+Related: [source / filter / sink](source-filter-sink.qmd) (the C++ equivalents this mirrors) ·
+[plugin](plugin.qmd) (scaffolding a Rust plugin with `--rust`)
+:::
+
+# Synopsis
+
+```sh
+mads rsource [common options] [-p|--period ms] [plugin.so]
+mads rfilter [common options] [-p|--period ms] [-b|--dont-block] [plugin.so]
+mads rsink   [common options] [-b|--dont-block] [plugin.so]
+```
+
+# Description
+
+Same source file (`src/main/rust_plugin_loader.cpp`), compiled three times, mirroring
+`plugin_loader.cpp`'s structure — but instead of a `pugg::Kernel`, it `dlopen`s the plugin and
+`dlsym`s a single entry point, `mads_rust_plugin_register()`, which returns a static vtable of
+C function pointers (`create`, `set_params`, `get_output`/`load_data`+`process`, `destroy`, ...).
+
+```{mermaid}
+flowchart LR
+  R["Rust plugin
+SourcePlugin/FilterPlugin/
+SinkPlugin trait impl"] -- "export_*_plugin!
+macro" --> V["mads_rust_plugin_register()
+C ABI vtable"]
+  V -- "dlopen + dlsym" --> L["mads rsource/rfilter/rsink"]
+```
+
+::: {.callout-important}
+Not available on Windows — these three targets are excluded from the build there.
+:::
+
+::: {.callout-warning title="ABI version, not protocol version"}
+The vtable carries its own `MADS_RUST_PLUGIN_VERSION` (currently `1`), checked on load — this is
+**independent** of the C++ plugin protocol version (`P8` as of this writing) covered in
+[plugin](plugin.qmd). A Rust plugin cannot be migrated with `mads plugin --update`; bump the
+`mads-plugin` crate dependency in its `Cargo.toml` instead.
+:::
+
+# Options
+
+Same shape as the C++ loaders (see [source / filter / sink](source-filter-sink.qmd) for the shared
+option table) with two differences:
+
+| | Value |
+|---|---|
+| Default agent names | `rpublish` / `rbridge` / `rfeedback` (r-prefixed) |
+| Default plugin file | `publish.plugin` / `bridge.plugin` / `feedback.plugin` — **same filenames** as the C++ loaders' defaults |
+
+::: {.callout-warning title="Same default filename, different file format"}
+Because the default plugin filenames are identical to the C++ loaders' (`publish.plugin`, etc.), a
+bare `mads rsource` (no plugin argument) will happily `dlopen` a C++/`pugg`-based `publish.plugin` if
+that's the only one installed — the file loads fine as a shared library, but `dlsym` then fails to
+find `mads_rust_plugin_register` in it, since that plugin exports pugg's registration symbol instead.
+The resulting error is clear, but easy to misread at first glance as "plugin not found."
+:::
+
+# Authoring a Rust plugin
+
+A plugin implements the `SourcePlugin`, `FilterPlugin`, or `SinkPlugin` trait from the `mads-plugin`
+crate (methods mirror the C++ base class: `set_params`, `info`, and `get_output`, or
+`load_data`+`process`, or `load_data`, using `Return`/`Output` enums instead of `return_type`/output
+parameters) and registers with a macro:
+
+```rust
+export_source_plugin!("my_source", MySourcePlugin);
+```
+
+Scaffold one with `mads plugin <name> --type source --rust` — see [plugin](plugin.qmd).
+
+# See also
+
+[mads](mads.qmd) · [source / filter / sink](source-filter-sink.qmd) · [plugin](plugin.qmd)

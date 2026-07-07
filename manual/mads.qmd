@@ -1,0 +1,174 @@
+---
+title: "Command: `mads`"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [command, core, cli]
+abstract: |
+  `mads` is the single entry point for the whole MADS command-line toolkit. It transparently
+  dispatches to every `mads-<name>` executable installed alongside it (so `mads broker` runs
+  `mads-broker`, `mads federate` runs `mads-federate`, and so on), and it additionally provides a
+  handful of built-in housekeeping subcommands — creating a settings file, checking for updates,
+  installing the Python wrapper, creating Linux services — plus global flags for installation info,
+  plugin listing, CURVE keypair generation, and broker discovery on the local network.
+---
+
+::: {.aside}
+Related guides:
+
+- [Installing MADS](../guides/install.qmd)
+- [Service advertising and auto-discovery](../guides/auto-discovery.qmd) (for `--rooms`)
+- [Security in MADS](../guides/security.qmd) (for `--keypair`)
+- [Services](../guides/services.qmd) (for `mads service`)
+- [Python interface](../guides/python.qmd) (for `mads setup-python`)
+:::
+
+# Synopsis
+
+```sh
+mads [-i|--info] [-p|--prefix] [--plugins] [--keypair[=name]] [-f|--force]
+     [--rooms[=timeout_ms]] [-j|--json] [-v|--version] [-h|--help]
+mads <subcommand> [args...]
+```
+
+# Description
+
+`mads` does not implement agents or the broker itself: it is a thin dispatcher. Every MADS
+capability lives in its own executable, installed with a `mads-` prefix (`mads-broker`,
+`mads-federate`, `mads-source`, ...). Typing `mads <name>` is equivalent to running `mads-<name>`
+directly, with all remaining arguments passed through unchanged.
+
+On top of that dispatch mechanism, `mads` provides a few **built-in** subcommands that have no
+separate executable (`ini`, `update`, `beta`, `setup-python`, and — on Linux — `service`), plus a set
+of global flags handled directly by `mads` itself.
+
+## How dispatch works
+
+```{mermaid}
+flowchart LR
+  U["user types e.g.
+mads broker -r myroom"] --> M["mads"]
+  M --> S{"sibling executable
+mads-broker exists?"}
+  S -- yes --> X["execv(mads-broker, argv[1:])
+(process is replaced)"]
+  S -- no --> B{"built-in subcommand?
+ini / update / beta /
+setup-python / service"}
+  B -- yes --> H["run built-in handler"]
+  B -- no --> G["parse mads' own global flags
+(-i -p --plugins --keypair --rooms -v -h)"]
+```
+
+`mads` discovers the available wrapped commands at startup by scanning its own directory for files
+starting with `mads-`. This means installing (or removing) a plugin loader or a new agent executable
+next to `mads` is enough to make it appear as a subcommand — nothing needs to be registered anywhere.
+
+::: {.callout-note}
+Because dispatch uses `execv` (the `mads` process image is replaced), the wrapped command runs with
+`argv[0]` set to the *subcommand name you typed* (e.g. `broker`), not to `mads-broker`. Agent-based
+commands rely on this to auto-derive their default agent name.
+:::
+
+Running `mads` with no arguments prints the current version, the installation paths, and the full
+list of available subcommands (both wrapped executables and built-ins).
+
+# Global options
+
+These are handled by `mads` itself and never forwarded to a subcommand.
+
+| Flag | Effect |
+|---|---|
+| `-i`, `--info` | Print the MADS version, binary/plugins/template directories, and the resolved `mads.ini` path. |
+| `-p`, `--prefix` | Print the MADS installation prefix (the directory containing `bin/`, `lib/`, `etc/`, ...). |
+| `--plugins` | List the `.plugin` files found in the default plugins directory. |
+| `--keypair[=name]` | Generate a CURVE public/private keypair (default base name `mads`); refuses to overwrite existing files unless `-f/--force` is also given. See [Security in MADS](../guides/security.qmd). |
+| `-f`, `--force` | Allow `--keypair` to overwrite existing key files. |
+| `--rooms[=timeout_ms]` | Listen for brokers advertising themselves on the local network (UDP discovery) and list them (default timeout 5000 ms). See [Auto-discovery](../guides/auto-discovery.qmd). |
+| `-j`, `--json` | Emit `--info` or `--rooms` output as JSON instead of formatted text. |
+| `-v`, `--version` | Print the semantic version (e.g. `v2.3.1`) followed by the exact build identifier in parentheses (e.g. `v2.3.1 (build v2.3.1-3-gabc1234)`). |
+| `-h`, `--help` | Print usage. |
+
+::: {.callout-tip}
+`mads -p` is commonly used in scripts to locate the installation, e.g. `export PYTHONPATH=$PYTHONPATH:$(mads -p)/python`.
+:::
+
+# Built-in subcommands
+
+## `mads ini`
+
+Generates a `mads.ini` settings file from the built-in template, with a few values fillable from
+the command line:
+
+```sh
+mads ini [-o|--output file] [-i|--install] [-b|--broker host] [-F|--frontend port]
+         [-B|--backend port] [-s|--settings port] [-f|--fps fps] [-m|--mongo uri] [-h|--help]
+```
+
+With no `-o`/`-i`, the generated ini is printed to standard output. `-o file` writes it to `file`
+instead; `-i` (not available on Windows) writes it directly into the installation's `etc/` directory.
+`-o` and `-i` are mutually exclusive.
+
+## `mads update` / `mads beta`
+
+Both **only report** on available releases by querying the GitHub releases API; neither of them
+downloads or installs anything.
+
+- `mads update` shows the latest **stable** release, plus a note about a newer pre-release if one
+  exists.
+- `mads beta` shows the single most recent release regardless of pre-release status.
+
+Both print, for the matching platform/architecture asset, a `=>` marker and the download URL.
+
+::: {.callout-warning}
+Despite the name, `mads update` does not perform an in-place update — it only tells you what is
+available and where to get it. Downloading and re-running the installer is a manual step.
+:::
+
+## `mads setup-python`
+
+Installs the MADS Python wrapper (`mads_agent` module) into a Python environment by writing a
+`.pth` file into that environment's `site-packages`, so the wrapper stays importable without
+copying it.
+
+```sh
+mads setup-python [--venv path | --conda path | --uv path]
+```
+
+With no flag, it uses the currently active environment (`$VIRTUAL_ENV` or `$CONDA_PREFIX`). See the
+[Python interface](../guides/python.qmd) guide for details and usage examples.
+
+## `mads service` (Linux only)
+
+Generates (and, run as root, installs) a `systemd` unit file that runs a MADS command as a service:
+
+```sh
+mads service <service_name> <command...>
+```
+
+e.g. `mads service mads-feedback feedback -s tcp://broker.local:9092`. Run without root privileges,
+it prints the unit file to standard output for review; run with `sudo`, it writes it directly into
+`/etc/systemd/system/` and reports the `systemctl` commands to start/enable it. See the
+[Services](../guides/services.qmd) guide.
+
+
+# Wrapped commands
+
+Every other MADS executable is reached through `mads <name>`: [broker](broker.qmd), `bridge`,
+[dealer](dealer-worker.qmd), [federate](federate.qmd), [feedback](feedback-perf_assess.qmd), [filter](source-filter-sink.qmd), [fsm](fsm.qmd),
+`image`, [inspect_plugin](inspect_plugin.qmd), [logger](logger.qmd), [package](package.qmd), [plugin](plugin.qmd),
+[perf_assess](feedback-perf_assess.qmd), [sink](source-filter-sink.qmd),
+[source](source-filter-sink.qmd), [worker](dealer-worker.qmd), and (on platforms other
+than Windows) the [Rust plugin loaders](rust-loaders.qmd) `rsource`, `rfilter`, `rsink`.
+
+
+# See also
+
+[Network discovery](network-discovery.qmd) · [Cryptography and security](cryptography-security.qmd)
+
+[Installing MADS](../guides/install.qmd)

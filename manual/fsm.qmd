@@ -1,0 +1,81 @@
+---
+title: "Command: `fsm`"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [command, cli, agents]
+abstract: |
+  `mads fsm` (`mads-fsm`) generates a validated, boilerplate-free finite-state-machine agent skeleton
+  from a Graphviz `.dot` description of states and transitions. It is a thin wrapper around the
+  external [gv2fsm](https://github.com/pbosetti/gv2fsm) code generator, with one MADS-specific
+  addition: the generated `main()` skeleton comes pre-wired to `Mads::Agent`. This page is a CLI
+  reference; for the full tutorial (writing the `.dot` file, filling in state/transition stubs, the
+  annotated agent skeleton) see the guide in the margin.
+---
+
+::: {.aside}
+Full tutorial: [Finite State Machines](../guides/fsm.qmd)
+:::
+
+# Synopsis
+
+```sh
+mads fsm [-p project] [-d description] [--cpp] [-o output_file]
+         [-e|--header-only] [-s|--source-only] [-x prefix]
+         [-i|--ino] [-l|--log] [-k state] [-f|--force] [-h|--help] scheme.dot
+```
+
+# Description
+
+`mads fsm` is `gv2fsm` (fetched and linked as a library at MADS build time) run with one override:
+before parsing arguments, it swaps in MADS's own `main()` template
+(`share/templates/fsm_main.tpl`), so the generated skeleton already embeds a `Mads::Agent`,
+connects it, and drives the FSM loop from the agent's own receive/remote-control cycle — see the
+[guide](../guides/fsm.qmd) for the exact generated code. Everything else (the `.dot` syntax, the
+state/transition function stubs, the validation of transitions) is stock `gv2fsm`.
+
+```{mermaid}
+flowchart LR
+  D["scheme.dot
+(states + transitions)"] --> F["mads fsm"]
+  F --> H["fsm.hpp
+generated boilerplate,
+only allows designed transitions"]
+  F --> I["fsm_impl.hpp
+one stub function per
+state/transition, fill these in"]
+```
+
+# Options
+
+| Flag | Effect |
+|---|---|
+| *scheme.dot* (positional) | Input Graphviz file. Required. |
+| `-p`, `--project` *name* | Project name (also the C++ namespace). |
+| `-d`, `--description` *text* | Description string embedded in the generated header. |
+| `--cpp` | Generate C++17 sources (default: plain C). |
+| `-o`, `--output_file` *name* | Base name for the generated files (e.g. `-o src/fsm` → `src/fsm.hpp` + `src/fsm_impl.hpp`). |
+| `-e`, `--header-only` | Only (re)generate the header — use when you've edited `fsm_impl.hpp` by hand and just changed the `.dot` file. |
+| `-s`, `--source-only` | Only (re)generate the implementation stubs. |
+| `-x`, `--prefix` *prefix* | Prepend `prefix` to generated function/object names. |
+| `-i`, `--ino` | Generate a single `.ino` file for Arduino (implies plain C, disables `--log`). |
+| `-l`, `--log` | Add syslog calls in state/transition functions. |
+| `-k`, `--sigint` *state* | Install a `SIGINT` handler that forces an emergency transition to *state* (e.g. a `stop` state), for graceful Ctrl-C shutdown. |
+| `-f`, `--force` | Overwrite existing output files. |
+| `-h`, `--help` | Usage. |
+
+::: {.callout-warning}
+Regenerating after editing the `.dot` file **without** `--header-only` overwrites `fsm_impl.hpp` too,
+discarding any implementation you've already written. Always pair a regeneration with
+`--header-only --force` once you've started filling in stubs.
+:::
+
+# See also
+
+[mads](mads.qmd) · [Finite State Machines](../guides/fsm.qmd) (full tutorial) ·
+[gv2fsm](https://github.com/pbosetti/gv2fsm) (upstream generator)

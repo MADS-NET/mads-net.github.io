@@ -13,6 +13,21 @@ $my-blue: #0275d8 !default;
 $my-gray: #6c757d !default;
 
 /*-- scss:rules --*/
+
+// Quarto's default Mermaid cluster/subgraph colors (_quarto-rules.scss) derive
+// --mermaid-fg-color--lighter/--lightest by lightening $body-color, which only
+// gives a light tint when $body-color itself starts light. With this brand's
+// near-black $body-color (#1A1A1A), that lighten() still lands on a dark gray
+// (~#4d4d4d), making mermaid subgraph boxes look like a rendering error.
+// Overriding the CSS custom properties directly (rather than the SCSS
+// variables, which are already baked into Quarto's own :root block by this
+// point) mixes toward $body-bg instead, giving a subtle light tint regardless
+// of how dark/light $body-color happens to be.
+:root {
+  --mermaid-fg-color--lighter: #{mix($body-color, $body-bg, 15%)};
+  --mermaid-fg-color--lightest: #{mix($body-color, $body-bg, 8%)};
+}
+
 h1, h2, h3, h4, h5, h6 {
   text-shadow: 2px 2px 2px rgba(0, 0, 0, .2);
   color: $navbar-bg;

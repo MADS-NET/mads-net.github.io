@@ -1,0 +1,102 @@
+---
+title: "Network discovery"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [concept, networking]
+abstract: |
+  Every MADS agent needs one thing to join a network: the broker's settings URI. This page lays out
+  the three ways to get there — a hardcoded address, OS-level hostname resolution, and MADS's own
+  zero-configuration UDP broadcast — and how they relate to each other.
+---
+
+::: {.aside}
+Related guides:
+
+- [Service advertising and auto-discovery](../guides/auto-discovery.qmd)
+- [ZeroConf (aka Avahi) network discovery](../guides/zeroconf.qmd)
+:::
+
+# Three ways to find the broker
+
+```{mermaid}
+flowchart TB
+  A["-s tcp://192.168.1.5:9092
+hardcoded IP
+always works, breaks if the IP changes"]
+  B["-s tcp://broker.local:9092
+OS-level hostname resolution
+Zeroconf/Avahi (mDNS) or real DNS"]
+  C["-r [room]
+MADS UDP auto-discovery
+no address needed at all, opt-in"]
+  A --> B --> C
+```
+
+These are **not competing** mechanisms — each solves a more automated slice of the same problem
+("what address do I connect to?"), and an agent only ever uses one of them at a time, chosen by
+which flag you pass.
+
+- **Hardcoded IP** (`-s`/`--settings`) is the baseline every agent supports; it always works but
+  breaks silently if DHCP reassigns the broker's address.
+- **Hostname resolution** (still `-s`, just with a `.local` name) fixes that by resolving the name
+  dynamically — but it's OS/network infrastructure (Zeroconf/Avahi/Bonjour, or a real DNS server),
+  not anything MADS implements. See [ZeroConf](../guides/zeroconf.qmd) for enabling it per platform.
+- **MADS's own auto-discovery** (`-r`/`--room`) removes the need for *any* address: the agent
+  listens for a broker advertising itself on the local network.
+
+# How MADS's own auto-discovery works
+
+::: {.callout-important}
+This is **not** mDNS/Zeroconf/Bonjour, despite the similar goal — it's a small custom UDP-broadcast
+protocol implemented entirely inside MADS (`Mads::ServiceDiscovery`), independent of any OS service.
+:::
+
+The broker broadcasts a JSON payload once per second on UDP port `39092`, containing its address(es),
+ports, MADS version, and **room** name. Any agent started with `-r`/`--room` listens on that port and
+resolves its own settings URI from the first matching broadcast — no `mads.ini`, no IP, no hostname.
+
+```{mermaid}
+flowchart LR
+  BR["broker
+-r myroom"] -- "UDP broadcast :39092
+{ip, ports, room, version}
+once per second" --> AG["any agent
+-r myroom"]
+```
+
+A **room** is both a mutual-exclusion key and a logical grouping: only one broker per room can
+advertise on a given broadcast domain (a second broker in the same room refuses to start
+advertising, though it still works if reached explicitly via `-s`), and agents started with `-r` only
+ever connect to a broker advertising that exact room — letting several independent MADS networks
+coexist on one LAN. See [broker](broker.qmd) for the broker-side `-r` flag.
+
+::: {.callout-tip}
+Discovery is entirely **opt-in per agent**: an agent started without `-r` never listens for
+broadcasts and behaves exactly as before. A network can freely mix discovered and explicitly-addressed
+agents.
+:::
+
+::: {.callout-warning}
+Requires UDP broadcast traffic on port 39092 to reach every participating device — a firewall
+blocking it will silently break discovery. Also broadcast-only: it does not cross typical router/VLAN
+boundaries, so it only ever finds brokers on the *same* local network segment.
+:::
+
+# Tools
+
+- `mads --rooms [timeout_ms]` lists every room currently advertised on the local network — see
+  [mads](mads.qmd).
+- Any command that takes `-s/--settings` also takes `-r/--room` as an alternative (broker included,
+  for the room *name* it advertises under).
+
+# See also
+
+[broker](broker.qmd) · [mads](mads.qmd) · [federate](federate.qmd) — bridges two *separately
+discovered* networks, each still resolved independently on its own side ·
+[Cryptography and security](cryptography-security.qmd) — auto-discovery's own crypto cross-check

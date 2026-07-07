@@ -1,0 +1,49 @@
+---
+title: "{{< logo >}} Manual"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+---
+
+# Contents
+
+## MADS commands
+
+<!-- LIST of all MADS executable commands in the standard installation,
+     each linking to a separate manual page -->
+
+* [mads](mads.qmd) — the command dispatcher and its built-in subcommands
+* [broker](broker.qmd) — the ZeroMQ proxy and settings service at the hub of a MADS network
+* [plugin](plugin.qmd) — scaffold a new plugin, or migrate an existing one to a newer protocol
+* [source](source-filter-sink.qmd), [filter](source-filter-sink.qmd), [sink](source-filter-sink.qmd) — the three generic plugin-loader agents
+* [logger](logger.qmd) — persists every topic to MongoDB and/or a file
+* [feedback](feedback-perf_assess.qmd), [perf_assess](feedback-perf_assess.qmd) — a generic subscriber and publisher for testing, plus the default plugins
+* [inspect_plugin](inspect_plugin.qmd) — diagnose a compiled `.plugin` file (protocol version, ABI mismatches)
+* [federate](federate.qmd) — relay selected topics between two independent MADS networks
+* [fsm](fsm.qmd) — generate a finite-state-machine agent skeleton from a Graphviz description
+* [package](package.qmd) — list, inspect, and install pre-compiled community packages
+* [dealer](dealer-worker.qmd), [worker](dealer-worker.qmd) — round-robin load balancing across multiple worker processes
+* [rsource](rust-loaders.qmd), [rfilter](rust-loaders.qmd), [rsink](rust-loaders.qmd) — Rust-plugin loaders (not on Windows)
+
+
+## MADS concepts
+
+<!-- Each of the following must link to a separate manual page -->
+
+* [Network discovery](network-discovery.qmd)
+* [Message routing and topics](message-routing.qmd)
+* [Plugins and extensions](plugins-extensions.qmd)
+* [Timing and scheduling](timing-scheduling.qmd)
+* [Message queues, blocking/non-blocking behavior](message-queues.qmd)
+* [Databases and data storage](databases-storage.qmd)
+* [Cryptography and security](cryptography-security.qmd)
+
+
+
+
+
+

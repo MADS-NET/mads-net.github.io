@@ -1,0 +1,111 @@
+---
+title: "Commands: `feedback` / `perf_assess` / default plugins"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [command, cli, plugin, testing]
+abstract: |
+  `mads feedback` and `mads perf_assess` are two small, standalone (non-plugin) agents used mainly
+  for testing a MADS network by hand: a generic subscriber that prints everything, and a generic
+  publisher that emits a steady synthetic stream. This page covers both, together with the **default
+  plugins** loaded by `mads source`/`filter`/`sink` when no plugin is given — which read/write plain
+  JSON over stdin/stdout, making them a quick way to wire an external script into a MADS network
+  without writing a line of C++.
+---
+
+::: {.aside}
+Related guides: [Plugins](../guides/plugins.qmd) — writing a real plugin, once stdin/stdout piping
+isn't enough.
+:::
+
+# Synopsis
+
+```sh
+mads feedback [-b|--dont-block] [-q|--queue-size n] [common options]
+mads perf_assess [-p period_ms] [-l payload_bytes] [common options]
+mads source|filter|sink   # with no plugin argument: loads the default plugin
+```
+
+# `mads feedback`
+
+A pure subscriber (unlike [`mads sink`](source-filter-sink.qmd), it is a standalone `Agent`, not a
+plugin loader): it prints every message it receives as `topic: payload`, one line per message.
+
+| Flag | Effect |
+|---|---|
+| `-b`, `--dont-block` | Poll without blocking (from ini: `dont_block`). |
+| `-q`, `--queue-size` *n* | ZMQ socket queue size (default 1000). |
+| *(ini)* `print_width` | Truncate the payload to this many characters (default: full pretty-print). |
+| *(ini)* `indent_width` | Indent width when pretty-printing (no truncation). |
+
+Its `sub_topic` (like any agent) defaults to whatever the `[feedback]` ini section says — set it to
+`[""]` to see everything on the network.
+
+# `mads perf_assess`
+
+The mirror image: a pure publisher that emits a synthetic payload
+(`id`, `origin_timestamp`, `payload` — a random fixed-length string, `payload_length`, `period`) at a
+fixed rate, useful for eyeballing a pipeline's actual timing/throughput with `mads feedback`, or with
+the `monitor` sink plugin (`mads sink monitor.plugin`), on the receiving end.
+
+| Flag | Effect |
+|---|---|
+| `-p` *ms* | Publish period (default 100 ms). |
+| `-l` *bytes* | Length of the random payload string (default 10). |
+| `-n`, `--name` / `-i`, `--agent-id` | Agent identity options. |
+
+```{mermaid}
+flowchart LR
+  PA["mads perf_assess
+-p 50 -l 256"] -- "steady synthetic
+stream" --> Broker[("broker")]
+  Broker --> FB["mads feedback"]
+  Broker --> MO["mads sink monitor.plugin
+(inter-arrival timing)"]
+```
+
+# Default plugins
+
+`mads source`, `mads filter`, and `mads sink` each load a **default plugin** when none is given on
+the command line — and all three read/write plain JSON on stdin/stdout, which is the fastest way to
+prototype an agent's logic in any language, or to inject/inspect traffic by hand.
+
+| Loader | Default plugin | Behavior |
+|---|---|---|
+| `mads source` | `publish.plugin` | Reads one JSON value per line from **stdin**, publishes it. |
+| `mads filter` | `bridge.plugin` | Prints each received message as `{"topic":..., "input":...}` to **stdout**, then blocks reading a replacement JSON line from **stdin** and publishes *that* as output. |
+| `mads sink` | `feedback.plugin` | Prints each received message as `topic: payload` to **stdout** (truncated to `print_width`, default 60, or pretty-printed with `indent_width` if `print_width` is 0). |
+
+```{mermaid}
+flowchart LR
+  Ext["external process
+(any language)"] -- "reads on stdout,
+writes on stdin" --> BR["mads filter
+(bridge.plugin)"]
+  BR <--> Net[("broker")]
+```
+
+This is exactly the pattern used to wrap an external script as a filter — e.g. a Python loop reading
+`process.stdout.readline()`, transforming the JSON, and writing it back to `process.stdin`.
+
+::: {.callout-warning}
+`bridge.plugin`'s `process()` step **blocks on `getline(cin, ...)`**, and that call runs on the
+agent's own main loop thread. If nothing is written to its stdin in response to a printed input, the
+whole filter stalls — it will not publish, and it will not process the next incoming message either.
+:::
+
+::: {.callout-important title="Naming collision"}
+`mads feedback` (this page, a standalone agent) and `feedback.plugin` (the default **sink** plugin,
+loaded by `mads sink`) are **two different implementations** that happen to do a similar thing (print
+received messages) — one is a full agent binary, the other a tiny plugin loaded by the generic sink
+loader. Don't confuse the two when reading logs or scripts.
+:::
+
+# See also
+
+[mads](mads.qmd) · [source / filter / sink](source-filter-sink.qmd) · [plugin](plugin.qmd)

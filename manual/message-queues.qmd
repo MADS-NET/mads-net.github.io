@@ -1,0 +1,133 @@
+---
+title: "Message queues, blocking/non-blocking behavior"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [concept, messaging]
+abstract: |
+  Every subscriber sits behind a ZeroMQ queue with a bounded size, and every read from it can either
+  wait for something to arrive or return immediately. This page covers that queue (`queue_size`,
+  Last-Known-Value delivery), the two independent meanings of "blocking" a subscriber-facing agent
+  has to juggle (the socket's own timeout vs. the loop's `dont_block` policy), and how the
+  built-in commands combine the two.
+---
+
+# The subscribe queue
+
+Incoming messages a subscriber hasn't read yet sit in a ZeroMQ queue on the SUB socket, bounded by
+`queue_size` (an ini key, default 1000 — `0` means unlimited, ZMQ's own semantics). Once full, ZMQ
+silently drops the *oldest* queued message to make room for a new one — there is no MADS-level
+backpressure or flow control.
+
+::: {.callout-note}
+`queue_size` used to be spelled `high_watermark`; the old name still works but logs a deprecation
+warning.
+:::
+
+## Last-Known-Value delivery
+
+Setting `queue_size = 1` (or `Agent::set_delivery(Delivery::LastKnownValue)` from code) switches to
+a different mode entirely: rather than keeping a one-deep FIFO, a background thread continuously
+drains the socket and holds only the single most recent message, overwriting it as new ones arrive.
+A `receive()` call then always returns whatever is currently the latest — never a backlog.
+
+```{mermaid}
+flowchart TB
+  subgraph "Queued"
+    PubQ["publisher"] --> SockQ[["SUB socket queue
+capped at queue_size
+(the default)"]]
+    SockQ --> RecvQ["receive()
+returns the oldest
+unread message"]
+  end
+  subgraph "LKV"
+    PubL["publisher"] --> SockL[["SUB socket
+queue_size = 1"]]
+    SockL --> Drain["drain thread
+keeps overwriting
+'the latest'"]
+    Drain --> RecvL["receive()
+returns whatever is
+currently 'the latest'"]
+  end
+```
+
+::: {.callout-tip}
+Use Last-Known-Value delivery for a consumer that only cares about the *current* value of
+something (a live dashboard, a status display) and would rather skip stale history than fall behind
+processing it. Use the default Queued delivery when every message matters (a logger, an event
+pipeline) — LKV silently discards whatever arrived between two reads.
+:::
+
+# Two independent meanings of "blocking"
+
+A subscriber-facing agent actually has two separate knobs that both get called "blocking," and
+they answer different questions.
+
+## 1. Does `receive()` wait for the socket?
+
+`receive(dont_block)` maps directly to the SUB socket's own receive semantics:
+
+- `dont_block = false` (the default): wait for a message, but only up to `receive_timeout`
+  milliseconds (default 500, `set_receive_timeout()`/no direct ini key of its own — it is set from
+  `time_step`-independent code, not user-configured per plugin). If nothing arrives in time,
+  `receive()` returns `message_type::none` — it never blocks *forever*.
+- `dont_block = true`: return immediately (`message_type::none` if nothing is queued right now).
+
+## 2. What does the loop do about it?
+
+Separately, `mads filter`/`mads sink`'s own `-b`/`--dont-block` flag (an unrelated, loop-level
+policy, despite the similar name) decides what happens when a tick's `receive()` comes back empty:
+
+- Without it (default): skip processing this tick and let the loop's own pacing
+  (see [Timing and scheduling](timing-scheduling.qmd)) decide when to try again — the plugin never
+  sees an empty tick.
+- With it: call the plugin's `process()`/`load_data()` anyway, with no new input — this is how a
+  `filter` acts as *both* filter and source, producing output on a timer even when nothing new has
+  arrived. See [source / filter / sink](source-filter-sink.qmd#role-specific-options) for the full
+  per-role table.
+
+::: {.callout-important}
+These two flags are easy to conflate because both are named around "blocking," but one governs a
+*single socket read* (bounded by `receive_timeout`, never truly infinite) and the other governs
+*what the loop body does* when that read comes up empty. Setting one without understanding the
+other is a common source of "my filter doesn't produce output when idle" confusion.
+:::
+
+# Remote control and socket ownership
+
+[`enable_remote_control()`](message-routing.qmd) can run in two modes that trade off exactly who is
+allowed to call `receive()`:
+
+- **Inline** (the default, used by `filter`/`sink`): "control" messages are intercepted transparently
+  inside whatever `receive()` calls the loop body already makes for its own data — no extra thread,
+  but control commands are only processed as often as the loop itself polls.
+- **Threaded** (`enable_threaded_remote_control()`, used by `source`, which never otherwise reads
+  from the subscriber at all): a dedicated background thread takes exclusive ownership of the
+  subscriber socket so control commands are handled promptly regardless of loop pacing.
+
+::: {.callout-warning}
+In threaded mode the agent's own `receive()` **throws** if called — the background thread owns the
+socket exclusively. This is why it is only used by `source`, which has no data to receive in the
+first place; grafting threaded remote control onto an agent that also needs to `receive()` its own
+data is a contradiction the framework actively refuses.
+:::
+
+# Malformed and self-published messages
+
+`receive()` never treats a bad frame as fatal: a malformed message (wrong part count, failed
+decompression, an unparseable header) is silently dropped and counted in
+`Agent::dropped_messages()`, and processing continues on the next call. Likewise, a `filter` that
+sees a message on its **own** `pub_topic` skips it with a warning rather than processing it — the
+built-in loop-prevention for a filter that (mis)subscribes to the very topic it publishes to.
+
+# See also
+
+[source / filter / sink](source-filter-sink.qmd) · [Message routing and topics](message-routing.qmd) ·
+[Timing and scheduling](timing-scheduling.qmd)

@@ -1,0 +1,85 @@
+---
+title: "Plugins and extensions"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [concept, plugin, development]
+abstract: |
+  MADS separates "being an agent" (networking, settings, CLI, the main loop) from "what the agent
+  actually does" (a small, dynamically loaded plugin). This page is a map of that ecosystem — the
+  roles, the two implementation languages, how a plugin reaches a device, and where the detailed
+  pages for each piece live — since the mechanics themselves are already covered in depth elsewhere.
+---
+
+# The core idea
+
+A **generic loader** (`mads source`/`filter`/`sink`, or their Rust counterparts `mads rsource`/
+`rfilter`/`rsink`) handles everything an agent needs — connecting to the broker, settings, remote
+control, the main loop — and at runtime dynamically loads a small **plugin** that implements only the
+domain logic: a handful of methods (`get_output`, or `load_data`+`process`, or `load_data`). Write the
+plugin, not the agent.
+
+```{mermaid}
+flowchart TB
+  P["plugin source
+C++ (pugg) or Rust (cdylib)"] -- "cmake / cargo build" --> B[".plugin / .so file"]
+  B --> L["generic loader
+mads source/filter/sink
+or rsource/rfilter/rsink"]
+  L --> N[("broker + rest of
+the MADS network")]
+```
+
+The alternative is a **monolithic agent**: subclass `Mads::Agent` directly (as `Dealer`, `Worker`, and
+`Logger` do internally) for full control at the cost of writing the networking boilerplate yourself —
+see [Monolithic agents](../guides/monolithic_agents.qmd).
+
+# The three roles
+
+Every plugin is a **source** (produces data), a **filter** (transforms it), or a **sink** (consumes
+it) — the same three-way split as the generic loaders. Full method contract, default plugins, and
+loader behavior: [source / filter / sink](source-filter-sink.qmd).
+
+# Two implementations
+
+| | C++ | Rust |
+|---|---|---|
+| Build | CMake + `pugg` kernel | Cargo, `cdylib` |
+| Loaded by | `mads source`/`filter`/`sink` | `mads rsource`/`rfilter`/`rsink` |
+| Versioning | protocol tag (`-P`*N*, currently P8) | `mads-plugin` crate version |
+
+Scaffold either with [`mads plugin`](plugin.qmd) (add `--rust` for the latter); migrate an aging C++
+plugin forward with `mads plugin --update`. Diagnose a compiled plugin — does it load, what protocol,
+any ABI mismatch — with [`mads inspect_plugin`](inspect_plugin.qmd). Details of writing the plugin
+logic itself: [Plugins](../guides/plugins.qmd).
+
+# Getting a plugin onto a device
+
+Three ways, in increasing order of "someone else built it":
+
+1. **Compile it yourself** on the target (or cross-compile), via `mads plugin` scaffolding.
+2. **Over-The-Air (OTA)**: the broker ships a plugin file as an ini `attachment`, so a remote agent
+   fetches it from the broker at connect time instead of needing a local copy — see
+   [OTA Plugins](../guides/OTA_plugins.qmd).
+3. **`mads package`**: pull a pre-compiled binary of a common community plugin/agent/tool published on
+   [MADS-NET](https://github.com/mads-net) — see [package](package.qmd) /
+   [MADS packages](../guides/package.qmd).
+
+# Persistence and the wider ecosystem
+
+- **Datastore**: a C++ plugin can opt into simple device-local persistent key/value storage
+  (`mads plugin --datastore`) — see [Agents persistency with Datastore](../guides/datastore.qmd).
+- Beyond the core C++/Rust ABI, several **community repositories** provide other ways to write agent
+  logic: [R plugins](../guides/r_plugin.qmd), an [embedded-Python agent](../guides/python_agent.qmd)
+  (a monolithic agent with a Python interpreter inside, not the plugin ABI), [ONNX inference
+  agents](../guides/onnx.qmd), and [FMU co-simulation](../guides/fmu.qmd).
+
+# See also
+
+[mads](mads.qmd) · [plugin](plugin.qmd) · [source / filter / sink](source-filter-sink.qmd) ·
+[inspect_plugin](inspect_plugin.qmd) · [package](package.qmd)

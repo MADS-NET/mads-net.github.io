@@ -1,0 +1,83 @@
+---
+title: "Message routing and topics"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [concept, networking, messaging]
+abstract: |
+  Every message on a MADS network is published under a single **topic** string, and every agent
+  declares which topics it wants. This page covers how that filtering actually works (it's ZeroMQ
+  prefix matching, not exact-match or glob), the handful of reserved topics the framework itself
+  uses, and the wire format underneath.
+---
+
+# Topics: the unit of routing
+
+Every published message carries exactly one topic. An agent's outgoing topic (`pub_topic`) defaults
+to its own agent name; its incoming filter (`sub_topic`) is a list of topic strings, read from its
+ini section, e.g. `sub_topic = ["sensors", "alarms"]`.
+
+# Prefix matching, not exact matching
+
+::: {.callout-important}
+ZeroMQ's PUB/SUB filtering — which MADS uses as-is, unmodified — matches by **byte prefix** on the
+topic string, not exact equality and not glob patterns. A subscription to `"sens"` also matches
+`"sensor_1"`, `"sensors_room2"`, anything starting with those four characters.
+:::
+
+The empty string `""` is therefore the zero-length prefix that matches **every** topic — this is the
+idiom used throughout MADS's own ini (`[feedback]`, `[monitor]`, `[logger]` all set
+`sub_topic = [""]` to see everything on the network). Keep this in mind when naming topics: two
+unrelated topics that happen to share a prefix (`"sensor"` / `"sensor_backup"`) will both match a
+subscription meant for just one of them.
+
+# Reserved topics
+
+A handful of topic names are used by the framework itself, not configured per-agent:
+
+| Topic | Purpose | Notes |
+|---|---|---|
+| `control` | Remote-control commands (pause/resume/restart/shutdown) | Added to `sub_topic` **automatically** the moment `enable_remote_control()` is called — not something you set in the ini. See [source / filter / sink](source-filter-sink.qmd). |
+| `agent_event` | Startup/shutdown/message lifecycle events, published by `register_event()` | Every agent publishes here; [`mads federate`](federate.qmd) explicitly never relays it across networks. |
+| `logger_status` | 1/s heartbeat from [`mads logger`](logger.qmd) reporting its pause state | Published only by the logger. |
+| `metadata` | Convention for control-plane-style messages (e.g. the logger's own pause/resume) | Not enforced by the framework; a convention some agents (like the logger) follow. |
+
+::: {.callout-warning}
+`enable_remote_control()` throws if called **after** `connect()` — it must run first, precisely
+because it needs to add `control` to `sub_topic` before the subscribe socket connects.
+:::
+
+# Wire format
+
+A message is a multi-part ZeroMQ message, topic frame always first:
+
+```{mermaid}
+flowchart LR
+  subgraph "extended (e.g. MsgPack/compressed)"
+    T1["topic"] --> H["header
+4-byte MADS magic + version +
+format + compression + flags"] --> P1["payload"]
+  end
+  subgraph "legacy (plain JSON)"
+    T2["topic"] --> P2["snappy(json)"]
+  end
+```
+
+A reader distinguishes the two by checking part #1 for the exact-size magic header; if absent, it
+falls back to the legacy part-count interpretation. This is what lets old and new agents interoperate
+on the same network without a flag day.
+
+::: {.callout-note}
+The broker/proxy never inspects anything past the topic frame — payload encoding can evolve (new wire
+formats, compression) with zero broker changes. See [broker](broker.qmd).
+:::
+
+# See also
+
+[broker](broker.qmd) · [source / filter / sink](source-filter-sink.qmd) · [logger](logger.qmd) ·
+[federate](federate.qmd) · [Message queues, blocking/non-blocking behavior](message-queues.qmd)

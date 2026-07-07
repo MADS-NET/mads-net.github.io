@@ -1,0 +1,141 @@
+---
+title: "Command: `plugin`"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [command, cli, plugin, development]
+abstract: |
+  `mads plugin` (`mads-plugin`) scaffolds a new MADS plugin — a C++ or Rust shared library implementing
+  a source, filter, or sink — from the built-in templates, wiring up CMake (or Cargo) and the
+  registration boilerplate. With `--update`, the same command instead migrates an *existing* C++
+  plugin's `CMakeLists.txt` and source to a newer plugin protocol version. This page covers both modes.
+---
+
+::: {.aside}
+Related guides:
+
+- [Plugins](../guides/plugins.qmd) — writing a plugin's `load_data`/`process`/`get_output` logic
+- [OTA Plugins](../guides/OTA_plugins.qmd) — distributing compiled plugins via the broker
+- [MADS packages](../guides/package.qmd) — installing pre-built plugins (`mads package`, a different command)
+:::
+
+# Synopsis
+
+```sh
+mads plugin <name> [-t|--type source|filter|sink] [-d|--dir path] [-i|--install-dir path]
+            [-o|--overwrite] [-r|--rust] [-s|--datastore] [-v|--version] [-h|--help]
+
+mads plugin --update [-d|--dir path] [--dry-run] [--no-check]
+            [--from protocol] [--to protocol] [path]
+```
+
+# Description
+
+A MADS plugin is a shared library implementing one of three roles, each a base class with a small
+virtual-method contract:
+
+| Role | Must implement | Optional |
+|---|---|---|
+| **source** | `kind()`, `get_output(out, blob?)` | `set_params(json)`, `info()` |
+| **filter** | `kind()`, `load_data(in, topic, blob?)`, `process(out, blob?)` | `set_params(json)`, `info()` |
+| **sink** | `kind()`, `load_data(in, topic, blob?)` | `set_params(json)`, `info()` |
+
+The compiled plugin (a `.plugin` shared library) is loaded at runtime by the matching generic agent:
+`mads source`, `mads filter`, or `mads sink`.
+
+```{mermaid}
+flowchart LR
+  A["mads plugin my_filter
+--type filter"] --> B["CMakeLists.txt + src/my_filter.cpp
+scaffolded from templates"]
+  B --> C["edit load_data() / process()"]
+  C --> D["cmake -Bbuild
+cmake --build build"]
+  D --> E["my_filter.plugin"]
+  E --> F["mads filter my_filter.plugin"]
+```
+
+# Scaffolding a new plugin
+
+| Flag | Effect |
+|---|---|
+| *name* (positional) | Plugin name; becomes the class name, source file, and default `.plugin` name. |
+| `-t`, `--type` | `source`, `filter`, or `sink` (default `source`). |
+| `-d`, `--dir` *path* | Output directory (default: `<name>/` in the current directory). |
+| `-i`, `--install-dir` *path* | CMake install prefix baked into the generated `CMakeLists.txt`. |
+| `-o`, `--overwrite` | Overwrite files that already exist (default: skip them). |
+| `-r`, `--rust` | Generate a Rust (Cargo/cdylib) plugin instead of C++; see below. |
+| `-s`, `--datastore` | Add persistent key/value storage support (C++ only). |
+
+The C++ template pins the plugin's dependencies (the `pugg` kernel version and the `mads_plugin`
+protocol tag) from a single manifest, `share/plugin_deps.json`, so every freshly scaffolded plugin
+always targets the **current** plugin protocol — `P8` as of this writing.
+
+::: {.callout-note}
+`--datastore` and `--rust` are mutually exclusive: with `--rust`, `--datastore` is accepted but
+ignored (Rust plugins don't yet have the datastore helper).
+:::
+
+## C++ vs Rust
+
+|  | C++ | Rust (`-r`) |
+|---|---|---|
+| Build system | CMake + `pugg` kernel | Cargo, produces a `cdylib` |
+| Base contract | `Source`/`Filter`/`Sink` C++ classes | `SourcePlugin`/`FilterPlugin`/`SinkPlugin` traits |
+| Loaded by | `mads source`/`filter`/`sink` | `mads rsource`/`rfilter`/`rsink` |
+| Protocol pin | `share/plugin_deps.json` (`-P`*N* tag) | the `mads-plugin` crate version in `Cargo.toml` |
+
+Rust plugins need no C++ toolchain at all; they export a single C-ABI registration symbol via an
+`export_*_plugin!` macro from the `mads-plugin` crate.
+
+# Migrating an existing plugin (`--update`)
+
+When the plugin harness bumps its protocol version (the `-P`*N* suffix of the `mads_plugin` git tag,
+e.g. `v2.3-P7` → `v2.4-P8`), existing C++ plugins need their pinned `GIT_TAG` bumped and their
+overridden methods adapted to the new base-class signatures. `--update` automates this in three
+steps:
+
+```{mermaid}
+flowchart LR
+  D["1. Detect current protocol
+from the plugin's own 
+CMakeLists.txt"] --> C["2. Chain migration steps
+up to the target protocol
+(share/plugin_migrations)"]
+  C --> R["Rewrite GIT_TAG +
+affected method signatures"]
+  R --> K["3. Compile-check
+(unless --no-check)"]
+```
+
+| Flag | Effect |
+|---|---|
+| `-d`, `--dir` / positional *path* | The plugin's directory (default: current directory). |
+| `--dry-run` | Show what would change, write nothing. |
+| `--no-check` | Skip the post-migration compile check. |
+| `--from` *protocol* | Override the auto-detected source protocol. |
+| `--to` *protocol* | Override the target protocol (default: the current one from `share/plugin_deps.json`). |
+
+::: {.callout-tip}
+Method signatures are located **structurally** (by matching balanced parentheses), not by exact
+text, so a reformatted or multi-line declaration still migrates correctly.
+:::
+
+::: {.callout-warning}
+Rust plugins are **not** handled by `--update` — they track the `mads-plugin` crate version in
+`Cargo.toml`, not the `-P`*N* git tag. Bump the crate dependency instead.
+:::
+
+Each modified file is saved as `<file>.bak` before being rewritten, and the command prints both a
+change report and a "manual follow-up" checklist for anything a structural rewrite cannot safely
+infer (e.g. a signature change that also implies new behavior).
+
+# See also
+
+[mads](mads.qmd) · [Plugins and extensions](plugins-extensions.qmd) ·
+[source / filter / sink](source-filter-sink.qmd) · [Rust loaders](rust-loaders.qmd)

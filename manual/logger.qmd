@@ -1,0 +1,108 @@
+---
+title: "Command: `logger`"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [command, cli, core, storage]
+abstract: |
+  `mads logger` (`mads-logger`) subscribes to every topic on the network and persists each message to
+  a MongoDB database and/or a local file. It also supports pausing/resuming logging at runtime and
+  echoing messages to the console. This page covers its storage layout, options, and a few
+  non-obvious behaviors around pausing and index creation.
+---
+
+::: {.aside}
+Related guides:
+
+- [MongoDB Replay](../guides/replay.qmd) — replaying a logged data stream back onto the network
+- [HDF5 Logger](../guides/hdf5.qmd) — a file-based (non-MongoDB) alternative logging sink
+- [Security in MADS](../guides/security.qmd) (for `--crypto`)
+:::
+
+# Synopsis
+
+```sh
+mads logger [-p|--pause] [-e|--echo] [-n|--no-mongo] [-m|--mongo URI]
+            [-f|--file filename] [-a|--array] [-x|--cross]
+            [-s|--settings URI] [-S|--save-settings file]
+            [--crypto] [--keys_dir path] [-v|--version] [-h|--help]
+```
+
+# Description
+
+The logger is a plain `Agent` subscribed to **all topics** (`sub_topic = [""]` by default) that
+writes every message it receives to one or both of:
+
+```{mermaid}
+flowchart LR
+  B[("Broker
+(all topics)")] --> L["mads logger"]
+  L -- "one collection per topic" --> M[("MongoDB
+{timestamp, message}")]
+  L -- "-f filename" --> F["log file
+(JSON-lines or array)"]
+  L -. "1/s heartbeat
+{logger_paused: bool}" .-> B
+```
+
+Each MongoDB **collection is named after the topic** (`_db[topic]`), and each document is simply
+`{timestamp: <date>, message: <the original payload>}` (plus a binary `data` field for blob
+messages). This is the layout any downstream query, export, or [replay](../guides/replay.qmd) tool
+needs to know.
+
+# Options
+
+| Flag | Effect |
+|---|---|
+| `-p`, `--pause` | Start paused — see [Pausing and resuming](#pausing-and-resuming). |
+| `-e`, `--echo` | Print every logged message to the console. |
+| `-n`, `--no-mongo` | Disable MongoDB logging (file logging, if enabled, is unaffected). |
+| `-m`, `--mongo` *URI* | MongoDB connection string (overrides the ini `mongo_uri`; default `mongodb://localhost:27017`). |
+| `-f`, `--file` *filename* | Also log to this file (created if missing, appended to if it exists). |
+| `-a`, `--array` | With `-f`: write a single JSON array instead of one JSON object per line. |
+| `-x`, `--cross` | Bypass the broker and connect directly to another agent's sockets (debugging only; requires a local `-s` settings file). |
+| `-s`, `--settings` / `-S`, `--save-settings` | Settings source / dump resolved settings to a file. |
+| `--crypto`, `--keys_dir`, `--key_broker`, `--key_client`, `--auth_verbose` | CURVE encryption for the broker connection. |
+| `-v`, `--version` / `-h`, `--help` | Version / usage. |
+
+Ini section (`[logger]`): `mongo_db` (default `mads`), `mongo_uri`, `max_length` (truncation length
+for `--echo` output, default 75), `initially_paused`, plus the usual `sub_topic` (normally `[""]`).
+
+::: {.callout-warning}
+`high_watermark` is a deprecated ini key (still works, with a warning) — use `queue_size` instead.
+:::
+
+# Pausing and resuming
+
+Logging can be paused three ways: `-p`/`--pause` at startup, or at runtime by publishing
+`{"pause": true}` (or `false` to resume) on the **`metadata`** topic — this is exactly what a GUI's
+pause/resume button does. While paused, the logger keeps receiving and discarding messages (it stays
+connected) rather than disconnecting.
+
+::: {.callout-note}
+The logger publishes its own `{"logger_paused": bool}` heartbeat once a second on a dedicated status
+topic, so other tools can display whether logging is currently active.
+:::
+
+# Storage gotchas
+
+::: {.callout-warning}
+Per-topic MongoDB indexes (on `message.timestamp`, `message.hostname`, `message.timecode`) are
+created when the logger **shuts down cleanly**, not when it starts or as data arrives. If the process
+is killed abruptly (not via a clean shutdown), a topic's collection may be left without these
+indexes.
+:::
+
+::: {.callout-note}
+The logger's own status-heartbeat topic, and any message with an empty topic, are never logged —
+avoiding pointless self-generated noise in the database.
+:::
+
+# See also
+
+[mads](mads.qmd) · [Databases and data storage](databases-storage.qmd)

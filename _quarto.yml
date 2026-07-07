@@ -21,16 +21,62 @@ website:
     left: "Paolo Bosetti, [BY-NC-SA4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)" 
   navbar:
     left:
-      - href: start.qmd
-        text: "Start here"
-      - href: why.qmd
-        text: "Why MADS?"
-      - href: interfaces.qmd
-        text: "Interfaces"
+      - text: "Introduction"
+        menu:
+        - href: start.qmd
+          text: "Start here"
+        - href: why.qmd
+          text: "Why MADS?"
+        - href: interfaces.qmd
+          text: "Interfaces"
+        - href: who_is_using.qmd
+          text: "Use cases"
+      - href: manual
+        text: "Documentation"
+      - text: "Commands"
+        menu:
+        - href: manual/mads.qmd
+          text: "mads command"
+        - href: manual/broker.qmd
+          text: "Broker"
+        - href: manual/plugin.qmd
+          text: "Plugin"
+        - href: manual/source-filter-sink.qmd
+          text: "Source / Filter / Sink"
+        - href: manual/logger.qmd
+          text: "Logger"
+        - href: manual/feedback-perf_assess.qmd
+          text: "Feedback / Perf Assess"
+        - href: manual/inspect_plugin.qmd
+          text: "Inspect Plugin"
+        - href: manual/federate.qmd
+          text: "Federate"
+        - href: manual/fsm.qmd
+          text: "FSM"
+        - href: manual/package.qmd
+          text: "Package"
+        - href: manual/dealer-worker.qmd
+          text: "Dealer / Worker"
+        - href: manual/rust-loaders.qmd
+          text: "Rust Loaders"
+      - text: "Concepts"
+        menu:
+        - href: manual/network-discovery.qmd
+          text: "Network discovery"
+        - href: manual/message-routing.qmd
+          text: "Message routing and topics"
+        - href: manual/plugins-extensions.qmd
+          text: "Plugins and extensions"
+        - href: manual/timing-scheduling.qmd
+          text: "Timing and scheduling"
+        - href: manual/message-queues.qmd
+          text: "Message queues"
+        - href: manual/databases-storage.qmd
+          text: "Databases and data storage"
+        - href: manual/cryptography-security.qmd
+          text: "Cryptography and security"
       - href: guides.qmd
         text: "Guides"
-      - href: who_is_using.qmd
-        text: "Use cases"
       - text: "Presentations"
         menu:
           - href: presentations/intro.qmd

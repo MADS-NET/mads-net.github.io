@@ -1,0 +1,96 @@
+---
+title: "Cryptography and security"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [concept, security, cryptography]
+abstract: |
+  MADS communication is unauthenticated and unencrypted by default. This page covers the trust model
+  behind the opt-in alternative — CURVE, ZeroMQ's public-key encryption — what it does and doesn't
+  cover, and how it plugs into auto-discovery and settings distribution elsewhere in MADS. The
+  step-by-step setup procedure lives in the [Security in MADS](../guides/security.qmd) guide; this
+  page is about how the pieces fit together.
+---
+
+::: {.aside}
+Related guides:
+
+- [Security in MADS](../guides/security.qmd) — full setup walkthrough
+:::
+
+# What CURVE protects
+
+`--crypto` turns on [CurveZMQ](http://curvezmq.org) public-key encryption and authentication on
+**all three** of the broker's sockets — frontend, backend, and the settings service — not just the
+pub/sub data path. That means the settings/timecode handshake and any OTA plugin `attachment`
+(see [Plugins and extensions](plugins-extensions.qmd#getting-a-plugin-onto-a-device)) are covered
+too, since they all travel over the same sockets.
+
+::: {.callout-important}
+MADS is **fully open by default**: no encryption, no authentication, any process that can reach the
+broker's ports can publish, subscribe, or read settings. `--crypto` is opt-in on both the broker and
+every agent that connects to it — see [broker](broker.qmd#security) and
+[source / filter / sink](source-filter-sink.qmd#common-options) for the CLI flags.
+:::
+
+::: {.callout-warning}
+CURVE protects the **MADS network only**. `mads logger`'s separate connection to MongoDB is a
+different protocol and is **not** encrypted by CURVE (or by anything else, in the shipped logger).
+See [logger](logger.qmd) — the guide's recommended mitigation is running the logger on the same host
+as MongoDB, over loopback.
+:::
+
+# The trust model: keys, not names
+
+Every device — broker included — has its own CURVE keypair: a secret `.key` file that never leaves
+the device, and a `.pub` file that gets copied elsewhere. The broker's authentication decision is
+made entirely by **file presence**: at startup it scans its `--keys_dir` (default `<prefix>/etc`) and
+trusts *any* client whose public key happens to be sitting in that directory — there is no separate
+per-agent allowlist to maintain in the ini.
+
+```{mermaid}
+flowchart TB
+  A["Agent
+keeps its .key secret"] -- "sends its .pub" --> B["Broker
+keys_dir"]
+  C["Broker
+keeps its .key secret"] -- "sends its .pub" --> D["Agent
+keys_dir"]
+```
+
+::: {.callout-note}
+The broker's own key **name** and the names it expects from agents are configured differently: the
+broker's `--crypto[=name]` names *its own* keypair (default `broker`); an agent's `--crypto` is a
+plain on/off switch, and `--key_broker`/`--key_client` separately name which `.pub`/`.key` files to
+read for the broker's key and the agent's own key, respectively. Getting these two roles crossed
+(e.g. pointing `--key_broker` at the agent's own key name) is a common misconfiguration.
+:::
+
+On top of the key check, `ip_whitelist` (a `[broker]` ini array, read only when `--crypto` is active)
+adds an independent, coarser IP-based gate — empty (the default) allows any IP through to the key
+check; a non-empty list restricts which source addresses are even considered.
+
+# Auto-discovery cross-check
+
+A broker started with `--crypto` advertises `encrypted: true` in its UDP auto-discovery broadcast
+(see [Network discovery](network-discovery.qmd)). An `AgentApp`-based command using `-r/--room` to
+find that broker compares this against its own `--crypto` flag and **refuses to start** on a
+mismatch, rather than silently attempting (and failing) the connection.
+
+::: {.callout-warning}
+That cross-check only runs for `-r/--room` discovery. Pointing `-s/--settings` directly at a broker
+whose encryption setting doesn't match your own `--crypto` flag has no such guard: CURVE's handshake
+simply never completes, and — true to plain ZeroMQ's behavior on an authentication failure — neither
+side raises an explicit error. Symptom to watch for: an agent that connects without complaint but
+never receives settings or messages.
+:::
+
+# See also
+
+[broker](broker.qmd) · [mads](mads.qmd) · [Network discovery](network-discovery.qmd) ·
+[Plugins and extensions](plugins-extensions.qmd)

@@ -1,0 +1,131 @@
+---
+title: "Commands: `source` / `filter` / `sink`"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [command, cli, core, plugin]
+abstract: |
+  `mads source`, `mads filter`, and `mads sink` are the three generic plugin-loader agents: one
+  shared implementation, compiled three times, that dynamically loads a `.plugin` shared library and
+  drives it with the role-appropriate main loop. This page covers all three together, since they
+  differ only in which base-class methods they call and a handful of role-specific options.
+---
+
+::: {.aside}
+Related guides:
+
+- [Plugins](../guides/plugins.qmd) — writing the plugin itself
+- [OTA Plugins](../guides/OTA_plugins.qmd) — distributing `.plugin` files via the broker
+- [Security in MADS](../guides/security.qmd) (for `--crypto`)
+- [Auto-discovery](../guides/auto-discovery.qmd) (for `--room`)
+:::
+
+# Synopsis
+
+```sh
+mads source [common options] [-p|--period ms] [plugin]
+mads filter [common options] [-p|--period ms] [-b|--dont-block] [plugin]
+mads sink   [common options] [-b|--dont-block] [plugin]
+```
+
+# Description
+
+All three are the same executable (`src/main/plugin_loader.cpp`) compiled under a different
+`#define`, each linking a different base class:
+
+```{mermaid}
+flowchart LR
+  src["plugin_loader.cpp
+(one source file)"]
+  src -- "PLUGIN_LOADER_SOURCE" --> S["mads-source
+Source&lt;json&gt;"]
+  src -- "PLUGIN_LOADER_FILTER" --> F["mads-filter
+Filter&lt;json,json&gt;"]
+  src -- "PLUGIN_LOADER_SINK" --> K["mads-sink
+Sink&lt;json&gt;"]
+  S --> P1["get_output(out, blob?)"]
+  F --> P2["load_data(in, topic, blob?)
+then process(out, blob?)"]
+  K --> P3["load_data(in, topic, blob?)"]
+```
+
+Whichever role, the loader: parses CLI options, initializes the agent, loads the named `.plugin`
+shared library via the `pugg` kernel, checks its protocol version, calls `set_params()` once with the
+merged settings, then drives the plugin's methods from the main loop.
+
+::: {.callout-important}
+Every loader refuses to load a plugin whose protocol version is older than the loader's own minimum
+(currently **7**). Use [`mads plugin --update`](plugin.qmd#migrating-an-existing-plugin---update) to
+migrate an older plugin forward.
+:::
+
+# Common options
+
+These apply to all three:
+
+| Flag | Effect |
+|---|---|
+| *plugin* (positional) | Path or bare name of the `.plugin` file to load. See [Plugin resolution](#plugin-resolution) below. |
+| `-n`, `--name` | Agent name (default: the plugin's file name without extension); selects the `.ini` section to read. |
+| `-i`, `--agent-id` | Tag added to the payload, to distinguish agents sharing the same name/section. |
+| `-d`, `--delay` *ms* | Wait this long before the first message (works around the ZeroMQ "slow joiner" problem). |
+| `-o`, `--option` *key=value* | Override a plugin setting from the CLI (repeatable); the value is coerced to bool/int/float/string automatically. |
+| `--silent` | Suppress the live status line. |
+| `-s`, `--settings` *URI* | Settings file/URI (`tcp://host:port` or a local `.ini` path). |
+| `--settings-timeout` *ms* | Timeout when reading settings from a broker (`0` = no timeout, the default). |
+| `-r`, `--room[=name]` | Discover the broker via UDP instead of `--settings` (opt-in; default room `mads`). |
+| `-S`, `--save-settings` *file* | Dump the resolved settings to an ini file. |
+| `--crypto`, `--keys_dir`, `--key_broker`, `--key_client`, `--auth_verbose` | CURVE encryption for the broker connection. |
+| `-v`, `--version` / `-h`, `--help` | Version / usage. |
+
+# Role-specific options
+
+| | `source` | `filter` | `sink` |
+|---|---|---|---|
+| Default plugin | `publish.plugin` | `bridge.plugin` | `feedback.plugin` |
+| `-p`, `--period` *ms* | Yes — sampling period; default **0 = free run** | Yes — only used together with `--dont-block` | — |
+| `-b`, `--dont-block` | — | Don't block waiting for input; ask the plugin for output on every loop tick regardless | Don't block on read |
+| Loop body | `get_output()` on every tick | `load_data()` (if a message arrived, or always with `--dont-block`) then `process()` | `load_data()` whenever a message arrives |
+| Remote control | threaded | inline | inline |
+
+::: {.callout-note}
+A `filter` with `--dont-block` is how a plugin acts as *both* filter and source — e.g. reacting to
+incoming messages when present, but also producing output on a timer when idle.
+:::
+
+# Plugin resolution
+
+Resolution order is the same for all three:
+
+1. a plugin path given on the command line — used regardless of the ini file;
+2. otherwise, an `attachment` key in the agent's ini section — the broker sends this plugin file
+   Over-The-Air (OTA) at connect time (see [OTA Plugins](../guides/OTA_plugins.qmd));
+3. otherwise, the built-in default plugin for that role (table above).
+
+::: {.callout-tip}
+For the same plugin on multiple architectures, give each architecture its own ini section (e.g.
+`[my_plugin_x86]`, `[my_plugin_arm64]`) with its own `attachment`, launch each with `-n` matching that
+section, and set the same `pub_topic` in both so downstream consumers see one logical source.
+:::
+
+# Gotchas
+
+::: {.callout-warning}
+A `filter` that receives a message on the **same topic it publishes to** skips it and logs a warning,
+specifically to avoid self-feedback loops. If your filter's output never seems to arrive downstream,
+check whether its `pub_topic` collides with its own `sub_topic`.
+:::
+
+::: {.callout-warning}
+Two ini keys have deprecated spellings that still work but print a warning: `dont-block` → use
+`dont_block`, and `high_watermark` → use `queue_size`.
+:::
+
+# See also
+
+[mads](mads.qmd) · [plugin](plugin.qmd)

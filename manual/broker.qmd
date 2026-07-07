@@ -1,0 +1,165 @@
+---
+title: "Command: `broker`"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [command, core, cli, networking]
+abstract: |
+  `mads broker` (`mads-broker`) is the hub of a MADS network: a payload-opaque ZeroMQ XSUB/XPUB
+  proxy that relays messages between agents, plus a settings service that hands out the shared
+  `mads.ini` configuration (and, optionally, a plugin attachment) to any agent that asks. There is
+  exactly one broker per network. This page covers its sockets, its interactive controls, live
+  settings reload, and CURVE/auto-discovery integration.
+---
+
+::: {.aside}
+Related guides:
+
+- [Network structure](../guides/structure.qmd) — the broker's role in a MADS network
+- [Service advertising and auto-discovery](../guides/auto-discovery.qmd)
+- [Security in MADS](../guides/security.qmd) (for `--crypto`)
+- [Services](../guides/services.qmd) (for running the broker with `-d/--daemon` as a systemd service)
+:::
+
+# Synopsis
+
+```sh
+mads broker [-s|--settings path] [-r|--room[=name]] [-d|--daemon]
+            [--crypto[=keyname]] [--keys_dir[=path]] [-v|--version] [-h|--help]
+```
+
+# Description
+
+The broker does three things, on three separate sockets, all bound (not connected) at startup:
+
+```{mermaid}
+flowchart TB
+  subgraph "Broker process"
+    FE["Frontend
+(XSUB, bind)"]
+    BE["Backend
+(XPUB, bind)"]
+    PX["proxy_steerable
+forwards frames verbatim"]
+    ST["Settings
+(REP, bind)"]
+    W["File watcher
+re-reads mads.ini every 1s"]
+    D["Discovery thread
+UDP broadcast"]
+  end
+  Pub["Publishing agents"] -- connect --> FE
+  FE --> PX --> BE
+  BE -- connect --> Sub["Subscribing agents"]
+  Any["Any agent"] -- "settings / timecode request" --> ST
+  W -. "updates served ini" .-> ST
+  D -. "advertises host + ports" .-> Net(("local network
+UDP"))
+```
+
+::: {.callout-important}
+The broker is **payload-opaque**: it forwards frames verbatim between frontend and backend and never
+inspects, parses, or rewrites message contents. This is what lets the wire payload format (JSON,
+MsgPack, compression) evolve without any broker change.
+:::
+
+# Options
+
+| Flag | Effect |
+|---|---|
+| `-s`, `--settings` *path* | Settings file to read. See [Settings file resolution](#settings-file-resolution) below. |
+| `-r`, `--room[=name]` | Service-discovery room name (default `mads`). See [Auto-discovery](#auto-discovery). |
+| `-d`, `--daemon` | Run non-interactively: no keyboard controls, real `SIGINT`/`SIGTERM` handling for clean shutdown. Intended for services. |
+| `--crypto[=keyname]` | Enable CURVE encryption on all three sockets (default key name `broker`). See [Security](#security). |
+| `--keys_dir[=path]` | Directory to search for CURVE key files (default: `etc` under the MADS installation prefix). |
+| `-v`, `--version` | Print version. |
+| `-h`, `--help` | Print usage. |
+
+# Settings file resolution
+
+With no `-s`, the broker looks for `mads.ini` in the current directory, falling back to
+`<prefix>/etc/mads.ini` if not found there. Whichever file is used, the broker reads its **own**
+bind addresses from a section named after its *own executable's name*, stripped of everything up to
+the last `-`: running the binary `mads-broker` (however it was invoked) looks up `[broker]`.
+
+::: {.callout-tip}
+Because the section name comes from the executable's filename, you can run two independent brokers
+from a **single** `mads.ini` by installing (or symlinking) the broker binary under two different
+names, e.g. `mads-broker` and `mads-broker2`, each picking up its own `[broker]` / `[broker2]`
+section — handy for a quick multi-network test on one machine without juggling two ini files. See
+also [federate](federate.qmd), for actually bridging two independent networks.
+:::
+
+# Interactive controls
+
+Unless `-d/--daemon` is given, the broker runs interactively and reads single keystrokes:
+
+| Key | Action |
+|---|---|
+| `I` | Print live statistics (messages/bytes in and out, frontend and backend). |
+| `N` | Cycle through this host's settings URIs, one per network interface — use this to find the address remote agents should connect to. |
+| `P` | Pause forwarding. |
+| `R` | Resume forwarding. |
+| `Q` | Clean quit: stop advertising, close sockets, exit. |
+| `X` *(not on Windows)* | Clean quit **and relaunch** the broker process — the only way to make the broker pick up changes to its *own* frontend/backend/settings addresses (see below). |
+| Ctrl-C | Immediate exit, no cleanup. |
+
+::: {.callout-warning}
+The underlying ZeroMQ steerable-proxy library has a known quirk where the `PAUSE`/`RESUME` control
+commands are inverted (this is called out directly in the broker's own source comments). If pausing
+with `P` does not seem to stop traffic, try `R` instead.
+:::
+
+::: {.callout-tip}
+Prefer `Q` over Ctrl-C when running interactively: `Q` stops the discovery advertisement and closes
+sockets cleanly, Ctrl-C does not (there is no interactive-mode signal handler).
+:::
+
+# Live settings reload
+
+The broker watches its settings file for changes (polled every second) and, on a valid change,
+updates the ini text it hands out to agents that request settings **from that point on**.
+
+::: {.callout-important}
+This reload only affects **what agents receive**, not the broker's own bound addresses:
+`frontend_address`, `backend_address`, and `settings_address` are read once at startup. Changing them
+in the ini requires a full broker restart — press `X` (Unix) or stop and relaunch the process.
+Agents that are already running keep their old settings until they themselves restart.
+:::
+
+
+# Security
+
+With `--crypto[=keyname]`, CURVE authentication is set up on **all three** sockets (frontend,
+backend, and settings) — not just the pub/sub pair. Two additional settings, read from the broker's
+own ini section, only take effect when `--crypto` is active:
+
+- `ip_whitelist`: an array of allowed client IPs (default: empty, meaning all IPs are allowed).
+- `auth_verbose`: enable verbose authentication logging.
+
+See [Security in MADS](../guides/security.qmd) for generating keypairs (`mads --keypair`,
+[mads](mads.qmd)) and the full authentication setup.
+
+# Auto-discovery
+
+The broker **always** attempts to advertise itself via UDP broadcast on port `39092`, in room `mads`
+by default (`-r/--room` only changes the room name, it does not toggle advertising on or off).
+
+::: {.callout-note}
+There is currently no flag to disable discovery advertising entirely. If you need the broker to stay
+silent on the local network, block UDP port 39092 at the firewall/network level.
+:::
+
+If advertising fails at startup (e.g. no network interface is up yet), the broker retries every 5
+seconds in `--daemon` mode, or warns once and gives up when running interactively. See
+[Auto-discovery](../guides/auto-discovery.qmd) for how agents consume this with `--room`.
+
+# See also
+
+[mads](mads.qmd) · [federate](federate.qmd) · [Network discovery](network-discovery.qmd) ·
+[Timing and scheduling](timing-scheduling.qmd)

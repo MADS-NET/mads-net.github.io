@@ -1,0 +1,79 @@
+---
+title: "Commands: `dealer` / `worker`"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [command, cli, core, scaling]
+abstract: |
+  `mads dealer` and `mads worker` together implement round-robin load balancing across multiple
+  worker processes: one dealer fans a subscribed message stream out to any number of workers over a
+  PUSH/PULL pair, layered on top of the normal broker pub/sub connection. This is the pattern to reach
+  for when a single filter stage becomes a bottleneck and needs to run in parallel.
+---
+
+# Synopsis
+
+```sh
+mads dealer [common options]
+mads worker [common options] [plugin]   # plugin must be a filter; default bridge.plugin
+```
+
+# Description
+
+Both are ordinary `Agent` subclasses with one extra socket each, layered on top of the normal
+broker pub/sub connection:
+
+```{mermaid}
+flowchart LR
+  Broker[("broker")] -- sub --> D["mads dealer
+PUSH bind :9093"]
+  D -- push --> W1["mads worker #1"]
+  D -- push --> W2["mads worker #2"]
+  D -- push --> W3["mads worker #3"]
+  W1 -- pub --> Broker
+  W2 -- pub --> Broker
+  W3 -- pub --> Broker
+```
+
+ZeroMQ's PUSH socket round-robins fairly across every connected PULL peer, so adding another
+`mads worker` process (potentially on another machine) is enough to add parallelism — no
+coordination beyond both sides agreeing on `dealer_address`.
+
+## `mads dealer`
+
+Subscribes like any agent (default `sub_topic = ["publish", "spawner"]`) and binds a PUSH socket at
+`dealer_address` (ini key, default `tcp://*:9093`). For each message received, it does **two**
+things: pushes the raw payload to whichever worker is next in the round-robin, **and** republishes
+the same JSON back to the broker under its own `pub_topic` (default `dealer`) — so the original
+message and its "dispatched" echo both appear on the network.
+
+## `mads worker`
+
+Connects a PULL socket to `dealer_address` (default `tcp://localhost:9093`) and loads a **filter**
+plugin (default `bridge.plugin`, same default as [`mads filter`](source-filter-sink.qmd)). Each loop
+iteration: pulls the next payload from the dealer, runs it through the plugin's `load_data()` then
+`process()`, and publishes the result back to the broker.
+
+::: {.callout-warning}
+The topic passed to the plugin's `load_data()` comes from the worker's **own plain broker `receive()`
+call in that same loop tick** — a separate socket from the PULL side. Since the pulled payload and the
+plain-receive topic are serviced independently each iteration, the topic string is not guaranteed to
+correspond to the pulled payload's real origin topic.
+:::
+
+# Options
+
+Both take the same standard agent options: `-n/--name`, `-i/--agent-id`, `-s/--settings`,
+`-S/--save-settings`, `--crypto` (+ `--keys_dir`/`--key_broker`/`--key_client`/`--auth_verbose`),
+`-v/--version`, `-h/--help`. `mads worker` additionally takes a positional *plugin* path (any filter
+plugin; falls back to the ini `attachment`, then `bridge.plugin`, exactly like
+[`mads filter`](source-filter-sink.qmd)).
+
+# See also
+
+[mads](mads.qmd) · [source / filter / sink](source-filter-sink.qmd)

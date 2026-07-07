@@ -1,0 +1,92 @@
+---
+title: "Command: `inspect_plugin`"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [command, cli, plugin, diagnostics]
+abstract: |
+  `mads inspect_plugin` (`mads-inspect_plugin`) is a static diagnostic probe for a compiled `.plugin`
+  shared library: it reports whether the library loads, which source/filter/sink drivers it
+  registers, their protocol version, and — critically — whether it was built against the same
+  nlohmann/json version as the MADS installation, which is a common, otherwise silent cause of "my
+  plugin won't load" reports.
+---
+
+::: {.aside}
+Related: [plugin](plugin.qmd) (scaffolding and `--update` migration), [source / filter / sink](source-filter-sink.qmd) (the loaders whose stricter protocol gate this tool intentionally bypasses).
+:::
+
+# Synopsis
+
+```sh
+mads inspect_plugin <path/to/name.plugin> [-j|--json] [-h|--help]
+```
+
+# Description
+
+Unlike `mads source`/`filter`/`sink`, which refuse to load a plugin below their minimum protocol,
+`inspect_plugin` deliberately registers drivers with **no version floor**, so it can report on a
+plugin the real loaders would reject — that's the point of a diagnostic tool.
+
+```{mermaid}
+flowchart TB
+  P["plugin path"] --> A["native dlopen/LoadLibrary
+(clear OS-level load error if it fails)"]
+  P --> B["scan the binary for the
+nlohmann json_abi_vX_Y_Z tag"]
+  A --> C["pugg::Kernel, permissive
+(accepts any driver version)"]
+  C --> D["collect registered
+source/filter/sink drivers"]
+  B --> R["report"]
+  D --> R
+```
+
+# Options
+
+| Flag | Effect |
+|---|---|
+| *path* (positional) | Path to the `.plugin` file to inspect. |
+| `-j`, `--json` | Machine-readable JSON output instead of formatted text. |
+| `-h`, `--help` | Usage. |
+
+# Exit codes
+
+Designed to be scripted/CI-friendly:
+
+| Code | Meaning |
+|---|---|
+| `0` | Loadable, and every registered driver is at the current protocol version. |
+| `1` | Not loadable at all (bad library / missing `register_pugg_plugin`), or loaded but registered no recognized driver. |
+| `2` | Loadable, but at least one driver is **older** than the current protocol. |
+
+# The nlohmann/json ABI check
+
+`inspect_plugin` reports two version strings:
+
+- `json_expected` — the nlohmann/json version MADS itself (and therefore its loaders) was built with.
+- `json_found` — the version the plugin was built with, recovered **without loading the library**, by
+  scanning its binary for the compiler-generated `json_abi_vMAJOR_MINOR_PATCH` inline-namespace tag
+  embedded in the mangled name of its driver type.
+
+::: {.callout-important title="Why this matters"}
+nlohmann/json puts its types in a version-tagged inline namespace. If a plugin is built against a
+different nlohmann/json version than the MADS loader, the driver's C++ type is technically different
+even though the source code looks identical — pugg's `dynamic_cast`-based driver lookup then silently
+fails to find it, even though the shared library loads without error. `inspect_plugin` catches this
+*before* you spend time debugging "plugin driver not found" against a plugin that actually loads
+fine.
+:::
+
+The fix for a mismatch is to rebuild the plugin against the nlohmann/json version pinned in its
+`CMakeLists.txt` (kept in sync with MADS by [`mads plugin --update`](plugin.qmd)), not something
+`inspect_plugin` itself can patch.
+
+# See also
+
+[mads](mads.qmd) · [plugin](plugin.qmd) · [source / filter / sink](source-filter-sink.qmd)

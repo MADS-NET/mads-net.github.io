@@ -1,0 +1,106 @@
+---
+title: "Command: `package`"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [command, cli, plugin, distribution]
+abstract: |
+  `mads package` (`mads-package`) lists, inspects, and installs optional pre-compiled MADS agents,
+  plugins, and tools distributed as GitHub release ZIP archives from the
+  [MADS-NET](https://github.com/mads-net) organization. It resolves the right release asset for the
+  current OS/architecture and merges it into the MADS installation prefix. This page is a CLI/behavior
+  reference; see the guide in the margin for a full walkthrough with real example output.
+---
+
+::: {.aside}
+Related: [MADS packages](../guides/package.qmd) (full walkthrough) · [OTA Plugins](../guides/OTA_plugins.qmd) — a different mechanism, for distributing *your own* compiled plugins to *your own* fleet via the broker, rather than pulling third-party community packages.
+:::
+
+# Synopsis
+
+```sh
+mads package [-l|--list [-v|--verbose]] [-n|--info package] [-i|--install package [-f|--force]]
+             [-j|--json] [--no-cache] [-h|--help]
+```
+
+# Description
+
+`mads package` reads a public JSON package index (name → GitHub repository), resolves the latest
+compatible release for each repository, and — for `--install` — downloads, extracts, and merges the
+matching ZIP into `$(mads -p)`, preserving archive structure (a single top-level directory in the ZIP
+is stripped so contents land directly under the prefix).
+
+```{mermaid}
+flowchart LR
+  IDX["package index
+(GitHub, JSON)"] --> R["resolve latest release
+stable, else newest
+non-draft pre-release"]
+  R --> A["pick ZIP asset
+for this OS + arch"]
+  A --> P["extract + merge into
+$(mads -p)"]
+```
+
+# Options
+
+| Flag | Effect |
+|---|---|
+| `-l`, `--list` | List installable packages (name, repo, latest release, matching asset(s) for this platform). |
+| `-v`, `--verbose` | With `--list`: also show the repo's GitHub description and any `mads_package.json` requirements. |
+| `-n`, `--info` *package* | Print detailed info (description + requirements) for one package. |
+| `-i`, `--install` *package* | Download and install a package. |
+| `-f`, `--force` | Overwrite existing files. Only valid with `--install`. |
+| `-j`, `--json` | JSON output. Only valid with `--list` or `--info`. |
+| `--no-cache` | Bypass the 6-hour cache for this run (see [Cache](#cache)). |
+| `-h`, `--help` | Usage. |
+
+::: {.callout-note}
+`--list`, `--info`, and `--install` are mutually exclusive — exactly one must be given.
+:::
+
+::: {.callout-important}
+There is no `--version` flag on this command (unlike most other MADS executables).
+:::
+
+# Release and asset selection
+
+The latest **stable** GitHub release is preferred; if a repository has none, the newest non-draft
+**pre-release** is used instead. Only ZIP assets matching the current platform are considered:
+
+| Suffix | Platform |
+|---|---|
+| `windows-amd64.zip` | Windows 64-bit |
+| `linux-x86_64.zip`, `linux-aarch64.zip` | Linux (matching architecture) |
+| `darwin-x86_64.zip`, `darwin-arm64.zip` | macOS, Intel / Apple Silicon |
+| `darwin-universal.zip` | macOS, either architecture — used only when no exact-architecture asset exists |
+
+# Package metadata
+
+A repository may ship a `mads_package.json` at its root, read by `--info` (and by `--list --verbose`):
+common notes/commands, plus platform-specific ones (`Windows`, `Linux`, `macOS`) shown after the
+common entries.
+
+::: {.callout-warning}
+The `commands` listed in `mads_package.json` (e.g. system-dependency installs) are **printed for the
+user to run manually** — `mads package` never executes them itself.
+:::
+
+# Cache
+
+Package index and per-package metadata are cached under `$HOME/.mads/packages/` for **6 hours**.
+`--no-cache` forces a fresh fetch (and still updates the cache on success).
+
+::: {.callout-warning}
+A GitHub HTTP 403 during a fetch (rate limiting) leaves the cache **unchanged** and prints a warning
+— it does not fall back to stale cached data automatically for that request.
+:::
+
+# See also
+
+[mads](mads.qmd) · [plugin](plugin.qmd)

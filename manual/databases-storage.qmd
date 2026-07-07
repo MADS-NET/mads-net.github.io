@@ -1,0 +1,128 @@
+---
+title: "Databases and data storage"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [concept, storage, mongodb]
+abstract: |
+  MADS keeps two, deliberately separate, notions of "storage": a fleet-wide time-series log of
+  everything that crosses the network (written by `mads logger`, readable back onto the network by
+  `replay.plugin`), and a small per-plugin local key/value file (`Datastore`) for a single device's
+  own persistent state. This page is a map of both, plus where each one's detailed guide lives.
+---
+
+::: {.aside}
+Related guides:
+
+- [MongoDB](../guides/mongodb.qmd) — querying logged data directly
+- [MongoDB Replay](../guides/replay.qmd) — the `replay.plugin` covered below
+- [HDF5 Logger](../guides/hdf5.qmd) — a file-based (non-MongoDB) logging sink
+- [Agents persistency with Datastore](../guides/datastore.qmd)
+:::
+
+# Two unrelated kinds of "storage"
+
+| | Time-series log | `Datastore` |
+|---|---|---|
+| Scope | Whole network, every topic | One plugin, one device |
+| Written by | [`mads logger`](logger.qmd) | The plugin itself, via `_datastore["key"] = ...` |
+| Shape | An append-only history, one document per message | A small JSON object, overwritten in place |
+| Typical use | Post-hoc analysis, replay, audit | Calibration values, counters, last-seen state across restarts |
+
+They don't interact — a plugin's `Datastore` file is never logged, and the logger's history is never
+read by a running plugin except through the explicit replay path below.
+
+# The write path: `mads logger`
+
+Fully covered in [logger](logger.qmd): one MongoDB collection per topic, an optional plain file
+sink, live pause/resume, and the gotcha that collection indexes are only created on a clean
+shutdown. Nothing on this page repeats that — start there for anything about *writing* the log.
+
+# The read path: replaying logged data
+
+`replay.plugin` (target name `replay`, built only when `MADS_ENABLE_MONGOCXX` is on — the default)
+is a `source` plugin that turns previously-logged MongoDB collections back into a live topic stream,
+for testing or debugging against real recorded data instead of a live device.
+
+```{mermaid}
+flowchart LR
+  C1["collection: sensors"] --> M[["MongoFetch
+merges + sorts by timestamp"]]
+  C2["collection: alarms"] --> M
+  M --> R["replay.plugin
+mads source replay"]
+  R -- "paced by each record's
+original time gap" --> B["broker"]
+```
+
+Internally, `MongoFetch` merges the selected collections into one server-side view sorted by
+timestamp, then walks it one record at a time: each call returns the record's original payload
+*and* the real time gap to the next record, which the plugin returns as its own
+`next_loop_duration` — so playback reproduces the original relative timing between messages, not a
+fixed tick rate. Configure it in the `[replay]` ini section (or the equivalent plugin params):
+
+```ini
+[replay]
+db_uri = "mongodb://localhost:27017/"
+db_name = "my_experiment"
+collections = ["sensors", "alarms"]
+start_time = "2026-01-01T00:00:00Z"  # optional; omit for "from the beginning"
+end_time = "2026-01-01T01:00:00Z"    # optional; omit for "up to now"
+repeat = false                        # loop back to the start when done
+max_loop_duration_ms = 1000           # cap on the pacing gap, for large real gaps
+unwrap_original = false
+```
+
+Each replayed record is republished under its original collection name as topic, so a consumer
+downstream sees the same topic layout the live network had.
+
+::: {.callout-important}
+The logger stores each message as `{timestamp, message: <original payload>}`, and
+`unwrap_original = false` (the default) replays that **whole stored document**, original payload
+still nested under `message` — not the original message shape. Set `unwrap_original = true` to
+republish just the original payload, which is almost always what you want for a realistic replay.
+:::
+
+::: {.callout-tip}
+By default each run builds a temporary merged view and drops it afterward. Pass `view_name` (and
+`reuse_view = true` on later runs) to build it once and reuse it — useful for a large time range you
+intend to replay repeatedly without re-merging the source collections every time.
+:::
+
+::: {.callout-warning}
+An unrelated, **community** `replay_plugin` (a separate GitHub repository) replays from a CSV file
+instead of MongoDB, and happens to install under the same name (`replay.plugin`, launched the same
+way: `mads source replay`). See the [Replay plugin](../guides/replay_csv.qmd) guide for the CSV
+version. Check which one is actually installed before assuming which data source you're replaying
+from.
+:::
+
+# Per-plugin local persistence: `Datastore`
+
+A plugin scaffolded with `mads plugin --datastore` (see [plugin](plugin.qmd)) gets a `Datastore`
+member: a JSON object backed by a single file, loaded on `prepare(kind())` and saved automatically
+when the plugin is destroyed (or on demand, via `.save()`). Use it for small state a single device
+needs to remember across restarts — a calibration offset, a running counter, the last value seen —
+not for anything resembling a message history.
+
+```cpp
+_datastore.prepare(kind());       // loads existing state, if any
+auto count = _datastore["count"].get<int>();
+_datastore["count"] = count + 1;  // saved automatically on destruction, or call .save() now
+```
+
+::: {.callout-warning}
+With no explicit path, `prepare(name)` stores the file under the OS temporary directory (e.g.
+`/tmp/mads/<name>.json` on Unix) — which many systems clear on reboot. If the persisted state must
+survive a reboot, pass an explicit path: `prepare(name, path)`.
+:::
+
+# See also
+
+[logger](logger.qmd) · [source / filter / sink](source-filter-sink.qmd) · [plugin](plugin.qmd) ·
+[Plugins and extensions](plugins-extensions.qmd)

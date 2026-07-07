@@ -1,0 +1,112 @@
+---
+title: "Timing and scheduling"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [concept, timing]
+abstract: |
+  Every MADS agent is built around a single main loop, paced by one `time_step` setting. This page
+  covers how that pacing works (including the opt-in high-resolution mode), the cooperative
+  shutdown watchdog that keeps a stuck loop from hanging a process forever, and the separate
+  `timecode` mechanism agents use to stamp messages with a shared, human-readable time-of-day.
+---
+
+# The main loop
+
+`Agent::loop(lambda)` is the shape every agent-based command (`source`/`filter`/`sink`, `logger`,
+`feedback`, `perf_assess`, `dealer`/`worker`, `bridge`, `image`, ...) is built around: call `lambda`
+once, wait, repeat, until `Mads::running` becomes `false` (Ctrl-C, a remote `shutdown`/`restart`
+command, or an uncaught exception from `lambda` itself).
+
+```{mermaid}
+flowchart TB
+  S(["loop start"]) --> C["call lambda()"]
+  C --> R{"lambda threw?"}
+  R -- yes --> X["Mads::running = false"] --> E(["loop exits"])
+  R -- no --> D{"return value
+0 or omitted?"}
+  D -- yes --> T1["wait time_step
+(the ini-configured default)"]
+  D -- no --> T2["wait the returned
+duration instead"]
+  T1 --> Q{"Mads::running?"}
+  T2 --> Q
+  Q -- yes --> C
+  Q -- no --> E
+```
+
+The wait duration comes from the ini's `time_step` (milliseconds) or, for finer control,
+`time_step_us` (microseconds — wins over `time_step` if both are set), read from the calling
+agent's own settings section. A `time_step` of `0` (the default) means "no wait, run at max speed."
+
+::: {.callout-tip}
+`lambda` can override the wait for just its *next* iteration by returning a non-zero duration —
+this is how `mads source`/`filter`/`sink` implement `return_type::retry`: return `0ms` to fall back
+to the configured `time_step` instead of hammering a plugin that just said "try again shortly" at
+full speed. Returning `0` (or omitting a return) always means "use the configured default," never
+"don't wait at all."
+:::
+
+# High-resolution pacing
+
+A plain `sleep_for` wakes up whenever the OS scheduler gets around to it — typically within a
+fraction of a millisecond, which is fine for `time_step` values in the tens-of-milliseconds range or
+coarser, but can be a meaningful fraction of a *very* short period (e.g. `time_step_us = 500`).
+
+Opt into busy-spin pacing with the ini keys `high_res_loop = true` / `spin_margin_us` (or the
+equivalent call, `Agent::enable_high_res_loop()`, for embedding code): the loop sleeps through most
+of the remaining interval as usual, then busy-spins on a steady clock for just the last
+`spin_margin_us` microseconds (default 200) to land the wake-up to microsecond accuracy.
+
+::: {.callout-warning}
+High-resolution pacing trades CPU time for precision: the busy-spin tail keeps a core fully loaded
+for however long `spin_margin_us` lasts, every iteration. The extra CPU cost is roughly
+`spin_margin_us / time_step_us` — negligible for a 200us margin on a 100ms loop, but potentially
+20-40% of a core for that same 200us margin on a 500us loop. Leave it off (the default) unless a
+loop's period is genuinely down in the microsecond range.
+:::
+
+# The shutdown watchdog
+
+`init()` installs a small watchdog thread by default (`install_watchdog = true`; pass `false` to
+`init()`/`AgentApp` to skip it). It expects the main thread to notice `Mads::running == false` and
+unwind out of `loop()` into `shutdown()` promptly, which stops the watchdog. If that does not happen
+within a bounded grace period, the watchdog force-exits the process (`std::_Exit`, skipping static
+destructors that might themselves be stuck).
+
+::: {.callout-note}
+This is a cooperative failsafe, not a timeout on `lambda` itself: it only fires if the *whole
+process* fails to shut down in an orderly way (e.g. something is stuck joining a thread), not if a
+single loop iteration happens to run long.
+:::
+
+# `timecode`: a shared, human-readable clock
+
+Separately from loop pacing, every published message is stamped with a `timecode` field: seconds
+since local midnight, quantized to frame boundaries at `timecode_fps` (default 25 — configurable
+fleet-wide via the shared `[agents]` ini section, read by both agents and the broker). It exists
+alongside the ISO `timestamp` field as a compact, sortable, human-readable number for logging and
+scrubbing through recorded data frame-by-frame.
+
+At connect time, an agent asks the broker for its own current `timecode` and compares it against
+the agent's locally-computed value for the same instant, storing the difference as
+`timecode_offset`.
+
+::: {.callout-important}
+`timecode_offset` is **diagnostic only** — it is reported in `agent_event` payloads and in
+`--info`-style output so you can spot clock skew between a device and the broker's host, but it is
+**not** applied to correct the `timecode` field of ordinary published messages. Two agents on hosts
+with different clocks will stamp genuinely different `timecode` values for the same real-world
+instant; if that matters for your analysis, correct for `timecode_offset` yourself downstream (e.g.
+in the logger's stored data).
+:::
+
+# See also
+
+[broker](broker.qmd) · [source / filter / sink](source-filter-sink.qmd) ·
+[Message routing and topics](message-routing.qmd)
