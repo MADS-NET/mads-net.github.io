@@ -50,9 +50,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-34d578f5c66cc91f3a0d6b67e9812be3.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-64b7de47a7e8b02f335e91eb41b2262c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-fbd88b76561897797376a857d5eea4ac.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-64b7de47a7e8b02f335e91eb41b2262c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-4db5fbb3dd46a22aa77d66c89986dbe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e09146fc55613513dd878fca96375a1e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-4db5fbb3dd46a22aa77d66c89986dbe3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -189,25 +189,126 @@ window.Quarto = {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="./start.html"> 
-<span class="menu-text">Start here</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-introduction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Introduction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-introduction">    
+        <li>
+    <a class="dropdown-item" href="./start.html">
+ <span class="dropdown-text">Start here</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./why.html"> 
-<span class="menu-text">Why MADS?</span></a>
+        <li>
+    <a class="dropdown-item" href="./why.html">
+ <span class="dropdown-text">Why MADS?</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./interfaces.html"> 
-<span class="menu-text">Interfaces</span></a>
+        <li>
+    <a class="dropdown-item" href="./interfaces.html">
+ <span class="dropdown-text">Interfaces</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./who_is_using.html">
+ <span class="dropdown-text">Use cases</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./manual"> 
+<span class="menu-text">Documentation</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-commands" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Commands</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-commands">    
+        <li>
+    <a class="dropdown-item" href="./manual/mads.html">
+ <span class="dropdown-text">mads command</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/broker.html">
+ <span class="dropdown-text">Broker</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/plugin.html">
+ <span class="dropdown-text">Plugin</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/source-filter-sink.html">
+ <span class="dropdown-text">Source / Filter / Sink</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/logger.html">
+ <span class="dropdown-text">Logger</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/feedback-perf_assess.html">
+ <span class="dropdown-text">Feedback / Perf Assess</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/inspect_plugin.html">
+ <span class="dropdown-text">Inspect Plugin</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/federate.html">
+ <span class="dropdown-text">Federate</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/fsm.html">
+ <span class="dropdown-text">FSM</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/package.html">
+ <span class="dropdown-text">Package</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/dealer-worker.html">
+ <span class="dropdown-text">Dealer / Worker</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/rust-loaders.html">
+ <span class="dropdown-text">Rust Loaders</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-concepts" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Concepts</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-concepts">    
+        <li>
+    <a class="dropdown-item" href="./manual/network-discovery.html">
+ <span class="dropdown-text">Network discovery</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/message-routing.html">
+ <span class="dropdown-text">Message routing and topics</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/plugins-extensions.html">
+ <span class="dropdown-text">Plugins and extensions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/timing-scheduling.html">
+ <span class="dropdown-text">Timing and scheduling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/message-queues.html">
+ <span class="dropdown-text">Message queues</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/databases-storage.html">
+ <span class="dropdown-text">Databases and data storage</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./manual/cryptography-security.html">
+ <span class="dropdown-text">Cryptography and security</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link active" href="./guides.html" aria-current="page"> 
 <span class="menu-text">Guides</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./who_is_using.html"> 
-<span class="menu-text">Use cases</span></a>
   </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-presentations" role="link" data-bs-toggle="dropdown" aria-expanded="false">
