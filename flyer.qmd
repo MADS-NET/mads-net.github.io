@@ -1,0 +1,270 @@
+---
+title: "MADS — Multi-Agent Distributed System"
+format:
+  typst:
+    keep-typ: false
+    font-paths:
+      - fonts
+    template-partials:
+      - typst-template.typ
+      - typst-show.typ
+---
+
+```{=typst}
+// =====================================================================
+//                              PAGE 1
+// =====================================================================
+
+// ---- Header ---------------------------------------------------------
+#band(fill: mads-orange, top: 12mm, bottom: 9mm)[
+  #grid(
+    columns: (auto, 1fr),
+    align: (left + horizon, right + horizon),
+    gutter: 9mm,
+    [
+      #image("images/logo_white.png", height: 19mm)
+      #v(3.5mm)
+      #text(font: font-head, size: 15pt, weight: 500, fill: white)[
+        Multi-Agent Distributed System
+      ]
+    ],
+    align(right)[
+      #box(
+        fill: white.transparentize(86%), radius: 7pt,
+        inset: (x: 11pt, y: 9pt), stroke: 0.8pt + white.transparentize(45%),
+      )[
+        #text(font: font-body, size: 10.5pt, fill: white, style: "italic")[
+          Connect sensors, devices\ & software into one\ distributed network.
+        ]
+      ]
+      #v(3.5mm)
+      #chip("Apache v2.0 · OPEN SOURCE", fg: mads-orange, bg: white)
+    ],
+  )
+]
+
+#accent-stripe()
+
+// ---- What is MADS ---------------------------------------------------
+#band(top: 9mm, bottom: 7mm)[
+  #kicker("What is MADS?")
+  #v(3mm)
+  #grid(
+    columns: (1.32fr, 1fr),
+    gutter: 10mm,
+    [
+      #text(size: 10pt)[
+        *MADS* is a lightweight, cross-platform framework for building
+        networks of *distributed agents* that exchange data over
+        #text(fill: mads-blue-dark, weight: 600)[ZeroMQ]. Wire up heterogeneous
+        sensors, devices and software into one cooperating system — and start
+        collecting and processing live data in *about one hour*.
+      ]
+      #v(3.5mm)
+      #text(size: 10pt)[
+        Every agent is a *source*, a *filter* or a *sink*. Customize behaviour
+        with C++ plugins, or prototype in Python, R and Lua. No heavyweight
+        middleware, minimal dependencies, tiny footprint.
+      ]
+    ],
+    box(fill: mads-sky, radius: 9pt, inset: 12pt, width: 100%)[
+      #align(center)[
+        #grid(columns: 5, align: horizon, column-gutter: 6pt,
+          flow-node("SOURCE", mads-blue), flow-arrow,
+          flow-node("FILTER", mads-orange), flow-arrow,
+          flow-node("SINK", mads-pink),
+        )
+        #v(8pt)
+        #box(width: 100%, fill: mads-ink, radius: 6pt, inset: (x: 10pt, y: 6pt))[
+          #text(font: font-head, weight: 600, size: 9.5pt, fill: white)[BROKER]
+          #h(6pt)
+          #text(font: font-body, size: 7.4pt, fill: white.transparentize(18%))[
+            routes every message
+          ]
+        ]
+        #v(6pt)
+        #text(font: font-body, size: 7.6pt, style: "italic", fill: mads-ink.lighten(25%))[
+          pub / sub · auto-discovery · encrypted
+        ]
+      ]
+    ],
+  )
+]
+
+// ---- Why MADS -------------------------------------------------------
+#band(fill: mads-cloud, top: 8mm, bottom: 8mm)[
+  #kicker("Why MADS?")
+  #v(4mm)
+  #grid(
+    columns: (1fr, 1fr, 1fr),
+    rows: (auto, auto),
+    gutter: 6mm,
+    feature("Tiny footprint",
+      [\~20 MB installer with minimal dependencies — against \~750 MB for ROS 2.],
+      accent: mads-orange),
+    feature("Gentle learning curve",
+      [Productive in \~1 hour. The whole plugin API is barely 5 methods.],
+      accent: mads-blue),
+    feature("Runs everywhere",
+      [Windows, macOS, Linux — down to small boards like the Raspberry Pi.],
+      accent: mads-pink),
+    feature("Fast by design",
+      [\~150k messages/s (10 kB each) over the binary MsgPack protocol.],
+      accent: mads-blue),
+    feature("Truly extensible",
+      [Native C++/Rust plugins, or full agents scripted in Python, R and Lua.],
+      accent: mads-orange),
+    feature("Distributed & secure",
+      [Over-the-air plugin delivery and optional end-to-end encryption.],
+      accent: mads-pink),
+  )
+]
+
+// ---- Stats band -----------------------------------------------------
+#band(fill: mads-blue, top: 6mm, bottom: 6mm)[
+  #grid(
+    columns: (1fr,) * 5,
+    gutter: 4mm,
+    stat("20 MB", "installer size"),
+    stat([~1 h], "to first network"),
+    stat("150k", "msgs / second"),
+    stat("5", "methods plugin API"),
+    stat([4+], "platforms"),
+  )
+]
+
+// =====================================================================
+//                              PAGE 2
+// =====================================================================
+#pagebreak()
+
+// ---- Mini header ----------------------------------------------------
+#band(fill: mads-ink, top: 10mm, bottom: 8mm)[
+  #grid(
+    columns: (1fr, auto),
+    align: (left + horizon, right + horizon),
+    gutter: 8mm,
+    [
+      #kicker("Connect anything", color: mads-orange-light)
+      #v(2mm)
+      #text(font: font-head, weight: 700, size: 18pt, fill: white)[
+        One network, every interface
+      ]
+    ],
+    image("images/logo_white.png", height: 12mm),
+  )
+]
+
+#accent-stripe()
+
+// ---- Interfaces -----------------------------------------------------
+#let ifgroup(title, color, body) = block(below: 4.2mm, above: 0pt, width: 100%)[
+  #grid(
+    columns: (30mm, 1fr), gutter: 9pt, align: (right + top, left + top),
+    text(font: font-head, weight: 600, size: 9.5pt, fill: color)[#title],
+    par(leading: 1.55em)[#body],
+  )
+]
+
+#band(top: 7mm, bottom: 5mm)[
+  #text(size: 9pt, fill: mads-ink.lighten(12%))[
+    A minimal core of general-purpose agents, extended by a growing ecosystem
+    of plugins and agents at #text(font: font-mono, size: 8.5pt, fill: mads-blue-dark)[github.com/MADS-Net].
+  ]
+  #v(4.5mm)
+  #ifgroup("I/O & devices", mads-blue)[
+    #chip("Arduino", bg: mads-blue) #chip("Arduino Uno Q", bg: mads-blue) #chip("Bluetooth LE", bg: mads-blue) #chip("Raspberry Pi GPIO", bg: mads-blue) #chip("Serial", bg: mads-blue)
+  ]
+  #ifgroup("Languages", mads-orange)[
+    #chip("C++ plugins", bg: mads-orange) #chip("Rust plugins", bg: mads-orange)
+    #chip("Python agent", bg: mads-orange) #chip("Python library", bg: mads-orange) #chip("R", bg: mads-orange) #chip("Lua", bg: mads-orange) 
+  ]
+  #ifgroup("AI & simulation", mads-pink)[
+    #chip("ONNX models", bg: mads-pink) #chip("FMU / digital twins", bg: mads-pink)
+  ]
+  #ifgroup("Data & storage", mads-blue)[
+    #chip("HDF5", bg: mads-blue) #chip("MongoDB", bg: mads-blue) #chip("CSV replay", bg: mads-blue)
+  ]
+  #ifgroup("Bridges & UI", mads-orange)[
+    #chip("MQTT", bg: mads-orange) #chip("Text-to-speech", bg: mads-orange) #chip("Terminal UI", bg: mads-orange) #chip("Rerun live plots", bg: mads-orange)
+  ]
+  #ifgroup("Networking", mads-ink)[
+    #chip("Federation", bg: mads-ink) #chip("Auto-discovery", bg: mads-ink) #chip("OTA plugins", bg: mads-ink)
+  ]
+]
+
+// ---- Who's using MADS ----------------------------------------------
+#let usecase(place, body, accent: mads-blue) = block(
+  fill: white, radius: 7pt, inset: 9pt, stroke: 0.6pt + mads-line,
+  width: 100%,
+)[
+  #text(font: font-head, weight: 600, size: 9.5pt, fill: accent)[#place]
+  #v(2.5pt)
+  #text(size: 8.2pt, fill: mads-ink.lighten(15%))[#body]
+]
+
+#band(fill: mads-sky, top: 7mm, bottom: 7mm)[
+  #kicker("Who's using MADS", color: mads-blue)
+  #v(4mm)
+  #grid(
+    columns: (1fr, 1fr),
+    gutter: 5mm,
+    usecase([University of Trento · MiRO Lab],
+      [Software stack of a *robotic walker* for neuro-rehabilitation of patients.],
+      accent: mads-orange),
+    usecase([University of Brescia · MMTLab],
+      [Edge-AI cameras for real-time *3D human pose estimation*.],
+      accent: mads-blue),
+    usecase([University of Perugia · Measurement Group],
+      [Data collection from *wearable sensors* and RFID transponders.],
+      accent: mads-pink),
+    usecase([INSA Toulouse · Institut Clément Ader],
+      [Multi-sensor *energy-efficiency* monitoring on machining shopfloors.],
+      accent: mads-blue),
+  )
+  #v(5mm)
+  #block(fill: mads-orange, radius: 7pt, inset: 10pt, width: 100%)[
+    #grid(columns: (auto, 1fr), gutter: 9pt, align: (left + horizon, left + horizon),
+      text(font: font-head, weight: 700, size: 9.5pt, fill: white)[TEACHING],
+      text(size: 8.6pt, fill: white)[
+        The new *MASSMa* course (Multi-Agent Systems for Smart Machining) runs
+        jointly at the University of Trento and INSA Toulouse under the ECIU umbrella.
+      ],
+    )
+  ]
+]
+
+// ---- Get started ----------------------------------------------------
+#band(fill: mads-ink, top: 8mm, bottom: 9mm)[
+  #grid(
+    columns: (1.1fr, 1fr),
+    gutter: 12mm,
+    [
+      #kicker("Get started", color: mads-orange-light)
+      #v(4mm)
+      #stack(dir: ttb, spacing: 7pt,
+        link-item("Get MADS", "git.new/MADS", accent: mads-orange),
+        link-item("Docs", "mads-net.github.io", accent: mads-blue),
+        link-item("Source", "github.com/pbosetti/mads", accent: mads-orange),
+        link-item("Plugins", "github.com/MADS-Net", accent: mads-blue),
+        link-item("VS Code", "MADSCode extension", accent: mads-pink),
+      )
+    ],
+    [
+      #kicker("Contact", color: mads-orange-light)
+      #v(4mm)
+      #text(size: 11pt, fill: white)[*Paolo Bosetti*]
+      #v(1.5mm)
+      #text(size: 8.6pt, fill: white.transparentize(18%))[
+        Dept. of Industrial Engineering\
+        University of Trento, Italy
+      ]
+      #v(5mm)
+      #text(size: 8pt, fill: white.transparentize(32%), style: "italic")[
+        MADS (v2.3 or later) is released under Apache 2.0 —\
+        free to use for any application.
+      ]
+    ],
+  )
+]
+```

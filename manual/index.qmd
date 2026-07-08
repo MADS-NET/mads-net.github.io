@@ -43,7 +43,41 @@ format: html
 * [Cryptography and security](cryptography-security.qmd)
 
 
+## How to start
+
+Download MADS latest version from <https://git.new/MADS> and follow the [installation guide](/guides/install.html). Depending on your OS, you will need a developer toolchain to build plugins and custom agents.
+
+The [MADSCode {{< bi link >}}](https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode) Visual Studio Code extension provides useful tools for MADS development.
+
+### {{< si linux >}} Linux
+
+You need `clang` compiler and `cmake` build system installed, plus git and CMake. Visual Studio Code is the suggested development platform.
+
+
+::: {.callout-warning}
+
+GCC compiler is not officially supported. Even if you install `clang` on linux, some distributions may still use `gcc` as the default compiler. In that case, you need to set the environment variable `CC=clang` before running `cmake` to build a plugin or custom agent or --- preferably --- use the `update-alternatives` command to set `clang` as the default compiler:
+
+```sh
+sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
+sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
+```
+
+or interactively with:
+
+```sh
+sudo update-alternatives --all
+```
+
+:::
 
 
 
+### {{< bs microsoft >}} Windows
 
+You need Visual Studio 2022 (Community Edition is fine) or later, with the C++ development tools installed, plus CMake. Visual Studio Code is the suggested development platform.
+
+
+### {{< bs apple >}} macOS
+
+You need Xcode and the command line tools installed, plus git and CMake. Visual Studio Code is the suggested development platform.

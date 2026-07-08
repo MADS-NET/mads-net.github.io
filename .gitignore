@@ -11,3 +11,4 @@ _site
 .positai
 
 ai_example
+/.luarc.json

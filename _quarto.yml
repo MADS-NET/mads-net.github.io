@@ -31,6 +31,8 @@ website:
           text: "Interfaces"
         - href: who_is_using.qmd
           text: "Use cases"
+        - href: "flyer.qmd"
+          text: "Flyer"
       - href: manual
         text: "Documentation"
       - text: "Commands"
