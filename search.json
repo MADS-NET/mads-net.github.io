@@ -788,14 +788,14 @@
     "href": "presentations/gorini.html#developing-on-windows-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d",
     "title": "Distributed systems with ",
     "section": "Developing on Windows ",
-    "text": "Developing on Windows \nCore development is made in CMake 4.x and Visual Studio 2022, tested on Windows 11\n\nIDE of choice is Visual Studio Code, with the MADSCode extension\nVisual Studio (Community Edition is fine) is only used as compiler, not as IDE\nWhen installing VS be sure to add C++ tools and CLI libraries\n\nAlso install Cmake 4.2.1 from GitHub\n\n\nThen go to https://git.new/mads, download the latest .exe installer and follow the graphical install"
+    "text": "Developing on Windows \nCore development is made in CMake 4.x and Visual Studio 2022, tested on Windows 11\n\nIDE of choice is Visual Studio Code, with the MADSCode extension\nVisual Studio (Community Edition is fine) is only used as compiler, not as IDE\nWhen installing VS be sure to add C++ tools and CLI libraries\n\nAlso install CMake 4.2.1 from GitHub\n\n\nThen go to https://git.new/mads, download the latest .exe installer and follow the graphical install\n\n\n\n\n\n\nWarning\n\n\nMore recent versions of CMake may not work with some of the MADS dependencies. Please stay on the tested 4.2.1 version."
   },
   {
     "objectID": "presentations/gorini.html#developing-on-macos-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d",
     "href": "presentations/gorini.html#developing-on-macos-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d",
     "title": "Distributed systems with ",
     "section": "Developing on macOS ",
-    "text": "Developing on macOS \nCore development is made in CMake 4.x and Clang, tested on macOS 26 (Tahoe)\n\nIDE of choice is Visual Studio Code, with the MADSCode extension\nApple Xcode tools must be installed (to have Clang working)\nAlso install Cmake 4.2.1 from GitHub\n\nThen go to https://git.new/mads, download the latest .sh installer and run it as:\nchmod a+x Mads-v2.x.x-Darwin-universal.dmg\nThen drag the usr folder into your home directory, and add the path ~/usr/local/bin to your PATH environment variable"
+    "text": "Developing on macOS \nCore development is made in CMake 4.x and Clang, tested on macOS 26 (Tahoe)\n\nIDE of choice is Visual Studio Code, with the MADSCode extension\nApple Xcode tools must be installed (to have Clang working)\nAlso install CMake 4.2.1 from GitHub\n\nThen go to https://git.new/mads, download the latest .sh installer and run it as:\nchmod a+x Mads-v2.x.x-Darwin-universal.dmg\nThen drag the usr folder into your home directory, and add the path ~/usr/local/bin to your PATH environment variable\n\n\n\n\n\n\nWarning\n\n\nMore recent versions of CMake may not work with some of the MADS dependencies. Please stay on the tested 4.2.1 version."
   },
   {
     "objectID": "presentations/gorini.html#test-that-it-works",
