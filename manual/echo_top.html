@@ -9,7 +9,7 @@
 <meta name="author" content="Paolo Bosetti">
 <meta name="dcterms.date" content="2026-07-07">
 
-<title> Manual</title>
+<title>Command: echo|top</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -361,17 +361,20 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#contents" id="toc-contents" class="nav-link active" data-scroll-target="#contents">Contents</a>
+  <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a>
   <ul class="collapse">
-  <li><a href="#mads-commands" id="toc-mads-commands" class="nav-link" data-scroll-target="#mads-commands">MADS commands</a></li>
-  <li><a href="#mads-concepts" id="toc-mads-concepts" class="nav-link" data-scroll-target="#mads-concepts">MADS concepts</a></li>
-  <li><a href="#how-to-start" id="toc-how-to-start" class="nav-link" data-scroll-target="#how-to-start">How to start</a>
+  <li><a href="#inspecting-live-traffic" id="toc-inspecting-live-traffic" class="nav-link" data-scroll-target="#inspecting-live-traffic">Inspecting live traffic</a>
   <ul class="collapse">
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux"><i class="bi-tux " style="" role="img" aria-hidden="true"></i> Linux</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows"><i class="bi-microsoft " style="" role="img" aria-hidden="true"></i> Windows</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos"><i class="bi-apple " style="" role="img" aria-hidden="true"></i> macOS</a></li>
+  <li><a href="#two-ways-to-reach-a-broker" id="toc-two-ways-to-reach-a-broker" class="nav-link" data-scroll-target="#two-ways-to-reach-a-broker">Two ways to reach a broker</a></li>
   </ul></li>
+  <li><a href="#options" id="toc-options" class="nav-link" data-scroll-target="#options">Options</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   </ul></li>
+  <li><a href="#list-active-topics" id="toc-list-active-topics" class="nav-link" data-scroll-target="#list-active-topics">List active topics</a>
+  <ul class="collapse">
+  <li><a href="#options-1" id="toc-options-1" class="nav-link" data-scroll-target="#options-1">Options</a></li>
+  </ul></li>
+  <li><a href="#examples-1" id="toc-examples-1" class="nav-link" data-scroll-target="#examples-1">Examples</a></li>
   </ul>
 </nav>
     </div>
@@ -380,8 +383,13 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Manual</h1>
-</div>
+<h1 class="title">Command: <code>echo|top</code></h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">command</div>
+    <div class="quarto-category">cli</div>
+    <div class="quarto-category">agents</div>
+  </div>
+  </div>
 
 
 <div class="quarto-title-meta-author">
@@ -417,56 +425,17 @@ cookieconsent.run({
     
   </div>
   
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p><code>mads echo</code> and <code>mads top</code> allow to inspect a running MADS network, showing messages on-the-wire and presenting a table of running agents.</p>
+  </div>
+</div>
 
 
 </header>
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
-<section id="mads-commands" class="level2">
-<h2 class="anchored" data-anchor-id="mads-commands">MADS commands</h2>
-<!-- LIST of all MADS executable commands in the standard installation,
-     each linking to a separate manual page -->
-<ul>
-<li><a href="../manual/mads.html">mads</a> — the command dispatcher and its built-in subcommands</li>
-<li><a href="../manual/broker.html">broker</a> — the ZeroMQ proxy and settings service at the hub of a MADS network</li>
-<li><a href="../manual/plugin.html">plugin</a> — scaffold a new plugin, or migrate an existing one to a newer protocol</li>
-<li><a href="../manual/source-filter-sink.html">source</a>, <a href="../manual/source-filter-sink.html">filter</a>, <a href="../manual/source-filter-sink.html">sink</a> — the three generic plugin-loader agents</li>
-<li><a href="../manual/logger.html">logger</a> — persists every topic to MongoDB and/or a file</li>
-<li><a href="../manual/feedback-perf_assess.html">feedback</a>, <a href="../manual/feedback-perf_assess.html">perf_assess</a> — a generic subscriber and publisher for testing, plus the default plugins</li>
-<li><a href="../manual/inspect_plugin.html">inspect_plugin</a> — diagnose a compiled <code>.plugin</code> file (protocol version, ABI mismatches)</li>
-<li><a href="../manual/federate.html">federate</a> — relay selected topics between two independent MADS networks</li>
-<li><a href="../manual/fsm.html">fsm</a> — generate a finite-state-machine agent skeleton from a Graphviz description</li>
-<li><a href="../manual/package.html">package</a> — list, inspect, and install pre-compiled community packages</li>
-<li><a href="../manual/dealer-worker.html">dealer</a>, <a href="../manual/dealer-worker.html">worker</a> — round-robin load balancing across multiple worker processes</li>
-<li><a href="../manual/rust-loaders.html">rsource</a>, <a href="../manual/rust-loaders.html">rfilter</a>, <a href="../manual/rust-loaders.html">rsink</a> — Rust-plugin loaders (not on Windows)</li>
-<li><a href="../manual/up.html">up</a> - A GUI-less alternative to <code>mads director</code> (<a href="../guides/director.html">see here</a>)</li>
-<li><a href="../manual/doctor.html">doctor</a> - Use it when you get stuck</li>
-<li><a href="../manual/echo_top.html">echo/top</a> - look at what happens on the net</li>
-<li><a href="../manual/record_play.html">record/play/bag</a> - record a session, then replay it later, without a database (bag files)</li>
-</ul>
-</section>
-<section id="mads-concepts" class="level2">
-<h2 class="anchored" data-anchor-id="mads-concepts">MADS concepts</h2>
-<!-- Each of the following must link to a separate manual page -->
-<ul>
-<li><a href="../manual/network-discovery.html">Network discovery</a></li>
-<li><a href="../manual/message-routing.html">Message routing and topics</a></li>
-<li><a href="../manual/plugins-extensions.html">Plugins and extensions</a></li>
-<li><a href="../manual/timing-scheduling.html">Timing and scheduling</a></li>
-<li><a href="../manual/message-queues.html">Message queues, blocking/non-blocking behavior</a></li>
-<li><a href="../manual/databases-storage.html">Databases and data storage</a></li>
-<li><a href="../manual/cryptography-security.html">Cryptography and security</a></li>
-</ul>
-</section>
-<section id="how-to-start" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-start">How to start</h2>
-<p>Download MADS latest version from <a href="https://git.new/MADS" class="uri">https://git.new/MADS</a> and follow the <a href="../guides/install.html">installation guide</a>. Depending on your OS, you will need a developer toolchain to build plugins and custom agents.</p>
-<p>The <a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode">MADSCode <i class="bi-link " style="" role="img" aria-hidden="true"></i></a> Visual Studio Code extension provides useful tools for MADS development.</p>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux" class="level3">
-<h3 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux"><i class="bi-tux " style="" role="img" aria-hidden="true"></i> Linux</h3>
-<p>You need <code>clang</code> compiler and <code>cmake</code> build system installed, plus git and CMake. Visual Studio Code is the suggested development platform.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -477,25 +446,213 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>GCC compiler is not officially supported. Even if you install <code>clang</code> on linux, some distributions may still use <code>gcc</code> as the default compiler. In that case, you need to set the environment variable <code>CC=clang</code> before running <code>cmake</code> to build a plugin or custom agent or — preferably — use the <code>update-alternatives</code> command to set <code>clang</code> as the default compiler:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/cc cc /usr/bin/clang 100</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/c++ c++ /usr/bin/clang++ 100</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>or interactively with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> update-alternatives <span class="at">--all</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This command has been introduced in MADS v2.4.1.</p>
 </div>
 </div>
+<section id="description" class="level1">
+<h1>Description</h1>
+<p>This pair of commands provide GUI-less alternatives to <a href="https://github.com/mads-net/mads_chat"><code>mads-chat</code></a> and allow to inspect live traffic and to get a live table of active topics.</p>
+<ul>
+<li><a href="#inspecting-live-traffic">Inspect live traffic</a></li>
+<li><a href="#list-active-topics">List active topics</a></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Beside the <code>mads-chat</code> agent (to be installed separately), the <code>mads feedback</code> command is an older, less flexible, and deprecated alternative to <code>mads echo</code>, and the <a href="https://github.com/MADS-NET/agents_status_plugin"><code>agents_status.plugin</code></a> is a likewise older and deprecated alternative to <code>mads top</code>.</p>
+</div>
+</div>
+<section id="inspecting-live-traffic" class="level2">
+<h2 class="anchored" data-anchor-id="inspecting-live-traffic">Inspecting live traffic</h2>
+<p><strong>mads-echo</strong> is a zero-config way to peek at live traffic on a MADS network without writing an agent or touching <strong>mads.ini</strong> — the MADS analogue of <strong>ros2 topic echo</strong> / <strong>rostopic echo</strong> / <strong>mosquitto_sub</strong>. It connects as an ephemeral, read-only sink <strong>Agent</strong> and pretty-prints every message it receives: topic, timestamp, size, and either indented (colorized) JSON or a one-line blob summary. Being read-only, it cannot desync a running system.</p>
+<p>Each positional <em>topic</em> argument is an MQTT-style subscription filter (see <a href="https://github.com/pbosetti/MADS/blob/6a0a835f81fa0a407381cccfd9f0256f79837c39/CONTEXT.md"><strong>CONTEXT.md</strong></a>’s “Settings model” section): a plain string subscribes exactly as-is, while <strong>+</strong> (exactly one topic level) and <strong>#</strong> (this level and everything below it, only legal as the last token) act as wildcards, e.g. <strong>sensors/+/x</strong> or <strong>sensors/#</strong>. With no <em>topic</em> argument, <strong>mads-echo</strong> subscribes to everything.</p>
+<section id="two-ways-to-reach-a-broker" class="level3">
+<h3 class="anchored" data-anchor-id="two-ways-to-reach-a-broker">Two ways to reach a broker</h3>
+<p><strong>mads-echo</strong> supports two independent, mutually compatible ways to connect:</p>
+<ul>
+<li><strong>Zero-config (default).</strong> No <strong>mads.ini</strong> section is required. <strong>--broker</strong> points directly at the broker’s backend (subscribe) endpoint; <em>topic</em> arguments are given directly on the command line. This is the common case for quickly checking what is being published on a known broker.</li>
+<li><strong>-s, --settings</strong>, for consistency with every other <strong>mads-*</strong> executable. <strong>mads-echo</strong> then behaves exactly like <strong>mads-logger</strong> etc.: it queries the broker (or reads a local <strong>.ini</strong> file) for a <strong>[echo]</strong> section (or <strong>[<strong>name</strong>]</strong> with <strong>-n/--name</strong>), taking its <strong>sub_topic</strong> from there unless overridden by positional <em>topic</em> arguments on the command line.</li>
+</ul>
+<p><strong>--broker</strong> can be combined with either mode: it always overrides whatever subscribe endpoint the other mode resolved to, which is the most direct way to point at a specific broker with zero setup.</p>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows" class="level3">
-<h3 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows"><i class="bi-microsoft " style="" role="img" aria-hidden="true"></i> Windows</h3>
-<p>You need Visual Studio 2022 (Community Edition is fine) or later, with the C++ development tools installed, plus CMake. Visual Studio Code is the suggested development platform.</p>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos" class="level3">
-<h3 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos"><i class="bi-apple " style="" role="img" aria-hidden="true"></i> macOS</h3>
-<p>You need Xcode and the command line tools installed, plus git and CMake. Visual Studio Code is the suggested development platform.</p>
+<section id="options" class="level2">
+<h2 class="anchored" data-anchor-id="options">Options</h2>
+<dl>
+<dt><em>topic</em> …</dt>
+<dd>
+Zero or more MQTT-style topic filters to subscribe to. Overrides any <strong>sub_topic</strong> loaded via <strong>--settings</strong>. Defaults to subscribing to every topic.
+</dd>
+<dt><strong>-b</strong>, <strong>--broker</strong> <em>URI</em></dt>
+<dd>
+Subscribe endpoint to connect to directly, bypassing the settings/broker-query path (e.g. <strong>tcp://broker.local:9091</strong>). Defaults to <strong>tcp://localhost:9091</strong>.
+</dd>
+<dt><strong>--raw</strong></dt>
+<dd>
+For blob messages, print the exact bytes (base64-encoded) instead of the default one-line <strong>&lt;blob N bytes&gt;</strong> summary.
+</dd>
+<dt><strong>--count</strong> <em>N</em></dt>
+<dd>
+Exit automatically after printing <em>N</em> messages.
+</dd>
+<dt><strong>--jsonl</strong></dt>
+<dd>
+Emit one compact JSON line per message (<strong>topic</strong>, <strong>timestamp</strong>, <strong>size</strong>, <strong>type</strong>, <strong>payload</strong>) instead of the multi-line pretty form, and disable coloring — intended for piping into <strong>jq</strong> or similar tools.
+</dd>
+<dt><strong>-s</strong>, <strong>--settings</strong> <em>URI</em></dt>
+<dd>
+Path to the settings file (ini format), or a broker settings URI (<strong>tcp://host:port</strong>). See “Two ways to reach a broker” above.
+</dd>
+<dt><strong>-n</strong>, <strong>--name</strong> <em>name</em></dt>
+<dd>
+Agent/section name to use with <strong>--settings</strong> (default <strong>echo</strong>).
+</dd>
+<dt><strong>-i</strong>, <strong>--agent-id</strong> <em>id</em></dt>
+<dd>
+Agent ID to add to outgoing JSON frames. Unused by <strong>mads-echo</strong> itself (it never publishes) but accepted for consistency with other <strong>mads-*</strong> executables.
+</dd>
+<dt><strong>-S</strong>, <strong>--save-settings</strong> <em>filename.ini</em></dt>
+<dd>
+Save the settings (loaded via <strong>--settings</strong>) to the given file (ini format), then exit.
+</dd>
+<dt><strong>--crypto</strong></dt>
+<dd>
+Enable CURVE encryption for broker communication.
+</dd>
+<dt><strong>--keys_dir[=path]</strong></dt>
+<dd>
+Directory where CURVE key files are stored.
+</dd>
+<dt><strong>--key_broker[=name]</strong></dt>
+<dd>
+Name of the broker key file, without the <strong>.key</strong> extension. Defaults to <strong>broker</strong>.
+</dd>
+<dt><strong>--key_client[=name]</strong></dt>
+<dd>
+Name of the client key file, without the <strong>.key</strong> extension. Defaults to <strong>client</strong>.
+</dd>
+<dt><strong>--auth_verbose</strong></dt>
+<dd>
+Enable verbose authentication messages.
+</dd>
+<dt><strong>-r</strong>, <strong>--room[=room]</strong></dt>
+<dd>
+Discover the broker’s settings endpoint by service-discovery room name, instead of <strong>--settings</strong>.
+</dd>
+<dt><strong>-v</strong>, <strong>--version</strong></dt>
+<dd>
+Show version information.
+</dd>
+<dt><strong>-h</strong>, <strong>--help</strong></dt>
+<dd>
+Show summary of options.
+</dd>
+</dl>
+</section>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<p>Print everything flowing through a broker on localhost:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-echo</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Print only accelerometer readings from any sensor, on a remote broker, with no <strong>mads.ini</strong> at all:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-echo</span> <span class="at">--broker</span> tcp://plant-broker.local:9091 <span class="st">'sensors/+/acc'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Pipe the last 50 messages on a topic through <strong>jq</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-echo</span> <span class="at">--jsonl</span> <span class="at">--count</span> 50 <span class="st">'sensors/#'</span> <span class="kw">|</span> <span class="ex">jq</span> <span class="st">'.payload'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Using the normal settings path, exactly like <strong>mads-logger</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-echo</span> <span class="at">--settings</span> tcp://broker.local:9092</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>with a matching section in that broker’s <strong>mads.ini</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[echo]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic </span><span class="ot">=</span><span class="st"> ["sensors/#"]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="list-active-topics" class="level1">
+<h1>List active topics</h1>
+<p><strong>mads-top</strong> is a live, redrawn-in-place table of the topics currently active on a MADS network — the MADS analogue of <strong>htop</strong>. It connects as an ephemeral, read-only sink <strong>Agent</strong> (same zero-config-by- -default / <strong>--settings</strong>-for-consistency duality as <strong>mads-echo</strong>; see <strong>mads-echo</strong>(1)), subscribes to everything by default (or to the given MQTT-style topic filters), and shows, per topic: messages/second, bytes/second (each averaged over a trailing sliding window, <strong>--window</strong>), how long ago the topic was last seen, and a short preview of its last payload. The table redraws every <strong>--sample-rate</strong> seconds. Being read-only, it cannot desync a running system.</p>
+<p>Press <strong>q</strong> (or Ctrl-C) to quit.</p>
+<section id="options-1" class="level2">
+<h2 class="anchored" data-anchor-id="options-1">Options</h2>
+<dl>
+<dt><em>topic</em> …</dt>
+<dd>
+Zero or more MQTT-style topic filters to subscribe to (see <strong>mads-echo</strong>(1) for the wildcard grammar). Overrides any <strong>sub_topic</strong> loaded via <strong>--settings</strong>. Defaults to subscribing to every topic.
+</dd>
+<dt><strong>-b</strong>, <strong>--broker</strong> <em>URI</em></dt>
+<dd>
+Subscribe endpoint to connect to directly, bypassing the settings/broker-query path. Defaults to <strong>tcp://localhost:9091</strong>.
+</dd>
+<dt><strong>--sample-rate</strong> <em>seconds</em></dt>
+<dd>
+How often the table is redrawn, in seconds. Default <strong>1.0</strong>.
+</dd>
+<dt><strong>--window</strong> <em>seconds</em></dt>
+<dd>
+Trailing time window used to average messages/second and bytes/second per topic. Default <strong>5.0</strong>. A larger window smooths bursty traffic; a smaller one reacts faster to changes.
+</dd>
+<dt><strong>-s</strong>, <strong>--settings</strong> <em>URI</em></dt>
+<dd>
+Path to the settings file (ini format), or a broker settings URI (<strong>tcp://host:port</strong>). See <strong>mads-echo</strong>(1)’s “Two ways to reach a broker” for how this interacts with the zero-config default.
+</dd>
+<dt><strong>-n</strong>, <strong>--name</strong> <em>name</em></dt>
+<dd>
+Agent/section name to use with <strong>--settings</strong> (default <strong>top</strong>).
+</dd>
+<dt><strong>-i</strong>, <strong>--agent-id</strong> <em>id</em></dt>
+<dd>
+Agent ID to add to outgoing JSON frames. Unused by <strong>mads-top</strong> itself (it never publishes) but accepted for consistency with other <strong>mads-*</strong> executables.
+</dd>
+<dt><strong>-S</strong>, <strong>--save-settings</strong> <em>filename.ini</em></dt>
+<dd>
+Save the settings (loaded via <strong>--settings</strong>) to the given file (ini format), then exit.
+</dd>
+<dt><strong>--crypto</strong></dt>
+<dd>
+Enable CURVE encryption for broker communication.
+</dd>
+<dt><strong>--keys_dir[=path]</strong></dt>
+<dd>
+Directory where CURVE key files are stored.
+</dd>
+<dt><strong>--key_broker[=name]</strong></dt>
+<dd>
+Name of the broker key file, without the <strong>.key</strong> extension. Defaults to <strong>broker</strong>.
+</dd>
+<dt><strong>--key_client[=name]</strong></dt>
+<dd>
+Name of the client key file, without the <strong>.key</strong> extension. Defaults to <strong>client</strong>.
+</dd>
+<dt><strong>--auth_verbose</strong></dt>
+<dd>
+Enable verbose authentication messages.
+</dd>
+<dt><strong>-r</strong>, <strong>--room[=room]</strong></dt>
+<dd>
+Discover the broker’s settings endpoint by service-discovery room name, instead of <strong>--settings</strong>.
+</dd>
+<dt><strong>-v</strong>, <strong>--version</strong></dt>
+<dd>
+Show version information.
+</dd>
+<dt><strong>-h</strong>, <strong>--help</strong></dt>
+<dd>
+Show summary of options.
+</dd>
+</dl>
+</section>
+</section>
+<section id="examples-1" class="level1">
+<h1>Examples</h1>
+<p>Watch everything flowing through a broker on localhost, redrawing twice a second:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-top</span> <span class="at">--sample-rate</span> 0.5</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Watch only sensor traffic on a remote broker, with no <strong>mads.ini</strong> at all, averaged over a 10 second window:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-top</span> <span class="at">--broker</span> tcp://plant-broker.local:9091 <span class="at">--window</span> 10 <span class="st">'sensors/#'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
-</section>
-</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

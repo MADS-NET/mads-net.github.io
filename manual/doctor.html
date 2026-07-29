@@ -9,7 +9,7 @@
 <meta name="author" content="Paolo Bosetti">
 <meta name="dcterms.date" content="2026-07-07">
 
-<title> Manual</title>
+<title>Command: doctor</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -361,17 +361,15 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#contents" id="toc-contents" class="nav-link active" data-scroll-target="#contents">Contents</a>
+  <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a>
   <ul class="collapse">
-  <li><a href="#mads-commands" id="toc-mads-commands" class="nav-link" data-scroll-target="#mads-commands">MADS commands</a></li>
-  <li><a href="#mads-concepts" id="toc-mads-concepts" class="nav-link" data-scroll-target="#mads-concepts">MADS concepts</a></li>
-  <li><a href="#how-to-start" id="toc-how-to-start" class="nav-link" data-scroll-target="#how-to-start">How to start</a>
-  <ul class="collapse">
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux"><i class="bi-tux " style="" role="img" aria-hidden="true"></i> Linux</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows"><i class="bi-microsoft " style="" role="img" aria-hidden="true"></i> Windows</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos"><i class="bi-apple " style="" role="img" aria-hidden="true"></i> macOS</a></li>
+  <li><a href="#plan" id="toc-plan" class="nav-link" data-scroll-target="#plan"><code>--plan</code></a></li>
+  <li><a href="#graph" id="toc-graph" class="nav-link" data-scroll-target="#graph"><code>--graph</code></a></li>
+  <li><a href="#fix" id="toc-fix" class="nav-link" data-scroll-target="#fix"><code>--fix</code></a></li>
   </ul></li>
-  </ul></li>
+  <li><a href="#options" id="toc-options" class="nav-link" data-scroll-target="#options">Options</a></li>
+  <li><a href="#exit-status" id="toc-exit-status" class="nav-link" data-scroll-target="#exit-status">Exit status</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   </ul>
 </nav>
     </div>
@@ -380,8 +378,13 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Manual</h1>
-</div>
+<h1 class="title">Command: <code>doctor</code></h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">command</div>
+    <div class="quarto-category">cli</div>
+    <div class="quarto-category">agents</div>
+  </div>
+  </div>
 
 
 <div class="quarto-title-meta-author">
@@ -417,56 +420,17 @@ cookieconsent.run({
     
   </div>
   
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p><code>mads doctor</code> (<code>mads-doctor</code>) is a tool designed to help users spot possible issues and solutions they may encounter when setting up a network of MADS agents.</p>
+  </div>
+</div>
 
 
 </header>
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
-<section id="mads-commands" class="level2">
-<h2 class="anchored" data-anchor-id="mads-commands">MADS commands</h2>
-<!-- LIST of all MADS executable commands in the standard installation,
-     each linking to a separate manual page -->
-<ul>
-<li><a href="../manual/mads.html">mads</a> — the command dispatcher and its built-in subcommands</li>
-<li><a href="../manual/broker.html">broker</a> — the ZeroMQ proxy and settings service at the hub of a MADS network</li>
-<li><a href="../manual/plugin.html">plugin</a> — scaffold a new plugin, or migrate an existing one to a newer protocol</li>
-<li><a href="../manual/source-filter-sink.html">source</a>, <a href="../manual/source-filter-sink.html">filter</a>, <a href="../manual/source-filter-sink.html">sink</a> — the three generic plugin-loader agents</li>
-<li><a href="../manual/logger.html">logger</a> — persists every topic to MongoDB and/or a file</li>
-<li><a href="../manual/feedback-perf_assess.html">feedback</a>, <a href="../manual/feedback-perf_assess.html">perf_assess</a> — a generic subscriber and publisher for testing, plus the default plugins</li>
-<li><a href="../manual/inspect_plugin.html">inspect_plugin</a> — diagnose a compiled <code>.plugin</code> file (protocol version, ABI mismatches)</li>
-<li><a href="../manual/federate.html">federate</a> — relay selected topics between two independent MADS networks</li>
-<li><a href="../manual/fsm.html">fsm</a> — generate a finite-state-machine agent skeleton from a Graphviz description</li>
-<li><a href="../manual/package.html">package</a> — list, inspect, and install pre-compiled community packages</li>
-<li><a href="../manual/dealer-worker.html">dealer</a>, <a href="../manual/dealer-worker.html">worker</a> — round-robin load balancing across multiple worker processes</li>
-<li><a href="../manual/rust-loaders.html">rsource</a>, <a href="../manual/rust-loaders.html">rfilter</a>, <a href="../manual/rust-loaders.html">rsink</a> — Rust-plugin loaders (not on Windows)</li>
-<li><a href="../manual/up.html">up</a> - A GUI-less alternative to <code>mads director</code> (<a href="../guides/director.html">see here</a>)</li>
-<li><a href="../manual/doctor.html">doctor</a> - Use it when you get stuck</li>
-<li><a href="../manual/echo_top.html">echo/top</a> - look at what happens on the net</li>
-<li><a href="../manual/record_play.html">record/play/bag</a> - record a session, then replay it later, without a database (bag files)</li>
-</ul>
-</section>
-<section id="mads-concepts" class="level2">
-<h2 class="anchored" data-anchor-id="mads-concepts">MADS concepts</h2>
-<!-- Each of the following must link to a separate manual page -->
-<ul>
-<li><a href="../manual/network-discovery.html">Network discovery</a></li>
-<li><a href="../manual/message-routing.html">Message routing and topics</a></li>
-<li><a href="../manual/plugins-extensions.html">Plugins and extensions</a></li>
-<li><a href="../manual/timing-scheduling.html">Timing and scheduling</a></li>
-<li><a href="../manual/message-queues.html">Message queues, blocking/non-blocking behavior</a></li>
-<li><a href="../manual/databases-storage.html">Databases and data storage</a></li>
-<li><a href="../manual/cryptography-security.html">Cryptography and security</a></li>
-</ul>
-</section>
-<section id="how-to-start" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-start">How to start</h2>
-<p>Download MADS latest version from <a href="https://git.new/MADS" class="uri">https://git.new/MADS</a> and follow the <a href="../guides/install.html">installation guide</a>. Depending on your OS, you will need a developer toolchain to build plugins and custom agents.</p>
-<p>The <a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode">MADSCode <i class="bi-link " style="" role="img" aria-hidden="true"></i></a> Visual Studio Code extension provides useful tools for MADS development.</p>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux" class="level3">
-<h3 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux"><i class="bi-tux " style="" role="img" aria-hidden="true"></i> Linux</h3>
-<p>You need <code>clang</code> compiler and <code>cmake</code> build system installed, plus git and CMake. Visual Studio Code is the suggested development platform.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -477,25 +441,281 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>GCC compiler is not officially supported. Even if you install <code>clang</code> on linux, some distributions may still use <code>gcc</code> as the default compiler. In that case, you need to set the environment variable <code>CC=clang</code> before running <code>cmake</code> to build a plugin or custom agent or — preferably — use the <code>update-alternatives</code> command to set <code>clang</code> as the default compiler:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/cc cc /usr/bin/clang 100</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/c++ c++ /usr/bin/clang++ 100</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>or interactively with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> update-alternatives <span class="at">--all</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This command has been introduced in MADS v2.4.1.</p>
+</div>
+</div>
+<section id="description" class="level1">
+<h1>Description</h1>
+<p><strong>mads-doctor</strong> is MADS’s answer to <code>ros2 doctor</code>/<code>brew doctor</code>: a single command that checks the things that most commonly go wrong in the first hour of using a pub-sub framework — a wrong broker URI, a stale settings file, a plugin protocol mismatch, a port already in use — and reports each one as <strong>[PASS]</strong>, <strong>[WARN]</strong>, or <strong>[FAIL]</strong> with a one-line fix hint. It never starts a broker or an agent, never calls a plugin’s <code>process()</code>/<code>get_output()</code>/<code>load_data()</code>, and never writes anything except the one narrow case <strong>--fix</strong> and <strong>--graph</strong> cover.</p>
+<p>By default it checks, in order:</p>
+<ol type="1">
+<li><strong>Settings file found and parses.</strong> The path given by <strong>--settings</strong> (default <code>mads.ini</code> in the current directory — unlike every other <strong>mads-</strong>* executable, whose <code>-s</code>/<code>--settings</code> defaults to a broker URI, since checking a <em>local file</em> is the point of this check) exists and is valid TOML. A <code>tcp://...</code> value is treated as a remote broker URI instead of a local file, and this check is reported <strong>[PASS]</strong> with a note pointing at the broker-reachable check below.</li>
+<li><strong>Broker reachable.</strong> Probes the broker’s settings endpoint (from <strong>--broker</strong>, else the <code>[broker]</code> section’s <code>settings_address</code>, else <code>tcp://localhost:9092</code>) the same way <code>mads up</code>’s <code>ready = "broker"</code> does.</li>
+<li><strong>Declared plugin(s) resolve and load.</strong> Every <code>attachment</code> key found in the settings file (or every <strong>--plugin</strong> path given explicitly, which then takes priority) is dry-run loaded through the same <code>pugg::Kernel</code> path <strong>mads-source</strong>/<strong>mads-filter</strong>/<strong>mads-sink</strong> use — loaded, its <code>kind()</code> and protocol read, then unloaded. <code>process()</code>/<code>get_output()</code>/<code>load_data()</code> are never called.</li>
+<li><strong>Plugin protocol matches the pinned <code>mads_plugin</code> version.</strong> Compares each loaded plugin’s protocol against <code>share/plugin_deps.json</code>’s <code>plugin_protocol</code> (the version <code>mads plugin --update</code> migrates plugins to).</li>
+<li><strong>CURVE key files, if </strong>--crypto** is given, exist and are well-formed.** Checks <code>&lt;key_client&gt;.key</code>/<code>.pub</code> and <code>&lt;key_broker&gt;.pub</code> under <strong>--keys_dir</strong> — the same three files <code>Mads::CurveAuth::setup_curve_client()</code> reads — exist and decode as valid Z85 CURVE keys.</li>
+<li><strong>Local port-availability sanity check.</strong> Probes the settings file’s <code>[broker]</code> <code>frontend_address</code>/<code>backend_address</code>/<code>settings_address</code> ports on <code>127.0.0.1</code>; a port already answering is reported as a likely broker-already-running collision.</li>
+</ol>
+<p><strong>mads-doctor</strong> exits <strong>0</strong> only if every check reported <strong>[PASS]</strong> or <strong>[WARN]</strong>; any <strong>[FAIL]</strong> makes it exit <strong>1</strong>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Carefully read the messages: your setup might be perfectly OK even if the tool reports some failure. For example, you might have installed a non-compatible plugin, which is never loaded by your setup, thus you can safely neglect the corresponding <strong>[FAIL]</strong> or <strong>[WARN]</strong> message.</p>
+</div>
+</div>
+<section id="plan" class="level2">
+<h2 class="anchored" data-anchor-id="plan"><code>--plan</code></h2>
+<p><strong>--plan</strong> <em>director.toml</em> is a standalone mode: it parses, validates and expands the given <code>director.toml</code> through the exact same <code>src/director_config.hpp</code> module <code>mads up --dry-run</code> uses (no process spawning), and prints the same kind of expanded-plan report — start order, templated <code>command</code>, <code>scale</code> expansion, <code>after</code> dependencies, <code>ready</code> probes. It ignores every other flag except <strong>--settings</strong>-independent behaviour: the settings file, broker, plugins, and CURVE keys are not touched. Use it to sanity-check a whole deployment before running <code>mads up</code> for real.</p>
+</section>
+<section id="graph" class="level2">
+<h2 class="anchored" data-anchor-id="graph"><code>--graph</code></h2>
+<p><strong>--graph</strong>[=<em>file.dot</em>] is another standalone, read-only mode: it parses the settings file (the same <strong>--settings</strong> path used by check 1, reusing the same TOML-loading logic) and emits a <strong>Graphviz DOT</strong> description of the pub/sub topology it declares, to <em>file.dot</em> if given, or to standard output otherwise. It never probes the broker, plugins, ports, or CURVE keys, and never shells out to a <code>dot</code> binary — rendering the DOT text to an image is left to the user (e.g. <code>mads doctor --graph | dot -Tpng -o topology.png</code>).</p>
+<p>Every non-<code>[agents]</code>/non-<code>[broker]</code> section becomes one record-shaped node, named after the section, with its <code>sub_topic</code> entries listed underneath (one per line; <code>sub_topic = [""]</code> — subscribe-all —- renders as a single <code>(all)</code> line; no subscriptions renders no compartment). One edge is drawn for every section A’s <code>pub_topic</code> and every <em>other</em> section B’s <code>sub_topic</code> pattern that matches it (per <code>Mads::topic_match()</code>, the same MQTT-style wildcard matcher <code>Agent::connect_sub()</code> uses at runtime), labeled with A’s <code>pub_topic</code>. Nodes are colored by inferred role: a source (<code>pub_topic</code> only) is <code>darkred</code>, a filter (both) is <code>darkgreen</code>, a sink (<code>sub_topic</code> only) is <code>darkblue</code>; an agent with neither gets no color attribute. A node gets a <strong>dashed</strong> contour if it has a dangling topic — a <code>pub_topic</code> nothing subscribes to, or a <code>sub_topic</code> pattern nothing ever publishes to — which is usually a misconfiguration worth a second look. An agent’s own <code>pub_topic</code> matching its own <code>sub_topic</code> (a self-loop) satisfies both sides and is not flagged as dangling, matching real broker behavior.</p>
+<p>For example, the following <code>mads.ini</code> file:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[agents]</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">frontend_address </span><span class="ot">=</span><span class="st"> "tcp://localhost:9090"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dt">backend_address </span><span class="ot">=</span><span class="st"> "tcp://localhost:9091"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="dt">settings_address </span><span class="ot">=</span><span class="st"> "tcp://localhost:9092"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">timecode_fps </span><span class="ot">=</span><span class="st"> </span><span class="dv">25</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">[broker]</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="dt">frontend_address </span><span class="ot">=</span><span class="st"> "tcp://*:9090"</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="dt">backend_address </span><span class="ot">=</span><span class="st"> "tcp://*:9091"</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="dt">settings_address </span><span class="ot">=</span><span class="st"> "tcp://*:9092"</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">[logger]</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="dt">mongo_uri </span><span class="ot">=</span><span class="st"> "mongodb://localhost:27017"</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="dt">mongo_db </span><span class="ot">=</span><span class="st"> "blescan_roadside2"</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic </span><span class="ot">=</span><span class="st"> ["ble_scan", "ble_filter"]</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="kw">[ble_scan]</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "ble_scan"</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="kw">[ble_filter]</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic </span><span class="ot">=</span><span class="st"> ["ble_scan"]</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "ble_filter"</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="kw">[feedback]</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Subscribes to ALL topics</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic </span><span class="ot">=</span><span class="st"> ["ble_filter"]</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="kw">[rerunner]</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic </span><span class="ot">=</span><span class="st"> ["ble_filter", "arduino"]</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="dt">keypaths </span><span class="ot">=</span><span class="st"> [.. list of keypaths ...]</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="dt">recording_id </span><span class="ot">=</span><span class="st"> "rec_ble"</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="kw">[arduino]</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic </span><span class="ot">=</span><span class="st"> "arduino"</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="dt">port </span><span class="ot">=</span><span class="st"> "/dev/cu.usbmodem34B7DA5F9A5C2"</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="dt">baudrate </span><span class="ot">=</span><span class="st"> </span><span class="dv">115200</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>produces:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 299.31 177.80" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 173.8)">
+<title>mads</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-173.8 295.31,-173.8 295.31,4 -4,4"></polygon>
+<!-- arduino -->
+<g id="node1" class="node">
+<title>arduino</title>
+<polygon fill="none" stroke="darkred" points="117.99,-132.9 117.99,-168.9 171.99,-168.9 171.99,-132.9 117.99,-132.9"></polygon>
+<text text-anchor="middle" x="144.99" y="-148.7" font-family="monospace" font-size="8.00">arduino</text>
+</g>
+<!-- rerunner -->
+<g id="node6" class="node">
+<title>rerunner</title>
+<polygon fill="none" stroke="darkblue" points="237.31,-124.5 237.31,-169.3 291.31,-169.3 291.31,-124.5 237.31,-124.5"></polygon>
+<text text-anchor="middle" x="264.31" y="-158.1" font-family="monospace" font-size="8.00">rerunner</text>
+<polyline fill="none" stroke="darkblue" points="237.31,-151.7 291.31,-151.7 "></polyline>
+<text text-anchor="start" x="245.31" y="-140.5" font-family="monospace" font-size="8.00">ble_filter</text>
+<text text-anchor="start" x="245.31" y="-130.9" font-family="monospace" font-size="8.00">arduino</text>
+</g>
+<!-- arduino&#45;&gt;rerunner -->
+<g id="edge1" class="edge">
+<title>arduino-&gt;rerunner</title>
+<path fill="none" stroke="black" d="M172.03,-150.01C188.16,-149.46 209.14,-148.75 226.91,-148.14"></path>
+<polygon fill="black" stroke="black" points="227.06,-151.64 236.94,-147.8 226.83,-144.64 227.06,-151.64"></polygon>
+<text text-anchor="middle" x="204.65" y="-151.3" font-family="monospace" font-size="8.00">arduino</text>
+</g>
+<!-- ble_filter -->
+<g id="node2" class="node">
+<title>ble_filter</title>
+<polygon fill="none" stroke="darkgreen" points="117.99,-56.9 117.99,-92.9 171.99,-92.9 171.99,-56.9 117.99,-56.9"></polygon>
+<text text-anchor="middle" x="144.99" y="-81.7" font-family="monospace" font-size="8.00">ble_filter</text>
+<polyline fill="none" stroke="darkgreen" points="117.99,-75.3 171.99,-75.3 "></polyline>
+<text text-anchor="start" x="125.99" y="-64.1" font-family="monospace" font-size="8.00">ble_scan</text>
+</g>
+<!-- feedback -->
+<g id="node4" class="node">
+<title>feedback</title>
+<polygon fill="none" stroke="darkblue" points="237.31,-66.9 237.31,-102.9 291.31,-102.9 291.31,-66.9 237.31,-66.9"></polygon>
+<text text-anchor="middle" x="264.31" y="-91.7" font-family="monospace" font-size="8.00">feedback</text>
+<polyline fill="none" stroke="darkblue" points="237.31,-85.3 291.31,-85.3 "></polyline>
+<text text-anchor="start" x="245.31" y="-74.1" font-family="monospace" font-size="8.00">ble_filter</text>
+</g>
+<!-- ble_filter&#45;&gt;feedback -->
+<g id="edge2" class="edge">
+<title>ble_filter-&gt;feedback</title>
+<path fill="none" stroke="black" d="M172.03,-77.12C188.16,-78.49 209.14,-80.28 226.91,-81.8"></path>
+<polygon fill="black" stroke="black" points="226.68,-85.29 236.94,-82.65 227.27,-78.32 226.68,-85.29"></polygon>
+<text text-anchor="middle" x="204.65" y="-83.3" font-family="monospace" font-size="8.00">ble_filter</text>
+</g>
+<!-- logger -->
+<g id="node5" class="node">
+<title>logger</title>
+<polygon fill="none" stroke="darkblue" points="237.31,-0.5 237.31,-45.3 291.31,-45.3 291.31,-0.5 237.31,-0.5"></polygon>
+<text text-anchor="middle" x="264.31" y="-34.1" font-family="monospace" font-size="8.00">logger</text>
+<polyline fill="none" stroke="darkblue" points="237.31,-27.7 291.31,-27.7 "></polyline>
+<text text-anchor="start" x="245.31" y="-16.5" font-family="monospace" font-size="8.00">ble_scan</text>
+<text text-anchor="start" x="245.31" y="-6.9" font-family="monospace" font-size="8.00">ble_filter</text>
+</g>
+<!-- ble_filter&#45;&gt;logger -->
+<g id="edge3" class="edge">
+<title>ble_filter-&gt;logger</title>
+<path fill="none" stroke="black" d="M172.03,-63.36C188.32,-56.14 209.53,-46.74 227.4,-38.81"></path>
+<polygon fill="black" stroke="black" points="229.21,-41.84 236.94,-34.59 226.38,-35.44 229.21,-41.84"></polygon>
+<text text-anchor="middle" x="204.65" y="-57.3" font-family="monospace" font-size="8.00">ble_filter</text>
+</g>
+<!-- ble_filter&#45;&gt;rerunner -->
+<g id="edge4" class="edge">
+<title>ble_filter-&gt;rerunner</title>
+<path fill="none" stroke="black" d="M172.03,-90.88C188.62,-101.06 210.31,-114.38 228.39,-125.47"></path>
+<polygon fill="black" stroke="black" points="226.58,-128.47 236.94,-130.72 230.25,-122.5 226.58,-128.47"></polygon>
+<text text-anchor="middle" x="204.65" y="-121.3" font-family="monospace" font-size="8.00">ble_filter</text>
+</g>
+<!-- ble_scan -->
+<g id="node3" class="node">
+<title>ble_scan</title>
+<polygon fill="none" stroke="darkred" points="0,-16.9 0,-52.9 54,-52.9 54,-16.9 0,-16.9"></polygon>
+<text text-anchor="middle" x="27" y="-32.7" font-family="monospace" font-size="8.00">ble_scan</text>
+</g>
+<!-- ble_scan&#45;&gt;ble_filter -->
+<g id="edge5" class="edge">
+<title>ble_scan-&gt;ble_filter</title>
+<path fill="none" stroke="black" d="M54.03,-43.88C69.89,-49.35 90.38,-56.41 107.8,-62.42"></path>
+<polygon fill="black" stroke="black" points="107.05,-65.86 117.64,-65.81 109.33,-59.25 107.05,-65.86"></polygon>
+<text text-anchor="middle" x="85.99" y="-61.3" font-family="monospace" font-size="8.00">ble_scan</text>
+</g>
+<!-- ble_scan&#45;&gt;logger -->
+<g id="edge6" class="edge">
+<title>ble_scan-&gt;logger</title>
+<path fill="none" stroke="black" d="M54.08,-33.57C96.13,-31.43 179.03,-27.2 226.89,-24.76"></path>
+<polygon fill="black" stroke="black" points="227.3,-28.24 237.11,-24.24 226.95,-21.25 227.3,-28.24"></polygon>
+<text text-anchor="middle" x="144.99" y="-32.3" font-family="monospace" font-size="8.00">ble_scan</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that <code>pub_topic</code> and <code>sub_topic</code> are optional in the INI file: <code>pub_topic</code> defaults to the agent name, and <code>sub_topic</code> defaults to an empty list.</p>
+<p>To have the graphviz correctly drawn, though, you have to <strong>explicitly set</strong> the <code>pub_topic</code> field, because this is the only way the tool has to distinguish source and filter agents to pure sink agents.</p>
+<p>In other words, a source agent with no explicit <code>pub_topic</code> will be rendered to Graphviz as a <strong>dangling agent</strong>, even though it will correctly run and publish on its name’s topic.</p>
 </div>
 </div>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows" class="level3">
-<h3 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows"><i class="bi-microsoft " style="" role="img" aria-hidden="true"></i> Windows</h3>
-<p>You need Visual Studio 2022 (Community Edition is fine) or later, with the C++ development tools installed, plus CMake. Visual Studio Code is the suggested development platform.</p>
+<section id="fix" class="level2">
+<h2 class="anchored" data-anchor-id="fix"><code>--fix</code></h2>
+<p><strong>--fix</strong> attempts the one check with an unambiguous, non-destructive auto-fix: if the settings file is missing, it is scaffolded from the same template <code>mads ini</code> renders. <strong>--fix</strong> only ever <em>creates</em> a missing file — it never deletes or overwrites an existing one, however broken.</p>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos" class="level3">
-<h3 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos"><i class="bi-apple " style="" role="img" aria-hidden="true"></i> macOS</h3>
-<p>You need Xcode and the command line tools installed, plus git and CMake. Visual Studio Code is the suggested development platform.</p>
+</section>
+<section id="options" class="level1">
+<h1>Options</h1>
+<dl>
+<dt><strong>-s</strong>, <strong>--settings</strong> <em>path</em></dt>
+<dd>
+Path to the settings file to check. Default <code>mads.ini</code> in the current directory. A <code>tcp://...</code> value is treated as a remote broker URI instead.
+</dd>
+<dt><strong>--broker</strong> <em>uri</em></dt>
+<dd>
+Broker settings endpoint to probe for check 2. Default: derived from the settings file’s <code>[broker]</code> section, else <code>tcp://localhost:9092</code>.
+</dd>
+<dt><strong>--timeout</strong> <em>ms</em></dt>
+<dd>
+Timeout in milliseconds for the broker-reachable and port-availability probes. Default <code>1000</code>.
+</dd>
+<dt><strong>--plugin</strong> <em>path</em></dt>
+<dd>
+Dry-run load this plugin file (repeatable). When given, replaces the automatic scan of the settings file’s <code>attachment</code> keys. Resolved like <strong>mads-source</strong>/<strong>-filter</strong>/<strong>-sink</strong>’s own <code>plugin</code> argument: relative to the current directory first, falling back to the installed-plugin location.
+</dd>
+<dt><strong>--crypto</strong></dt>
+<dd>
+Also run the CURVE key-file check (check 5). Off by default, since CURVE is opt-in.
+</dd>
+<dt><strong>--keys_dir</strong> <em>dir</em></dt>
+<dd>
+Directory to look for CURVE key files in. Default: <code>&lt;exec_dir&gt;/../etc</code>, same as every other <strong>mads-</strong>* executable’s <code>--keys_dir</code>.
+</dd>
+<dt><strong>--key_broker</strong> <em>name</em></dt>
+<dd>
+Base name (without <code>.pub</code>) of the broker/server CURVE public key file. Default <code>broker</code>.
+</dd>
+<dt><strong>--key_client</strong> <em>name</em></dt>
+<dd>
+Base name (without <code>.key</code>/<code>.pub</code>) of the client CURVE key files. Default <code>client</code>.
+</dd>
+<dt><strong>--plan</strong> <em>director.toml</em></dt>
+<dd>
+Validate a <code>director.toml</code> deployment plan (like <code>mads up --dry-run</code>) and exit; see above.
+</dd>
+<dt><strong>--graph</strong>[=<em>file.dot</em>]</dt>
+<dd>
+Emit a Graphviz DOT topology graph of the settings file’s declared pub/sub topics to <em>file.dot</em>, or standard output if omitted, and exit; see above.
+</dd>
+<dt><strong>--fix</strong></dt>
+<dd>
+Attempt safe, non-destructive auto-fixes; see above.
+</dd>
+<dt><strong>-v</strong>, <strong>--version</strong></dt>
+<dd>
+Show version information.
+</dd>
+<dt><strong>-h</strong>, <strong>--help</strong></dt>
+<dd>
+Show summary of options.
+</dd>
+</dl>
+</section>
+<section id="exit-status" class="level1">
+<h1>Exit status</h1>
+<p><strong>0</strong> if every check reported <strong>[PASS]</strong> or <strong>[WARN]</strong> (or, in <strong>--plan</strong> mode, if the plan loaded and expanded cleanly). <strong>1</strong> if any check reported <strong>[FAIL]</strong>, or <strong>--plan</strong>’s file failed to load/validate.</p>
+</section>
+<section id="examples" class="level1">
+<h1>Examples</h1>
+<p>Check the settings file in the current directory, plus broker reachability and port availability:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> doctor</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Check a specific settings file and CURVE keys, scaffolding the file if it is missing:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> doctor <span class="at">-s</span> /etc/mads/mads.ini <span class="at">--crypto</span> <span class="at">--fix</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Sanity-check a whole deployment plan before running it for real:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> doctor <span class="at">--plan</span> deploy/director.toml</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Print the declared pub/sub topology as DOT text, and render it to an image with Graphviz:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> doctor <span class="at">--graph</span> <span class="kw">|</span> <span class="ex">dot</span> <span class="at">-Tpng</span> <span class="at">-o</span> topology.png</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Write the topology graph straight to a file instead:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> doctor <span class="at">--graph</span><span class="op">=</span>topology.dot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
-</section>
-</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

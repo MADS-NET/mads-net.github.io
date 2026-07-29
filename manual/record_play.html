@@ -9,7 +9,7 @@
 <meta name="author" content="Paolo Bosetti">
 <meta name="dcterms.date" content="2026-07-07">
 
-<title> Manual</title>
+<title>Command: record|play|bag</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -361,16 +361,27 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#contents" id="toc-contents" class="nav-link active" data-scroll-target="#contents">Contents</a>
+  <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a></li>
+  <li><a href="#record-a-session" id="toc-record-a-session" class="nav-link" data-scroll-target="#record-a-session">Record a session</a>
   <ul class="collapse">
-  <li><a href="#mads-commands" id="toc-mads-commands" class="nav-link" data-scroll-target="#mads-commands">MADS commands</a></li>
-  <li><a href="#mads-concepts" id="toc-mads-concepts" class="nav-link" data-scroll-target="#mads-concepts">MADS concepts</a></li>
-  <li><a href="#how-to-start" id="toc-how-to-start" class="nav-link" data-scroll-target="#how-to-start">How to start</a>
-  <ul class="collapse">
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux"><i class="bi-tux " style="" role="img" aria-hidden="true"></i> Linux</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows"><i class="bi-microsoft " style="" role="img" aria-hidden="true"></i> Windows</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos"><i class="bi-apple " style="" role="img" aria-hidden="true"></i> macOS</a></li>
+  <li><a href="#options" id="toc-options" class="nav-link" data-scroll-target="#options">Options</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   </ul></li>
+  <li><a href="#replay-a-session" id="toc-replay-a-session" class="nav-link" data-scroll-target="#replay-a-session">Replay a session</a>
+  <ul class="collapse">
+  <li><a href="#options-1" id="toc-options-1" class="nav-link" data-scroll-target="#options-1">Options</a></li>
+  <li><a href="#examples-1" id="toc-examples-1" class="nav-link" data-scroll-target="#examples-1">Examples</a></li>
+  </ul></li>
+  <li><a href="#inspect-a-bag-file" id="toc-inspect-a-bag-file" class="nav-link" data-scroll-target="#inspect-a-bag-file">Inspect a bag file</a>
+  <ul class="collapse">
+  <li><a href="#info" id="toc-info" class="nav-link" data-scroll-target="#info"><code>info</code></a></li>
+  <li><a href="#export" id="toc-export" class="nav-link" data-scroll-target="#export"><code>export</code></a></li>
+  <li><a href="#options-2" id="toc-options-2" class="nav-link" data-scroll-target="#options-2">Options</a>
+  <ul class="collapse">
+  <li><a href="#info-1" id="toc-info-1" class="nav-link" data-scroll-target="#info-1"><code>info</code></a></li>
+  <li><a href="#export-1" id="toc-export-1" class="nav-link" data-scroll-target="#export-1"><code>export</code></a></li>
+  </ul></li>
+  <li><a href="#examples-2" id="toc-examples-2" class="nav-link" data-scroll-target="#examples-2">Examples</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -380,8 +391,13 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Manual</h1>
-</div>
+<h1 class="title">Command: <code>record|play|bag</code></h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">command</div>
+    <div class="quarto-category">cli</div>
+    <div class="quarto-category">agents</div>
+  </div>
+  </div>
 
 
 <div class="quarto-title-meta-author">
@@ -417,56 +433,17 @@ cookieconsent.run({
     
   </div>
   
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p>This set of commands allow to record and replay a full MADS session into a <code>.bag</code> file. This is an alternative to the <code>replay.plugin</code> that can replay a session logged to MongoDB.</p>
+  </div>
+</div>
 
 
 </header>
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
-<section id="mads-commands" class="level2">
-<h2 class="anchored" data-anchor-id="mads-commands">MADS commands</h2>
-<!-- LIST of all MADS executable commands in the standard installation,
-     each linking to a separate manual page -->
-<ul>
-<li><a href="../manual/mads.html">mads</a> — the command dispatcher and its built-in subcommands</li>
-<li><a href="../manual/broker.html">broker</a> — the ZeroMQ proxy and settings service at the hub of a MADS network</li>
-<li><a href="../manual/plugin.html">plugin</a> — scaffold a new plugin, or migrate an existing one to a newer protocol</li>
-<li><a href="../manual/source-filter-sink.html">source</a>, <a href="../manual/source-filter-sink.html">filter</a>, <a href="../manual/source-filter-sink.html">sink</a> — the three generic plugin-loader agents</li>
-<li><a href="../manual/logger.html">logger</a> — persists every topic to MongoDB and/or a file</li>
-<li><a href="../manual/feedback-perf_assess.html">feedback</a>, <a href="../manual/feedback-perf_assess.html">perf_assess</a> — a generic subscriber and publisher for testing, plus the default plugins</li>
-<li><a href="../manual/inspect_plugin.html">inspect_plugin</a> — diagnose a compiled <code>.plugin</code> file (protocol version, ABI mismatches)</li>
-<li><a href="../manual/federate.html">federate</a> — relay selected topics between two independent MADS networks</li>
-<li><a href="../manual/fsm.html">fsm</a> — generate a finite-state-machine agent skeleton from a Graphviz description</li>
-<li><a href="../manual/package.html">package</a> — list, inspect, and install pre-compiled community packages</li>
-<li><a href="../manual/dealer-worker.html">dealer</a>, <a href="../manual/dealer-worker.html">worker</a> — round-robin load balancing across multiple worker processes</li>
-<li><a href="../manual/rust-loaders.html">rsource</a>, <a href="../manual/rust-loaders.html">rfilter</a>, <a href="../manual/rust-loaders.html">rsink</a> — Rust-plugin loaders (not on Windows)</li>
-<li><a href="../manual/up.html">up</a> - A GUI-less alternative to <code>mads director</code> (<a href="../guides/director.html">see here</a>)</li>
-<li><a href="../manual/doctor.html">doctor</a> - Use it when you get stuck</li>
-<li><a href="../manual/echo_top.html">echo/top</a> - look at what happens on the net</li>
-<li><a href="../manual/record_play.html">record/play/bag</a> - record a session, then replay it later, without a database (bag files)</li>
-</ul>
-</section>
-<section id="mads-concepts" class="level2">
-<h2 class="anchored" data-anchor-id="mads-concepts">MADS concepts</h2>
-<!-- Each of the following must link to a separate manual page -->
-<ul>
-<li><a href="../manual/network-discovery.html">Network discovery</a></li>
-<li><a href="../manual/message-routing.html">Message routing and topics</a></li>
-<li><a href="../manual/plugins-extensions.html">Plugins and extensions</a></li>
-<li><a href="../manual/timing-scheduling.html">Timing and scheduling</a></li>
-<li><a href="../manual/message-queues.html">Message queues, blocking/non-blocking behavior</a></li>
-<li><a href="../manual/databases-storage.html">Databases and data storage</a></li>
-<li><a href="../manual/cryptography-security.html">Cryptography and security</a></li>
-</ul>
-</section>
-<section id="how-to-start" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-start">How to start</h2>
-<p>Download MADS latest version from <a href="https://git.new/MADS" class="uri">https://git.new/MADS</a> and follow the <a href="../guides/install.html">installation guide</a>. Depending on your OS, you will need a developer toolchain to build plugins and custom agents.</p>
-<p>The <a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode">MADSCode <i class="bi-link " style="" role="img" aria-hidden="true"></i></a> Visual Studio Code extension provides useful tools for MADS development.</p>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux" class="level3">
-<h3 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux"><i class="bi-tux " style="" role="img" aria-hidden="true"></i> Linux</h3>
-<p>You need <code>clang</code> compiler and <code>cmake</code> build system installed, plus git and CMake. Visual Studio Code is the suggested development platform.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -477,24 +454,230 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>GCC compiler is not officially supported. Even if you install <code>clang</code> on linux, some distributions may still use <code>gcc</code> as the default compiler. In that case, you need to set the environment variable <code>CC=clang</code> before running <code>cmake</code> to build a plugin or custom agent or — preferably — use the <code>update-alternatives</code> command to set <code>clang</code> as the default compiler:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/cc cc /usr/bin/clang 100</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/c++ c++ /usr/bin/clang++ 100</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>or interactively with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> update-alternatives <span class="at">--all</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This command has been introduced in MADS v2.4.1.</p>
+</div>
+</div>
+<section id="description" class="level1">
+<h1>Description</h1>
+<p>There are three related commands:</p>
+<ul>
+<li><code>mads record</code>: to <a href="#record-a-session">record</a> a session</li>
+<li><code>mads play</code>: to <a href="#replay-a-session">replay</a> a session</li>
+<li><code>mads bag</code>: to <a href="#inspect-a-bag-file">inspect</a> a session recorded as a bag file</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Do I have to use a bag file or MongoDB?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>MADS adopts MongoDB database as official logging facility. The <code>mads source replay.plugin</code> plugin allows <a href="../guides/replay.html">live-replay</a> of sessions logged to a MongoDB database:</p>
+<ul>
+<li>Recording a MADS data flow to MongoDB is a powerful solution, which allows thorough <em>ex-post</em> data analysis and manipulation; if you already store your data to MongoDB, the <code>replay.plugin</code> is a quick and effective way to replay the recorded data;</li>
+<li>If you don’t normally log the data flow, and you need some in-flight quick solution for recording, storing and exchanging the data flow, which does not need a database server, <code>mads record</code> may be simpler and quicker. For example, it can prove particularly useful for <strong>automated testing</strong>.</li>
+</ul>
 </div>
 </div>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows" class="level3">
-<h3 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows"><i class="bi-microsoft " style="" role="img" aria-hidden="true"></i> Windows</h3>
-<p>You need Visual Studio 2022 (Community Edition is fine) or later, with the C++ development tools installed, plus CMake. Visual Studio Code is the suggested development platform.</p>
+<section id="record-a-session" class="level1">
+<h1>Record a session</h1>
+<p><strong>mads-record</strong> is an ordinary MADS agent that subscribes per its <strong>sub_topic</strong> setting (MQTT-style wildcard filters supported, e.g.&nbsp;<strong>sensors/#</strong> or <strong>sensors/+/x</strong> – see <strong>CONTEXT.md</strong>’s “Settings model” section) and writes every message it receives to a bag file: a bespoke binary format that stores the exact multi-part wire frame (timestamp + topic + parts) byte-for-byte, so JSON payloads are never re-parsed/re-serialized and binary blobs are copied exactly once. Both JSON and blob messages round-trip through a bag byte-identical.</p>
+<p>The bag format is documented in full in <strong>src/bag.hpp</strong>. It carries a trailing index and footer for O(1) <strong>mads bag info</strong> and fast seeking; if <strong>mads-record</strong> is killed before it can write that footer (e.g.&nbsp;<strong>SIGKILL</strong>, a crash, a power loss), the file is still a valid, readable bag – <strong>mads-play</strong>/ <strong>mads bag</strong> fall back to a linear scan that recovers every complete record written so far.</p>
+<p>The administrative <strong>control</strong> and <strong>agent_event</strong> topics are never recorded, even under a catch-all <strong>sub_topic</strong> (e.g.&nbsp;<strong>sub_topic = [“”]</strong>), mirroring <strong>mads-federate</strong>’s own rationale for excluding them from automatic relaying: capturing (and later replaying, via <strong>mads-play</strong>) a remote-control command such as <strong>shutdown</strong> would be a footgun, not a feature.</p>
+<p><strong>mads-record</strong> stops on <strong>SIGINT</strong>/<strong>SIGTERM</strong> (or after <strong>--count</strong> messages, if given), finalizing the bag file (writing its index/footer) before exiting.</p>
+<section id="options" class="level2">
+<h2 class="anchored" data-anchor-id="options">Options</h2>
+<dl>
+<dt><strong>-o</strong>, <strong>--output</strong> <em>path</em></dt>
+<dd>
+Bag file to write. Required. Overwritten if it already exists.
+</dd>
+<dt><strong>--no-crc</strong></dt>
+<dd>
+Disable the per-record CRC32 checksum (enabled by default). Slightly reduces file size and write cost; disables corruption detection on read.
+</dd>
+<dt><strong>--count</strong> <em>n</em></dt>
+<dd>
+Stop automatically after recording <em>n</em> messages (default: 0, unlimited – runs until stopped).
+</dd>
+<dt><strong>-x</strong>, <strong>--cross</strong></dt>
+<dd>
+Cross-connect sockets (bind instead of connect on the subscribe side). Mainly useful for testing without a broker.
+</dd>
+<dt><strong>-n</strong>, <strong>--name</strong> <em>name</em></dt>
+<dd>
+Agent/section name. <strong>mads-record</strong> reads its <strong>sub_topic</strong> from the settings section named after this (default: <strong>record</strong>), so several recorders with different filters can run from the same <strong>mads.ini</strong>.
+</dd>
+<dt><strong>-i</strong>, <strong>--agent-id</strong> <em>id</em></dt>
+<dd>
+Agent ID (has no effect on recorded frames themselves – <strong>mads-record</strong> never publishes; kept for consistency with every other MADS agent executable).
+</dd>
+<dt><strong>-s</strong>, <strong>--settings</strong> <em>URI</em></dt>
+<dd>
+Settings file path or broker URI. Same as every other MADS agent; <strong>mads-record</strong> reads its <strong>sub_topic</strong> from the <strong>[record]</strong> section (or the name given via <strong>--name</strong>).
+</dd>
+<dt><strong>--crypto</strong>, <strong>--keys_dir</strong>, <strong>--key_broker</strong>, <strong>--key_client</strong>, <strong>--auth_verbose</strong></dt>
+<dd>
+CURVE encryption options, same as every other MADS agent executable.
+</dd>
+<dt><strong>-v</strong>, <strong>--version</strong></dt>
+<dd>
+Show version information.
+</dd>
+<dt><strong>-h</strong>, <strong>--help</strong></dt>
+<dd>
+Show summary of options.
+</dd>
+</dl>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos" class="level3">
-<h3 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos"><i class="bi-apple " style="" role="img" aria-hidden="true"></i> macOS</h3>
-<p>You need Xcode and the command line tools installed, plus git and CMake. Visual Studio Code is the suggested development platform.</p>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<p>Record every message on the default settings/broker into a bag file:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-record</span> <span class="at">-o</span> session.bag</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>On the broker’s <strong>mads.ini</strong>, select what <strong>mads-record</strong> subscribes to:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[record]</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic </span><span class="ot">=</span><span class="st"> ["sensors/#"]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Record at most 1000 messages and stop automatically:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-record</span> <span class="at">-o</span> sample.bag <span class="at">--count</span> 1000</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Inspect or replay the result with <strong>mads bag info</strong> / <strong>mads-play</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> bag info <span class="at">-f</span> session.bag</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-play</span> <span class="at">-i</span> session.bag</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="replay-a-session" class="level1">
+<h1>Replay a session</h1>
+<p><strong>mads-play</strong> reads a bag file written by <strong>mads-record</strong> (see <strong>src/bag.hpp</strong> for the on-disk format) and republishes every record exactly as it was captured – topic and parts, byte-for-byte – using the raw wire path (<strong>Agent::publish_raw_message()</strong>), so JSON payloads are never re-serialized and blob bytes are never re-copied through the JSON path. A subscriber on the network cannot tell a replayed message from the original.</p>
+<p>If the bag file is missing its trailing index (e.g.&nbsp;<strong>mads-record</strong> was killed before it could finalize the file), <strong>mads-play</strong> falls back to a linear scan that recovers every complete record and prints a warning naming how many records will be replayed.</p>
+<section id="options-1" class="level2">
+<h2 class="anchored" data-anchor-id="options-1">Options</h2>
+<dl>
+<dt><strong>-i</strong>, <strong>--input</strong> <em>path</em></dt>
+<dd>
+Bag file to replay. Required.
+</dd>
+<dt><strong>--restamp</strong></dt>
+<dd>
+Best-effort rewrite of the <strong>timestamp</strong>/<strong>timecode</strong> fields to the current time before republishing, for records whose payload is the legacy, header-less <strong>[topic][snappy(json)]</strong> frame (the shape <strong>Agent::publish()</strong> emits whenever the payload ends up Snappy-compressed – unconditionally under <strong>compression = “snappy”</strong>, or above ~256 bytes under the default <strong>compression = “auto”</strong>). Every other field, and every other frame shape (an uncompressed small JSON payload carrying a self-describing header, a MsgPack frame, or a blob’s meta+bytes parts), is republished byte-for-byte unchanged. This is a <strong>mads-play</strong>-only convenience built on top of <strong>publish_raw_message()</strong>; it does not change what that function does for any other caller.
+</dd>
+<dt><strong>--topics</strong> <em>pattern</em></dt>
+<dd>
+MQTT-style topic filter (<strong>+</strong> matches one level, <strong>#</strong> matches this level and below); only records whose stored topic matches at least one given pattern are replayed. Repeatable. Default: replay every topic in the bag.
+</dd>
+<dt><strong>--rate</strong> <em>factor</em></dt>
+<dd>
+Paces replay using the gaps between the recorded timestamps of the records actually being replayed (records skipped by <strong>--topics</strong> don’t contribute a gap), scaled by <em>factor</em> (<strong>2.0</strong> replays twice as fast as originally recorded, <strong>0.5</strong> half as fast). Must be <strong>&gt; 0</strong>. Default: no pacing – records are republished back-to-back as fast as possible.
+</dd>
+<dt><strong>-x</strong>, <strong>--cross</strong></dt>
+<dd>
+Cross-connect sockets (bind instead of connect on the publish side). Mainly useful for testing without a broker.
+</dd>
+<dt><strong>-n</strong>, <strong>--name</strong> <em>name</em></dt>
+<dd>
+Agent/section name (default: <strong>play</strong>). Only the endpoint/<strong>pub_topic</strong> placeholder from this section are used – every record is published under its own recorded topic, not <strong>pub_topic</strong>.
+</dd>
+<dt><strong>--agent-id</strong> <em>id</em></dt>
+<dd>
+Agent ID (no short flag: <strong>-i</strong> is already <strong>--input</strong> above). Has no effect on replayed frames themselves, which are republished byte-for-byte; kept for consistency with every other MADS agent executable.
+</dd>
+<dt><strong>-s</strong>, <strong>--settings</strong> <em>URI</em></dt>
+<dd>
+Settings file path or broker URI, same as every other MADS agent.
+</dd>
+<dt><strong>--crypto</strong>, <strong>--keys_dir</strong>, <strong>--key_broker</strong>, <strong>--key_client</strong>, <strong>--auth_verbose</strong></dt>
+<dd>
+CURVE encryption options, same as every other MADS agent executable.
+</dd>
+<dt><strong>-v</strong>, <strong>--version</strong></dt>
+<dd>
+Show version information.
+</dd>
+<dt><strong>-h</strong>, <strong>--help</strong></dt>
+<dd>
+Show summary of options.
+</dd>
+</dl>
+</section>
+<section id="examples-1" class="level2">
+<h2 class="anchored" data-anchor-id="examples-1">Examples</h2>
+<p>Replay a bag exactly as recorded:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-play</span> <span class="at">-i</span> session.bag</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Replay only a subset of topics, twice as fast as recorded, with fresh timestamps:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-play</span> <span class="at">-i</span> session.bag <span class="at">--topics</span> <span class="st">'sensors/#'</span> <span class="at">--rate</span> 2.0 <span class="at">--restamp</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="inspect-a-bag-file" class="level1">
+<h1>Inspect a bag file</h1>
+<p><strong>mads-bag</strong> is a wrapper around two subcommands for working with bag files recorded by <strong>mads-record</strong> (see <strong>src/bag.hpp</strong> for the on-disk format). Like every other <strong>mads-*</strong> wrapper it is normally invoked as <strong>mads bag</strong> <em>subcommand</em> …; <strong>mads-bag</strong> <em>subcommand</em> … works identically.</p>
+<section id="info" class="level2">
+<h2 class="anchored" data-anchor-id="info"><code>info</code></h2>
+<p>Prints a summary of a bag file: whether its trailing index/footer is present (giving O(1) access) or was recovered via a linear scan, whether the recovered data is a complete prefix (<strong>truncated</strong>), whether per-record CRC32 is enabled, the record count, and the first/last recorded timestamp. With <strong>--topics</strong>, it also scans every record to report a per-topic message count.</p>
+</section>
+<section id="export" class="level2">
+<h2 class="anchored" data-anchor-id="export"><code>export</code></h2>
+<p>Streams the bag as <strong>JSON Lines</strong> (one JSON object per record, in order) to stdout or a file. Each line has the shape:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="dt">"index"</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span> <span class="dt">"timestamp_ns"</span><span class="fu">:</span> <span class="dv">1712345678901234567</span><span class="fu">,</span> <span class="dt">"timestamp_iso"</span><span class="fu">:</span> <span class="st">"2024-..."</span><span class="fu">,</span> <span class="dt">"topic"</span><span class="fu">:</span> <span class="st">"sensors/acc/x"</span><span class="fu">,</span> <span class="dt">"parts_base64"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"..."</span><span class="ot">]</span><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Every part is base64-encoded, regardless of whether it holds JSON text or binary blob bytes: a raw wire part (which may be a compressed payload, a self-describing header, or blob bytes) is not guaranteed to be valid UTF-8, so base64 is the only encoding that is always valid JSON Lines output. To inspect a JSON part with <strong>jq</strong>, decode it explicitly, e.g.&nbsp;<code>jq -r '.parts_base64[0]' file.jsonl | base64 -d | jq .</code>. <strong>--format mcap</strong> is not implemented – it is intentionally deferred as an optional future export target (see <strong>NEW_FEATURES.md</strong>’s P3 section); any format other than <strong>jsonl</strong> is rejected with an error.</p>
+</section>
+<section id="options-2" class="level2">
+<h2 class="anchored" data-anchor-id="options-2">Options</h2>
+<section id="info-1" class="level3">
+<h3 class="anchored" data-anchor-id="info-1"><code>info</code></h3>
+<dl>
+<dt><strong>-f</strong>, <strong>--file</strong> <em>path</em></dt>
+<dd>
+Bag file to inspect. Required.
+</dd>
+<dt><strong>-t</strong>, <strong>--topics</strong></dt>
+<dd>
+Include a per-topic message count. Requires a full scan of the bag (still just N sequential record reads, using the index when present – not the slow linear-scan recovery path).
+</dd>
+<dt><strong>-j</strong>, <strong>--json</strong></dt>
+<dd>
+Print the summary as a single JSON object instead of human-readable text.
+</dd>
+<dt><strong>-h</strong>, <strong>--help</strong></dt>
+<dd>
+Show summary of options.
+</dd>
+</dl>
+</section>
+<section id="export-1" class="level3">
+<h3 class="anchored" data-anchor-id="export-1"><code>export</code></h3>
+<dl>
+<dt><strong>-f</strong>, <strong>--file</strong> <em>path</em></dt>
+<dd>
+Bag file to export. Required.
+</dd>
+<dt><strong>--format</strong> <em>jsonl</em></dt>
+<dd>
+Export format. Only <strong>jsonl</strong> is currently implemented (also the default).
+</dd>
+<dt><strong>-o</strong>, <strong>--output</strong> <em>path</em></dt>
+<dd>
+Write to <em>path</em> instead of stdout.
+</dd>
+<dt><strong>-h</strong>, <strong>--help</strong></dt>
+<dd>
+Show summary of options.
+</dd>
+</dl>
+</section>
+</section>
+<section id="examples-2" class="level2">
+<h2 class="anchored" data-anchor-id="examples-2">Examples</h2>
+<p>Summarize a bag file:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> bag info <span class="at">-f</span> session.bag</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Same, as JSON, with a per-topic breakdown:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> bag info <span class="at">-f</span> session.bag <span class="at">-j</span> <span class="at">-t</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Export to JSON Lines and inspect one message’s payload with jq:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> bag export <span class="at">-f</span> session.bag <span class="at">-o</span> session.jsonl</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">jq</span> <span class="at">-r</span> <span class="st">'select(.topic == "sensors/acc/x") | .parts_base64[0]'</span> session.jsonl <span class="kw">|</span> <span class="fu">head</span> <span class="at">-1</span> <span class="kw">|</span> <span class="fu">base64</span> <span class="at">-d</span> <span class="kw">|</span> <span class="ex">jq</span> .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
-</section>
 </section>
 </section>
 

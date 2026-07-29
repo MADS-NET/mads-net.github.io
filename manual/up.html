@@ -9,7 +9,7 @@
 <meta name="author" content="Paolo Bosetti">
 <meta name="dcterms.date" content="2026-07-07">
 
-<title> Manual</title>
+<title>Command: up</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -361,17 +361,14 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#contents" id="toc-contents" class="nav-link active" data-scroll-target="#contents">Contents</a>
+  <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a>
   <ul class="collapse">
-  <li><a href="#mads-commands" id="toc-mads-commands" class="nav-link" data-scroll-target="#mads-commands">MADS commands</a></li>
-  <li><a href="#mads-concepts" id="toc-mads-concepts" class="nav-link" data-scroll-target="#mads-concepts">MADS concepts</a></li>
-  <li><a href="#how-to-start" id="toc-how-to-start" class="nav-link" data-scroll-target="#how-to-start">How to start</a>
-  <ul class="collapse">
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux"><i class="bi-tux " style="" role="img" aria-hidden="true"></i> Linux</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows"><i class="bi-microsoft " style="" role="img" aria-hidden="true"></i> Windows</a></li>
-  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos"><i class="bi-apple " style="" role="img" aria-hidden="true"></i> macOS</a></li>
+  <li><a href="#the-ready-key" id="toc-the-ready-key" class="nav-link" data-scroll-target="#the-ready-key">The <code>ready</code> key</a></li>
+  <li><a href="#teardown-and-relaunch" id="toc-teardown-and-relaunch" class="nav-link" data-scroll-target="#teardown-and-relaunch">Teardown and relaunch</a></li>
   </ul></li>
-  </ul></li>
+  <li><a href="#options" id="toc-options" class="nav-link" data-scroll-target="#options">Options</a></li>
+  <li><a href="#exit-status" id="toc-exit-status" class="nav-link" data-scroll-target="#exit-status">Exit status</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   </ul>
 </nav>
     </div>
@@ -380,8 +377,13 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Manual</h1>
-</div>
+<h1 class="title">Command: <code>up</code></h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">command</div>
+    <div class="quarto-category">cli</div>
+    <div class="quarto-category">agents</div>
+  </div>
+  </div>
 
 
 <div class="quarto-title-meta-author">
@@ -417,56 +419,17 @@ cookieconsent.run({
     
   </div>
   
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p><code>mads up</code> (<code>mads-up</code>) is a single command for running multiple agents and processes in a coordinate manner. It can control any CLI process, not only MADS commands. On a Linux box, it can be used to create a single <code>systemd</code> service that runs on boot.</p>
+  </div>
+</div>
 
 
 </header>
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
-<section id="mads-commands" class="level2">
-<h2 class="anchored" data-anchor-id="mads-commands">MADS commands</h2>
-<!-- LIST of all MADS executable commands in the standard installation,
-     each linking to a separate manual page -->
-<ul>
-<li><a href="../manual/mads.html">mads</a> — the command dispatcher and its built-in subcommands</li>
-<li><a href="../manual/broker.html">broker</a> — the ZeroMQ proxy and settings service at the hub of a MADS network</li>
-<li><a href="../manual/plugin.html">plugin</a> — scaffold a new plugin, or migrate an existing one to a newer protocol</li>
-<li><a href="../manual/source-filter-sink.html">source</a>, <a href="../manual/source-filter-sink.html">filter</a>, <a href="../manual/source-filter-sink.html">sink</a> — the three generic plugin-loader agents</li>
-<li><a href="../manual/logger.html">logger</a> — persists every topic to MongoDB and/or a file</li>
-<li><a href="../manual/feedback-perf_assess.html">feedback</a>, <a href="../manual/feedback-perf_assess.html">perf_assess</a> — a generic subscriber and publisher for testing, plus the default plugins</li>
-<li><a href="../manual/inspect_plugin.html">inspect_plugin</a> — diagnose a compiled <code>.plugin</code> file (protocol version, ABI mismatches)</li>
-<li><a href="../manual/federate.html">federate</a> — relay selected topics between two independent MADS networks</li>
-<li><a href="../manual/fsm.html">fsm</a> — generate a finite-state-machine agent skeleton from a Graphviz description</li>
-<li><a href="../manual/package.html">package</a> — list, inspect, and install pre-compiled community packages</li>
-<li><a href="../manual/dealer-worker.html">dealer</a>, <a href="../manual/dealer-worker.html">worker</a> — round-robin load balancing across multiple worker processes</li>
-<li><a href="../manual/rust-loaders.html">rsource</a>, <a href="../manual/rust-loaders.html">rfilter</a>, <a href="../manual/rust-loaders.html">rsink</a> — Rust-plugin loaders (not on Windows)</li>
-<li><a href="../manual/up.html">up</a> - A GUI-less alternative to <code>mads director</code> (<a href="../guides/director.html">see here</a>)</li>
-<li><a href="../manual/doctor.html">doctor</a> - Use it when you get stuck</li>
-<li><a href="../manual/echo_top.html">echo/top</a> - look at what happens on the net</li>
-<li><a href="../manual/record_play.html">record/play/bag</a> - record a session, then replay it later, without a database (bag files)</li>
-</ul>
-</section>
-<section id="mads-concepts" class="level2">
-<h2 class="anchored" data-anchor-id="mads-concepts">MADS concepts</h2>
-<!-- Each of the following must link to a separate manual page -->
-<ul>
-<li><a href="../manual/network-discovery.html">Network discovery</a></li>
-<li><a href="../manual/message-routing.html">Message routing and topics</a></li>
-<li><a href="../manual/plugins-extensions.html">Plugins and extensions</a></li>
-<li><a href="../manual/timing-scheduling.html">Timing and scheduling</a></li>
-<li><a href="../manual/message-queues.html">Message queues, blocking/non-blocking behavior</a></li>
-<li><a href="../manual/databases-storage.html">Databases and data storage</a></li>
-<li><a href="../manual/cryptography-security.html">Cryptography and security</a></li>
-</ul>
-</section>
-<section id="how-to-start" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-start">How to start</h2>
-<p>Download MADS latest version from <a href="https://git.new/MADS" class="uri">https://git.new/MADS</a> and follow the <a href="../guides/install.html">installation guide</a>. Depending on your OS, you will need a developer toolchain to build plugins and custom agents.</p>
-<p>The <a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode">MADSCode <i class="bi-link " style="" role="img" aria-hidden="true"></i></a> Visual Studio Code extension provides useful tools for MADS development.</p>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux" class="level3">
-<h3 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c20626920747578203e7d7d-linux"><i class="bi-tux " style="" role="img" aria-hidden="true"></i> Linux</h3>
-<p>You need <code>clang</code> compiler and <code>cmake</code> build system installed, plus git and CMake. Visual Studio Code is the suggested development platform.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -477,25 +440,93 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>GCC compiler is not officially supported. Even if you install <code>clang</code> on linux, some distributions may still use <code>gcc</code> as the default compiler. In that case, you need to set the environment variable <code>CC=clang</code> before running <code>cmake</code> to build a plugin or custom agent or — preferably — use the <code>update-alternatives</code> command to set <code>clang</code> as the default compiler:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/cc cc /usr/bin/clang 100</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/c++ c++ /usr/bin/clang++ 100</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>or interactively with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> update-alternatives <span class="at">--all</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This command has been introduced in MADS v2.4.1.</p>
 </div>
 </div>
+<section id="description" class="level1">
+<h1>Description</h1>
+<p><strong>mads-up</strong> is a headless executor for <code>director.toml</code>, the process-plan format already used by <strong>mads_director</strong>’s interactive GUI (https://github.com/mads-net/mads_director). It is not a new compose format: develop and tune an agent set interactively in the Director GUI, commit the resulting <code>director.toml</code>, then run that exact same file unattended in CI, on an edge box, or under <code>systemd</code> (<code>Type=simple</code>) with <strong>mads-up</strong>.</p>
+<p><strong>mads-up</strong> parses and validates <code>director.toml</code> itself (no dependency on the Director GUI or its GLFW build requirement), expands <code>scale</code> into numbered instances and <code>${PWD}</code>/<code>${ID}</code> templating in <code>command</code>, and orders startup so every process named in another process’s <code>after</code> key starts (and, if it declares a <code>ready</code> probe, becomes ready) before its dependents. Startup order and validation is available without spawning anything via <strong>--dry-run</strong>.</p>
+<p>Processes are started via a shell by default (matching Director’s own behaviour: <code>$SHELL -lc "&lt;command&gt;"</code> on POSIX, <code>cmd.exe /S /C "&lt;command&gt;"</code> on Windows); <strong>--no-shell</strong> tokenizes <code>command</code> and execs it directly instead. Each process’s stdout/stderr is captured and multiplexed to this process’s own stdout/stderr, prefixed with <code>[name]</code>, unless <strong>--quiet</strong> is given.</p>
+<p><strong>mads-up</strong> is foreground-only by design: there is no daemonization, no PID file, and no <code>mads down</code>. <strong>SIGINT</strong>/<strong>SIGTERM</strong> tear down every managed process (in reverse start order) and this process then exits — exactly what <code>systemd Type=simple</code>, Docker, and CI runners expect.</p>
+<section id="the-ready-key" class="level2">
+<h2 class="anchored" data-anchor-id="the-ready-key">The <code>ready</code> key</h2>
+<p>Beyond the schema Director already defines (<code>command</code>, <code>after</code>, <code>workdir</code>, <code>enabled</code>, <code>scale</code>, <code>relaunch</code>, <code>tty</code>), <strong>mads-up</strong> adds one new, optional, per-process key:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">ready</span> <span class="op">=</span> <span class="st">"broker"</span> <span class="er">|</span> <span class="dt">"broker:&lt;uri&gt;"</span> <span class="er">|</span> <span class="dt">"port:&lt;n&gt;"</span> <span class="er">|</span> <span class="dt">"log:&lt;regex&gt;"</span> <span class="er">|</span> <span class="dt">"delay:&lt;duration&gt;"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>It gates starting a process’s dependents on an actual readiness signal instead of a fixed sleep:</p>
+<ul>
+<li><strong><code>broker</code></strong> / <strong><code>broker:&lt;uri&gt;</code></strong> — probes a MADS broker’s settings endpoint (default <code>tcp://localhost:9092</code> if no URI is given) until it answers.</li>
+<li><strong><code>port:&lt;n&gt;</code></strong> — probes local TCP port <em>n</em> until something accepts a connection.</li>
+<li><strong><code>log:&lt;regex&gt;</code></strong> — waits until a line matching <em>regex</em> appears on the process’s stdout or stderr.</li>
+<li><strong><code>delay:&lt;duration&gt;</code></strong> — waits a fixed duration (e.g.&nbsp;<code>500ms</code>, <code>2s</code>, <code>1.5s</code>, <code>3m</code>; a bare number means seconds), unconditionally.</li>
+</ul>
+<p><code>ready</code> is additive and silently ignored by Director’s own parser, so a <code>director.toml</code> carrying it still loads fine in the GUI.</p>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows" class="level3">
-<h3 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d-windows"><i class="bi-microsoft " style="" role="img" aria-hidden="true"></i> Windows</h3>
-<p>You need Visual Studio 2022 (Community Edition is fine) or later, with the C++ development tools installed, plus CMake. Visual Studio Code is the suggested development platform.</p>
+<section id="teardown-and-relaunch" class="level2">
+<h2 class="anchored" data-anchor-id="teardown-and-relaunch">Teardown and relaunch</h2>
+<p>On stop (SIGINT/SIGTERM, <strong>--until-exit</strong>’s target exiting, <strong>--timeout</strong> elapsing, or a non-<code>relaunch</code> process dying with a non-zero exit code), every running process is sent SIGTERM (POSIX) or <code>CTRL_BREAK_EVENT</code> (Windows) in reverse start order, given <strong>--grace</strong> to exit on its own, then SIGKILL (POSIX) / forcefully terminated (Windows) if it hasn’t. Processes are started in their own process group so descendants (things the managed process itself forks) are torn down too, not just the immediate child.</p>
+<p>A process with <code>relaunch = true</code> is restarted automatically on a non-zero exit, with exponential backoff starting at 100ms and capped at 30s (reset once a restarted process has stayed up for a while); pass <strong>--max-restarts</strong> to give up after a fixed number of attempts instead of retrying forever.</p>
 </section>
-<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos" class="level3">
-<h3 class="anchored" data-anchor-id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d-macos"><i class="bi-apple " style="" role="img" aria-hidden="true"></i> macOS</h3>
-<p>You need Xcode and the command line tools installed, plus git and CMake. Visual Studio Code is the suggested development platform.</p>
+</section>
+<section id="options" class="level1">
+<h1>Options</h1>
+<dl>
+<dt><strong>-f</strong>, <strong>--file</strong> <em>path</em></dt>
+<dd>
+Path to the <code>director.toml</code> to run. Defaults to <code>director.toml</code> in the current directory.
+</dd>
+<dt><strong>--until-exit</strong> <em>name</em></dt>
+<dd>
+Run until the named process exits, then tear everything else down and exit with that process’s own exit code. The typical CI shape: bring up a broker and a pipeline, run a test agent, exit.
+</dd>
+<dt><strong>--timeout</strong> <em>duration</em></dt>
+<dd>
+Hard cap on the whole run (startup and steady state), e.g.&nbsp;<code>30s</code>, <code>5m</code>. If it elapses, <strong>mads-up</strong> tears everything down and exits non-zero.
+</dd>
+<dt><strong>--grace</strong> <em>duration</em></dt>
+<dd>
+How long to wait after SIGTERM before escalating to SIGKILL during teardown. Default <code>5s</code>.
+</dd>
+<dt><strong>--max-restarts</strong> <em>n</em></dt>
+<dd>
+Give up relaunching a <code>relaunch = true</code> process after <em>n</em> attempts (it stays stopped; the rest of the plan keeps running). Default: unlimited (the exponential backoff already bounds CPU usage).
+</dd>
+<dt><strong>--no-shell</strong></dt>
+<dd>
+Tokenize each process’s <code>command</code> and exec it directly instead of shelling out. Use this when a command must not be shell-interpreted (no globbing, no <code>$VAR</code> expansion, no <code>;</code>/<code>&amp;&amp;</code> chaining).
+</dd>
+<dt><strong>--dry-run</strong></dt>
+<dd>
+Print the fully expanded plan (templates resolved, <code>scale</code> expanded, start order, <code>ready</code> probes) and exit without spawning anything.
+</dd>
+<dt><strong>-q</strong>, <strong>--quiet</strong></dt>
+<dd>
+Suppress the multiplexed <code>[name]</code> stdout/stderr passthrough from managed processes.
+</dd>
+<dt><strong>-v</strong>, <strong>--version</strong></dt>
+<dd>
+Show version information.
+</dd>
+<dt><strong>-h</strong>, <strong>--help</strong></dt>
+<dd>
+Show summary of options.
+</dd>
+</dl>
+</section>
+<section id="exit-status" class="level1">
+<h1>Exit status</h1>
+<p><strong>0</strong> on a clean stop (SIGINT/SIGTERM, or <strong>--until-exit</strong>’s target exiting with code 0). Otherwise the exit code is non-zero: the propagated exit code of the <strong>--until-exit</strong> target when it is itself non-zero, the exit code of a non-<code>relaunch</code> process that died unexpectedly, or <strong>1</strong> for a <code>director.toml</code> that failed to load/validate, a process that failed to start, a <code>ready</code> probe that never succeeded, or <strong>--timeout</strong> elapsing.</p>
+</section>
+<section id="examples" class="level1">
+<h1>Examples</h1>
+<p>Bring up everything described in <code>director.toml</code> and run until Ctrl-C:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-up</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>CI shape: bring up the plan, run until the <code>smoke-test</code> process exits, propagate its exit code:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-up</span> <span class="at">--until-exit</span> smoke-test <span class="at">--timeout</span> 2m</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Sanity-check a plan without starting anything:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads-up</span> <span class="at">--dry-run</span> <span class="at">-f</span> deploy/director.toml</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
-</section>
-</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

@@ -8,11 +8,11 @@
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.38">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="Paolo Bosetti">
   <title> Intro</title>
@@ -25,10 +25,13 @@
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
     */
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -236,7 +239,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Paolo Bosetti 
+Paolo Bosetti
 </div>
         <p class="quarto-title-affiliation">
             University of Trento
@@ -244,7 +247,7 @@ Paolo Bosetti
     </div>
 </div>
 
-  <p class="date">2026-Jul-27</p>
+  <p class="date">2026-Jul-29</p>
 </section>
 <section>
 <section id="what-is-it" class="title-slide slide level1 center">
@@ -503,20 +506,20 @@ Paolo Bosetti
 <ul>
 <li><p>The standard installers provide a main command: <code>mads</code></p></li>
 <li><p>Inline help is available with <code>mads --help</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a></a><span class="op">&gt;</span> mads <span class="ex">--help</span></span>
-<span id="cb1-2"><a></a><span class="ex">Mads</span> command line interface version v2.1.1</span>
-<span id="cb1-3"><a></a><span class="ex">Usage:</span></span>
-<span id="cb1-4"><a></a><span class="ex">mads</span> <span class="pp">[</span><span class="ss">OPTION...</span><span class="pp">]</span></span>
-<span id="cb1-5"><a></a></span>
-<span id="cb1-6"><a></a><span class="ex">-i,</span> <span class="at">--info</span>                   Print information on MADS installation</span>
-<span id="cb1-7"><a></a><span class="ex">-p,</span> <span class="at">--prefix</span>                 Print MADS linstall prefix</span>
-<span id="cb1-8"><a></a>    <span class="ex">--plugins</span>                List plugins in default plugins directory</span>
-<span id="cb1-9"><a></a>    <span class="ex">--keypair</span> [=arg<span class="er">(</span><span class="ex">=mads</span><span class="kw">)</span><span class="ex">]</span>  Generate ZMQ CURVE keypair</span>
-<span id="cb1-10"><a></a><span class="ex">-f,</span> <span class="at">--force</span>                  Force operation <span class="er">(</span><span class="cf">if</span> <span class="ex">applicable</span><span class="kw">)</span></span>
-<span id="cb1-11"><a></a>    <span class="ex">--rooms</span> [=arg<span class="er">(</span><span class="ex">=5000</span><span class="kw">)</span><span class="ex">]</span>    List rooms advertised on the network</span>
-<span id="cb1-12"><a></a><span class="ex">-j,</span> <span class="at">--json</span>                   Output in JSON format <span class="er">(</span><span class="ex">where</span> applicable<span class="kw">)</span></span>
-<span id="cb1-13"><a></a><span class="ex">-v,</span> <span class="at">--version</span>                Print version</span>
-<span id="cb1-14"><a></a><span class="ex">-h,</span> <span class="at">--help</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a aria-label="1"></a><span class="op">&gt;</span> mads <span class="ex">--help</span></span>
+<span id="cb1-2"><a aria-label="2"></a><span class="ex">Mads</span> command line interface version v2.1.1</span>
+<span id="cb1-3"><a aria-label="3"></a><span class="ex">Usage:</span></span>
+<span id="cb1-4"><a aria-label="4"></a><span class="ex">mads</span> <span class="pp">[</span><span class="ss">OPTION...</span><span class="pp">]</span></span>
+<span id="cb1-5"><a aria-label="5"></a></span>
+<span id="cb1-6"><a aria-label="6"></a><span class="ex">-i,</span> <span class="at">--info</span>                   Print information on MADS installation</span>
+<span id="cb1-7"><a aria-label="7"></a><span class="ex">-p,</span> <span class="at">--prefix</span>                 Print MADS linstall prefix</span>
+<span id="cb1-8"><a aria-label="8"></a>    <span class="ex">--plugins</span>                List plugins in default plugins directory</span>
+<span id="cb1-9"><a aria-label="9"></a>    <span class="ex">--keypair</span> [=arg<span class="er">(</span><span class="ex">=mads</span><span class="kw">)</span><span class="ex">]</span>  Generate ZMQ CURVE keypair</span>
+<span id="cb1-10"><a aria-label="10"></a><span class="ex">-f,</span> <span class="at">--force</span>                  Force operation <span class="er">(</span><span class="cf">if</span> <span class="ex">applicable</span><span class="kw">)</span></span>
+<span id="cb1-11"><a aria-label="11"></a>    <span class="ex">--rooms</span> [=arg<span class="er">(</span><span class="ex">=5000</span><span class="kw">)</span><span class="ex">]</span>    List rooms advertised on the network</span>
+<span id="cb1-12"><a aria-label="12"></a><span class="ex">-j,</span> <span class="at">--json</span>                   Output in JSON format <span class="er">(</span><span class="ex">where</span> applicable<span class="kw">)</span></span>
+<span id="cb1-13"><a aria-label="13"></a><span class="ex">-v,</span> <span class="at">--version</span>                Print version</span>
+<span id="cb1-14"><a aria-label="14"></a><span class="ex">-h,</span> <span class="at">--help</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p>Options <code>-i</code> and <code>-p</code> are useful to check the installation</p></li>
 </ul>
 </section>
@@ -527,24 +530,24 @@ Paolo Bosetti
 </ul>
 <div class="columns">
 <div class="column">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a></a><span class="op">&gt;</span> mads</span>
-<span id="cb2-2"><a></a><span class="ex">Available</span> mads subcommands:</span>
-<span id="cb2-3"><a></a>   <span class="ex">filter</span> <span class="er">(</span><span class="ex">wraps</span> mads-filter<span class="kw">)</span></span>
-<span id="cb2-4"><a></a>   <span class="ex">worker</span> <span class="er">(</span><span class="ex">wraps</span> mads-worker<span class="kw">)</span></span>
-<span id="cb2-5"><a></a>  <span class="bu">command</span> <span class="er">(</span><span class="ex">wraps</span> mads-command<span class="kw">)</span></span>
-<span id="cb2-6"><a></a>    <span class="ex">image</span> <span class="er">(</span><span class="ex">wraps</span> mads-image<span class="kw">)</span></span>
-<span id="cb2-7"><a></a> <span class="ex">feedback</span> <span class="er">(</span><span class="ex">wraps</span> mads-feedback<span class="kw">)</span></span>
-<span id="cb2-8"><a></a>  <span class="ex">logging</span> <span class="er">(</span><span class="ex">wraps</span> mads-logging<span class="kw">)</span></span>
-<span id="cb2-9"><a></a>   <span class="ex">plugin</span> <span class="er">(</span><span class="ex">wraps</span> mads-plugin<span class="kw">)</span></span>
-<span id="cb2-10"><a></a>   <span class="bu">source</span> <span class="er">(</span><span class="ex">wraps</span> mads-source<span class="kw">)</span></span>
-<span id="cb2-11"><a></a>   <span class="ex">bridge</span> <span class="er">(</span><span class="ex">wraps</span> mads-bridge<span class="kw">)</span></span>
-<span id="cb2-12"><a></a>     <span class="ex">sink</span> <span class="er">(</span><span class="ex">wraps</span> mads-sink<span class="kw">)</span></span>
-<span id="cb2-13"><a></a>   <span class="ex">dealer</span> <span class="er">(</span><span class="ex">wraps</span> mads-dealer<span class="kw">)</span></span>
-<span id="cb2-14"><a></a>   <span class="ex">python</span> <span class="er">(</span><span class="ex">wraps</span> mads-python<span class="kw">)</span></span>
-<span id="cb2-15"><a></a>   <span class="ex">logger</span> <span class="er">(</span><span class="ex">wraps</span> mads-logger<span class="kw">)</span></span>
-<span id="cb2-16"><a></a>   <span class="ex">broker</span> <span class="er">(</span><span class="ex">wraps</span> mads-broker<span class="kw">)</span></span>
-<span id="cb2-17"><a></a>      <span class="ex">ini</span> <span class="er">(</span><span class="ex">internal</span><span class="kw">)</span></span>
-<span id="cb2-18"><a></a>  <span class="ex">service</span> <span class="er">(</span><span class="ex">internal</span><span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a aria-label="1"></a><span class="op">&gt;</span> mads</span>
+<span id="cb2-2"><a aria-label="2"></a><span class="ex">Available</span> mads subcommands:</span>
+<span id="cb2-3"><a aria-label="3"></a>   <span class="ex">filter</span> <span class="er">(</span><span class="ex">wraps</span> mads-filter<span class="kw">)</span></span>
+<span id="cb2-4"><a aria-label="4"></a>   <span class="ex">worker</span> <span class="er">(</span><span class="ex">wraps</span> mads-worker<span class="kw">)</span></span>
+<span id="cb2-5"><a aria-label="5"></a>  <span class="bu">command</span> <span class="er">(</span><span class="ex">wraps</span> mads-command<span class="kw">)</span></span>
+<span id="cb2-6"><a aria-label="6"></a>    <span class="ex">image</span> <span class="er">(</span><span class="ex">wraps</span> mads-image<span class="kw">)</span></span>
+<span id="cb2-7"><a aria-label="7"></a> <span class="ex">feedback</span> <span class="er">(</span><span class="ex">wraps</span> mads-feedback<span class="kw">)</span></span>
+<span id="cb2-8"><a aria-label="8"></a>  <span class="ex">logging</span> <span class="er">(</span><span class="ex">wraps</span> mads-logging<span class="kw">)</span></span>
+<span id="cb2-9"><a aria-label="9"></a>   <span class="ex">plugin</span> <span class="er">(</span><span class="ex">wraps</span> mads-plugin<span class="kw">)</span></span>
+<span id="cb2-10"><a aria-label="10"></a>   <span class="bu">source</span> <span class="er">(</span><span class="ex">wraps</span> mads-source<span class="kw">)</span></span>
+<span id="cb2-11"><a aria-label="11"></a>   <span class="ex">bridge</span> <span class="er">(</span><span class="ex">wraps</span> mads-bridge<span class="kw">)</span></span>
+<span id="cb2-12"><a aria-label="12"></a>     <span class="ex">sink</span> <span class="er">(</span><span class="ex">wraps</span> mads-sink<span class="kw">)</span></span>
+<span id="cb2-13"><a aria-label="13"></a>   <span class="ex">dealer</span> <span class="er">(</span><span class="ex">wraps</span> mads-dealer<span class="kw">)</span></span>
+<span id="cb2-14"><a aria-label="14"></a>   <span class="ex">python</span> <span class="er">(</span><span class="ex">wraps</span> mads-python<span class="kw">)</span></span>
+<span id="cb2-15"><a aria-label="15"></a>   <span class="ex">logger</span> <span class="er">(</span><span class="ex">wraps</span> mads-logger<span class="kw">)</span></span>
+<span id="cb2-16"><a aria-label="16"></a>   <span class="ex">broker</span> <span class="er">(</span><span class="ex">wraps</span> mads-broker<span class="kw">)</span></span>
+<span id="cb2-17"><a aria-label="17"></a>      <span class="ex">ini</span> <span class="er">(</span><span class="ex">internal</span><span class="kw">)</span></span>
+<span id="cb2-18"><a aria-label="18"></a>  <span class="ex">service</span> <span class="er">(</span><span class="ex">internal</span><span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div><div class="column">
 <ul>
 <li><em>Internal</em> commands are implemented by the <code>mads</code> executable</li>
@@ -555,17 +558,17 @@ Paolo Bosetti
 </section>
 <section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207465726d696e616c203e7d7d-launching-the-broker" class="slide level2">
 <h2><i class="bi-terminal " style="" role="img" aria-hidden="true"></i> Launching the <code>broker</code></h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a></a><span class="op">&gt;</span> mads <span class="ex">broker</span></span>
-<span id="cb3-2"><a></a><span class="ex">Reading</span> settings from /Users/p4010/usr/local/etc/mads.ini <span class="pp">[</span><span class="ss">broker</span><span class="pp">]</span></span>
-<span id="cb3-3"><a></a><span class="ex">Binding</span> broker frontend <span class="er">(</span><span class="ex">XSUB</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9090</span>
-<span id="cb3-4"><a></a><span class="ex">Binding</span> broker backend <span class="er">(</span><span class="ex">XPUB</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9091</span>
-<span id="cb3-5"><a></a><span class="ex">Binding</span> broker shared settings <span class="er">(</span><span class="ex">REP</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9092</span>
-<span id="cb3-6"><a></a><span class="ex">Timecode</span> FPS: 25</span>
-<span id="cb3-7"><a></a><span class="ex">Advertising</span> service on UDP discovery port 39092 with room name <span class="st">'mads'</span></span>
-<span id="cb3-8"><a></a><span class="ex">Settings</span> are provided on tcp://127.0.0.1:9092 <span class="er">(</span><span class="ex">loopback</span><span class="kw">)</span></span>
-<span id="cb3-9"><a></a><span class="ex">CTRL-C</span> to immediate exit</span>
-<span id="cb3-10"><a></a><span class="ex">Type</span> P to pause, R to resume, I for information, Q to clean quit</span>
-<span id="cb3-11"><a></a><span class="ex">N</span> to show next IP address, X to restart and reload settings</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a aria-label="1"></a><span class="op">&gt;</span> mads <span class="ex">broker</span></span>
+<span id="cb3-2"><a aria-label="2"></a><span class="ex">Reading</span> settings from /Users/p4010/usr/local/etc/mads.ini <span class="pp">[</span><span class="ss">broker</span><span class="pp">]</span></span>
+<span id="cb3-3"><a aria-label="3"></a><span class="ex">Binding</span> broker frontend <span class="er">(</span><span class="ex">XSUB</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9090</span>
+<span id="cb3-4"><a aria-label="4"></a><span class="ex">Binding</span> broker backend <span class="er">(</span><span class="ex">XPUB</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9091</span>
+<span id="cb3-5"><a aria-label="5"></a><span class="ex">Binding</span> broker shared settings <span class="er">(</span><span class="ex">REP</span><span class="kw">)</span> <span class="ex">at</span> tcp://<span class="pp">*</span>:9092</span>
+<span id="cb3-6"><a aria-label="6"></a><span class="ex">Timecode</span> FPS: 25</span>
+<span id="cb3-7"><a aria-label="7"></a><span class="ex">Advertising</span> service on UDP discovery port 39092 with room name <span class="st">'mads'</span></span>
+<span id="cb3-8"><a aria-label="8"></a><span class="ex">Settings</span> are provided on tcp://127.0.0.1:9092 <span class="er">(</span><span class="ex">loopback</span><span class="kw">)</span></span>
+<span id="cb3-9"><a aria-label="9"></a><span class="ex">CTRL-C</span> to immediate exit</span>
+<span id="cb3-10"><a aria-label="10"></a><span class="ex">Type</span> P to pause, R to resume, I for information, Q to clean quit</span>
+<span id="cb3-11"><a aria-label="11"></a><span class="ex">N</span> to show next IP address, X to restart and reload settings</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>Line 2 and 8 report a fundamental aspect: the <strong>centralized settings file</strong></li>
 <li>Settings for all agents are stored in a <a href="https://toml.io" target="_blank">TOML</a> file, which is dispatched by the broker to the agents upon launch</li>
@@ -657,7 +660,7 @@ Paolo Bosetti
 </div>
 <div class="callout-content">
 <p>A MongoDB instance can be easily started with Docker:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a></a><span class="op">&gt;</span> docker <span class="ex">run</span> <span class="at">-d</span> <span class="at">--name</span> mads-mongo <span class="at">-p</span> 27017:27017 <span class="at">-v</span> <span class="va">${PWD}</span>/db:/data/db mongo</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a aria-label="1"></a><span class="op">&gt;</span> docker <span class="ex">run</span> <span class="at">-d</span> <span class="at">--name</span> mads-mongo <span class="at">-p</span> 27017:27017 <span class="at">-v</span> <span class="va">${PWD}</span>/db:/data/db mongo</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -786,25 +789,25 @@ Paolo Bosetti
 </section>
 <section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692066696c652d636f6465203e7d7d-plugin-class-details" class="slide level2">
 <h2><i class="bi-file-code " style="" role="img" aria-hidden="true"></i> Plugin class details</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb5-1"><a></a><span class="kw">class</span> My_sourcePlugin <span class="op">:</span> <span class="kw">public</span> Source<span class="op">&lt;</span>json<span class="op">&gt;</span> <span class="op">{</span></span>
-<span id="cb5-2"><a></a><span class="kw">public</span><span class="op">:</span></span>
-<span id="cb5-3"><a></a>  <span class="co">// Implement the actual functionality here</span></span>
-<span id="cb5-4"><a></a>  <span class="dt">return_type</span> get_output<span class="op">(</span>json <span class="op">&amp;</span>out<span class="op">,</span></span>
-<span id="cb5-5"><a></a>                         vector<span class="op">&lt;</span><span class="dt">unsigned</span> <span class="dt">char</span><span class="op">&gt;</span> <span class="op">*</span>blob <span class="op">=</span> <span class="kw">nullptr</span><span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
-<span id="cb5-6"><a></a>    <span class="co">// Your logic to fill 'out' with data</span></span>
-<span id="cb5-7"><a></a>    <span class="co">// optionally use 'blob' for binary content</span></span>
-<span id="cb5-8"><a></a>  <span class="op">}</span></span>
-<span id="cb5-9"><a></a></span>
-<span id="cb5-10"><a></a>  <span class="co">// Run only once upon start</span></span>
-<span id="cb5-11"><a></a>  <span class="dt">void</span> set_params<span class="op">(</span><span class="at">const</span> json <span class="op">&amp;</span>params<span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
-<span id="cb5-12"><a></a>    <span class="co">// Optional: handle parameters passed to the plugin</span></span>
-<span id="cb5-13"><a></a>    <span class="co">// This can be used to configure the plugin at runtime</span></span>
-<span id="cb5-14"><a></a>  <span class="op">}</span></span>
-<span id="cb5-15"><a></a><span class="kw">private</span><span class="op">:</span></span>
-<span id="cb5-16"><a></a>  <span class="co">// custom fields here</span></span>
-<span id="cb5-17"><a></a><span class="op">};</span></span>
-<span id="cb5-18"><a></a><span class="co">// Macro that does the magic of allowing dlopen to work</span></span>
-<span id="cb5-19"><a></a>INSTALL_SOURCE_DRIVER<span class="op">(</span>My_sourcePlugin<span class="op">,</span> json<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb5-1"><a aria-label="1"></a><span class="kw">class</span> My_sourcePlugin <span class="op">:</span> <span class="kw">public</span> Source<span class="op">&lt;</span>json<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb5-2"><a aria-label="2"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb5-3"><a aria-label="3"></a>  <span class="co">// Implement the actual functionality here</span></span>
+<span id="cb5-4"><a aria-label="4"></a>  <span class="dt">return_type</span> get_output<span class="op">(</span>json <span class="op">&amp;</span>out<span class="op">,</span></span>
+<span id="cb5-5"><a aria-label="5"></a>                         vector<span class="op">&lt;</span><span class="dt">unsigned</span> <span class="dt">char</span><span class="op">&gt;</span> <span class="op">*</span>blob <span class="op">=</span> <span class="kw">nullptr</span><span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb5-6"><a aria-label="6"></a>    <span class="co">// Your logic to fill 'out' with data</span></span>
+<span id="cb5-7"><a aria-label="7"></a>    <span class="co">// optionally use 'blob' for binary content</span></span>
+<span id="cb5-8"><a aria-label="8"></a>  <span class="op">}</span></span>
+<span id="cb5-9"><a aria-label="9"></a></span>
+<span id="cb5-10"><a aria-label="10"></a>  <span class="co">// Run only once upon start</span></span>
+<span id="cb5-11"><a aria-label="11"></a>  <span class="dt">void</span> set_params<span class="op">(</span><span class="at">const</span> json <span class="op">&amp;</span>params<span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb5-12"><a aria-label="12"></a>    <span class="co">// Optional: handle parameters passed to the plugin</span></span>
+<span id="cb5-13"><a aria-label="13"></a>    <span class="co">// This can be used to configure the plugin at runtime</span></span>
+<span id="cb5-14"><a aria-label="14"></a>  <span class="op">}</span></span>
+<span id="cb5-15"><a aria-label="15"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb5-16"><a aria-label="16"></a>  <span class="co">// custom fields here</span></span>
+<span id="cb5-17"><a aria-label="17"></a><span class="op">};</span></span>
+<span id="cb5-18"><a aria-label="18"></a><span class="co">// Macro that does the magic of allowing dlopen to work</span></span>
+<span id="cb5-19"><a aria-label="19"></a>INSTALL_SOURCE_DRIVER<span class="op">(</span>My_sourcePlugin<span class="op">,</span> json<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c2062692066696c652d636f6465203e7d7d-plugin-class-details-1" class="slide level2">
 <h2><i class="bi-file-code " style="" role="img" aria-hidden="true"></i> Plugin class details</h2>
@@ -828,8 +831,8 @@ Paolo Bosetti
 <ul>
 <li><p>Plugins can be loaded <strong>Over-The-Air</strong> (OTA) by the <code>mads source</code>, <code>mads filter</code>, and <code>mads sink</code> commands</p></li>
 <li><p>If the INI file contains an entry like this:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource toml number-lines code-with-copy"><code class="sourceCode toml"><span id="cb6-1"><a></a><span class="kw">[my_source]</span></span>
-<span id="cb6-2"><a></a><span class="dt">attachment</span> <span class="op">=</span> <span class="st">"/path/to/my_source.plugin"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource toml number-lines code-with-copy"><code class="sourceCode toml"><span id="cb6-1"><a aria-label="1"></a><span class="kw">[my_source]</span></span>
+<span id="cb6-2"><a aria-label="2"></a><span class="dt">attachment</span> <span class="op">=</span> <span class="st">"/path/to/my_source.plugin"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>then that file (on the broker filesystem!) is sent to <code>my_source</code> agents when they connect to the broker</p></li>
 <li><p>This allows to have all plugins in a single location, and to update them without having to manually copy them to each agent machine</p></li>
 </ul>

@@ -58,7 +58,7 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/plugins.html</loc>
-    <lastmod>2026-06-15T15:40:09.026Z</lastmod>
+    <lastmod>2026-07-29T09:27:12.619Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/services.html</loc>
@@ -69,8 +69,12 @@
     <lastmod>2026-06-15T15:39:46.173Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/timing-scheduling.html</loc>
-    <lastmod>2026-07-07T12:15:40.477Z</lastmod>
+    <loc>https://mads-net.github.io/manual/message-queues.html</loc>
+    <lastmod>2026-07-07T12:28:07.825Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/record_play.html</loc>
+    <lastmod>2026-07-29T11:49:13.188Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/manual/federate.html</loc>
@@ -86,27 +90,31 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/manual/index.html</loc>
-    <lastmod>2026-07-23T15:56:48.725Z</lastmod>
+    <lastmod>2026-07-29T09:38:45.659Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/manual/feedback-perf_assess.html</loc>
     <lastmod>2026-07-07T12:08:30.812Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/network-discovery.html</loc>
-    <lastmod>2026-07-07T12:49:26.218Z</lastmod>
+    <loc>https://mads-net.github.io/manual/message-routing.html</loc>
+    <lastmod>2026-07-07T12:29:17.359Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/dealer-worker.html</loc>
-    <lastmod>2026-07-07T12:07:42.365Z</lastmod>
+    <loc>https://mads-net.github.io/manual/logger.html</loc>
+    <lastmod>2026-07-07T12:36:31.457Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/fsm.html</loc>
-    <lastmod>2026-07-07T12:08:39.464Z</lastmod>
+    <loc>https://mads-net.github.io/manual/broker.html</loc>
+    <lastmod>2026-07-07T12:51:58.968Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/plugin.html</loc>
-    <lastmod>2026-07-07T12:54:11.709Z</lastmod>
+    <loc>https://mads-net.github.io/manual/source-filter-sink.html</loc>
+    <lastmod>2026-07-07T12:09:42.737Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/databases-storage.html</loc>
+    <lastmod>2026-07-07T12:35:11.483Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/presentations/gorini.html</loc>
@@ -141,24 +149,28 @@
     <lastmod>2026-07-07T07:30:25.505Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/databases-storage.html</loc>
-    <lastmod>2026-07-07T12:35:11.483Z</lastmod>
+    <loc>https://mads-net.github.io/manual/doctor.html</loc>
+    <lastmod>2026-07-29T11:49:22.905Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/source-filter-sink.html</loc>
-    <lastmod>2026-07-07T12:09:42.737Z</lastmod>
+    <loc>https://mads-net.github.io/manual/plugin.html</loc>
+    <lastmod>2026-07-07T12:54:11.709Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/broker.html</loc>
-    <lastmod>2026-07-07T12:51:58.968Z</lastmod>
+    <loc>https://mads-net.github.io/manual/fsm.html</loc>
+    <lastmod>2026-07-07T12:08:39.464Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/logger.html</loc>
-    <lastmod>2026-07-07T12:36:31.457Z</lastmod>
+    <loc>https://mads-net.github.io/manual/dealer-worker.html</loc>
+    <lastmod>2026-07-07T12:07:42.365Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/message-routing.html</loc>
-    <lastmod>2026-07-07T12:29:17.359Z</lastmod>
+    <loc>https://mads-net.github.io/manual/network-discovery.html</loc>
+    <lastmod>2026-07-07T12:49:26.218Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/up.html</loc>
+    <lastmod>2026-07-29T11:48:58.571Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/manual/package.html</loc>
@@ -177,8 +189,12 @@
     <lastmod>2026-07-07T12:43:39.131Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/message-queues.html</loc>
-    <lastmod>2026-07-07T12:28:07.825Z</lastmod>
+    <loc>https://mads-net.github.io/manual/timing-scheduling.html</loc>
+    <lastmod>2026-07-07T12:15:40.477Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/echo_top.html</loc>
+    <lastmod>2026-07-29T11:49:17.877Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/datastore.html</loc>

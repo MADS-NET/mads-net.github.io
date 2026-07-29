@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -14,10 +14,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -78,14 +81,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-34d578f5c66cc91f3a0d6b67e9812be3.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-a3703a0dc74fdf50fbc673dfac110324.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-34d578f5c66cc91f3a0d6b67e9812be3.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0f05cba98e93abd5bfacabf37e46c573.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-36489fe9f95e83378e31b3375ef0b6a4.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0f05cba98e93abd5bfacabf37e46c573.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-2e7698bd714b49d14f287e93eab1d14f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-f219f2f0f38ee2fab9edbac10d1d6b4e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-2e7698bd714b49d14f287e93eab1d14f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-a19eb34a4d7cf687d93ead13127c070d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-05166d5569376c980afa9b08bd66c6ec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-a19eb34a4d7cf687d93ead13127c070d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -409,7 +412,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">July 27, 2026</p>
+      <p class="date-modified">July 29, 2026</p>
     </div>
   </div>
     
@@ -516,23 +519,23 @@ Warning
 <section id="existing-plugins" class="level2">
 <h2 class="anchored" data-anchor-id="existing-plugins">Existing plugins</h2>
 <p>To use the <code>&nbsp;Datastore</code> class to an existing plugin you have to update the fetched dependency. Open the plugin’s <code>CMakeLists.txt</code> and change the following (note the only change at <strong>line 3</strong>):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
-<span id="cb2-2"><a href="#cb2-2"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
-<span id="cb2-3"><a href="#cb2-3"></a>  <span class="ot">GIT_TAG</span>        HEAD</span>
-<span id="cb2-4"><a href="#cb2-4"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a>  <span class="ot">SUBBUILD_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-subbuild</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a>  <span class="ot">SOURCE_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-src</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a>  <span class="ot">BINARY_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-build</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>  <span class="ot">GIT_TAG</span>        HEAD</span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>  <span class="ot">SUBBUILD_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-subbuild</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>  <span class="ot">SOURCE_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-src</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a>  <span class="ot">BINARY_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-build</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>to:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
-<span id="cb3-2"><a href="#cb3-2"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
-<span id="cb3-3"><a href="#cb3-3"></a>  <span class="ot">GIT_TAG</span>        v1.<span class="dt">3.5</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a>  <span class="ot">SUBBUILD_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-subbuild</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a>  <span class="ot">SOURCE_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-src</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a>  <span class="ot">BINARY_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-build</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource cmake number-lines code-with-copy"><code class="sourceCode cmake"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="fu">FetchContent_Populate</span>(plugin </span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/mads_plugin.git</span>
+<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a>  <span class="ot">GIT_TAG</span>        v1.<span class="dt">3.5</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a>  <span class="ot">SUBBUILD_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-subbuild</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a>  <span class="ot">SOURCE_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-src</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-label="7"></a>  <span class="ot">BINARY_DIR</span> <span class="dv">${CMAKE_CURRENT_BINARY_DIR}</span>/<span class="va">_deps/plugin-build</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-label="8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This will force git fetching of the v1.3.5 of the plugin system.</p>
 <p>Then, just use the <code>&nbsp;Datastore</code> class as above outlined (it’s source is already available in the headers search path).</p>
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -14,10 +14,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -78,14 +81,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-34d578f5c66cc91f3a0d6b67e9812be3.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-a3703a0dc74fdf50fbc673dfac110324.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-34d578f5c66cc91f3a0d6b67e9812be3.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0f05cba98e93abd5bfacabf37e46c573.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-36489fe9f95e83378e31b3375ef0b6a4.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0f05cba98e93abd5bfacabf37e46c573.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-2e7698bd714b49d14f287e93eab1d14f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-f219f2f0f38ee2fab9edbac10d1d6b4e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-2e7698bd714b49d14f287e93eab1d14f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-a19eb34a4d7cf687d93ead13127c070d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-05166d5569376c980afa9b08bd66c6ec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-a19eb34a4d7cf687d93ead13127c070d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -410,7 +413,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">July 27, 2026</p>
+      <p class="date-modified">July 29, 2026</p>
     </div>
   </div>
     
@@ -624,72 +627,72 @@ Caution
 <section id="using-the-fsm-implementation" class="level2">
 <h2 class="anchored" data-anchor-id="using-the-fsm-implementation">Using the FSM implementation</h2>
 <p>AT the bottom of <code>fsm_impl.hpp</code> you can find a simple example of how to use the generated FSM code to create an agent that runs the FSM, in the form of a skeleton <code>main()</code>. You can modify this example to create your own agent that implements the desired behavior based on the FSM definition. What you get is the following:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4"><pre class="sourceCode numberSource cpp code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode cpp"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a><span class="pp">#include </span><span class="im">&lt;mads.hpp&gt;</span></span>
-<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2"></a><span class="pp">#include </span><span class="im">&lt;agent.hpp&gt;</span></span>
-<span id="annotated-cell-4-3"><a href="#annotated-cell-4-3"></a><span class="pp">#include </span><span class="im">&lt;thread&gt;</span></span>
-<span id="annotated-cell-4-4"><a href="#annotated-cell-4-4"></a><span class="pp">#include </span><span class="im">&lt;chrono&gt;</span></span>
-<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5"></a><span class="pp">#include </span><span class="im">&lt;filesystem&gt;</span></span>
-<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6"></a><span class="pp">#include </span><span class="im">&lt;nlohmann/json.hpp&gt;</span></span>
-<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7"></a><span class="pp">#include </span><span class="im">"fsm.hpp"</span></span>
-<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8"></a></span>
-<span id="annotated-cell-4-9"><a href="#annotated-cell-4-9"></a><span class="kw">using</span> <span class="kw">namespace</span> chrono_literals<span class="op">;</span></span>
-<span id="annotated-cell-4-10"><a href="#annotated-cell-4-10"></a><span class="kw">using</span> json <span class="op">=</span> nlohmann<span class="op">::</span>json<span class="op">;</span></span>
-<span id="annotated-cell-4-11"><a href="#annotated-cell-4-11"></a></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-12" class="code-annotation-target"><a href="#annotated-cell-4-12"></a><span class="kw">struct</span> FsmData <span class="op">{</span></span>
-<span id="annotated-cell-4-13"><a href="#annotated-cell-4-13"></a>  <span class="bu">std::</span>unique_ptr<span class="op">&lt;</span>Mads<span class="op">::</span>Agent<span class="op">&gt;</span> agent<span class="op">;</span></span>
-<span id="annotated-cell-4-14"><a href="#annotated-cell-4-14"></a><span class="op">};</span></span>
-<span id="annotated-cell-4-15"><a href="#annotated-cell-4-15"></a></span>
-<span id="annotated-cell-4-16"><a href="#annotated-cell-4-16"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
-<span id="annotated-cell-4-17"><a href="#annotated-cell-4-17"></a>  <span class="bu">std::</span>filesystem::path exec <span class="op">=</span> argv<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
-<span id="annotated-cell-4-18"><a href="#annotated-cell-4-18"></a>  <span class="bu">std::</span>string agent_name <span class="op">=</span> exec<span class="op">.</span>stem<span class="op">().</span>string<span class="op">();</span></span>
-<span id="annotated-cell-4-19"><a href="#annotated-cell-4-19"></a>  <span class="bu">std::</span>string settings_path <span class="op">=</span> <span class="st">"tcp://localhost:9092"</span><span class="op">;</span></span>
-<span id="annotated-cell-4-20"><a href="#annotated-cell-4-20"></a>  <span class="bu">std::</span>chrono::duration loop_period <span class="op">=</span> <span class="dv">100</span><span class="bu">ms</span><span class="op">;</span></span>
-<span id="annotated-cell-4-21"><a href="#annotated-cell-4-21"></a>  <span class="bu">std::</span>chrono::duration receive_timeout <span class="op">=</span> <span class="dv">50</span><span class="bu">ms</span><span class="op">;</span></span>
-<span id="annotated-cell-4-22"><a href="#annotated-cell-4-22"></a>  <span class="dt">bool</span> non_blocking <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="annotated-cell-4-23"><a href="#annotated-cell-4-23"></a></span>
-<span id="annotated-cell-4-24"><a href="#annotated-cell-4-24"></a>  <span class="cf">if</span> <span class="op">(</span>argc <span class="op">&gt;</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="annotated-cell-4-25"><a href="#annotated-cell-4-25"></a>    settings_path <span class="op">=</span> argv<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
-<span id="annotated-cell-4-26"><a href="#annotated-cell-4-26"></a>  <span class="op">}</span></span>
-<span id="annotated-cell-4-27"><a href="#annotated-cell-4-27"></a>  FsmData data <span class="op">=</span> <span class="op">{</span><span class="bu">std::</span>make_unique<span class="op">&lt;</span>Mads<span class="op">::</span>Agent<span class="op">&gt;(</span>agent_name<span class="op">,</span> settings_path<span class="op">)};</span></span>
-<span id="annotated-cell-4-28"><a href="#annotated-cell-4-28"></a>  <span class="co">// If crypto is needed, properly load keys and enable it</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-29" class="code-annotation-target"><a href="#annotated-cell-4-29"></a>  data<span class="op">.</span>agent<span class="op">-&gt;</span>init<span class="op">(</span><span class="kw">false</span><span class="op">,</span> <span class="kw">false</span><span class="op">);</span></span>
-<span id="annotated-cell-4-30"><a href="#annotated-cell-4-30"></a>  data<span class="op">.</span>agent<span class="op">-&gt;</span><span class="fu">connect</span><span class="op">();</span></span>
-<span id="annotated-cell-4-31"><a href="#annotated-cell-4-31"></a>  data<span class="op">.</span>agent<span class="op">-&gt;</span>enable_remote_control<span class="op">();</span></span>
-<span id="annotated-cell-4-32"><a href="#annotated-cell-4-32"></a>  <span class="kw">auto</span> settings <span class="op">=</span> data<span class="op">.</span>agent<span class="op">-&gt;</span>get_settings<span class="op">();</span></span>
-<span id="annotated-cell-4-33"><a href="#annotated-cell-4-33"></a>  <span class="cf">if</span> <span class="op">(</span>settings<span class="op">.</span>contains<span class="op">(</span><span class="st">"period"</span><span class="op">))</span> <span class="op">{</span></span>
-<span id="annotated-cell-4-34"><a href="#annotated-cell-4-34"></a>    loop_period <span class="op">=</span> <span class="bu">std::</span>chrono::milliseconds<span class="op">(</span>settings<span class="op">[</span><span class="st">"period"</span><span class="op">].</span>get<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;());</span></span>
-<span id="annotated-cell-4-35"><a href="#annotated-cell-4-35"></a>  <span class="op">}</span></span>
-<span id="annotated-cell-4-36"><a href="#annotated-cell-4-36"></a>  <span class="cf">if</span> <span class="op">(</span>settings<span class="op">.</span>contains<span class="op">(</span><span class="st">"receive_timeout"</span><span class="op">))</span> <span class="op">{</span></span>
-<span id="annotated-cell-4-37"><a href="#annotated-cell-4-37"></a>    receive_timeout <span class="op">=</span> <span class="bu">std::</span>chrono::milliseconds<span class="op">(</span>settings<span class="op">[</span><span class="st">"receive_timeout"</span><span class="op">].</span>get<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;());</span></span>
-<span id="annotated-cell-4-38"><a href="#annotated-cell-4-38"></a>  <span class="op">}</span></span>
-<span id="annotated-cell-4-39"><a href="#annotated-cell-4-39"></a>  <span class="cf">if</span> <span class="op">(</span>settings<span class="op">.</span>contains<span class="op">(</span><span class="st">"non_blocking"</span><span class="op">))</span> <span class="op">{</span></span>
-<span id="annotated-cell-4-40"><a href="#annotated-cell-4-40"></a>    non_blocking <span class="op">=</span> settings<span class="op">[</span><span class="st">"non_blocking"</span><span class="op">].</span>get<span class="op">&lt;</span><span class="dt">bool</span><span class="op">&gt;();</span></span>
-<span id="annotated-cell-4-41"><a href="#annotated-cell-4-41"></a>  <span class="op">}</span></span>
-<span id="annotated-cell-4-42"><a href="#annotated-cell-4-42"></a>  data<span class="op">.</span>agent<span class="op">-&gt;</span>set_receive_timeout<span class="op">(</span>receive_timeout<span class="op">);</span></span>
-<span id="annotated-cell-4-43"><a href="#annotated-cell-4-43"></a>  <span class="co">// Deal with further settings as needed</span></span>
-<span id="annotated-cell-4-44"><a href="#annotated-cell-4-44"></a></span>
-<span id="annotated-cell-4-45"><a href="#annotated-cell-4-45"></a>  <span class="co">// Initialize FSM</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3">3</button><span id="annotated-cell-4-46" class="code-annotation-target"><a href="#annotated-cell-4-46"></a>  <span class="kw">auto</span> fsm <span class="op">=</span> FSM<span class="op">::</span>FiniteStateMachine<span class="op">(&amp;</span>data<span class="op">);</span></span>
-<span id="annotated-cell-4-47"><a href="#annotated-cell-4-47"></a>  fsm<span class="op">.</span>set_timing_function<span class="op">([&amp;]()</span> <span class="op">{</span></span>
-<span id="annotated-cell-4-48"><a href="#annotated-cell-4-48"></a>    <span class="bu">std::</span>this_thread::sleep_for<span class="op">(</span>loop_period<span class="op">);</span></span>
-<span id="annotated-cell-4-49"><a href="#annotated-cell-4-49"></a>  <span class="op">});</span></span>
-<span id="annotated-cell-4-50"><a href="#annotated-cell-4-50"></a>  fsm<span class="op">.</span>run<span class="op">([&amp;](</span>FsmData <span class="op">&amp;</span>s<span class="op">)</span> <span class="op">{</span></span>
-<span id="annotated-cell-4-51"><a href="#annotated-cell-4-51"></a>    <span class="co">// here put everything that shall run at each loop iteration</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="4">4</button><span id="annotated-cell-4-52" class="code-annotation-target"><a href="#annotated-cell-4-52"></a>    data<span class="op">.</span>agent<span class="op">-&gt;</span>receive<span class="op">(</span>non_blocking<span class="op">);</span></span>
-<span id="annotated-cell-4-53"><a href="#annotated-cell-4-53"></a>    data<span class="op">.</span>agent<span class="op">-&gt;</span>remote_control<span class="op">(</span>get<span class="op">&lt;</span><span class="dv">1</span><span class="op">&gt;(</span>data<span class="op">.</span>agent<span class="op">-&gt;</span>last_message<span class="op">()));</span></span>
-<span id="annotated-cell-4-54"><a href="#annotated-cell-4-54"></a>  <span class="op">});</span></span>
-<span id="annotated-cell-4-55"><a href="#annotated-cell-4-55"></a></span>
-<span id="annotated-cell-4-56"><a href="#annotated-cell-4-56"></a>  <span class="co">// Shutdown procedure</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="5">5</button><span id="annotated-cell-4-57" class="code-annotation-target"><a href="#annotated-cell-4-57"></a>  data<span class="op">.</span>agent<span class="op">-&gt;</span>register_event<span class="op">(</span>Mads<span class="op">::</span><span class="dt">event_type</span><span class="op">::</span>shutdown<span class="op">);</span></span>
-<span id="annotated-cell-4-58"><a href="#annotated-cell-4-58"></a>  data<span class="op">.</span>agent<span class="op">-&gt;</span><span class="fu">disconnect</span><span class="op">();</span></span>
-<span id="annotated-cell-4-59"><a href="#annotated-cell-4-59"></a></span>
-<span id="annotated-cell-4-60"><a href="#annotated-cell-4-60"></a>  <span class="cf">if</span> <span class="op">(</span>data<span class="op">.</span>agent<span class="op">-&gt;</span>restart<span class="op">())</span> <span class="op">{</span></span>
-<span id="annotated-cell-4-61"><a href="#annotated-cell-4-61"></a>    <span class="kw">auto</span> cmd <span class="op">=</span> string<span class="op">(</span>MADS_PREFIX<span class="op">)</span> <span class="op">+</span> argv<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
-<span id="annotated-cell-4-62"><a href="#annotated-cell-4-62"></a>    cout <span class="op">&lt;&lt;</span> <span class="st">"Restarting "</span> <span class="op">&lt;&lt;</span> cmd <span class="op">&lt;&lt;</span> <span class="st">"..."</span> <span class="op">&lt;&lt;</span> endl<span class="op">;</span></span>
-<span id="annotated-cell-4-63"><a href="#annotated-cell-4-63"></a>    execvp<span class="op">(</span>cmd<span class="op">.</span>c_str<span class="op">(),</span> argv<span class="op">);</span></span>
-<span id="annotated-cell-4-64"><a href="#annotated-cell-4-64"></a>  <span class="op">}</span></span>
-<span id="annotated-cell-4-65"><a href="#annotated-cell-4-65"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="annotated-cell-4-66"><a href="#annotated-cell-4-66"></a><span class="op">}</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4"><pre class="sourceCode numberSource cpp code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode cpp"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-label="1"></a><span class="pp">#include </span><span class="im">&lt;mads.hpp&gt;</span></span>
+<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2" aria-label="2"></a><span class="pp">#include </span><span class="im">&lt;agent.hpp&gt;</span></span>
+<span id="annotated-cell-4-3"><a href="#annotated-cell-4-3" aria-label="3"></a><span class="pp">#include </span><span class="im">&lt;thread&gt;</span></span>
+<span id="annotated-cell-4-4"><a href="#annotated-cell-4-4" aria-label="4"></a><span class="pp">#include </span><span class="im">&lt;chrono&gt;</span></span>
+<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5" aria-label="5"></a><span class="pp">#include </span><span class="im">&lt;filesystem&gt;</span></span>
+<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6" aria-label="6"></a><span class="pp">#include </span><span class="im">&lt;nlohmann/json.hpp&gt;</span></span>
+<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7" aria-label="7"></a><span class="pp">#include </span><span class="im">"fsm.hpp"</span></span>
+<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8" aria-label="8"></a></span>
+<span id="annotated-cell-4-9"><a href="#annotated-cell-4-9" aria-label="9"></a><span class="kw">using</span> <span class="kw">namespace</span> chrono_literals<span class="op">;</span></span>
+<span id="annotated-cell-4-10"><a href="#annotated-cell-4-10" aria-label="10"></a><span class="kw">using</span> json <span class="op">=</span> nlohmann<span class="op">::</span>json<span class="op">;</span></span>
+<span id="annotated-cell-4-11"><a href="#annotated-cell-4-11" aria-label="11"></a></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-12" class="code-annotation-target"><a href="#annotated-cell-4-12" aria-label="12"></a><span class="kw">struct</span> FsmData <span class="op">{</span></span>
+<span id="annotated-cell-4-13"><a href="#annotated-cell-4-13" aria-label="13"></a>  <span class="bu">std::</span>unique_ptr<span class="op">&lt;</span>Mads<span class="op">::</span>Agent<span class="op">&gt;</span> agent<span class="op">;</span></span>
+<span id="annotated-cell-4-14"><a href="#annotated-cell-4-14" aria-label="14"></a><span class="op">};</span></span>
+<span id="annotated-cell-4-15"><a href="#annotated-cell-4-15" aria-label="15"></a></span>
+<span id="annotated-cell-4-16"><a href="#annotated-cell-4-16" aria-label="16"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
+<span id="annotated-cell-4-17"><a href="#annotated-cell-4-17" aria-label="17"></a>  <span class="bu">std::</span>filesystem::path exec <span class="op">=</span> argv<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
+<span id="annotated-cell-4-18"><a href="#annotated-cell-4-18" aria-label="18"></a>  <span class="bu">std::</span>string agent_name <span class="op">=</span> exec<span class="op">.</span>stem<span class="op">().</span>string<span class="op">();</span></span>
+<span id="annotated-cell-4-19"><a href="#annotated-cell-4-19" aria-label="19"></a>  <span class="bu">std::</span>string settings_path <span class="op">=</span> <span class="st">"tcp://localhost:9092"</span><span class="op">;</span></span>
+<span id="annotated-cell-4-20"><a href="#annotated-cell-4-20" aria-label="20"></a>  <span class="bu">std::</span>chrono::duration loop_period <span class="op">=</span> <span class="dv">100</span><span class="bu">ms</span><span class="op">;</span></span>
+<span id="annotated-cell-4-21"><a href="#annotated-cell-4-21" aria-label="21"></a>  <span class="bu">std::</span>chrono::duration receive_timeout <span class="op">=</span> <span class="dv">50</span><span class="bu">ms</span><span class="op">;</span></span>
+<span id="annotated-cell-4-22"><a href="#annotated-cell-4-22" aria-label="22"></a>  <span class="dt">bool</span> non_blocking <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="annotated-cell-4-23"><a href="#annotated-cell-4-23" aria-label="23"></a></span>
+<span id="annotated-cell-4-24"><a href="#annotated-cell-4-24" aria-label="24"></a>  <span class="cf">if</span> <span class="op">(</span>argc <span class="op">&gt;</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="annotated-cell-4-25"><a href="#annotated-cell-4-25" aria-label="25"></a>    settings_path <span class="op">=</span> argv<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="annotated-cell-4-26"><a href="#annotated-cell-4-26" aria-label="26"></a>  <span class="op">}</span></span>
+<span id="annotated-cell-4-27"><a href="#annotated-cell-4-27" aria-label="27"></a>  FsmData data <span class="op">=</span> <span class="op">{</span><span class="bu">std::</span>make_unique<span class="op">&lt;</span>Mads<span class="op">::</span>Agent<span class="op">&gt;(</span>agent_name<span class="op">,</span> settings_path<span class="op">)};</span></span>
+<span id="annotated-cell-4-28"><a href="#annotated-cell-4-28" aria-label="28"></a>  <span class="co">// If crypto is needed, properly load keys and enable it</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-29" class="code-annotation-target"><a href="#annotated-cell-4-29" aria-label="29"></a>  data<span class="op">.</span>agent<span class="op">-&gt;</span>init<span class="op">(</span><span class="kw">false</span><span class="op">,</span> <span class="kw">false</span><span class="op">);</span></span>
+<span id="annotated-cell-4-30"><a href="#annotated-cell-4-30" aria-label="30"></a>  data<span class="op">.</span>agent<span class="op">-&gt;</span><span class="fu">connect</span><span class="op">();</span></span>
+<span id="annotated-cell-4-31"><a href="#annotated-cell-4-31" aria-label="31"></a>  data<span class="op">.</span>agent<span class="op">-&gt;</span>enable_remote_control<span class="op">();</span></span>
+<span id="annotated-cell-4-32"><a href="#annotated-cell-4-32" aria-label="32"></a>  <span class="kw">auto</span> settings <span class="op">=</span> data<span class="op">.</span>agent<span class="op">-&gt;</span>get_settings<span class="op">();</span></span>
+<span id="annotated-cell-4-33"><a href="#annotated-cell-4-33" aria-label="33"></a>  <span class="cf">if</span> <span class="op">(</span>settings<span class="op">.</span>contains<span class="op">(</span><span class="st">"period"</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="annotated-cell-4-34"><a href="#annotated-cell-4-34" aria-label="34"></a>    loop_period <span class="op">=</span> <span class="bu">std::</span>chrono::milliseconds<span class="op">(</span>settings<span class="op">[</span><span class="st">"period"</span><span class="op">].</span>get<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;());</span></span>
+<span id="annotated-cell-4-35"><a href="#annotated-cell-4-35" aria-label="35"></a>  <span class="op">}</span></span>
+<span id="annotated-cell-4-36"><a href="#annotated-cell-4-36" aria-label="36"></a>  <span class="cf">if</span> <span class="op">(</span>settings<span class="op">.</span>contains<span class="op">(</span><span class="st">"receive_timeout"</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="annotated-cell-4-37"><a href="#annotated-cell-4-37" aria-label="37"></a>    receive_timeout <span class="op">=</span> <span class="bu">std::</span>chrono::milliseconds<span class="op">(</span>settings<span class="op">[</span><span class="st">"receive_timeout"</span><span class="op">].</span>get<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;());</span></span>
+<span id="annotated-cell-4-38"><a href="#annotated-cell-4-38" aria-label="38"></a>  <span class="op">}</span></span>
+<span id="annotated-cell-4-39"><a href="#annotated-cell-4-39" aria-label="39"></a>  <span class="cf">if</span> <span class="op">(</span>settings<span class="op">.</span>contains<span class="op">(</span><span class="st">"non_blocking"</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="annotated-cell-4-40"><a href="#annotated-cell-4-40" aria-label="40"></a>    non_blocking <span class="op">=</span> settings<span class="op">[</span><span class="st">"non_blocking"</span><span class="op">].</span>get<span class="op">&lt;</span><span class="dt">bool</span><span class="op">&gt;();</span></span>
+<span id="annotated-cell-4-41"><a href="#annotated-cell-4-41" aria-label="41"></a>  <span class="op">}</span></span>
+<span id="annotated-cell-4-42"><a href="#annotated-cell-4-42" aria-label="42"></a>  data<span class="op">.</span>agent<span class="op">-&gt;</span>set_receive_timeout<span class="op">(</span>receive_timeout<span class="op">);</span></span>
+<span id="annotated-cell-4-43"><a href="#annotated-cell-4-43" aria-label="43"></a>  <span class="co">// Deal with further settings as needed</span></span>
+<span id="annotated-cell-4-44"><a href="#annotated-cell-4-44" aria-label="44"></a></span>
+<span id="annotated-cell-4-45"><a href="#annotated-cell-4-45" aria-label="45"></a>  <span class="co">// Initialize FSM</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3">3</button><span id="annotated-cell-4-46" class="code-annotation-target"><a href="#annotated-cell-4-46" aria-label="46"></a>  <span class="kw">auto</span> fsm <span class="op">=</span> FSM<span class="op">::</span>FiniteStateMachine<span class="op">(&amp;</span>data<span class="op">);</span></span>
+<span id="annotated-cell-4-47"><a href="#annotated-cell-4-47" aria-label="47"></a>  fsm<span class="op">.</span>set_timing_function<span class="op">([&amp;]()</span> <span class="op">{</span></span>
+<span id="annotated-cell-4-48"><a href="#annotated-cell-4-48" aria-label="48"></a>    <span class="bu">std::</span>this_thread::sleep_for<span class="op">(</span>loop_period<span class="op">);</span></span>
+<span id="annotated-cell-4-49"><a href="#annotated-cell-4-49" aria-label="49"></a>  <span class="op">});</span></span>
+<span id="annotated-cell-4-50"><a href="#annotated-cell-4-50" aria-label="50"></a>  fsm<span class="op">.</span>run<span class="op">([&amp;](</span>FsmData <span class="op">&amp;</span>s<span class="op">)</span> <span class="op">{</span></span>
+<span id="annotated-cell-4-51"><a href="#annotated-cell-4-51" aria-label="51"></a>    <span class="co">// here put everything that shall run at each loop iteration</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="4">4</button><span id="annotated-cell-4-52" class="code-annotation-target"><a href="#annotated-cell-4-52" aria-label="52"></a>    data<span class="op">.</span>agent<span class="op">-&gt;</span>receive<span class="op">(</span>non_blocking<span class="op">);</span></span>
+<span id="annotated-cell-4-53"><a href="#annotated-cell-4-53" aria-label="53"></a>    data<span class="op">.</span>agent<span class="op">-&gt;</span>remote_control<span class="op">(</span>get<span class="op">&lt;</span><span class="dv">1</span><span class="op">&gt;(</span>data<span class="op">.</span>agent<span class="op">-&gt;</span>last_message<span class="op">()));</span></span>
+<span id="annotated-cell-4-54"><a href="#annotated-cell-4-54" aria-label="54"></a>  <span class="op">});</span></span>
+<span id="annotated-cell-4-55"><a href="#annotated-cell-4-55" aria-label="55"></a></span>
+<span id="annotated-cell-4-56"><a href="#annotated-cell-4-56" aria-label="56"></a>  <span class="co">// Shutdown procedure</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="5">5</button><span id="annotated-cell-4-57" class="code-annotation-target"><a href="#annotated-cell-4-57" aria-label="57"></a>  data<span class="op">.</span>agent<span class="op">-&gt;</span>register_event<span class="op">(</span>Mads<span class="op">::</span><span class="dt">event_type</span><span class="op">::</span>shutdown<span class="op">);</span></span>
+<span id="annotated-cell-4-58"><a href="#annotated-cell-4-58" aria-label="58"></a>  data<span class="op">.</span>agent<span class="op">-&gt;</span><span class="fu">disconnect</span><span class="op">();</span></span>
+<span id="annotated-cell-4-59"><a href="#annotated-cell-4-59" aria-label="59"></a></span>
+<span id="annotated-cell-4-60"><a href="#annotated-cell-4-60" aria-label="60"></a>  <span class="cf">if</span> <span class="op">(</span>data<span class="op">.</span>agent<span class="op">-&gt;</span>restart<span class="op">())</span> <span class="op">{</span></span>
+<span id="annotated-cell-4-61"><a href="#annotated-cell-4-61" aria-label="61"></a>    <span class="kw">auto</span> cmd <span class="op">=</span> string<span class="op">(</span>MADS_PREFIX<span class="op">)</span> <span class="op">+</span> argv<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
+<span id="annotated-cell-4-62"><a href="#annotated-cell-4-62" aria-label="62"></a>    cout <span class="op">&lt;&lt;</span> <span class="st">"Restarting "</span> <span class="op">&lt;&lt;</span> cmd <span class="op">&lt;&lt;</span> <span class="st">"..."</span> <span class="op">&lt;&lt;</span> endl<span class="op">;</span></span>
+<span id="annotated-cell-4-63"><a href="#annotated-cell-4-63" aria-label="63"></a>    execvp<span class="op">(</span>cmd<span class="op">.</span>c_str<span class="op">(),</span> argv<span class="op">);</span></span>
+<span id="annotated-cell-4-64"><a href="#annotated-cell-4-64" aria-label="64"></a>  <span class="op">}</span></span>
+<span id="annotated-cell-4-65"><a href="#annotated-cell-4-65" aria-label="65"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="annotated-cell-4-66"><a href="#annotated-cell-4-66" aria-label="66"></a><span class="op">}</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
 <dd>

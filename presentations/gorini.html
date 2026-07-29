@@ -8,9 +8,9 @@
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.38">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="Paolo Bosetti">
   <title>Distributed systems with </title>
@@ -23,10 +23,13 @@
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
     */
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -234,7 +237,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Paolo Bosetti 
+Paolo Bosetti
 </div>
         <p class="quarto-title-affiliation">
             University of Trento
@@ -273,12 +276,12 @@ Paolo Bosetti
 <li>IDE of choice is Visual Studio Code, with the <strong>MADSCode</strong> extension</li>
 <li>Be sure to have the proper packags installed and clang selected as compiler:</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a></a><span class="fu">sudo</span> apt update</span>
-<span id="cb1-2"><a></a><span class="fu">sudo</span> apt install clang cmake-curses-gui git libssl-dev</span>
-<span id="cb1-3"><a></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/cc cc /usr/bin/clang 100</span>
-<span id="cb1-4"><a></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/c++ c++ /usr/bin/clang++ 100</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a aria-label="1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb1-2"><a aria-label="2"></a><span class="fu">sudo</span> apt install clang cmake-curses-gui git libssl-dev</span>
+<span id="cb1-3"><a aria-label="3"></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/cc cc /usr/bin/clang 100</span>
+<span id="cb1-4"><a aria-label="4"></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/c++ c++ /usr/bin/clang++ 100</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Then go to <a href="https://git.new/mads" class="uri">https://git.new/mads</a>, download the latest <code>.deb</code> package and install with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a></a><span class="fu">sudo</span> dpkg <span class="at">-i</span> Mads-v2.x.x-Linux-<span class="op">&lt;</span>platform<span class="op">&gt;</span>.deb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a aria-label="1"></a><span class="fu">sudo</span> dpkg <span class="at">-i</span> Mads-v2.x.x-Linux-<span class="op">&lt;</span>platform<span class="op">&gt;</span>.deb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-warning callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -328,7 +331,7 @@ Paolo Bosetti
 <li>Also install CMake 4.2.1 from <a href="https://github.com/Kitware/CMake/releases/tag/v4.2.1">GitHub</a></li>
 </ul>
 <p>Then go to <a href="https://git.new/mads" class="uri">https://git.new/mads</a>, download the latest <code>.sh</code> installer and run it as:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a></a><span class="fu">chmod</span> a+x Mads-v2.x.x-Darwin-universal.dmg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a aria-label="1"></a><span class="fu">chmod</span> a+x Mads-v2.x.x-Darwin-universal.dmg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Then drag the <code>usr</code> folder into your home directory, and add the path <code>~/usr/local/bin</code> to your <code>PATH</code> environment variable</p>
 <div class="callout callout-warning callout-titled callout-style-default">
 <div class="callout-body">
@@ -348,9 +351,9 @@ Paolo Bosetti
 <h2>Test that it works</h2>
 <p>Open a terminal (Developer PowerShell on Windows) and type:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a></a><span class="ex">mads</span> <span class="at">-h</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a aria-label="1"></a><span class="ex">mads</span> <span class="at">-h</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Mads command line interface version v2.4.0
+<pre><code>Mads command line interface version v2.4.1
 Usage:
   mads [OPTION...]
 
