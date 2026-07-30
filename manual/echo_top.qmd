@@ -1,0 +1,244 @@
+---
+title: "Command: `echo|top`"
+author:
+  - name: "Paolo Bosetti"
+    affiliations:
+      - name: "University of Trento"
+date: 07/07/2026
+date-modified: today
+format: html
+draft: false
+categories: [command, cli, agents]
+abstract: |
+  `mads echo` and `mads top` allow to inspect a running MADS network, showing messages on-the-wire 
+  and presenting a table of running agents.
+---
+
+::: {.callout-warning}
+This command has been introduced in MADS v2.4.1.
+:::
+
+# Description
+
+This pair of commands provide GUI-less alternatives to [`mads-chat`](https://github.com/mads-net/mads_chat) 
+and allow to inspect live traffic and to get a live table of active topics.
+
+* [Inspect live traffic](#inspecting-live-traffic)
+* [List active topics](#list-active-topics)
+
+
+::: {.callout-tip}
+
+Beside the `mads-chat` agent (to be installed separately), the `mads feedback` command is an older, less flexible, and deprecated
+alternative to `mads echo`, and the [`agents_status.plugin`](https://github.com/MADS-NET/agents_status_plugin)
+is a likewise older and deprecated alternative to `mads top`.
+
+:::
+
+
+
+## Inspecting live traffic
+
+**mads-echo** is a zero-config way to peek at live traffic on a MADS network without writing an agent or
+touching **mads.ini** --- the MADS analogue of **ros2 topic echo** / **rostopic echo** / **mosquitto_sub**.
+It connects as an ephemeral, read-only sink **Agent** and pretty-prints every message it receives: topic,
+timestamp, size, and either indented (colorized) JSON or a one-line blob summary. Being read-only, it
+cannot desync a running system.
+
+Each positional *topic* argument is an MQTT-style subscription filter (see [**CONTEXT.md**](https://github.com/pbosetti/MADS/blob/6a0a835f81fa0a407381cccfd9f0256f79837c39/CONTEXT.md)'s "Settings
+model" section): a plain string subscribes exactly as-is, while **+** (exactly one topic level) and **#**
+(this level and everything below it, only legal as the last token) act as wildcards, e.g.
+**sensors/+/x** or **sensors/#**. With no *topic* argument, **mads-echo** subscribes to everything.
+
+### Two ways to reach a broker
+
+**mads-echo** supports two independent, mutually compatible ways to connect:
+
+- **Zero-config (default).** No **mads.ini** section is required. **\-\-broker** points directly at the
+  broker's backend (subscribe) endpoint; *topic* arguments are given directly on the command line. This
+  is the common case for quickly checking what is being published on a known broker.
+- **\-s, \-\-settings**, for consistency with every other **mads-\*** executable. **mads-echo** then
+  behaves exactly like **mads-logger** etc.: it queries the broker (or reads a local **.ini** file) for a
+  **[echo]** section (or **[**name**]** with **\-n/\-\-name**), taking its **sub_topic** from there unless
+  overridden by positional *topic* arguments on the command line.
+
+**\-\-broker** can be combined with either mode: it always overrides whatever subscribe endpoint the
+other mode resolved to, which is the most direct way to point at a specific broker with zero setup.
+
+## Options
+
+*topic* ...
+:  Zero or more MQTT-style topic filters to subscribe to. Overrides any **sub_topic** loaded via
+   **\-\-settings**. Defaults to subscribing to every topic.
+
+**\-b**, **\-\-broker** *URI*
+:  Subscribe endpoint to connect to directly, bypassing the settings/broker-query path (e.g.
+   **tcp://broker.local:9091**). Defaults to **tcp://localhost:9091**.
+
+**\-\-raw**
+:  For blob messages, print the exact bytes (base64-encoded) instead of the default one-line
+   **&lt;blob N bytes&gt;** summary.
+
+**\-\-count** *N*
+:  Exit automatically after printing *N* messages.
+
+**\-\-jsonl**
+:  Emit one compact JSON line per message (**topic**, **timestamp**, **size**, **type**, **payload**)
+   instead of the multi-line pretty form, and disable coloring --- intended for piping into **jq** or
+   similar tools.
+
+**\-s**, **\-\-settings** *URI*
+:  Path to the settings file (ini format), or a broker settings URI (**tcp://host:port**). See "Two ways
+   to reach a broker" above.
+
+**\-n**, **\-\-name** *name*
+:  Agent/section name to use with **\-\-settings** (default **echo**).
+
+**\-i**, **\-\-agent-id** *id*
+:  Agent ID to add to outgoing JSON frames. Unused by **mads-echo** itself (it never publishes) but
+   accepted for consistency with other **mads-\*** executables.
+
+**\-S**, **\-\-save-settings** *filename.ini*
+:  Save the settings (loaded via **\-\-settings**) to the given file (ini format), then exit.
+
+**\-\-crypto**
+:  Enable CURVE encryption for broker communication.
+
+**\-\-keys_dir[=path]**
+:  Directory where CURVE key files are stored.
+
+**\-\-key_broker[=name]**
+:  Name of the broker key file, without the **.key** extension. Defaults to **broker**.
+
+**\-\-key_client[=name]**
+:  Name of the client key file, without the **.key** extension. Defaults to **client**.
+
+**\-\-auth_verbose**
+:  Enable verbose authentication messages.
+
+**\-r**, **\-\-room[=room]**
+:  Discover the broker's settings endpoint by service-discovery room name, instead of **\-\-settings**.
+
+**\-v**, **\-\-version**
+:  Show version information.
+
+**\-h**, **\-\-help**
+:  Show summary of options.
+
+## Examples
+
+Print everything flowing through a broker on localhost:
+
+```bash
+mads-echo
+```
+
+Print only accelerometer readings from any sensor, on a remote broker, with no **mads.ini** at all:
+
+```bash
+mads-echo --broker tcp://plant-broker.local:9091 'sensors/+/acc'
+```
+
+Pipe the last 50 messages on a topic through **jq**:
+
+```bash
+mads-echo --jsonl --count 50 'sensors/#' | jq '.payload'
+```
+
+Using the normal settings path, exactly like **mads-logger**:
+
+```bash
+mads-echo --settings tcp://broker.local:9092
+```
+
+with a matching section in that broker's **mads.ini**:
+
+```ini
+[echo]
+sub_topic = ["sensors/#"]
+```
+
+
+
+
+# List active topics
+
+**mads-top** is a live, redrawn-in-place table of the topics currently active on a MADS network --- the
+MADS analogue of **htop**. It connects as an ephemeral, read-only sink **Agent** (same zero-config-by-
+-default / **\-\-settings**-for-consistency duality as **mads-echo**; see **mads-echo**(1)), subscribes to
+everything by default (or to the given MQTT-style topic filters), and shows, per topic: messages/second,
+bytes/second (each averaged over a trailing sliding window, **\-\-window**), how long ago the topic was
+last seen, and a short preview of its last payload. The table redraws every **\-\-sample-rate** seconds.
+Being read-only, it cannot desync a running system.
+
+Press **q** (or Ctrl-C) to quit.
+
+## Options
+
+*topic* ...
+:  Zero or more MQTT-style topic filters to subscribe to (see **mads-echo**(1) for the wildcard grammar).
+   Overrides any **sub_topic** loaded via **\-\-settings**. Defaults to subscribing to every topic.
+
+**\-b**, **\-\-broker** *URI*
+:  Subscribe endpoint to connect to directly, bypassing the settings/broker-query path. Defaults to
+   **tcp://localhost:9091**.
+
+**\-\-sample-rate** *seconds*
+:  How often the table is redrawn, in seconds. Default **1.0**.
+
+**\-\-window** *seconds*
+:  Trailing time window used to average messages/second and bytes/second per topic. Default **5.0**. A
+   larger window smooths bursty traffic; a smaller one reacts faster to changes.
+
+**\-s**, **\-\-settings** *URI*
+:  Path to the settings file (ini format), or a broker settings URI (**tcp://host:port**). See
+   **mads-echo**(1)'s "Two ways to reach a broker" for how this interacts with the zero-config default.
+
+**\-n**, **\-\-name** *name*
+:  Agent/section name to use with **\-\-settings** (default **top**).
+
+**\-i**, **\-\-agent-id** *id*
+:  Agent ID to add to outgoing JSON frames. Unused by **mads-top** itself (it never publishes) but
+   accepted for consistency with other **mads-\*** executables.
+
+**\-S**, **\-\-save-settings** *filename.ini*
+:  Save the settings (loaded via **\-\-settings**) to the given file (ini format), then exit.
+
+**\-\-crypto**
+:  Enable CURVE encryption for broker communication.
+
+**\-\-keys_dir[=path]**
+:  Directory where CURVE key files are stored.
+
+**\-\-key_broker[=name]**
+:  Name of the broker key file, without the **.key** extension. Defaults to **broker**.
+
+**\-\-key_client[=name]**
+:  Name of the client key file, without the **.key** extension. Defaults to **client**.
+
+**\-\-auth_verbose**
+:  Enable verbose authentication messages.
+
+**\-r**, **\-\-room[=room]**
+:  Discover the broker's settings endpoint by service-discovery room name, instead of **\-\-settings**.
+
+**\-v**, **\-\-version**
+:  Show version information.
+
+**\-h**, **\-\-help**
+:  Show summary of options.
+
+# Examples
+
+Watch everything flowing through a broker on localhost, redrawing twice a second:
+
+```bash
+mads-top --sample-rate 0.5
+```
+
+Watch only sensor traffic on a remote broker, with no **mads.ini** at all, averaged over a 10 second
+window:
+
+```bash
+mads-top --broker tcp://plant-broker.local:9091 --window 10 'sensors/#'
+```

@@ -28,7 +28,10 @@ format: html
 * [package](package.qmd) — list, inspect, and install pre-compiled community packages
 * [dealer](dealer-worker.qmd), [worker](dealer-worker.qmd) — round-robin load balancing across multiple worker processes
 * [rsource](rust-loaders.qmd), [rfilter](rust-loaders.qmd), [rsink](rust-loaders.qmd) — Rust-plugin loaders (not on Windows)
-
+* [up](up.qmd) - A GUI-less alternative to `mads director` ([see here](/guides/director.qmd))
+* [doctor](doctor.qmd) - Use it when you get stuck
+* [echo/top](echo_top.qmd) - look at what happens on the net
+* [record/play/bag](record_play.qmd) - record a session, then replay it later, without a database (bag files)
 
 ## MADS concepts
 
@@ -49,7 +52,7 @@ Download MADS latest version from <https://git.new/MADS> and follow the [install
 
 The [MADSCode {{< bi link >}}](https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode) Visual Studio Code extension provides useful tools for MADS development.
 
-### {{< si linux >}} Linux
+### {{< bi tux >}} Linux
 
 You need `clang` compiler and `cmake` build system installed, plus git and CMake. Visual Studio Code is the suggested development platform.
 
@@ -73,11 +76,11 @@ sudo update-alternatives --all
 
 
 
-### {{< bs microsoft >}} Windows
+### {{< bi microsoft >}} Windows
 
 You need Visual Studio 2022 (Community Edition is fine) or later, with the C++ development tools installed, plus CMake. Visual Studio Code is the suggested development platform.
 
 
-### {{< bs apple >}} macOS
+### {{< bi apple >}} macOS
 
 You need Xcode and the command line tools installed, plus git and CMake. Visual Studio Code is the suggested development platform.

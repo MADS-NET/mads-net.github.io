@@ -1,5 +1,7 @@
 project:
   type: website
+  preview:
+    port: 8080
 
 website:
   description: "MADS - Multi-Agent Distributed System"
@@ -83,6 +85,8 @@ website:
         menu:
           - href: presentations/intro.qmd
             text: "{{< logo >}} Intro"
+          - href: "presentations/gorini.qmd"
+            text: "Scuola Gorini 2026"
     right:
       - href: https://git.new/MADS
         text: "{{< bi cloud-arrow-down-fill >}} Get MADS"

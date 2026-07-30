@@ -241,3 +241,45 @@ so the `set_params()` method will receive a JSON as:
   "key3": 13
 }
 ```
+
+# Updating a plugin
+
+New major or minor versions of MADS (e.g. from v2.x.x -> v3.0.0 or from v2.4.x to v2.5.x) **may** require to update plugins created with older MADS versions. Updating may require to change:
+
+* the `CMakeLists.txt` script
+* the signatures of mandatory plugin methods
+* the *protocol* version, i.e. the way the plugin can be loaded by MADS
+
+In most of the cases, updating your plugin code is a matter of running
+
+```bash
+mads plugin --update
+rm -rf build
+cmake -Bbuild
+cmake --build build
+```
+
+from within your plugin root folder. The first command tries and changes all necessary files to have your plugin working with the currently installed version of MADS, making backup copies of modified files (with `.bak` extension added). Then you have to rebuild the whole tree (deleting the `build` folder ensures that the proper dependencies are correctly fetched).
+
+The tool is automated. If you heavily changed the plugin source files w.r.t. the original template, it might miss some necessary changes. When that happens, and the plugin refuses to work, generate a new blank plugin and compare source files and the `CMakeLists.txt` script.
+
+
+::: {.callout-tip}
+
+### Check a plugin
+
+To verify if a compiled plugin is compatible with the currently installed MADS version, use the `inspect_plugin` subcommand:
+
+```bash
+> mads inspect_plugin build/arduino.plugin
+plugin: build/arduino.plugin
+loadable: yes
+json_expected: 3.12.0
+json_found: 3.12.0
+protocol_current: yes
+type: source
+expected_protocol_version: 8
+drivers:
+  - type: source, protocol_version: 8, kind: arduino
+```
+:::
