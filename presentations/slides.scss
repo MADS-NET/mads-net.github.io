@@ -36,6 +36,11 @@ $body-color: #777777;
   aside{
     font-style: italic;
   }
+
+  blockquote {
+    color: $body-color;
+    font-style: italic;
+  }
   
   figcaption {
     font-style: italic;

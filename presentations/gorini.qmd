@@ -1,0 +1,214 @@
+---
+title: "Distributed systems with {{< logo >}}"
+subtitle: "Delivered at Scuola Gorini 2026"
+author: "Paolo Bosetti"
+institute: "University of Trento"
+date: 2026-Sep-3
+date-format: "YYYY-MMM-DD"
+draft: false
+logo: ../images/logo.png
+categories: [intro, meeting]
+format: revealjs
+revealjs-plugins: [tabset]
+abstract: |
+  A high level introduction to the MADS Framework.
+# filters:
+#   - github-corner
+# github-corner:
+#   url: "https://www.github.com/pbosetti/mads"
+#   logo-color: "white"
+#   background-color: "#1c84e5"
+#   size: 150
+#   position: "left"
+---
+
+```{r setup}
+
+```
+
+
+## {{< bi list >}} Contents
+
+* Requirements
+* What is {{< logo >}}
+* Concepts
+* The Agents
+  * Types of agents: source, filter, sink
+  * Many ways to implement an agent
+  * Data sources in Arduino
+* Designing a network
+* Deployment
+
+
+# Requirements
+
+{{< logo >}} is a polyglot environment: you might use C, C++, Rust, Python, R, Lua.
+
+That said, **C++ is its core language**, and for using it you need a C++ environment
+
+## Developing on Linux {{< bi ubuntu >}}
+
+Core development is made in **CMake 4.x and Clang**, tested on Ubuntu 22.04 and 24.04
+
+* IDE of choice is Visual Studio Code, with the **MADSCode** extension
+* Be sure to have the proper packags installed and clang selected as compiler:
+
+```bash
+sudo apt update
+sudo apt install clang cmake-curses-gui git libssl-dev
+sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
+sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
+```
+
+Then go to <https://git.new/mads>, download the latest `.deb` package and install with:
+
+```bash
+sudo dpkg -i Mads-v2.x.x-Linux-<platform>.deb
+```
+
+
+::: {.callout-warning}
+
+Pick the proper `<platform>`: `x86_64` for Intel, `aarch64` for ARM machines
+
+:::
+
+
+## Developing on Windows {{< bi microsoft >}}
+
+Core development is made in **CMake 4.x and Visual Studio 2022**, tested on Windows 11
+
+* IDE of choice is Visual Studio Code, with the **MADSCode** extension
+* Visual Studio (Community Edition is fine) is only used as compiler, not as IDE
+* When installing VS be sure to add C++ tools and CLI libraries
+* * Also install CMake 4.2.1 from [GitHub](https://github.com/Kitware/CMake/releases/tag/v4.2.1)
+
+Then go to <https://git.new/mads>, download the latest `.exe` installer and follow the graphical install
+
+
+::: {.callout-warning}
+
+More recent versions of CMake may not work with some of the MADS dependencies. Please stay on the tested 4.2.1 version.
+
+:::
+
+
+
+## Developing on macOS {{< bi apple >}}
+
+Core development is made in **CMake 4.x and Clang**, tested on macOS 26 (Tahoe)
+
+* IDE of choice is Visual Studio Code, with the **MADSCode** extension
+* Apple Xcode tools must be installed (to have Clang working)
+* Also install CMake 4.2.1 from [GitHub](https://github.com/Kitware/CMake/releases/tag/v4.2.1)
+
+Then go to <https://git.new/mads>, download the latest `.sh` installer and run it as:
+
+```bash
+chmod a+x Mads-v2.x.x-Darwin-universal.dmg
+```
+
+Then drag the `usr` folder into your home directory, and add the path `~/usr/local/bin` to your `PATH` environment variable
+
+
+::: {.callout-warning}
+
+More recent versions of CMake may not work with some of the MADS dependencies. Please stay on the tested 4.2.1 version.
+
+:::
+
+
+
+## Test that it works
+
+Open a terminal (Developer PowerShell on Windows) and type:
+
+```{bash}
+#| echo: true
+mads -h
+```
+
+
+::: {.callout-tip}
+
+### If you get an error:
+
+- be sure that your `PATH` variable contains the `folder where the `mads` command has been installed
+- be sure that your OS matches one of the versions above listed
+- report back to <https://github.com/pbosetti/MADS/issues>, carefully describing your issue and configuration
+
+:::
+
+
+# What is {{< logo  >}}?
+
+## Brief description
+
+> MADS is a framework (i.e. a set of tools and libraries) to implement a collection of possibly distributed processes that collect, manipulate, store and present information
+
+* based on IP connectivity (UDP and TCP)
+* runs on Linux, macOS and Windows, on Intel and ARM architectures
+* it is easily extensible with customized processes
+* it is **centralized** and **broker-based**
+* it is safe and industry-ready (**encrypted**)
+* it is lightweight and easy to learn
+* it is akin to ROS2, Apache Kafka, Zenoh
+
+
+## Common tasks: acquisition
+
+You want to **aquire data/signals**:
+
+* from microcontrollers via serial connection (e.g. Arduino)
+* on microcontrollers with an ARM Linux OS (e.g. Arduino Uno Q, Raspberry Pi, Beaglebone)
+* on microcontrollers with WiFi (Arduino Uno R4 WiFi only)
+* from custom/vendor API in C/C++, Python or Rust
+
+
+::: {.callout-note}
+
+### Definition
+
+MADS Processes that acquire and produce a data flow are called [source agents]{.bred}
+
+:::
+
+
+## Common tasks: manipulation
+
+You want to **manipulate data/signals**:
+
+* with custom algorithms implemented in C, C++, Python, Rust, R
+* ML inference by models in **ONNX** format ([onnx.ai](https://onnx.ai))
+* simulation models in **Functional Mock-Up Unit** ([FMU](https://fmi-standard.org)) format (exported from Simulink)
+
+::: {.callout-note}
+
+### Definition
+
+MADS Processes that manipulate a data flow are called [filter agents]{.bgreen}
+
+:::
+
+
+## Common tasks: logging/presenting
+
+You want to **consume or present data/signals**:
+
+* storage/logging straight to [MongoDB databases](https://mongodb.com)
+* logging to [HDF5](https://hdfgroup.org) format (for training ML models)
+* realtime presentation via [Rerun.io](https://rerun.io)
+* custom data consumers in C++, Rust, Python, R
+
+::: {.callout-note}
+
+### Definition
+
+MADS Processes that consume a data flow (for logging or presenting, or acting on the field) are called [sink agents]{.bblue}
+
+:::
+
+
+# This is just a preview
+
+The rest of this presentation will be available on Sep. 2026
