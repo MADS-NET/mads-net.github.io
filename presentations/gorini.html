@@ -330,9 +330,24 @@ Paolo Bosetti
 <li>Apple Xcode tools must be installed (to have Clang working)</li>
 <li>Also install CMake 4.2.1 from <a href="https://github.com/Kitware/CMake/releases/tag/v4.2.1">GitHub</a></li>
 </ul>
-<p>Then go to <a href="https://git.new/mads" class="uri">https://git.new/mads</a>, download the latest <code>.sh</code> installer and run it as:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a aria-label="1"></a><span class="fu">chmod</span> a+x Mads-v2.x.x-Darwin-universal.dmg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then drag the <code>usr</code> folder into your home directory, and add the path <code>~/usr/local/bin</code> to your <code>PATH</code> environment variable</p>
+<p>Then go to <a href="https://git.new/mads" class="uri">https://git.new/mads</a>, download the latest <code>.dmg</code> installer and open it it. Then drag the <code>usr</code> folder into your home directory, and add the path <code>~/usr/local/bin</code> to your <code>PATH</code> environment variable and remove the unsafe attribute:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a aria-label="1"></a><span class="ex">xattr</span> <span class="at">-dr</span> com.apple.quarantine ~/usr/local</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>How to change your <code>PATH</code></strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>If your shell is <code>zsh</code>, then look <a href="https://stackoverflow.com/questions/68605927/how-can-i-change-path-variable-in-zsh">here</a></li>
+<li>If your shell is <code>bash</code>, then look <a href="https://www.cyberciti.biz/faq/appleosx-bash-unix-change-set-path-environment-variable/">here</a></li>
+</ul>
+</div>
+</div>
+</div>
 <div class="callout callout-warning callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
