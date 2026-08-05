@@ -157,7 +157,7 @@ mads -h
 * it is **centralized** and **broker-based**
 * it is safe and industry-ready (**encrypted**)
 * it is lightweight and easy to learn
-* it is akin to ROS2, Apache Kafka, Zenoh
+* it is akin to ROS2, Apache Spark, Zenoh
 
 
 ## Common tasks: acquisition
