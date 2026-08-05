@@ -879,7 +879,7 @@
     "href": "presentations/gorini.html#brief-description",
     "title": "Distributed systems with ",
     "section": "Brief description",
-    "text": "Brief description\n\nMADS is a framework (i.e. a set of tools and libraries) to implement a collection of possibly distributed processes that collect, manipulate, store and present information\n\n\nbased on IP connectivity (UDP and TCP)\nruns on Linux, macOS and Windows, on Intel and ARM architectures\nit is easily extensible with customized processes\nit is centralized and broker-based\nit is safe and industry-ready (encrypted)\nit is lightweight and easy to learn\nit is akin to ROS2, Apache Kafka, Zenoh"
+    "text": "Brief description\n\nMADS is a framework (i.e. a set of tools and libraries) to implement a collection of possibly distributed processes that collect, manipulate, store and present information\n\n\nbased on IP connectivity (UDP and TCP)\nruns on Linux, macOS and Windows, on Intel and ARM architectures\nit is easily extensible with customized processes\nit is centralized and broker-based\nit is safe and industry-ready (encrypted)\nit is lightweight and easy to learn\nit is akin to ROS2, Apache Spark, Zenoh"
   },
   {
     "objectID": "presentations/gorini.html#common-tasks-acquisition",
