@@ -23,7 +23,8 @@ abstract: |
 ---
 
 ```{r setup}
-
+#| echo: false
+library(tidyverse)
 ```
 
 
@@ -32,12 +33,14 @@ abstract: |
 * Requirements
 * What is {{< logo >}}
 * Concepts
-* The Agents
+  * Broker-based networking
+  * MADS Agents
   * Types of agents: source, filter, sink
   * Many ways to implement an agent
   * Data sources in Arduino
 * Designing a network
 * Deployment
+* Advanced features
 
 
 # Requirements
@@ -45,6 +48,12 @@ abstract: |
 {{< logo >}} is a polyglot environment: you might use C, C++, Rust, Python, R, Lua.
 
 That said, **C++ is its core language**, and for using it you need a C++ environment
+
+::: {.callout-warning}
+### CMake version
+More recent versions of CMake may not work with some of the MADS dependencies. Please st**ay on the tested 4.2.1 version**
+
+:::
 
 ## Developing on Linux {{< bi ubuntu >}}
 
@@ -81,16 +90,12 @@ Core development is made in **CMake 4.x and Visual Studio 2022**, tested on Wind
 * IDE of choice is Visual Studio Code, with the **MADSCode** extension
 * Visual Studio (Community Edition is fine) is only used as compiler, not as IDE
 * When installing VS be sure to add C++ tools and CLI libraries
-* * Also install CMake 4.2.1 from [GitHub](https://github.com/Kitware/CMake/releases/tag/v4.2.1)
+* Also install CMake 4.2.1 from [GitHub](https://github.com/Kitware/CMake/releases/tag/v4.2.1)
 
 Then go to <https://git.new/mads>, download the latest `.exe` installer and follow the graphical install
 
 
-::: {.callout-warning}
 
-More recent versions of CMake may not work with some of the MADS dependencies. Please stay on the tested 4.2.1 version.
-
-:::
 
 
 
@@ -116,13 +121,6 @@ xattr -dr com.apple.quarantine ~/usr/local
 
 
 
-::: {.callout-warning}
-
-More recent versions of CMake may not work with some of the MADS dependencies. Please stay on the tested 4.2.1 version.
-
-:::
-
-
 
 ## Test that it works
 
@@ -138,7 +136,7 @@ mads -h
 
 ### If you get an error:
 
-- be sure that your `PATH` variable contains the `folder where the `mads` command has been installed
+- be sure that your `PATH` variable contains the folder where the `mads` command has been installed
 - be sure that your OS matches one of the versions above listed
 - report back to <https://github.com/pbosetti/MADS/issues>, carefully describing your issue and configuration
 
