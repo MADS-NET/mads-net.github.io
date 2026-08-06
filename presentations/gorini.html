@@ -252,15 +252,17 @@ Paolo Bosetti
 <ul>
 <li>Requirements</li>
 <li>What is <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"></li>
-<li>Concepts</li>
-<li>The Agents
+<li>Concepts
 <ul>
+<li>Broker-based networking</li>
+<li>MADS Agents</li>
 <li>Types of agents: source, filter, sink</li>
 <li>Many ways to implement an agent</li>
 <li>Data sources in Arduino</li>
 </ul></li>
 <li>Designing a network</li>
 <li>Deployment</li>
+<li>Advanced features</li>
 </ul>
 </section>
 <section>
@@ -268,6 +270,19 @@ Paolo Bosetti
 <h1>Requirements</h1>
 <p><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> is a polyglot environment: you might use C, C++, Rust, Python, R, Lua.</p>
 <p>That said, <strong>C++ is its core language</strong>, and for using it you need a C++ environment</p>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>CMake version</strong></p>
+</div>
+<div class="callout-content">
+<p>More recent versions of CMake may not work with some of the MADS dependencies. Please st<strong>ay on the tested 4.2.1 version</strong></p>
+</div>
+</div>
+</div>
 </section>
 <section id="developing-on-linux-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207562756e7475203e7d7d" class="slide level2">
 <h2>Developing on Linux <i class="bi-ubuntu " style="" role="img" aria-hidden="true"></i></h2>
@@ -303,24 +318,9 @@ Paolo Bosetti
 <li>IDE of choice is Visual Studio Code, with the <strong>MADSCode</strong> extension</li>
 <li>Visual Studio (Community Edition is fine) is only used as compiler, not as IDE</li>
 <li>When installing VS be sure to add C++ tools and CLI libraries</li>
-<li><ul>
 <li>Also install CMake 4.2.1 from <a href="https://github.com/Kitware/CMake/releases/tag/v4.2.1">GitHub</a></li>
-</ul></li>
 </ul>
 <p>Then go to <a href="https://git.new/mads" class="uri">https://git.new/mads</a>, download the latest <code>.exe</code> installer and follow the graphical install</p>
-<div class="callout callout-warning callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Warning</strong></p>
-</div>
-<div class="callout-content">
-<p>More recent versions of CMake may not work with some of the MADS dependencies. Please stay on the tested 4.2.1 version.</p>
-</div>
-</div>
-</div>
 </section>
 <section id="developing-on-macos-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d" class="slide level2">
 <h2>Developing on macOS <i class="bi-apple " style="" role="img" aria-hidden="true"></i></h2>
@@ -345,19 +345,6 @@ Paolo Bosetti
 <li>If your shell is <code>zsh</code>, then look <a href="https://stackoverflow.com/questions/68605927/how-can-i-change-path-variable-in-zsh">here</a></li>
 <li>If your shell is <code>bash</code>, then look <a href="https://www.cyberciti.biz/faq/appleosx-bash-unix-change-set-path-environment-variable/">here</a></li>
 </ul>
-</div>
-</div>
-</div>
-<div class="callout callout-warning callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Warning</strong></p>
-</div>
-<div class="callout-content">
-<p>More recent versions of CMake may not work with some of the MADS dependencies. Please stay on the tested 4.2.1 version.</p>
 </div>
 </div>
 </div>
@@ -393,7 +380,7 @@ Usage:
 </div>
 <div class="callout-content">
 <ul>
-<li>be sure that your <code>PATH</code> variable contains the <code>folder where the</code>mads` command has been installed</li>
+<li>be sure that your <code>PATH</code> variable contains the folder where the <code>mads</code> command has been installed</li>
 <li>be sure that your OS matches one of the versions above listed</li>
 <li>report back to <a href="https://github.com/pbosetti/MADS/issues" class="uri">https://github.com/pbosetti/MADS/issues</a>, carefully describing your issue and configuration</li>
 </ul>
