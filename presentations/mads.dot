@@ -1,0 +1,20 @@
+digraph mads {
+  rankdir=LR;
+  node [shape=record, fontname="monospace", fontsize=8];
+  edge [fontname="monospace", fontsize=8];
+
+  accelerations [label="accelerations", color=darkred];
+  dangling      [label="dangling|{test [!]\l}", color=darkblue, style=dashed];
+  ego           [label="ego|{imu\lgyro\l}", color=darkgreen];
+  forces        [label="forces", color=darkred];
+  gyro          [label="gyro", color=darkred];
+  rerun         [label="rerun|{imu\lego\lgyro\l}", color=darkblue];
+
+  accelerations -> ego [label="imu/accelerations\lvia imu\l", style=dashed];
+  accelerations -> rerun [label="imu/accelerations\lvia imu\l", style=dashed];
+  ego           -> rerun [label="ego"];
+  forces        -> ego [label="imu/forces\lvia imu\l", style=dashed];
+  forces        -> rerun [label="imu/forces\lvia imu\l", style=dashed];
+  gyro          -> ego [label="gyro"];
+  gyro          -> rerun [label="gyro"];
+}

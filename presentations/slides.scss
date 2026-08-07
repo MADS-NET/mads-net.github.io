@@ -47,6 +47,10 @@ $body-color: #777777;
     text-align: center;
   }
   
+  .slides {
+    // transform: translate(-50%, -60%) scale(1.129922) !important;
+  }
+
   .theorem {
     background-color: #f9f9ff;
     border: 1px solid #888888;
@@ -144,6 +148,10 @@ $body-color: #777777;
     text-decoration: underline;
   }
   
+  ul, ol {
+    width: 95%;
+  }
+  
   .smaller {
     font-size: 75%;
   }
@@ -193,5 +201,10 @@ $body-color: #777777;
     border-color: scale-color($body-color, $lightness: -20%);
     border-bottom: 0px;
     color: $main-color;
+  }
+
+  .opengraph-image {
+    border-radius: 10px; 
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   }
 }

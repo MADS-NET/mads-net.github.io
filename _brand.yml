@@ -20,11 +20,11 @@ typography:
       source: google
     - family: Rubik
       source: google
-    - family: IBM Plex Mono
+    - family: Fira Code
       source: google
 
   base: Open Sans
   headings:
     family: Rubik
     weight: 400
-  monospace: IBM Plex Mono
+  monospace: Fira Code
