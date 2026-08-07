@@ -467,13 +467,13 @@ Typically, nodes may act as [sources]{.bred} (produce information), [filters]{.b
 :::{.smaller}
 |  | Pros | Cons | Proto. | Prod. | Learning |
 |:-|:---------|:---------|:-:|:-:|:-:|
-| **MQTT** | lightweight, proven | low-level, no fed'n | 🟠 | 🟢 |╯|
-| **ZeroMQ** | lightweight, very flexible, proven | low-level, fed'n is complex | 🟠 | 🟢 |╯|
-| [OPC-UA]{.bred} | powerful, industry-based, fed'n | heavy, complex, vendor-dependent, limited portability/integrability | 🔴 | 🟠🟢 |╯╯|
-| **Zenoh** | flexible and powerful, fed'n | high abstraction, low-level | 🟢 | 🟠 |╯|
-| **Apache Spark** | designed for high-loads & datacenters, fed'n | Java-based, limited integrability, unsuited to µC | 🔴 | 🟢 |╯|
-| **ROS2** | flexible, high level, feature rich | steep learning curve, robotics oriented, no fed'n | 🟢 | 🟢 |/|
-| {{< logo >}} | **easy**, ZeroMQ-based, portable, flexible, polyglot, fed'n | young (3 years) | 🟢🟢 | 🟠🟢 |╭|
+| **MQTT** | lightweight, proven | low-level, no fed'n | 🟠 | 🟢 | {{< lc curve=2 >}} |
+| **ZeroMQ** | lightweight, very flexible, proven | low-level, fed'n is complex | 🟠 | 🟢 | {{< lc curve=3 >}} |
+| [OPC-UA]{.bred} | powerful, industry-based, fed'n | heavy, complex, vendor-dependent, limited portability/integrability | 🔴 | 🟠🟢 | {{< lc curve=4 >}} |
+| **Zenoh** | flexible and powerful, fed'n | high abstraction, low-level | 🟢 | 🟠 | {{< lc curve=3 >}} |
+| **Apache Spark** | designed for high-loads & datacenters, fed'n | Java-based, limited integrability, unsuited to µC | 🔴 | 🟢 | {{< lc curve=3 >}} |
+| **ROS2** | flexible, high level, feature rich | steep learning curve, robotics oriented, no fed'n | 🟢 | 🟢 | {{< lc curve=1 >}} |
+| {{< logo >}} | **easy**, ZeroMQ-based, portable, flexible, polyglot, fed'n | young (3 years) | 🟢🟢 | 🟠🟢 | **{{< lc curve=0.5 >}}** |
 :::
 
 :::callout-note

@@ -1,0 +1,8 @@
+title: LearningCurve
+author: Paolo Bosetti
+version: 1.0.0
+quarto-required: ">=1.7.0"
+contributes:
+  shortcodes:
+    - learning_curve.lua
+
