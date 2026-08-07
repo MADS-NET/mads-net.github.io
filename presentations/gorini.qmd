@@ -474,10 +474,10 @@ Typically, nodes may act as [sources]{.bred} (produce information), [filters]{.b
 | **Apache Spark** | designed for high-loads & datacenters, fed'n | Java-based, limited integrability, unsuited to µC | 🔴 | 🟢 | {{< lc curve=3 >}} |
 | **ROS2** | flexible, high level, feature rich | steep learning curve, robotics oriented, no fed'n | 🟢 | 🟢 | {{< lc curve=1 >}} |
 | {{< logo >}} | **easy**, ZeroMQ-based, portable, flexible, polyglot, fed'n | young (3 years) | 🟢🟢 | 🟠🟢 | **{{< lc curve=0.5 >}}** |
-:::
 
 :::callout-note
-**Low-level** means a framework only/mostly taking care of data communication/distribution, where business logic must be implemented every time; **portability** means on different platforms/architectures; **integrability** means against existing solutions; **fed'n** means federation
+**Low-level** means a framework only/mostly taking care of data communication/distribution, where business logic must be implemented every time; **portability** means on different platforms/architectures; **integrability** means against existing solutions; **fed'n** means federation; learning curves {{< lc >}} are subjective and qualitative.
+:::
 :::
 
 
