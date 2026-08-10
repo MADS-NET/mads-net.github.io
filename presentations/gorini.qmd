@@ -653,6 +653,10 @@ digraph source {
 :::
 
 
+## {background-iframe="MADS_Animation/MADSNetworkEmbed.html" background-interactive="true"}
+
+
+
 ## Incidentally: why MongoDB?
 
 > MongoDB is a **schemaless, NoSQL** database server: it organizes data in **collections** of **JSON documents**

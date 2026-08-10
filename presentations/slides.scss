@@ -115,6 +115,14 @@ $body-color: #777777;
     border-bottom-style: solid;
     border-bottom-color: $presentation-heading-color;
   }
+
+  // Title-less slides (e.g. `## {background-iframe="..."}`) still emit an
+  // empty <h2>, which would otherwise show the border-bottom above as a
+  // stray line with no title.
+  h2:empty {
+    border-bottom: none;
+    margin: 0;
+  }
   
   .math {
     color: $math-color;
