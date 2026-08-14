@@ -1,0 +1,2681 @@
+<!DOCTYPE html>
+<html lang="en-EN"><head>
+<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.18">
+
+  <meta name="author" content="Paolo Bosetti">
+  <title>Distributed systems with </title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-b6453d6f2367cb78cca266d57c401858.css">
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L37VBCVVQW"></script>
+
+  <script type="text/plain" cookie-consent="tracking">
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-L37VBCVVQW', { 'anonymize_ip': true});
+  </script>
+  
+  <script type="text/javascript" charset="UTF-8">
+  document.addEventListener('DOMContentLoaded', function () {
+  cookieconsent.run({
+    "notice_banner_type":"simple",
+    "consent_type":"express",
+    "palette":"light",
+    "language":"en",
+    "page_load_consent_levels":["strictly-necessary"],
+    "notice_banner_reject_button_hide":false,
+    "preferences_center_close_button_hide":false,
+    "website_name":""
+    ,
+  "language":"en-EN"
+    });
+  });
+  </script> 
+    
+  <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Distributed systems with <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"></h1>
+  <p class="subtitle">Delivered at Scuola Gorini 2026</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Paolo Bosetti
+</div>
+        <p class="quarto-title-affiliation">
+            University of Trento
+          </p>
+    </div>
+</div>
+
+  <p class="date">2026-Sep-03</p>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206c697374203e7d7d-contents" class="slide level2">
+<h2><i class="bi-list " style="" role="img" aria-hidden="true"></i> Contents</h2>
+<ul>
+<li>Requirements</li>
+<li>What is <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"></li>
+<li>Concepts
+<ul>
+<li>Broker-based networking</li>
+<li>MADS Agents
+<ul>
+<li>Types of agents: source, filter, sink</li>
+<li>Many ways to implement an agent</li>
+<li>Data sources in Arduino</li>
+</ul></li>
+</ul></li>
+<li>Designing a network</li>
+<li>Deployment</li>
+<li>Advanced features</li>
+</ul>
+</section>
+<section>
+<section id="requirements" class="title-slide slide level1 center">
+<h1>Requirements</h1>
+<p><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> is a polyglot environment: you might use C, C++, Rust, Python, R, Lua.</p>
+<p>That said, <strong>C++ is its core language</strong>, and for using it you need a C++ environment</p>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>CMake version</strong></p>
+</div>
+<div class="callout-content">
+<p>More recent versions of CMake may not work with some of the MADS dependencies. Please st<strong>ay on the tested 4.2.1 version</strong></p>
+</div>
+</div>
+</div>
+</section>
+<section id="developing-on-linux-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207562756e7475203e7d7d" class="slide level2">
+<h2>Developing on Linux <i class="bi-ubuntu " style="" role="img" aria-hidden="true"></i></h2>
+<p>Core development is made in <strong>CMake 4.x and Clang</strong>, tested on Ubuntu 22.04 and 24.04</p>
+<ul>
+<li>IDE of choice is Visual Studio Code, with the <strong>MADSCode</strong> extension</li>
+<li>Be sure to have the proper packags installed and clang selected as compiler:</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a aria-label="1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb1-2"><a aria-label="2"></a><span class="fu">sudo</span> apt install clang cmake-curses-gui git libssl-dev</span>
+<span id="cb1-3"><a aria-label="3"></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/cc cc /usr/bin/clang 100</span>
+<span id="cb1-4"><a aria-label="4"></a><span class="fu">sudo</span> update-alternatives <span class="at">--install</span> /usr/bin/c++ c++ /usr/bin/clang++ 100</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then go to <a href="https://git.new/mads" class="uri">https://git.new/mads</a>, download the latest <code>.deb</code> package and install with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a aria-label="1"></a><span class="fu">sudo</span> dpkg <span class="at">-i</span> Mads-v2.x.x-Linux-<span class="op">&lt;</span>platform<span class="op">&gt;</span>.deb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>Pick the proper <code>&lt;platform&gt;</code>: <code>x86_64</code> for Intel, <code>aarch64</code> for ARM machines</p>
+</div>
+</div>
+</div>
+</section>
+<section id="developing-on-windows-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206d6963726f736f6674203e7d7d" class="slide level2">
+<h2>Developing on Windows <i class="bi-microsoft " style="" role="img" aria-hidden="true"></i></h2>
+<p>Core development is made in <strong>CMake 4.x and Visual Studio 2022</strong>, tested on Windows 11</p>
+<ul>
+<li>IDE of choice is Visual Studio Code, with the <strong>MADSCode</strong> extension</li>
+<li>Visual Studio (Community Edition is fine) is only used as compiler, not as IDE</li>
+<li>When installing VS be sure to add C++ tools and CLI libraries</li>
+<li>Also install CMake 4.2.1 from <a href="https://github.com/Kitware/CMake/releases/tag/v4.2.1">GitHub</a></li>
+</ul>
+<p>Then go to <a href="https://git.new/mads" class="uri">https://git.new/mads</a>, download the latest <code>.exe</code> installer and follow the graphical install</p>
+</section>
+<section id="developing-on-macos-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206170706c65203e7d7d" class="slide level2">
+<h2>Developing on macOS <i class="bi-apple " style="" role="img" aria-hidden="true"></i></h2>
+<p>Core development is made in <strong>CMake 4.x and Clang</strong>, tested on macOS 26 (Tahoe)</p>
+<ul>
+<li>IDE of choice is Visual Studio Code, with the <strong>MADSCode</strong> extension</li>
+<li>Apple Xcode tools must be installed (to have Clang working)</li>
+<li>Also install CMake 4.2.1 from <a href="https://github.com/Kitware/CMake/releases/tag/v4.2.1">GitHub</a></li>
+</ul>
+<p>Then go to <a href="https://git.new/mads" class="uri">https://git.new/mads</a>, download the latest <code>.dmg</code> installer and open it it. Then drag the <code>usr</code> folder into your home directory, and add the path <code>~/usr/local/bin</code> to your <code>PATH</code> environment variable and remove the unsafe attribute:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a aria-label="1"></a><span class="ex">xattr</span> <span class="at">-dr</span> com.apple.quarantine ~/usr/local</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>How to change your <code>PATH</code></strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>If your shell is <code>zsh</code>, then look <a href="https://stackoverflow.com/questions/68605927/how-can-i-change-path-variable-in-zsh">here</a></li>
+<li>If your shell is <code>bash</code>, then look <a href="https://www.cyberciti.biz/faq/appleosx-bash-unix-change-set-path-environment-variable/">here</a></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="test-that-it-works" class="slide level2">
+<h2>Test that it works</h2>
+<p>Open a terminal (Developer PowerShell on Windows) and type:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a aria-label="1"></a><span class="ex">mads</span> <span class="at">-h</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mads command line interface version v2.4.1
+Usage:
+  mads [OPTION...]
+
+  -i, --info                   Print information on MADS installation
+  -p, --prefix                 Print MADS linstall prefix
+      --plugins                List plugins in default plugins directory
+      --keypair [=arg(=mads)]  Generate ZMQ CURVE keypair
+  -f, --force                  Force operation (if applicable)
+      --rooms [=arg(=5000)]    List rooms advertised on the network
+  -j, --json                   Output in JSON format (where applicable)
+  -v, --version                Print version
+  -h, --help                   Print help</code></pre>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>If you get an error:</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>be sure that your <code>PATH</code> variable contains the folder where the <code>mads</code> command has been installed</li>
+<li>be sure that your OS matches one of the versions above listed</li>
+<li>report back to <a href="https://github.com/pbosetti/MADS/issues" class="uri">https://github.com/pbosetti/MADS/issues</a>, carefully describing your issue and configuration</li>
+</ul>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="what-is-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f20203e7d7d" class="title-slide slide level1 center">
+<h1>What is <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));">?</h1>
+
+</section>
+<section id="brief-description" class="slide level2">
+<h2>Brief description</h2>
+<blockquote>
+<p>MADS is a framework (i.e.&nbsp;a set of tools and libraries) to implement a collection of possibly distributed processes that collect, manipulate, store and present information</p>
+</blockquote>
+<ul>
+<li>based on IP connectivity (UDP and TCP)</li>
+<li>runs on Linux, macOS and Windows, on Intel and ARM architectures</li>
+<li>it is easily extensible with customized processes</li>
+<li>it is <strong>centralized</strong> and <strong>broker-based</strong></li>
+<li>it is safe and industry-ready (<strong>encrypted</strong>)</li>
+<li>it is lightweight and easy to learn</li>
+<li>it is akin to ROS2, Apache Spark, Zenoh</li>
+</ul>
+</section>
+<section id="common-tasks-acquisition" class="slide level2">
+<h2>Common tasks: acquisition</h2>
+<p>You want to <strong>aquire data/signals</strong>:</p>
+<ul>
+<li>from microcontrollers via serial connection (e.g.&nbsp;Arduino)</li>
+<li>on microcontrollers with an ARM Linux OS (e.g.&nbsp;Arduino Uno Q, Raspberry Pi, Beaglebone)</li>
+<li>on microcontrollers with WiFi (Arduino Uno R4 WiFi only)</li>
+<li>from custom/vendor API in C/C++, Python or Rust</li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definition</strong></p>
+</div>
+<div class="callout-content">
+<p>MADS Processes that acquire and produce a data flow are called <span class="bred">source agents</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="common-tasks-manipulation" class="slide level2">
+<h2>Common tasks: manipulation</h2>
+<p>You want to <strong>manipulate data/signals</strong>:</p>
+<ul>
+<li>with custom algorithms implemented in C, C++, Python, Rust, R</li>
+<li>ML inference by models in <strong>ONNX</strong> format (<a href="https://onnx.ai">onnx.ai</a>)</li>
+<li>simulation models in <strong>Functional Mock-Up Unit</strong> (<a href="https://fmi-standard.org">FMU</a>) format (exported from Simulink)</li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definition</strong></p>
+</div>
+<div class="callout-content">
+<p>MADS Processes that manipulate a data flow are called <span class="bgreen">filter agents</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="common-tasks-loggingpresenting" class="slide level2">
+<h2>Common tasks: logging/presenting</h2>
+<p>You want to <strong>consume or present data/signals</strong>:</p>
+<ul>
+<li>storage/logging straight to <a href="https://mongodb.com">MongoDB databases</a></li>
+<li>logging to <a href="https://hdfgroup.org">HDF5</a> format (for training ML models)</li>
+<li>realtime presentation via <a href="https://rerun.io">Rerun.io</a></li>
+<li>custom data consumers in C++, Rust, Python, R</li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definition</strong></p>
+</div>
+<div class="callout-content">
+<p>MADS Processes that consume a data flow (for logging or presenting, or acting on the field) are called <span class="bblue">sink agents</span></p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="this-is-just-a-preview" class="title-slide slide level1 center">
+<h1>This is just a preview</h1>
+<p>The rest of this presentation will be available on Sep.&nbsp;2026</p>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section>
+<section id="concepts" class="title-slide slide level1 center">
+<h1>Concepts</h1>
+<p>Infrastructures for distributed systems</p>
+</section>
+<section id="context" class="slide level2">
+<h2>Context</h2>
+<p>Distributed systems need <strong>distributed information and computation</strong></p>
+<div class="columns">
+<div class="column">
+<div class="fragment">
+<h3 id="challenges">Challenges</h3>
+<ul>
+<li>Reachability</li>
+<li>Topology</li>
+<li>Throughput</li>
+<li>Latency</li>
+<li>Scalability</li>
+<li>Security</li>
+</ul>
+</div>
+</div><div class="column">
+<div class="fragment">
+<h3 id="solutions">Solutions</h3>
+<ul>
+<li><strong>REST/API</strong> services: HTTP/HTTPS based, simple and proven, but N-to-1 only, <span class="bred">large overhead</span></li>
+<li><strong>Message-Queuing</strong> protocols: flexible topology, <span class="bgreen">tiny overhead</span>, often very low-level solutions</li>
+<li><strong>Mixed/custom solutions</strong>: fragile and difficult to scale/integrate</li>
+</ul>
+</div>
+</div></div>
+</section>
+<section id="context-restrest-like-solutions" class="slide level2">
+<h2>Context: REST/REST-like solutions</h2>
+<div class="columns">
+<div class="column">
+<p>Characteristics:</p>
+<ul>
+<li>Only the server’s URL/IP must be known</li>
+<li>Each edge is a <code>REQ/REP</code> <span class="bred">initiated by the client</span></li>
+<li>Node-to-node direct communication impossible, unless <span class="bred">all URLs/IPs are known</span></li>
+<li>Difficult to scale:
+<ul>
+<li>server resources</li>
+<li>network topology</li>
+</ul></li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>It is <strong>information-consumption</strong> oriented.</p>
+</div>
+</div>
+</div>
+</div><div class="column">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="480" height="384" viewbox="0.00 0.00 250.54 243.77" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 239.77)">
+<title>REST</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-239.77 246.54,-239.77 246.54,4 -4,4"></polygon>
+<!-- S -->
+<g id="node1" class="node">
+<title>S</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="151.28,-142.87 93.81,-142.87 93.81,-85.4 151.28,-85.4 151.28,-142.87"></polygon>
+<text text-anchor="middle" x="122.55" y="-109.94" font-family="Arial" font-size="14.00">Server</text>
+</g>
+<!-- n5 -->
+<g id="node6" class="node">
+<title>n5</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="135.51,-235.77 99.51,-235.77 99.51,-199.77 135.51,-199.77 135.51,-235.77"></polygon>
+<text text-anchor="middle" x="117.51" y="-213.57" font-family="Arial" font-size="14.00">n5</text>
+</g>
+<!-- S&#45;&gt;n5 -->
+<g id="edge6" class="edge">
+<title>S-&gt;n5</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M115,-142.98C113.46,-157.45 112.64,-174.9 112.81,-189.31"></path>
+<polygon fill="black" stroke="black" points="109.32,-189.75 113.14,-199.64 116.32,-189.53 109.32,-189.75"></polygon>
+<text text-anchor="middle" x="106.13" y="-170.35" font-family="Arial" font-size="14.00">🔴</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="187.78,-41.2 151.78,-41.2 151.78,-5.2 187.78,-5.2 187.78,-41.2"></polygon>
+<text text-anchor="middle" x="169.78" y="-19" font-family="Arial" font-size="14.00">n1</text>
+</g>
+<!-- n1&#45;&gt;S -->
+<g id="edge1" class="edge">
+<title>n1-&gt;S</title>
+<path fill="none" stroke="black" d="M160.22,-41.6C155.02,-51.61 148.4,-64.37 142.15,-76.39"></path>
+<polygon fill="black" stroke="black" points="138.99,-74.89 137.49,-85.38 145.2,-78.11 138.99,-74.89"></polygon>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="104.87,-36 68.87,-36 68.87,0 104.87,0 104.87,-36"></polygon>
+<text text-anchor="middle" x="86.87" y="-13.8" font-family="Arial" font-size="14.00">n2</text>
+</g>
+<!-- n1&#45;&gt;n2 -->
+<g id="edge7" class="edge">
+<title>n1-&gt;n2</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M151.38,-22.05C140.68,-21.38 126.97,-20.52 114.95,-19.76"></path>
+<polygon fill="black" stroke="black" points="115.14,-16.27 104.94,-19.13 114.7,-23.25 115.14,-16.27"></polygon>
+<text text-anchor="middle" x="125.38" y="-25.1" font-family="Arial" font-size="14.00">🔴</text>
+</g>
+<!-- n2&#45;&gt;S -->
+<g id="edge2" class="edge">
+<title>n2-&gt;S</title>
+<path fill="none" stroke="black" d="M93.58,-36.08C97.71,-47.2 103.16,-61.88 108.21,-75.51"></path>
+<polygon fill="black" stroke="black" points="105.04,-77.02 111.8,-85.18 111.6,-74.58 105.04,-77.02"></polygon>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="36,-151.96 0,-151.96 0,-115.96 36,-115.96 36,-151.96"></polygon>
+<text text-anchor="middle" x="18" y="-129.76" font-family="Arial" font-size="14.00">n3</text>
+</g>
+<!-- n3&#45;&gt;S -->
+<g id="edge3" class="edge">
+<title>n3-&gt;S</title>
+<path fill="none" stroke="black" d="M36.21,-130.51C49.39,-128.01 67.68,-124.54 84.04,-121.44"></path>
+<polygon fill="black" stroke="black" points="84.74,-124.87 93.91,-119.57 83.43,-117.99 84.74,-124.87"></polygon>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="242.54,-163.14 206.54,-163.14 206.54,-127.14 242.54,-127.14 242.54,-163.14"></polygon>
+<text text-anchor="middle" x="224.54" y="-140.94" font-family="Arial" font-size="14.00">n4</text>
+</g>
+<!-- n4&#45;&gt;S -->
+<g id="edge4" class="edge">
+<title>n4-&gt;S</title>
+<path fill="none" stroke="black" d="M206.3,-139.6C193.8,-135.8 176.74,-130.61 161.28,-125.91"></path>
+<polygon fill="black" stroke="black" points="162.01,-122.47 151.42,-122.91 159.97,-129.17 162.01,-122.47"></polygon>
+</g>
+<!-- n5&#45;&gt;S -->
+<g id="edge5" class="edge">
+<title>n5-&gt;S</title>
+<path fill="none" stroke="black" d="M123.72,-199.5C125.66,-186.67 126.93,-169.03 127.22,-153.11"></path>
+<polygon fill="black" stroke="black" points="130.72,-152.98 127.26,-142.96 123.72,-152.95 130.72,-152.98"></polygon>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="context-message-queuing-protocols" class="slide level2">
+<h2>Context: Message-Queuing protocols</h2>
+<div class="columns">
+<div class="column">
+<p>Advantages over REST:</p>
+<ul>
+<li>Broker-based networking</li>
+<li>wire protocol is lightweight (minimum overhead)</li>
+<li>only broker URL is needed</li>
+<li>message <code>t1</code> can flow from <code>n1</code> to <code>n6</code></li>
+<li>flexible topology</li>
+<li>highly scalable</li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>It is <strong>information-distribution</strong> oriented.</p>
+</div>
+</div>
+</div>
+</div><div class="column">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="480" height="384" viewbox="0.00 0.00 230.89 258.59" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 254.59)">
+<title>mq</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-254.59 226.89,-254.59 226.89,4 -4,4"></polygon>
+<!-- B -->
+<g id="node1" class="node">
+<title>B</title>
+<polygon fill="#eeeeee" stroke="violet" stroke-width="2" points="140.05,-154 82.58,-154 82.58,-96.53 140.05,-96.53 140.05,-154"></polygon>
+<text text-anchor="middle" x="111.32" y="-121.07" font-family="Arial" font-size="14.00">Broker</text>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<polygon fill="#eeeeee" stroke="darkgreen" stroke-width="2" points="37.35,-198.45 1.35,-198.45 1.35,-162.45 37.35,-162.45 37.35,-198.45"></polygon>
+<text text-anchor="middle" x="19.35" y="-176.25" font-family="Arial" font-size="14.00">n3</text>
+</g>
+<!-- B&#45;&gt;n3 -->
+<g id="edge4" class="edge">
+<title>B-&gt;n3</title>
+<path fill="none" stroke="black" d="M82.55,-135.39C70.81,-141.56 57.35,-149.55 45.85,-157.13"></path>
+<polygon fill="black" stroke="black" points="43.81,-154.29 37.51,-162.81 47.75,-160.07 43.81,-154.29"></polygon>
+<text text-anchor="middle" x="58.36" y="-150.46" font-family="Arial" font-size="14.00">t1</text>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<polygon fill="#eeeeee" stroke="darkgreen" stroke-width="2" points="222.89,-195.96 186.89,-195.96 186.89,-159.96 222.89,-159.96 222.89,-195.96"></polygon>
+<text text-anchor="middle" x="204.89" y="-173.76" font-family="Arial" font-size="14.00">n4</text>
+</g>
+<!-- B&#45;&gt;n4 -->
+<g id="edge6" class="edge">
+<title>B-&gt;n4</title>
+<path fill="none" stroke="black" d="M140.1,-148.87C152,-156.17 165.72,-163.74 177.48,-169.43"></path>
+<polygon fill="black" stroke="black" points="176.26,-172.72 186.81,-173.72 179.19,-166.36 176.26,-172.72"></polygon>
+<text text-anchor="middle" x="152.95" y="-163.35" font-family="Arial" font-size="14.00">t2</text>
+</g>
+<!-- n5 -->
+<g id="node6" class="node">
+<title>n5</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="131.19,-250.59 95.19,-250.59 95.19,-214.59 131.19,-214.59 131.19,-250.59"></polygon>
+<text text-anchor="middle" x="113.19" y="-228.39" font-family="Arial" font-size="14.00">n5</text>
+</g>
+<!-- B&#45;&gt;n5 -->
+<g id="edge7" class="edge">
+<title>B-&gt;n5</title>
+<path fill="none" stroke="black" d="M111.82,-154.03C112.09,-169.67 112.43,-188.93 112.7,-204.47"></path>
+<polygon fill="black" stroke="black" points="109.2,-204.6 112.87,-214.54 116.2,-204.48 109.2,-204.6"></polygon>
+<text text-anchor="middle" x="98.64" y="-183.45" font-family="Arial" font-size="14.00">t3,t4</text>
+</g>
+<!-- n6 -->
+<g id="node7" class="node">
+<title>n6</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="36,-90.46 0,-90.46 0,-54.46 36,-54.46 36,-90.46"></polygon>
+<text text-anchor="middle" x="18" y="-68.26" font-family="Arial" font-size="14.00">n6</text>
+</g>
+<!-- B&#45;&gt;n6 -->
+<g id="edge8" class="edge">
+<title>B-&gt;n6</title>
+<path fill="none" stroke="black" d="M82.56,-108.99C70.64,-102.25 56.89,-94.47 45.15,-87.83"></path>
+<polygon fill="black" stroke="black" points="46.66,-84.66 36.24,-82.78 43.22,-90.75 46.66,-84.66"></polygon>
+<text text-anchor="middle" x="58.01" y="-102.61" font-family="Arial" font-size="14.00">t1</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="222.13,-89.31 186.13,-89.31 186.13,-53.31 222.13,-53.31 222.13,-89.31"></polygon>
+<text text-anchor="middle" x="204.13" y="-67.11" font-family="Arial" font-size="14.00">n1</text>
+</g>
+<!-- n1&#45;&gt;B -->
+<g id="edge1" class="edge">
+<title>n1-&gt;B</title>
+<path fill="none" stroke="black" d="M185.79,-81.97C175.34,-88.05 161.83,-95.9 149.2,-103.24"></path>
+<polygon fill="black" stroke="black" points="147.1,-100.42 140.21,-108.47 150.62,-106.47 147.1,-100.42"></polygon>
+<text text-anchor="middle" x="161.66" y="-96.81" font-family="Arial" font-size="14.00">t1</text>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="129.1,-36 93.1,-36 93.1,0 129.1,0 129.1,-36"></polygon>
+<text text-anchor="middle" x="111.1" y="-13.8" font-family="Arial" font-size="14.00">n2</text>
+</g>
+<!-- n2&#45;&gt;B -->
+<g id="edge2" class="edge">
+<title>n2-&gt;B</title>
+<path fill="none" stroke="black" d="M111.14,-36.2C111.17,-49.86 111.2,-69.07 111.24,-86.16"></path>
+<polygon fill="black" stroke="black" points="107.74,-86.46 111.26,-96.46 114.74,-86.45 107.74,-86.46"></polygon>
+<text text-anchor="middle" x="105.35" y="-65.38" font-family="Arial" font-size="14.00">t2</text>
+</g>
+<!-- n3&#45;&gt;B -->
+<g id="edge3" class="edge">
+<title>n3-&gt;B</title>
+<path fill="none" stroke="black" d="M37.63,-175.56C48.07,-170.68 61.5,-163.2 74.05,-155.46"></path>
+<polygon fill="black" stroke="black" points="75.96,-158.39 82.54,-150.08 72.22,-152.47 75.96,-158.39"></polygon>
+<text text-anchor="middle" x="50" y="-169.71" font-family="Arial" font-size="14.00">t3</text>
+</g>
+<!-- n4&#45;&gt;B -->
+<g id="edge5" class="edge">
+<title>n4-&gt;B</title>
+<path fill="none" stroke="black" d="M186.48,-160.99C175.85,-153.9 162.09,-145.85 149.26,-139.12"></path>
+<polygon fill="black" stroke="black" points="150.63,-135.89 140.13,-134.49 147.46,-142.13 150.63,-135.89"></polygon>
+<text text-anchor="middle" x="162.03" y="-137.45" font-family="Arial" font-size="14.00">t4</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="context-federation" class="slide level2">
+<h2>Context: federation</h2>
+<div class="cell" data-fig-width="8" data-fig-height="5" data-out-height="540px" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="768" height="480" viewbox="0.00 0.00 521.29 282.80" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 278.8)">
+<title>mq</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-278.8 517.29,-278.8 517.29,4 -4,4"></polygon>
+<!-- B1 -->
+<g id="node1" class="node">
+<title>B1</title>
+<polygon fill="#eeeeee" stroke="violet" stroke-width="2" points="152.54,-166.41 83.72,-166.41 83.72,-97.59 152.54,-97.59 152.54,-166.41"></polygon>
+<text text-anchor="middle" x="118.13" y="-127.8" font-family="Arial" font-size="14.00">Broker 1</text>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<polygon fill="#eeeeee" stroke="darkgreen" stroke-width="2" points="253.51,-217 217.51,-217 217.51,-181 253.51,-181 253.51,-217"></polygon>
+<text text-anchor="middle" x="235.51" y="-194.8" font-family="Arial" font-size="14.00">n3</text>
+</g>
+<!-- B1&#45;&gt;n3 -->
+<g id="edge4" class="edge">
+<title>B1-&gt;n3</title>
+<path fill="none" stroke="black" d="M137.47,-166.7C145.82,-178.87 156.93,-191.2 170.59,-198 181.69,-203.53 195.28,-204.42 207.08,-203.67"></path>
+<polygon fill="black" stroke="black" points="207.69,-207.13 217.28,-202.61 206.97,-200.16 207.69,-207.13"></polygon>
+<text text-anchor="middle" x="184.21" y="-207.2" font-family="Arial" font-size="14.00">t1</text>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<polygon fill="#eeeeee" stroke="orange" stroke-width="2" points="253.51,-163 217.51,-163 217.51,-127 253.51,-127 253.51,-163"></polygon>
+<text text-anchor="middle" x="235.51" y="-140.8" font-family="Arial" font-size="14.00">n4</text>
+</g>
+<!-- B1&#45;&gt;n4 -->
+<g id="edge6" class="edge">
+<title>B1-&gt;n4</title>
+<path fill="none" stroke="black" d="M152.81,-135.8C170.16,-137.75 191.04,-140.1 207.35,-141.94"></path>
+<polygon fill="black" stroke="black" points="206.99,-145.42 217.32,-143.06 207.77,-138.47 206.99,-145.42"></polygon>
+<text text-anchor="middle" x="184.21" y="-145.2" font-family="Arial" font-size="14.00">t2</text>
+</g>
+<!-- n5 -->
+<g id="node6" class="node">
+<title>n5</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="253.51,-90 217.51,-90 217.51,-54 253.51,-54 253.51,-90"></polygon>
+<text text-anchor="middle" x="235.51" y="-67.8" font-family="Arial" font-size="14.00">n5</text>
+</g>
+<!-- B1&#45;&gt;n5 -->
+<g id="edge7" class="edge">
+<title>B1-&gt;n5</title>
+<path fill="none" stroke="black" d="M152.66,-101.62C158.38,-97.38 164.46,-93.39 170.59,-90.2 181.95,-84.29 195.48,-80.08 207.16,-77.21"></path>
+<polygon fill="black" stroke="black" points="208.26,-80.55 217.25,-74.94 206.72,-73.72 208.26,-80.55"></polygon>
+<text text-anchor="middle" x="184.21" y="-95.2" font-family="Arial" font-size="14.00">t3,t4</text>
+</g>
+<!-- n6 -->
+<g id="node7" class="node">
+<title>n6</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="253.51,-36 217.51,-36 217.51,0 253.51,0 253.51,-36"></polygon>
+<text text-anchor="middle" x="235.51" y="-13.8" font-family="Arial" font-size="14.00">n6</text>
+</g>
+<!-- B1&#45;&gt;n6 -->
+<g id="edge8" class="edge">
+<title>B1-&gt;n6</title>
+<path fill="none" stroke="black" d="M139.72,-97.26C148.29,-84.44 158.96,-70.34 170.59,-59.2 181.75,-48.5 196.08,-38.97 208.35,-31.77"></path>
+<polygon fill="black" stroke="black" points="210.25,-34.71 217.23,-26.74 206.8,-28.62 210.25,-34.71"></polygon>
+<text text-anchor="middle" x="184.21" y="-64.2" font-family="Arial" font-size="14.00">t1</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="36,-177 0,-177 0,-141 36,-141 36,-177"></polygon>
+<text text-anchor="middle" x="18" y="-154.8" font-family="Arial" font-size="14.00">n1</text>
+</g>
+<!-- n1&#45;&gt;B1 -->
+<g id="edge1" class="edge">
+<title>n1-&gt;B1</title>
+<path fill="none" stroke="black" d="M36.09,-154.3C46.51,-151.43 60.33,-147.63 73.6,-143.98"></path>
+<polygon fill="black" stroke="black" points="74.86,-147.26 83.57,-141.23 73,-140.51 74.86,-147.26"></polygon>
+<text text-anchor="middle" x="59.84" y="-152.2" font-family="Arial" font-size="14.00">t1</text>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="36,-123 0,-123 0,-87 36,-87 36,-123"></polygon>
+<text text-anchor="middle" x="18" y="-100.8" font-family="Arial" font-size="14.00">n2</text>
+</g>
+<!-- n2&#45;&gt;B1 -->
+<g id="edge2" class="edge">
+<title>n2-&gt;B1</title>
+<path fill="none" stroke="black" d="M36.09,-109.7C46.51,-112.57 60.33,-116.37 73.6,-120.02"></path>
+<polygon fill="black" stroke="black" points="73,-123.49 83.57,-122.77 74.86,-116.74 73,-123.49"></polygon>
+<text text-anchor="middle" x="59.84" y="-122.2" font-family="Arial" font-size="14.00">t2</text>
+</g>
+<!-- n3&#45;&gt;B1 -->
+<g id="edge3" class="edge">
+<title>n3-&gt;B1</title>
+<path fill="none" stroke="black" d="M217.41,-189.12C204.53,-181.68 186.44,-171.21 170.59,-162 167.59,-160.26 164.5,-158.46 161.38,-156.65"></path>
+<polygon fill="black" stroke="black" points="163.02,-153.55 152.61,-151.54 159.49,-159.6 163.02,-153.55"></polygon>
+<text text-anchor="middle" x="184.21" y="-181.2" font-family="Arial" font-size="14.00">t3</text>
+</g>
+<!-- n4&#45;&gt;B1 -->
+<g id="edge5" class="edge">
+<title>n4-&gt;B1</title>
+<path fill="none" stroke="black" d="M218.68,-126.91C212.75,-121.42 205.57,-116.09 197.83,-113.2 186.52,-108.98 173.93,-109.71 162.2,-112.55"></path>
+<polygon fill="black" stroke="black" points="161.21,-109.19 152.6,-115.36 163.18,-115.91 161.21,-109.19"></polygon>
+<text text-anchor="middle" x="184.21" y="-118.2" font-family="Arial" font-size="14.00">t4</text>
+</g>
+<!-- B2 -->
+<g id="node8" class="node">
+<title>B2</title>
+<polygon fill="#eeeeee" stroke="violet" stroke-width="2" points="402.86,-234.41 334.04,-234.41 334.04,-165.59 402.86,-165.59 402.86,-234.41"></polygon>
+<text text-anchor="middle" x="368.45" y="-195.8" font-family="Arial" font-size="14.00">Broker 2</text>
+</g>
+<!-- n4&#45;&gt;B2 -->
+<g id="edge15" class="edge">
+<title>n4-&gt;B2</title>
+<path fill="none" stroke="black" d="M253.62,-152.19C271.56,-159.72 300.42,-171.85 324.59,-182"></path>
+<polygon fill="black" stroke="black" points="323.36,-185.28 333.94,-185.92 326.07,-178.82 323.36,-185.28"></polygon>
+<text text-anchor="middle" x="294.59" y="-181.2" font-family="Arial" font-size="14.00">t1,t2,t4</text>
+</g>
+<!-- n11 -->
+<g id="node10" class="node">
+<title>n11</title>
+<polygon fill="#eeeeee" stroke="darkgreen" stroke-width="2" points="513.47,-269.86 473.75,-269.86 473.75,-230.14 513.47,-230.14 513.47,-269.86"></polygon>
+<text text-anchor="middle" x="493.61" y="-245.8" font-family="Arial" font-size="14.00">n11</text>
+</g>
+<!-- B2&#45;&gt;n11 -->
+<g id="edge11" class="edge">
+<title>B2-&gt;n11</title>
+<path fill="none" stroke="black" d="M394.38,-234.57C401.93,-242.43 410.9,-249.72 420.9,-254 434.2,-259.7 450.16,-259.41 463.65,-257.39"></path>
+<polygon fill="black" stroke="black" points="464.66,-260.76 473.84,-255.48 463.37,-253.88 464.66,-260.76"></polygon>
+<text text-anchor="middle" x="438.42" y="-262.2" font-family="Arial" font-size="14.00">t1,t14</text>
+</g>
+<!-- n12 -->
+<g id="node11" class="node">
+<title>n12</title>
+<polygon fill="#eeeeee" stroke="darkgreen" stroke-width="2" points="513.47,-209.86 473.75,-209.86 473.75,-170.14 513.47,-170.14 513.47,-209.86"></polygon>
+<text text-anchor="middle" x="493.61" y="-185.8" font-family="Arial" font-size="14.00">n12</text>
+</g>
+<!-- B2&#45;&gt;n12 -->
+<g id="edge13" class="edge">
+<title>B2-&gt;n12</title>
+<path fill="none" stroke="black" d="M403.1,-197.27C422.15,-195.72 445.73,-193.81 463.9,-192.33"></path>
+<polygon fill="black" stroke="black" points="464.22,-195.82 473.9,-191.52 463.65,-188.84 464.22,-195.82"></polygon>
+<text text-anchor="middle" x="438.42" y="-199.2" font-family="Arial" font-size="14.00">t4</text>
+</g>
+<!-- n13 -->
+<g id="node12" class="node">
+<title>n13</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="513.47,-139.86 473.75,-139.86 473.75,-100.14 513.47,-100.14 513.47,-139.86"></polygon>
+<text text-anchor="middle" x="493.61" y="-115.8" font-family="Arial" font-size="14.00">n13</text>
+</g>
+<!-- B2&#45;&gt;n13 -->
+<g id="edge14" class="edge">
+<title>B2-&gt;n13</title>
+<path fill="none" stroke="black" d="M390.53,-165.52C398.75,-154.65 409.07,-143.57 420.9,-136.2 433.68,-128.24 449.9,-124.18 463.68,-122.11"></path>
+<polygon fill="black" stroke="black" points="464.15,-125.58 473.65,-120.88 463.3,-118.63 464.15,-125.58"></polygon>
+<text text-anchor="middle" x="438.42" y="-141.2" font-family="Arial" font-size="14.00">t3,t15</text>
+</g>
+<!-- n14 -->
+<g id="node9" class="node">
+<title>n14</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="255.37,-274.86 215.65,-274.86 215.65,-235.14 255.37,-235.14 255.37,-274.86"></polygon>
+<text text-anchor="middle" x="235.51" y="-250.8" font-family="Arial" font-size="14.00">n14</text>
+</g>
+<!-- n14&#45;&gt;B2 -->
+<g id="edge9" class="edge">
+<title>n14-&gt;B2</title>
+<path fill="none" stroke="black" d="M255.27,-247.12C273.29,-239.55 301.17,-227.84 324.63,-217.99"></path>
+<polygon fill="black" stroke="black" points="326.17,-221.14 334.03,-214.04 323.46,-214.68 326.17,-221.14"></polygon>
+<text text-anchor="middle" x="294.59" y="-242.2" font-family="Arial" font-size="14.00">t14</text>
+</g>
+<!-- n11&#45;&gt;B2 -->
+<g id="edge10" class="edge">
+<title>n11-&gt;B2</title>
+<path fill="none" stroke="black" d="M473.9,-242.41C457.65,-235.81 433.48,-226 412.49,-217.47"></path>
+<polygon fill="black" stroke="black" points="413.68,-214.18 403.1,-213.66 411.05,-220.67 413.68,-214.18"></polygon>
+<text text-anchor="middle" x="438.42" y="-237.2" font-family="Arial" font-size="14.00">t11</text>
+</g>
+<!-- n12&#45;&gt;B2 -->
+<g id="edge12" class="edge">
+<title>n12-&gt;B2</title>
+<path fill="none" stroke="black" d="M473.89,-171.48C468.52,-167.29 462.36,-163.42 455.93,-161.2 441.22,-156.11 435.66,-156.26 420.9,-161.2 417.92,-162.2 414.98,-163.44 412.09,-164.87"></path>
+<polygon fill="black" stroke="black" points="410.09,-161.98 403.13,-169.97 413.55,-168.07 410.09,-161.98"></polygon>
+<text text-anchor="middle" x="438.42" y="-165.2" font-family="Arial" font-size="14.00">t15</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definitions</strong></p>
+</div>
+<div class="callout-content">
+<p>Typically, nodes may act as <span class="bred">sources</span> (produce information), <span class="bgreen">filters</span> (elaborate), or <span class="bblue">sinks</span> (consume information). The node <code>n4</code> acts as a <strong>brigde</strong> that federates two sub-networks</p>
+</div>
+</div>
+</div>
+</section>
+<section id="context-alternatives" class="slide level2">
+<h2>Context: alternatives</h2>
+<div class="smaller">
+<table class="caption-top">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 31%">
+<col style="width: 31%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Pros</th>
+<th style="text-align: left;">Cons</th>
+<th style="text-align: center;">Proto.</th>
+<th style="text-align: center;">Prod.</th>
+<th style="text-align: center;">Learning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>MQTT</strong></td>
+<td style="text-align: left;">lightweight, proven</td>
+<td style="text-align: left;">low-level, no fed’n</td>
+<td style="text-align: center;">🟠</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;"><p><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,20.995 L 1.938,20.980 L 2.406,20.956 L 2.875,20.922 L 3.344,20.878 L 3.812,20.824 L 4.281,20.761 L 4.750,20.688 L 5.219,20.604 L 5.688,20.512 L 6.156,20.409 L 6.625,20.297 L 7.094,20.175 L 7.562,20.043 L 8.031,19.901 L 8.500,19.750 L 8.969,19.589 L 9.438,19.418 L 9.906,19.237 L 10.375,19.047 L 10.844,18.847 L 11.312,18.637 L 11.781,18.417 L 12.250,18.188 L 12.719,17.948 L 13.188,17.699 L 13.656,17.440 L 14.125,17.172 L 14.594,16.894 L 15.062,16.605 L 15.531,16.308 L 16.000,16.000 L 16.469,15.683 L 16.938,15.355 L 17.406,15.019 L 17.875,14.672 L 18.344,14.315 L 18.812,13.949 L 19.281,13.573 L 19.750,13.188 L 20.219,12.792 L 20.688,12.387 L 21.156,11.972 L 21.625,11.547 L 22.094,11.112 L 22.562,10.668 L 23.031,10.214 L 23.500,9.750 L 23.969,9.276 L 24.438,8.793 L 24.906,8.300 L 25.375,7.797 L 25.844,7.284 L 26.312,6.762 L 26.781,6.229 L 27.250,5.688 L 27.719,5.136 L 28.188,4.574 L 28.656,4.003 L 29.125,3.422 L 29.594,2.831 L 30.062,2.230 L 30.531,1.620 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>ZeroMQ</strong></td>
+<td style="text-align: left;">lightweight, very flexible, proven</td>
+<td style="text-align: left;">low-level, fed’n is complex</td>
+<td style="text-align: center;">🟠</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;"><p><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,21.000 L 1.938,20.999 L 2.406,20.998 L 2.875,20.995 L 3.344,20.990 L 3.812,20.984 L 4.281,20.974 L 4.750,20.961 L 5.219,20.944 L 5.688,20.924 L 6.156,20.898 L 6.625,20.868 L 7.094,20.832 L 7.562,20.791 L 8.031,20.743 L 8.500,20.688 L 8.969,20.625 L 9.438,20.555 L 9.906,20.477 L 10.375,20.390 L 10.844,20.293 L 11.312,20.188 L 11.781,20.072 L 12.250,19.945 L 12.719,19.808 L 13.188,19.659 L 13.656,19.498 L 14.125,19.325 L 14.594,19.139 L 15.062,18.940 L 15.531,18.727 L 16.000,18.500 L 16.469,18.258 L 16.938,18.001 L 17.406,17.729 L 17.875,17.440 L 18.344,17.135 L 18.812,16.814 L 19.281,16.474 L 19.750,16.117 L 20.219,15.742 L 20.688,15.348 L 21.156,14.934 L 21.625,14.501 L 22.094,14.048 L 22.562,13.574 L 23.031,13.079 L 23.500,12.562 L 23.969,12.024 L 24.438,11.463 L 24.906,10.880 L 25.375,10.272 L 25.844,9.642 L 26.312,8.986 L 26.781,8.307 L 27.250,7.602 L 27.719,6.871 L 28.188,6.114 L 28.656,5.331 L 29.125,4.521 L 29.594,3.683 L 30.062,2.817 L 30.531,1.923 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="bred">OPC-UA</span></td>
+<td style="text-align: left;">powerful, industry-based, fed’n</td>
+<td style="text-align: left;">heavy, complex, vendor-dependent, limited portability/integrability</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">🟠🟢</td>
+<td style="text-align: center;"><p><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,21.000 L 1.938,21.000 L 2.406,21.000 L 2.875,21.000 L 3.344,20.999 L 3.812,20.998 L 4.281,20.997 L 4.750,20.995 L 5.219,20.992 L 5.688,20.988 L 6.156,20.983 L 6.625,20.975 L 7.094,20.966 L 7.562,20.954 L 8.031,20.940 L 8.500,20.922 L 8.969,20.900 L 9.438,20.875 L 9.906,20.845 L 10.375,20.809 L 10.844,20.768 L 11.312,20.721 L 11.781,20.666 L 12.250,20.604 L 12.719,20.534 L 13.188,20.455 L 13.656,20.366 L 14.125,20.267 L 14.594,20.157 L 15.062,20.034 L 15.531,19.899 L 16.000,19.750 L 16.469,19.586 L 16.938,19.407 L 17.406,19.211 L 17.875,18.998 L 18.344,18.766 L 18.812,18.514 L 19.281,18.242 L 19.750,17.948 L 20.219,17.631 L 20.688,17.291 L 21.156,16.924 L 21.625,16.532 L 22.094,16.112 L 22.562,15.662 L 23.031,15.183 L 23.500,14.672 L 23.969,14.128 L 24.438,13.549 L 24.906,12.935 L 25.375,12.284 L 25.844,11.594 L 26.312,10.864 L 26.781,10.092 L 27.250,9.276 L 27.719,8.416 L 28.188,7.510 L 28.656,6.555 L 29.125,5.550 L 29.594,4.494 L 30.062,3.385 L 30.531,2.221 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Zenoh</strong></td>
+<td style="text-align: left;">flexible and powerful, fed’n</td>
+<td style="text-align: left;">high abstraction, low-level</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">🟠</td>
+<td style="text-align: center;"><p><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,21.000 L 1.938,20.999 L 2.406,20.998 L 2.875,20.995 L 3.344,20.990 L 3.812,20.984 L 4.281,20.974 L 4.750,20.961 L 5.219,20.944 L 5.688,20.924 L 6.156,20.898 L 6.625,20.868 L 7.094,20.832 L 7.562,20.791 L 8.031,20.743 L 8.500,20.688 L 8.969,20.625 L 9.438,20.555 L 9.906,20.477 L 10.375,20.390 L 10.844,20.293 L 11.312,20.188 L 11.781,20.072 L 12.250,19.945 L 12.719,19.808 L 13.188,19.659 L 13.656,19.498 L 14.125,19.325 L 14.594,19.139 L 15.062,18.940 L 15.531,18.727 L 16.000,18.500 L 16.469,18.258 L 16.938,18.001 L 17.406,17.729 L 17.875,17.440 L 18.344,17.135 L 18.812,16.814 L 19.281,16.474 L 19.750,16.117 L 20.219,15.742 L 20.688,15.348 L 21.156,14.934 L 21.625,14.501 L 22.094,14.048 L 22.562,13.574 L 23.031,13.079 L 23.500,12.562 L 23.969,12.024 L 24.438,11.463 L 24.906,10.880 L 25.375,10.272 L 25.844,9.642 L 26.312,8.986 L 26.781,8.307 L 27.250,7.602 L 27.719,6.871 L 28.188,6.114 L 28.656,5.331 L 29.125,4.521 L 29.594,3.683 L 30.062,2.817 L 30.531,1.923 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Apache Spark</strong></td>
+<td style="text-align: left;">designed for high-loads &amp; datacenters, fed’n</td>
+<td style="text-align: left;">Java-based, limited integrability, unsuited to µC</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;"><p><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,21.000 L 1.938,20.999 L 2.406,20.998 L 2.875,20.995 L 3.344,20.990 L 3.812,20.984 L 4.281,20.974 L 4.750,20.961 L 5.219,20.944 L 5.688,20.924 L 6.156,20.898 L 6.625,20.868 L 7.094,20.832 L 7.562,20.791 L 8.031,20.743 L 8.500,20.688 L 8.969,20.625 L 9.438,20.555 L 9.906,20.477 L 10.375,20.390 L 10.844,20.293 L 11.312,20.188 L 11.781,20.072 L 12.250,19.945 L 12.719,19.808 L 13.188,19.659 L 13.656,19.498 L 14.125,19.325 L 14.594,19.139 L 15.062,18.940 L 15.531,18.727 L 16.000,18.500 L 16.469,18.258 L 16.938,18.001 L 17.406,17.729 L 17.875,17.440 L 18.344,17.135 L 18.812,16.814 L 19.281,16.474 L 19.750,16.117 L 20.219,15.742 L 20.688,15.348 L 21.156,14.934 L 21.625,14.501 L 22.094,14.048 L 22.562,13.574 L 23.031,13.079 L 23.500,12.562 L 23.969,12.024 L 24.438,11.463 L 24.906,10.880 L 25.375,10.272 L 25.844,9.642 L 26.312,8.986 L 26.781,8.307 L 27.250,7.602 L 27.719,6.871 L 28.188,6.114 L 28.656,5.331 L 29.125,4.521 L 29.594,3.683 L 30.062,2.817 L 30.531,1.923 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>ROS2</strong></td>
+<td style="text-align: left;">flexible, high level, feature rich</td>
+<td style="text-align: left;">steep learning curve, robotics oriented, no fed’n</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;"><p><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,20.688 L 1.938,20.375 L 2.406,20.062 L 2.875,19.750 L 3.344,19.438 L 3.812,19.125 L 4.281,18.812 L 4.750,18.500 L 5.219,18.188 L 5.688,17.875 L 6.156,17.562 L 6.625,17.250 L 7.094,16.938 L 7.562,16.625 L 8.031,16.312 L 8.500,16.000 L 8.969,15.688 L 9.438,15.375 L 9.906,15.062 L 10.375,14.750 L 10.844,14.438 L 11.312,14.125 L 11.781,13.812 L 12.250,13.500 L 12.719,13.188 L 13.188,12.875 L 13.656,12.562 L 14.125,12.250 L 14.594,11.938 L 15.062,11.625 L 15.531,11.312 L 16.000,11.000 L 16.469,10.688 L 16.938,10.375 L 17.406,10.062 L 17.875,9.750 L 18.344,9.438 L 18.812,9.125 L 19.281,8.812 L 19.750,8.500 L 20.219,8.188 L 20.688,7.875 L 21.156,7.562 L 21.625,7.250 L 22.094,6.938 L 22.562,6.625 L 23.031,6.312 L 23.500,6.000 L 23.969,5.688 L 24.438,5.375 L 24.906,5.062 L 25.375,4.750 L 25.844,4.438 L 26.312,4.125 L 26.781,3.812 L 27.250,3.500 L 27.719,3.188 L 28.188,2.875 L 28.656,2.562 L 29.125,2.250 L 29.594,1.938 L 30.062,1.625 L 30.531,1.312 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"></td>
+<td style="text-align: left;"><strong>easy</strong>, ZeroMQ-based, portable, flexible, polyglot, fed’n</td>
+<td style="text-align: left;">young (3 years)</td>
+<td style="text-align: center;">🟢🟢</td>
+<td style="text-align: center;">🟠🟢</td>
+<td style="text-align: center;"><strong><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.007,20.688 L 1.029,20.375 L 1.066,20.062 L 1.117,19.750 L 1.183,19.438 L 1.264,19.125 L 1.359,18.812 L 1.469,18.500 L 1.593,18.188 L 1.732,17.875 L 1.886,17.562 L 2.055,17.250 L 2.238,16.938 L 2.436,16.625 L 2.648,16.312 L 2.875,16.000 L 3.117,15.688 L 3.373,15.375 L 3.644,15.062 L 3.930,14.750 L 4.230,14.438 L 4.545,14.125 L 4.875,13.812 L 5.219,13.500 L 5.578,13.188 L 5.951,12.875 L 6.339,12.562 L 6.742,12.250 L 7.160,11.938 L 7.592,11.625 L 8.039,11.312 L 8.500,11.000 L 8.976,10.688 L 9.467,10.375 L 9.972,10.062 L 10.492,9.750 L 11.027,9.438 L 11.576,9.125 L 12.140,8.812 L 12.719,8.500 L 13.312,8.188 L 13.920,7.875 L 14.542,7.562 L 15.180,7.250 L 15.832,6.938 L 16.498,6.625 L 17.179,6.312 L 17.875,6.000 L 18.585,5.688 L 19.311,5.375 L 20.050,5.062 L 20.805,4.750 L 21.574,4.438 L 22.357,4.125 L 23.156,3.812 L 23.969,3.500 L 24.796,3.188 L 25.639,2.875 L 26.496,2.562 L 27.367,2.250 L 28.253,1.938 L 29.154,1.625 L 30.070,1.312 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></strong></td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p><strong>Low-level</strong> means a framework only/mostly taking care of data communication/distribution, where business logic must be implemented every time; <strong>portability</strong> means on different platforms/architectures; <strong>integrability</strong> means against existing solutions; <strong>fed’n</strong> means federation; learning curves <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,20.995 L 1.938,20.980 L 2.406,20.956 L 2.875,20.922 L 3.344,20.878 L 3.812,20.824 L 4.281,20.761 L 4.750,20.688 L 5.219,20.604 L 5.688,20.512 L 6.156,20.409 L 6.625,20.297 L 7.094,20.175 L 7.562,20.043 L 8.031,19.901 L 8.500,19.750 L 8.969,19.589 L 9.438,19.418 L 9.906,19.237 L 10.375,19.047 L 10.844,18.847 L 11.312,18.637 L 11.781,18.417 L 12.250,18.188 L 12.719,17.948 L 13.188,17.699 L 13.656,17.440 L 14.125,17.172 L 14.594,16.894 L 15.062,16.605 L 15.531,16.308 L 16.000,16.000 L 16.469,15.683 L 16.938,15.355 L 17.406,15.019 L 17.875,14.672 L 18.344,14.315 L 18.812,13.949 L 19.281,13.573 L 19.750,13.188 L 20.219,12.792 L 20.688,12.387 L 21.156,11.972 L 21.625,11.547 L 22.094,11.112 L 22.562,10.668 L 23.031,10.214 L 23.500,9.750 L 23.969,9.276 L 24.438,8.793 L 24.906,8.300 L 25.375,7.797 L 25.844,7.284 L 26.312,6.762 L 26.781,6.229 L 27.250,5.688 L 27.719,5.136 L 28.188,4.574 L 28.656,4.003 L 29.125,3.422 L 29.594,2.831 L 30.062,2.230 L 30.531,1.620 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg> are subjective and qualitative.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents</h2>
+<div class="columns">
+<div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="agent_smith_R.png" height="500"></p>
+<figcaption>Just a process in a computer</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:70%;">
+<ul>
+<li>A <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> network is made by one <strong>broker</strong> and many <strong>agents</strong></li>
+<li>Agents are <strong>processes</strong>: whether they run on a single computer or on a multitude of networked computers is irrelevant (<em>except for throughput and latency</em>)</li>
+<li>Agents communicate each other via a TCP/IP network and <strong>only</strong> through the broker</li>
+<li>The broker is completely <strong>transparent</strong> and <strong>data-agnostic</strong></li>
+<li>The process running the broker also distributes <strong>agents settings</strong> in REQ/REP fashion</li>
+<li>Information is channeled/routed/organized via <strong>topics</strong>, e.g.&nbsp;<code>measurements/force/X</code></li>
+<li>An agent can <strong>publish</strong> on a topic and can <strong>subscribe</strong> to anther (to receive asynchronous updates)</li>
+</ul>
+</div></div>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-types" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents: types</h2>
+<div class="columns">
+<div class="column">
+<h3 id="source-agents">Source agents</h3>
+<ul>
+<li><strong>Acquire</strong> information from the field:
+<ul>
+<li>sensors</li>
+<li>peripherals (TTY, GUI)</li>
+<li>other protocols</li>
+</ul></li>
+<li><strong>Publish</strong> information on the MADS network under one or more <strong>topics</strong></li>
+<li>Publishing may be timed or event-based</li>
+</ul>
+</div><div class="column">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="480" height="384" viewbox="0.00 0.00 162.14 205.80" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 201.8)">
+<title>source</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-201.8 158.14,-201.8 158.14,4 -4,4"></polygon>
+<!-- sensor -->
+<g id="node1" class="node">
+<title>sensor</title>
+<polygon fill="#eeeeee" stroke="darkgray" stroke-width="2" points="58.03,-197.8 -0.01,-197.8 -0.01,-161.8 58.03,-161.8 58.03,-197.8"></polygon>
+<text text-anchor="middle" x="29.01" y="-175.6" font-family="Arial" font-size="14.00">sensor</text>
+</g>
+<!-- agent -->
+<g id="node3" class="node">
+<title>agent</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="99.01,-124.8 45.01,-124.8 45.01,-88.8 99.01,-88.8 99.01,-124.8"></polygon>
+<text text-anchor="middle" x="72.01" y="-102.6" font-family="Arial" font-size="14.00">agent</text>
+</g>
+<!-- sensor&#45;&gt;agent -->
+<g id="edge1" class="edge">
+<title>sensor-&gt;agent</title>
+<path fill="none" stroke="darkgray" d="M39.42,-161.61C44.54,-153.15 50.82,-142.78 56.5,-133.41"></path>
+<polygon fill="darkgray" stroke="darkgray" points="59.51,-135.2 61.7,-124.83 53.52,-131.57 59.51,-135.2"></polygon>
+</g>
+<!-- peripheral -->
+<g id="node2" class="node">
+<title>peripheral</title>
+<polygon fill="#eeeeee" stroke="darkgray" stroke-width="2" points="154.27,-197.8 75.75,-197.8 75.75,-161.8 154.27,-161.8 154.27,-197.8"></polygon>
+<text text-anchor="middle" x="115.01" y="-175.6" font-family="Arial" font-size="14.00">peripheral</text>
+</g>
+<!-- peripheral&#45;&gt;agent -->
+<g id="edge2" class="edge">
+<title>peripheral-&gt;agent</title>
+<path fill="none" stroke="darkgray" d="M104.6,-161.61C99.48,-153.15 93.2,-142.78 87.52,-133.41"></path>
+<polygon fill="darkgray" stroke="darkgray" points="90.5,-131.57 82.32,-124.83 84.51,-135.2 90.5,-131.57"></polygon>
+</g>
+<!-- broker -->
+<g id="node4" class="node">
+<title>broker</title>
+<polygon fill="#eeeeee" stroke="violet" stroke-width="2" points="99.69,-36 44.33,-36 44.33,0 99.69,0 99.69,-36"></polygon>
+<text text-anchor="middle" x="72.01" y="-13.8" font-family="Arial" font-size="14.00">broker</text>
+</g>
+<!-- agent&#45;&gt;broker -->
+<g id="edge3" class="edge">
+<title>agent-&gt;broker</title>
+<path fill="none" stroke="black" d="M72.01,-88.65C72.01,-76.52 72.01,-60.02 72.01,-46.12"></path>
+<polygon fill="black" stroke="black" points="75.51,-46.11 72.01,-36.11 68.51,-46.11 75.51,-46.11"></polygon>
+<text text-anchor="middle" x="77.85" y="-58.2" font-family="Arial" font-size="14.00">t1</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-types-1" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents: types</h2>
+<div class="columns">
+<div class="column">
+<h3 id="filter-agents">Filter agents</h3>
+<ul>
+<li><strong>Manipulate</strong> information:
+<ul>
+<li>filters</li>
+<li>controllers</li>
+<li>gateways</li>
+</ul></li>
+<li>They <strong>subscribe</strong> to a topic, elabrate the received data, and <strong>publish</strong> back new data on a different topic</li>
+<li>Publishing is <strong>mostly</strong> event-based</li>
+</ul>
+</div><div class="column">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="480" height="384" viewbox="0.00 0.00 63.68 132.80" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 128.8)">
+<title>source</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-128.8 59.68,-128.8 59.68,4 -4,4"></polygon>
+<!-- broker -->
+<g id="node1" class="node">
+<title>broker</title>
+<polygon fill="#eeeeee" stroke="violet" stroke-width="2" points="55.52,-124.8 0.16,-124.8 0.16,-88.8 55.52,-88.8 55.52,-124.8"></polygon>
+<text text-anchor="middle" x="27.84" y="-102.6" font-family="Arial" font-size="14.00">broker</text>
+</g>
+<!-- agent -->
+<g id="node2" class="node">
+<title>agent</title>
+<polygon fill="#eeeeee" stroke="darkgreen" stroke-width="2" points="54.84,-36 0.84,-36 0.84,0 54.84,0 54.84,-36"></polygon>
+<text text-anchor="middle" x="27.84" y="-13.8" font-family="Arial" font-size="14.00">agent</text>
+</g>
+<!-- broker&#45;&gt;agent -->
+<g id="edge1" class="edge">
+<title>broker-&gt;agent</title>
+<path fill="none" stroke="black" d="M18.36,-88.49C15.83,-83 13.45,-76.79 12.17,-70.8 10.61,-63.5 10.61,-61.3 12.17,-54 12.75,-51.29 13.55,-48.53 14.5,-45.81"></path>
+<polygon fill="black" stroke="black" points="17.83,-46.89 18.36,-36.31 11.35,-44.26 17.83,-46.89"></polygon>
+<text text-anchor="middle" x="18.68" y="-58.2" font-family="Arial" font-size="14.00">t1</text>
+</g>
+<!-- agent&#45;&gt;broker -->
+<g id="edge2" class="edge">
+<title>agent-&gt;broker</title>
+<path fill="none" stroke="black" d="M27.84,-36.11C27.84,-48.23 27.84,-64.74 27.84,-78.64"></path>
+<polygon fill="black" stroke="black" points="24.34,-78.65 27.84,-88.65 31.34,-78.65 24.34,-78.65"></polygon>
+<text text-anchor="middle" x="33.68" y="-58.2" font-family="Arial" font-size="14.00">t2</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-types-2" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents: types</h2>
+<div class="columns">
+<div class="column">
+<h3 id="sink-agents">Sink agents</h3>
+<ul>
+<li><strong>Dispose</strong> of information received by other agents via broker:
+<ul>
+<li>to GUI (plots, charts, dashboards)</li>
+<li>to disk (JSON files, HDF5)</li>
+<li>to <strong>database</strong> (<a href="https://mongodb.com">MongoDB</a>)</li>
+<li>to other protocols</li>
+</ul></li>
+<li>Only deal with data coming from topics they are <strong>subscribed</strong> to</li>
+<li>Typically event-based</li>
+</ul>
+</div><div class="column">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="480" height="384" viewbox="0.00 0.00 63.68 132.80" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 128.8)">
+<title>source</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-128.8 59.68,-128.8 59.68,4 -4,4"></polygon>
+<!-- broker -->
+<g id="node1" class="node">
+<title>broker</title>
+<polygon fill="#eeeeee" stroke="violet" stroke-width="2" points="55.52,-124.8 0.16,-124.8 0.16,-88.8 55.52,-88.8 55.52,-124.8"></polygon>
+<text text-anchor="middle" x="27.84" y="-102.6" font-family="Arial" font-size="14.00">broker</text>
+</g>
+<!-- agent -->
+<g id="node2" class="node">
+<title>agent</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="54.84,-36 0.84,-36 0.84,0 54.84,0 54.84,-36"></polygon>
+<text text-anchor="middle" x="27.84" y="-13.8" font-family="Arial" font-size="14.00">agent</text>
+</g>
+<!-- broker&#45;&gt;agent -->
+<g id="edge1" class="edge">
+<title>broker-&gt;agent</title>
+<path fill="none" stroke="black" d="M27.84,-88.65C27.84,-76.52 27.84,-60.02 27.84,-46.12"></path>
+<polygon fill="black" stroke="black" points="31.34,-46.11 27.84,-36.11 24.34,-46.11 31.34,-46.11"></polygon>
+<text text-anchor="middle" x="33.68" y="-58.2" font-family="Arial" font-size="14.00">t3</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="incidentally-why-mongodb" class="slide level2">
+<h2>Incidentally: why MongoDB?</h2>
+<blockquote>
+<p>MongoDB is a <strong>schemaless, NoSQL</strong> database server: it organizes data in <strong>collections</strong> of <strong>JSON documents</strong></p>
+</blockquote>
+<div class="columns">
+<div class="column">
+<h3 id="advantages">Advantages</h3>
+<ul>
+<li>Data collection architectures may change (new agents, different data set-up)</li>
+<li>A schemaless database allows to carry on data collection even when its structure changes</li>
+<li>Still reasonably fast (20–250 kwrites/s)</li>
+</ul>
+</div><div class="column">
+<h3 id="limitations">Limitations</h3>
+<ul>
+<li>Dealing with non-consistent schema is demanded to downstream consumption (but doable!)</li>
+<li>SQL queries are easier than MongoDB queries (but AI helps here!)</li>
+<li>SQL servers can bear <strong>higher workloads</strong> (1.2x–1.5x)</li>
+</ul>
+</div></div>
+</section>
+<section id="data-format-json" class="slide level2">
+<h2>Data format: JSON</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li>MADS agents exchange data as <strong>JSON</strong> objects, because of its flexibility</li>
+<li>Underlying C++ library is <code>nlohmann::json</code></li>
+<li>Actual wire-format can be JSON (ASCII) or <strong>MsgPack</strong> (binary), per-agent negotiable</li>
+<li>Directly maps to what you log in MongoDB</li>
+<li>Directly maps to Python dictionaries</li>
+</ul>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="gorini_files/figure-revealjs/bench_plot-1.png" width="1500"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-implementation" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents: implementation</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Requirements</strong></p>
+</div>
+<div class="callout-content">
+<p>MADS has beed designed with requirements of <strong>flexibility</strong> and <strong>easy extensibility</strong></p>
+</div>
+</div>
+</div>
+<p>An agent can be implemented in a number of alternative ways:</p>
+<ul>
+<li>C++ process, linked to the <code>MadsCore</code> shared library (<code>#include &lt;mads.hpp&gt;</code>)</li>
+<li>C process, linked to the <code>MadsCore</code> shared library (<code>#include &lt;mads_c.h&gt;</code>)</li>
+<li>Python script <a href="https://en.wikipedia.org/wiki/Foreign_function_interface">FFI</a>-linked to the <code>MadsCore</code> library (<code>import Mads</code>)</li>
+<li>C++ <a href="https://en.wikipedia.org/wiki/Plug-in_(computing)">plugin</a>, with minimal API surface (3 methods)</li>
+<li>Rust plugin, with minimal API surface (3 methods)</li>
+<li>Python plugin (a binary that loads a Python module at runtime)</li>
+<li>R plugin (a binary that loads a R script at runtime)</li>
+<li>Lua plugin (a binary that loads a Lua script at runtime)</li>
+</ul>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-implementation-1" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents: implementation</h2>
+<p>The choice depends on personal knowledge/skill and task requirements:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">Performance</th>
+<th style="text-align: center;">Flexibility</th>
+<th style="text-align: center;">Production-ready</th>
+<th style="text-align: center;">Base install</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">C++ process</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C process</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Python script</td>
+<td style="text-align: center;">⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C++ plugin</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rust plugin</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Python plugin</td>
+<td style="text-align: center;">⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️</td>
+<td style="text-align: center;">⛔️</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R plugin</td>
+<td style="text-align: center;">⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️</td>
+<td style="text-align: center;">⛔️</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lua plugin</td>
+<td style="text-align: center;">⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️</td>
+<td style="text-align: center;">⛔️</td>
+</tr>
+</tbody>
+</table>
+
+<aside><div>
+<p>⛔️ = see next slide</p>
+</div></aside></section>
+<section id="mads-net-a-repository-of-pre-made-agents" class="slide level2">
+<h2>MADS-NET: a repository of pre-made agents</h2>
+<p>The <a href="https://github.com/MADS-NET">github.com/MADS-NET</a> page provides a list of open source, ready available plugin and custom agents repositories for solving common tasks, which may be immediately useful, or provide a template on which to build upon:</p>
+<div class="columns">
+<div class="column">
+<ul>
+<li>Python/R/lua plugins</li>
+<li>HDF5 logging</li>
+<li>ML inference of ONNX models</li>
+<li>FMU plugins</li>
+<li>User interfaces</li>
+<li>JSON schema validation</li>
+<li>Arduino I/O</li>
+<li>and more</li>
+</ul>
+</div><div class="column">
+<p><a href="https://github.com/MADS-NET/python_agent"><img class="opengraph-image" src="https://opengraph.githubassets.com/2.4.1/MADS-NET/python_agent" alt="MADS-NET repository" width="300px"></a> <a href="https://github.com/MADS-NET/FMU_agent"><img class="opengraph-image" src="https://opengraph.githubassets.com/2.4.1/MADS-NET/FMU_agent" alt="MADS-NET repository" width="300px"></a> <a href="https://github.com/MADS-NET/onnx_agent"><img class="opengraph-image" src="https://opengraph.githubassets.com/2.4.1/MADS-NET/onnx_agent" alt="MADS-NET repository" width="300px"></a> <a href="https://github.com/MADS-NET/arduino_plugin"><img class="opengraph-image" src="https://opengraph.githubassets.com/2.4.1/MADS-NET/arduino_plugin" alt="MADS-NET repository" width="300px"></a></p>
+</div></div>
+</section>
+<section id="mads-net-a-repository-of-pre-made-agents-1" class="slide level2">
+<h2>MADS-NET: a repository of pre-made agents</h2>
+<p>To install a custom agent from MADS-NET:</p>
+<div class="columns">
+<div class="column">
+<h3 id="from-source">From source</h3>
+<ul>
+<li>Clone the repo</li>
+<li>Configure and compile:<br>
+<code>cmake -Bbuild -GNinja</code><br>
+<code>cmake --build build</code></li>
+<li>Test from <code>build/toolname</code></li>
+<li>Install (with <code>sudo</code> if needed):<br>
+<code>cmake --install build</code></li>
+</ul>
+</div><div class="column">
+<h3 id="pre-compiled-subsection">Pre-compiled (subsection)</h3>
+<ul>
+<li>List available:<br>
+<code>mads package --list</code></li>
+<li>Info on the one you want:<br>
+<code>mads package --info &lt;package&gt;</code></li>
+<li>Install (with <code>sudo</code> if needed):<br>
+<code>mads package --install &lt;package&gt;</code></li>
+</ul>
+</div></div>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p><code>mads package</code> is not a full-fledged package manager: it only supports the latest MADS version. <strong>Build from source</strong> if you stuble into problems</p>
+</div>
+</div>
+</div>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-arduino-based" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents: Arduino-based</h2>
+<ul>
+<li>Cheapest and fastest way to ingest field data into a MADS network</li>
+<li>Three possible, complementary solutions:
+<ul>
+<li><a href="https://github.com/MADS-NET/arduino_plugin"><code>arduino.plugin</code></a> and a custom <code>.ino</code> sketch that prints a JSON string over serial — <strong>any Arduino</strong>, but must be serial-port connected to an agent running on separate device</li>
+<li><a href="https://github.com/MADS-NET/arduinoQ_plugin"><code>arduinoQ.plugin</code></a>, only works on an Arduino Uno Q: the agent runs on the CPU, a custom <code>.ino</code> on the MCU, they communicate via RPC — <strong>Uno Q only</strong>, standalone</li>
+<li><a href="https://github.com/MADS-NET/arduino_mads"><code>arduino_mads</code></a>: an Arduino-native library that provides low-level message passing to a MADS-network — requires <strong>Ethernet- or WiFi-equipped Arduino</strong>, standalone, feature-limited</li>
+</ul></li>
+</ul>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tip</strong></p>
+</div>
+<div class="callout-content">
+<p>The <code>arduino.plugin</code>, despite its name, works with <strong>any micro</strong> that can print on a serial port a JSON string</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="commands-and-tools" class="title-slide slide level1 center">
+<h1>Commands and tools</h1>
+<p><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> provides a number of command line tools to manage and monitor a network</p>
+</section>
+<section id="common-commands" class="slide level2">
+<h2>Common commands</h2>
+<ul>
+<li><code>mads broker</code> to start a broker</li>
+<li><code>mads [source|filter|sink]</code> to load a C++ plugin</li>
+<li><code>mads [rsource|rfilter|rsink]</code> to load a Rust plugin</li>
+<li><code>mads plugin</code> to create a plugin template</li>
+<li><code>mads logger</code> to log network traffic to MongoDB</li>
+<li><code>mads echo</code> to watch network traffic</li>
+<li><code>mads top</code> to monitor agents</li>
+<li><code>mads package</code> to install a pre-made plugin from MADS-NET</li>
+</ul>
+</section>
+<section id="mads-broker-centralized-management-tool" class="slide level2">
+<h2><code>mads broker</code>: centralized management tool</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>The broker does much more than just routing messages: it also provides a <strong>centralized management</strong> of the network</p>
+<ul>
+<li>ensures that all agents run on compatible versions of the MADS framework</li>
+<li>distributes to each agent (<strong>when it starts</strong>) its configuration from a local <code>mads.ini</code> file</li>
+<li>provides <strong>Over the Air</strong> (OTA) distribution of plugins binaries to remote agents</li>
+</ul>
+</div><div class="column" style="width:2%;">
+
+</div><div class="column" style="width:48%;">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource toml number-lines code-with-copy"><code class="sourceCode toml"><span id="cb6-1"><a aria-label="1"></a><span class="kw">[agents]</span> <span class="co"># common to all agents</span></span>
+<span id="cb6-2"><a aria-label="2"></a><span class="dt">frontend_address</span> <span class="op">=</span> <span class="st">"tcp://localhost:9090"</span></span>
+<span id="cb6-3"><a aria-label="3"></a><span class="dt">backend_address</span> <span class="op">=</span> <span class="st">"tcp://localhost:9091"</span></span>
+<span id="cb6-4"><a aria-label="4"></a><span class="dt">settings_address</span> <span class="op">=</span> <span class="st">"tcp://localhost:9092"</span></span>
+<span id="cb6-5"><a aria-label="5"></a><span class="dt">timecode_fps</span> <span class="op">=</span> <span class="dv">25</span></span>
+<span id="cb6-6"><a aria-label="6"></a><span class="dt">wire_format</span> <span class="op">=</span> <span class="st">"json"</span></span>
+<span id="cb6-7"><a aria-label="7"></a><span class="dt">compression</span> <span class="op">=</span> <span class="st">"auto"</span></span>
+<span id="cb6-8"><a aria-label="8"></a></span>
+<span id="cb6-9"><a aria-label="9"></a><span class="kw">[source]</span></span>
+<span id="cb6-10"><a aria-label="10"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"measurements/force/X"</span></span>
+<span id="cb6-11"><a aria-label="11"></a><span class="dt">attachment</span> <span class="op">=</span> <span class="st">"force_sensor.plugin"</span> <span class="co"># OTA</span></span>
+<span id="cb6-12"><a aria-label="12"></a></span>
+<span id="cb6-13"><a aria-label="13"></a><span class="kw">[filter]</span></span>
+<span id="cb6-14"><a aria-label="14"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"measurements"</span><span class="op">]</span></span>
+<span id="cb6-15"><a aria-label="15"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"filtered/force/X"</span></span>
+<span id="cb6-16"><a aria-label="16"></a></span>
+<span id="cb6-17"><a aria-label="17"></a><span class="kw">[sink]</span></span>
+<span id="cb6-18"><a aria-label="18"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="st">"filtered"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div></div>
+</section>
+<section id="agents-and-the-mads.ini-file" class="slide level2">
+<h2>Agents and the <code>mads.ini</code> file</h2>
+<ul>
+<li>A broker <strong>advertises</strong> its presence on the network, each broker in a virtual <strong>room</strong> with possibly different name (<code>mads</code> by default)</li>
+<li>Each agent needs the <code>mads.ini</code> file to start</li>
+<li>The agent searches for it in this order:
+<ol type="1">
+<li>a broker URI or a file path passed by the <code>--settings</code> command line option</li>
+<li>a <strong>room</strong> name if the <code>--room</code> command line option is used</li>
+<li>a broker running on <code>tcp://localhost:9092</code> (default)</li>
+</ol></li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>Start order of broker and agents is irrelevant, as well it is restarting the broker while agents are running: they will automatically reconnect to the broker when it becomes available again</p>
+<p><strong>The only way to reload the <code>mads.ini</code> file is to restart the agent</strong></p>
+</div>
+</div>
+</div>
+</section>
+<section id="gui-commands" class="slide level2">
+<h2>GUI commands</h2>
+<p>Two commands provide GUIs to monitor and control a MADS network:</p>
+<ul>
+<li><code>mads director</code>: coordinates the execution of multiple MADS tools on the same machine</li>
+<li><code>mads chat</code>: reads and writes messages to the MADS network<br>
+(installed with <code>mads package --install mads-chat</code>)</li>
+</ul>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="director.png" width="500"></p>
+<figcaption><code>mads director</code></figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="chat.png" width="500"></p>
+<figcaption><code>mads chat</code></figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="utility-commands" class="slide level2">
+<h2>Utility commands</h2>
+<ul>
+<li><code>mads doctor</code>: help fixing MADS configuration issues</li>
+<li><code>mads ini</code>: create a template <code>mads.ini</code> file</li>
+<li><code>mads [record|play|bag]</code>: record and replay network traffic to a bag file (and inspects it)</li>
+<li><code>mads up</code>: headless version of <code>mads director</code> (for remote control)</li>
+<li><code>mads service</code>: install a MADS tool as a system service (Linux only)</li>
+<li><code>mads update</code>: check for updates and provide packages URLs</li>
+<li><code>mads fsm</code>: creates a <a href="https://en.wikipedia.org/wiki/Finite-state_machine">finite state machine</a> agent template from a <a href="https://graphviz.org/">Graphviz</a> scheme</li>
+<li><code>mads federate</code>: launch a federation agent for connecting two MADS networks</li>
+</ul>
+</section>
+<section id="common-general-purpose-plugins" class="slide level2">
+<h2>Common, general purpose plugins</h2>
+<ul>
+<li><code>mads sink rerunner.plugin</code>: a sink agent that sends data to <a href="https://rerun.io">Rerun.io</a> for <strong>realtime visualization</strong></li>
+<li><code>mads sink validator.plugin</code>: a sink agent that validates JSON data against a schema</li>
+<li><code>mads sink hdf5.plugin</code>: a sink agent that logs data to HDF5 files</li>
+<li><code>mads [source|filter|sink] arduino.plugin</code>: a source/filter/sink agent that communicates with a microcontroller via serial port</li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Python plugins</strong></p>
+</div>
+<div class="callout-content">
+<p>Python plugins are loaded by a dedicated <code>mads python</code> agent, which is installed with <code>mads package --install mads-python</code>. It is a <strong>Python interpreter</strong> that loads a Python module at runtime</p>
+<p>To allow users to use their own Python version, the <code>mads python</code> agent <strong>is not part</strong> of the base MADS installation, but is available as a separate package from <a href="https://github.com/MADS-NET/python_agent">MADS-NET/python_agent</a> to be compiled against your Python of choice</p>
+</div>
+</div>
+</div>
+</section>
+<section id="anatomy-of-a-plugin-c" class="slide level2">
+<h2>Anatomy of a plugin: C++</h2>
+<div class="columns">
+<div class="column smaller">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb7-1"><a aria-label="1"></a><span class="kw">class</span> MySource <span class="op">:</span> <span class="kw">public</span> Source<span class="op">&lt;</span>json<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb7-2"><a aria-label="2"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb7-3"><a aria-label="3"></a>  <span class="kw">using</span> Source<span class="op">::</span>Source<span class="op">;</span> <span class="co">// inherit constructors</span></span>
+<span id="cb7-4"><a aria-label="4"></a></span>
+<span id="cb7-5"><a aria-label="5"></a>  string kind<span class="op">()</span> <span class="kw">override</span> <span class="op">{</span> <span class="cf">return</span> PLUGIN_NAME<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb7-6"><a aria-label="6"></a></span>
+<span id="cb7-7"><a aria-label="7"></a>  <span class="dt">return_type</span> get_output<span class="op">(</span>json <span class="op">&amp;</span>out<span class="op">,</span> </span>
+<span id="cb7-8"><a aria-label="8"></a>    vector<span class="op">&lt;</span><span class="dt">unsigned</span> <span class="dt">char</span><span class="op">&gt;</span> <span class="op">*</span>blob <span class="op">=</span> <span class="kw">nullptr</span><span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb7-9"><a aria-label="9"></a>    out<span class="op">.</span>clear<span class="op">();</span></span>
+<span id="cb7-10"><a aria-label="10"></a>    <span class="cf">if</span> <span class="op">(!</span>_agent_id<span class="op">.</span>empty<span class="op">())</span> out<span class="op">[</span><span class="st">"agent_id"</span><span class="op">]</span> <span class="op">=</span> _agent_id<span class="op">;</span></span>
+<span id="cb7-11"><a aria-label="11"></a>    <span class="co">// FILL out with contents</span></span>
+<span id="cb7-12"><a aria-label="12"></a>    <span class="cf">return</span> <span class="dt">return_type</span><span class="op">::</span>success<span class="op">;</span></span>
+<span id="cb7-13"><a aria-label="13"></a>  <span class="op">}</span></span>
+<span id="cb7-14"><a aria-label="14"></a></span>
+<span id="cb7-15"><a aria-label="15"></a>  <span class="dt">void</span> set_params<span class="op">(</span><span class="at">const</span> json <span class="op">&amp;</span>params<span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb7-16"><a aria-label="16"></a>    Source<span class="op">::</span>set_params<span class="op">(</span>params<span class="op">);</span></span>
+<span id="cb7-17"><a aria-label="17"></a>    _params<span class="op">[</span><span class="st">"some_field"</span><span class="op">]</span> <span class="op">=</span> <span class="st">"default_value"</span><span class="op">;</span></span>
+<span id="cb7-18"><a aria-label="18"></a>    _params<span class="op">.</span>merge_patch<span class="op">(</span>params<span class="op">);</span> <span class="co">// merge with INI parameters</span></span>
+<span id="cb7-19"><a aria-label="19"></a>  <span class="op">}</span></span>
+<span id="cb7-20"><a aria-label="20"></a></span>
+<span id="cb7-21"><a aria-label="21"></a>  map<span class="op">&lt;</span>string<span class="op">,</span> string<span class="op">&gt;</span> info<span class="op">()</span> <span class="kw">override</span> <span class="op">{</span> </span>
+<span id="cb7-22"><a aria-label="22"></a>    <span class="cf">return</span> <span class="op">{{</span>some_filed<span class="op">,</span> _params<span class="op">[</span><span class="st">"some_field"</span><span class="op">].</span>get<span class="op">&lt;</span>string<span class="op">&gt;()}};</span></span>
+<span id="cb7-23"><a aria-label="23"></a>  <span class="op">};</span></span>
+<span id="cb7-24"><a aria-label="24"></a></span>
+<span id="cb7-25"><a aria-label="25"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb7-26"><a aria-label="26"></a>  <span class="co">// some private fields</span></span>
+<span id="cb7-27"><a aria-label="27"></a><span class="op">};</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column" style="width:45%;">
+<ul>
+<li>Inherit a base class (Source, Filter, Sink)</li>
+<li>Implement a few (3–4) methods:
+<ul>
+<li><code>kind()</code>: returns the plugin name</li>
+<li><code>get_output()</code>: fills the output JSON object with data to be published</li>
+<li><code>set_params()</code>: sets parameters from the INI file</li>
+<li><code>info()</code>: returns a map of information about the plugin</li>
+</ul></li>
+</ul>
+</div></div>
+</section>
+<section id="anatomy-of-a-plugin-python-module" class="slide level2">
+<h2>Anatomy of a plugin: Python module</h2>
+<div class="columns">
+<div class="column smaller">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-label="1"></a><span class="im">import</span> json</span>
+<span id="cb8-2"><a aria-label="2"></a></span>
+<span id="cb8-3"><a aria-label="3"></a><span class="co"># Specify that this is a source agent</span></span>
+<span id="cb8-4"><a aria-label="4"></a>mads.agent_type <span class="op">=</span> <span class="st">"source"</span></span>
+<span id="cb8-5"><a aria-label="5"></a></span>
+<span id="cb8-6"><a aria-label="6"></a><span class="co"># Executed once at startup</span></span>
+<span id="cb8-7"><a aria-label="7"></a><span class="kw">def</span> setup():</span>
+<span id="cb8-8"><a aria-label="8"></a>  <span class="bu">print</span>(<span class="st">"[Python] Setting up source..."</span>)</span>
+<span id="cb8-9"><a aria-label="9"></a>  <span class="bu">print</span>(<span class="st">"[Python] Parameters: "</span> <span class="op">+</span> json.dumps(mads.params))</span>
+<span id="cb8-10"><a aria-label="10"></a>  mads.state[<span class="st">"n"</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb8-11"><a aria-label="11"></a></span>
+<span id="cb8-12"><a aria-label="12"></a><span class="co"># executed in a loop, to produce data to be published</span></span>
+<span id="cb8-13"><a aria-label="13"></a><span class="kw">def</span> get_output():</span>
+<span id="cb8-14"><a aria-label="14"></a>  mads.data <span class="op">=</span> {<span class="st">"list"</span>: [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>], <span class="st">"n"</span>: mads.state[<span class="st">"n"</span>]}</span>
+<span id="cb8-15"><a aria-label="15"></a>  mads.state[<span class="st">"n"</span>] <span class="op">=</span> mads.state[<span class="st">"n"</span>] <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb8-16"><a aria-label="16"></a>  mads.data[<span class="st">"processed"</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb8-17"><a aria-label="17"></a>  <span class="cf">return</span> json.dumps(mads.data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p><code>"source</code>” is the default agent type. If mandatory functions are not implemented, the agent fails to start</p>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:45%;">
+<ul>
+<li>It’s a <strong>module</strong>, not a script</li>
+<li>Filters have <code>process()</code>, sinks have <code>deal_with_data()</code></li>
+<li>Gets implicit access to the <code>mads</code> object:
+<ul>
+<li><code>mads.params</code>: parameters from INI</li>
+<li><code>mads.state</code>: a dictionary to store persistent state between calls</li>
+<li><code>mads.data</code>: the data to be published (as JSON string)</li>
+<li><code>mads.topic</code>: the topic of the last received message</li>
+</ul></li>
+</ul>
+</div></div>
+</section>
+<section id="mads-message-example" class="slide level2">
+<h2>MADS message example</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Publihed data is decorated by common fields (lines 8–14):</p>
+<ul>
+<li><code>agent_id</code>: to distinguish different instances of the same agent</li>
+<li><code>period</code>: the nominal time between two consecutive publications (in ms)</li>
+<li><code>timestamp</code>: ISO 8601 timestamp of the publication</li>
+<li><code>timecode</code>: seconds since the last midnight, rounded to the last <code>timecode_fps</code> frame rate (for <strong>binning!</strong>)</li>
+</ul>
+</div><div class="column" style="width:3%;">
+
+</div><div class="column" style="width:47%;">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource json number-lines code-with-copy"><code class="sourceCode json"><span id="cb9-1"><a aria-label="1"></a><span class="fu">{</span></span>
+<span id="cb9-2"><a aria-label="2"></a>  <span class="dt">"my_data"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb9-3"><a aria-label="3"></a>    <span class="dt">"id"</span><span class="fu">:</span> <span class="dv">131</span><span class="fu">,</span></span>
+<span id="cb9-4"><a aria-label="4"></a>    <span class="dt">"payload"</span><span class="fu">:</span> <span class="st">"rHIR]aDLI"</span><span class="fu">,</span></span>
+<span id="cb9-5"><a aria-label="5"></a>    <span class="dt">"payload_length"</span><span class="fu">:</span> <span class="dv">10</span><span class="fu">,</span></span>
+<span id="cb9-6"><a aria-label="6"></a>    <span class="dt">"values"</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">1</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">,</span> <span class="dv">4</span><span class="ot">]</span></span>
+<span id="cb9-7"><a aria-label="7"></a>  <span class="fu">},</span></span>
+<span id="cb9-8"><a aria-label="8"></a>  <span class="dt">"agent_id"</span><span class="fu">:</span> <span class="st">""</span><span class="fu">,</span></span>
+<span id="cb9-9"><a aria-label="9"></a>  <span class="dt">"hostname"</span><span class="fu">:</span> <span class="st">"Fram-IV"</span><span class="fu">,</span></span>
+<span id="cb9-10"><a aria-label="10"></a>  <span class="dt">"period"</span><span class="fu">:</span> <span class="dv">100</span><span class="fu">,</span></span>
+<span id="cb9-11"><a aria-label="11"></a>  <span class="dt">"timecode"</span><span class="fu">:</span> <span class="fl">49683.52</span><span class="fu">,</span></span>
+<span id="cb9-12"><a aria-label="12"></a>  <span class="dt">"timestamp"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb9-13"><a aria-label="13"></a>    <span class="dt">"$date"</span><span class="fu">:</span> <span class="st">"2026-08-06T13:48:03.540+0200"</span></span>
+<span id="cb9-14"><a aria-label="14"></a>  <span class="fu">}</span></span>
+<span id="cb9-15"><a aria-label="15"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>See <a href="../manual/timing-scheduling.html">the guide</a> for timing and synchronization considerations</p>
+</div>
+</div>
+</div>
+</div></div>
+</section></section>
+<section>
+<section id="design-a-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-network" class="title-slide slide level1 center">
+<h1>Design a <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> network</h1>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    n1["`mads.ini file`"] --&gt; n2["make graph"]
+    n2 --&gt; n3["complex?"]
+    n2 --&gt; n1
+    n3 -- no --&gt; n4["`prototype 
+    plugin`"] 
+    n3 -- yes --&gt;n5["`make fsm 
+    or API agent`"]
+    n4 --&gt; n6["fast?"]
+    n6 -- yes --&gt; n7["create service"]
+    n6 -- no --&gt; n8["template agent"]
+    n8 --&gt; n7
+    n5 --&gt; n7
+
+    n1@{ shape: rect}
+    n2@{ shape: proc}
+    n3@{ shape: decision}
+    n4@{ shape: proc}
+    n5@{ shape: proc}
+    n6@{ shape: decision}
+    n7@{ shape: proc}
+    n8@{ shape: proc}
+
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="design-the-network-graph-via-mads.ini" class="slide level2">
+<h2>Design the network graph via <code>mads.ini</code></h2>
+<div class="columns">
+<div class="column smaller">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource toml number-lines code-with-copy"><code class="sourceCode toml"><span id="cb10-1"><a aria-label="1"></a><span class="kw">[broker]</span></span>
+<span id="cb10-2"><a aria-label="2"></a></span>
+<span id="cb10-3"><a aria-label="3"></a><span class="kw">[forces]</span></span>
+<span id="cb10-4"><a aria-label="4"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"imu/forces"</span></span>
+<span id="cb10-5"><a aria-label="5"></a></span>
+<span id="cb10-6"><a aria-label="6"></a><span class="kw">[accelerations]</span></span>
+<span id="cb10-7"><a aria-label="7"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"imu/accelerations"</span></span>
+<span id="cb10-8"><a aria-label="8"></a></span>
+<span id="cb10-9"><a aria-label="9"></a><span class="kw">[gyro]</span></span>
+<span id="cb10-10"><a aria-label="10"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"gyro"</span></span>
+<span id="cb10-11"><a aria-label="11"></a></span>
+<span id="cb10-12"><a aria-label="12"></a><span class="kw">[ego]</span></span>
+<span id="cb10-13"><a aria-label="13"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"imu"</span><span class="op">,</span> <span class="st">"gyro"</span><span class="op">]</span></span>
+<span id="cb10-14"><a aria-label="14"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"ego"</span></span>
+<span id="cb10-15"><a aria-label="15"></a></span>
+<span id="cb10-16"><a aria-label="16"></a><span class="kw">[rerun]</span></span>
+<span id="cb10-17"><a aria-label="17"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"imu"</span><span class="op">,</span> <span class="st">"ego"</span><span class="op">,</span> <span class="st">"gyro"</span><span class="op">]</span></span>
+<span id="cb10-18"><a aria-label="18"></a></span>
+<span id="cb10-19"><a aria-label="19"></a><span class="kw">[dangling]</span></span>
+<span id="cb10-20"><a aria-label="20"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"test"</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="480" height="384" viewbox="0.00 0.00 316.14 242.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 238)">
+<title>mads</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-238 312.14,-238 312.14,4 -4,4"></polygon>
+<!-- accelerations -->
+<g id="node1" class="node">
+<title>accelerations</title>
+<polygon fill="none" stroke="darkred" points="0,-142.5 0,-178.5 57.75,-178.5 57.75,-142.5 0,-142.5"></polygon>
+<text text-anchor="middle" x="28.88" y="-158.3" font-family="monospace" font-size="8.00">accelerations</text>
+</g>
+<!-- ego -->
+<g id="node3" class="node">
+<title>ego</title>
+<polygon fill="none" stroke="darkgreen" points="151.38,-97.1 151.38,-141.9 205.38,-141.9 205.38,-97.1 151.38,-97.1"></polygon>
+<text text-anchor="middle" x="178.38" y="-130.7" font-family="monospace" font-size="8.00">ego</text>
+<polyline fill="none" stroke="darkgreen" points="151.38,-124.3 205.38,-124.3 "></polyline>
+<text text-anchor="start" x="159.38" y="-113.1" font-family="monospace" font-size="8.00">imu</text>
+<text text-anchor="start" x="159.38" y="-103.5" font-family="monospace" font-size="8.00">gyro</text>
+</g>
+<!-- accelerations&#45;&gt;ego -->
+<g id="edge1" class="edge">
+<title>accelerations-&gt;ego</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M57.92,-150.86C63.79,-148.94 69.95,-146.99 75.75,-145.3 97.47,-138.95 122.07,-132.69 141.62,-127.92"></path>
+<polygon fill="black" stroke="black" points="142.44,-131.32 151.34,-125.57 140.8,-124.51 142.44,-131.32"></polygon>
+<text text-anchor="start" x="75.75" y="-156.5" font-family="monospace" font-size="8.00">imu/accelerations</text>
+<text text-anchor="start" x="75.75" y="-146.9" font-family="monospace" font-size="8.00">via imu</text>
+</g>
+<!-- rerun -->
+<g id="node6" class="node">
+<title>rerun</title>
+<polygon fill="none" stroke="darkblue" points="254.14,-62.3 254.14,-116.7 308.14,-116.7 308.14,-62.3 254.14,-62.3"></polygon>
+<text text-anchor="middle" x="281.14" y="-105.5" font-family="monospace" font-size="8.00">rerun</text>
+<polyline fill="none" stroke="darkblue" points="254.14,-99.1 308.14,-99.1 "></polyline>
+<text text-anchor="start" x="262.14" y="-87.9" font-family="monospace" font-size="8.00">imu</text>
+<text text-anchor="start" x="262.14" y="-78.3" font-family="monospace" font-size="8.00">ego</text>
+<text text-anchor="start" x="262.14" y="-68.7" font-family="monospace" font-size="8.00">gyro</text>
+</g>
+<!-- accelerations&#45;&gt;rerun -->
+<g id="edge2" class="edge">
+<title>accelerations-&gt;rerun</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M58.06,-165.32C94.29,-170.16 158.29,-174.04 206.59,-151.5 221.23,-144.66 235.32,-134.13 247.18,-123.68"></path>
+<polygon fill="black" stroke="black" points="249.61,-126.19 254.63,-116.86 244.89,-121.03 249.61,-126.19"></polygon>
+<text text-anchor="start" x="150.17" y="-178.5" font-family="monospace" font-size="8.00">imu/accelerations</text>
+<text text-anchor="start" x="150.17" y="-168.9" font-family="monospace" font-size="8.00">via imu</text>
+</g>
+<!-- dangling -->
+<g id="node2" class="node">
+<title>dangling</title>
+<polygon fill="none" stroke="darkblue" stroke-dasharray="5,2" points="1.88,-197.5 1.88,-233.5 55.88,-233.5 55.88,-197.5 1.88,-197.5"></polygon>
+<text text-anchor="middle" x="28.88" y="-222.3" font-family="monospace" font-size="8.00">dangling</text>
+<polyline fill="none" stroke="darkblue" stroke-dasharray="5,2" points="1.88,-215.9 55.88,-215.9 "></polyline>
+<text text-anchor="start" x="9.88" y="-204.7" font-family="monospace" font-size="8.00">test [!]</text>
+</g>
+<!-- ego&#45;&gt;rerun -->
+<g id="edge3" class="edge">
+<title>ego-&gt;rerun</title>
+<path fill="none" stroke="black" d="M205.59,-111.7C217.37,-108.19 231.45,-103.99 244.2,-100.2"></path>
+<polygon fill="black" stroke="black" points="245.47,-103.47 254.06,-97.26 243.47,-96.76 245.47,-103.47"></polygon>
+<text text-anchor="middle" x="230.36" y="-106.9" font-family="monospace" font-size="8.00">ego</text>
+</g>
+<!-- forces -->
+<g id="node4" class="node">
+<title>forces</title>
+<polygon fill="none" stroke="darkred" points="1.88,-56.5 1.88,-92.5 55.88,-92.5 55.88,-56.5 1.88,-56.5"></polygon>
+<text text-anchor="middle" x="28.88" y="-72.3" font-family="monospace" font-size="8.00">forces</text>
+</g>
+<!-- forces&#45;&gt;ego -->
+<g id="edge4" class="edge">
+<title>forces-&gt;ego</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M55.91,-82.44C79.67,-89.69 115.01,-100.47 141.45,-108.54"></path>
+<polygon fill="black" stroke="black" points="140.52,-111.92 151.11,-111.49 142.57,-105.22 140.52,-111.92"></polygon>
+<text text-anchor="start" x="86.85" y="-116.5" font-family="monospace" font-size="8.00">imu/forces</text>
+<text text-anchor="start" x="86.85" y="-106.9" font-family="monospace" font-size="8.00">via imu</text>
+</g>
+<!-- forces&#45;&gt;rerun -->
+<g id="edge5" class="edge">
+<title>forces-&gt;rerun</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M56.07,-70.74C90.71,-66.41 153.54,-60.81 206.59,-68.3 219.13,-70.07 232.53,-73.46 244.4,-77.02"></path>
+<polygon fill="black" stroke="black" points="243.38,-80.37 253.97,-80.02 245.48,-73.69 243.38,-80.37"></polygon>
+<text text-anchor="start" x="161.27" y="-79.5" font-family="monospace" font-size="8.00">imu/forces</text>
+<text text-anchor="start" x="161.27" y="-69.9" font-family="monospace" font-size="8.00">via imu</text>
+</g>
+<!-- gyro -->
+<g id="node5" class="node">
+<title>gyro</title>
+<polygon fill="none" stroke="darkred" points="1.88,-0.5 1.88,-36.5 55.88,-36.5 55.88,-0.5 1.88,-0.5"></polygon>
+<text text-anchor="middle" x="28.88" y="-16.3" font-family="monospace" font-size="8.00">gyro</text>
+</g>
+<!-- gyro&#45;&gt;ego -->
+<g id="edge6" class="edge">
+<title>gyro-&gt;ego</title>
+<path fill="none" stroke="black" d="M56.29,-30.56C77.69,-40.9 108.12,-56.95 132.17,-74.9 138.12,-79.34 144.07,-84.54 149.61,-89.78"></path>
+<polygon fill="black" stroke="black" points="147.27,-92.39 156.87,-96.89 152.17,-87.39 147.27,-92.39"></polygon>
+<text text-anchor="middle" x="103.96" y="-76.9" font-family="monospace" font-size="8.00">gyro</text>
+</g>
+<!-- gyro&#45;&gt;rerun -->
+<g id="edge7" class="edge">
+<title>gyro-&gt;rerun</title>
+<path fill="none" stroke="black" d="M55.96,-20.8C90.99,-24.44 154.84,-33.04 206.59,-50.9 219.73,-55.44 233.41,-62.03 245.35,-68.49"></path>
+<polygon fill="black" stroke="black" points="243.67,-71.56 254.11,-73.37 247.07,-65.44 243.67,-71.56"></polygon>
+<text text-anchor="middle" x="178.38" y="-52.9" font-family="monospace" font-size="8.00">gyro</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>Agents with dangling topics have dashed borders. Solid edges are explicit topics, dashed are wildcard topics, dotted are implicit topics (same as agent’s name)</p>
+</div>
+</div>
+</div>
+</section>
+<section id="implement-the-agents" class="slide level2">
+<h2>Implement the agents</h2>
+<ul>
+<li>If possible, reuse existing agents/plugins from base install or MADS-NET</li>
+<li>If not, implement a new agent:
+<ul>
+<li>if its logics fit the simple <code>source/filter/sink</code> model, create a plugin</li>
+<li>if its logics are more complex, create a <strong>finite state machine</strong> agent or a <strong>custom agent</strong><br>
+based on the MADS API</li>
+</ul></li>
+<li>Python plugins: start with examples in <a href="https://github.com/MADS-NET/python_agent" class="uri">https://github.com/MADS-NET/python_agent</a></li>
+<li>C++ plugins: create a template with <code>mads plugin -t &lt;source|filter|sink&gt;</code><br>
+and fill in the methods</li>
+</ul>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Commands help:</strong></p>
+</div>
+<div class="callout-content">
+<p>Always use <code>mads &lt;command&gt; --help</code> to get a list of options and usage examples</p>
+<p>If you are on macOS or Linux, you can also use <code>man mads-&lt;command&gt;</code> to get a more detailed description of the command and its options</p>
+</div>
+</div>
+</div>
+</section>
+<section id="deployment" class="slide level2">
+<h2>Deployment</h2>
+<p>At the moment, only the Linux platform is expected to be used for <strong>headless</strong> devices (e.g.&nbsp;Raspberry Pi, Beaglebone, etc.) and for <strong>production</strong> deployments</p>
+<p>On Linux, the <code>mads service</code> command allows to install a MADS agent as a <strong>system service</strong> (daemon), so that it starts automatically at boot time and can be managed with standard system commands. So, if your agent is launced as <code>mads source imu.plugin</code>, you can install it as a service with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a aria-label="1"></a><span class="ex">mads</span> service mads_imu source imu.plugin </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This only previews the service file. <strong>Check</strong> if its OK, then install with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a aria-label="1"></a><span class="fu">sudo</span> mads service mads_imu source imu.plugin </span>
+<span id="cb12-2"><a aria-label="2"></a><span class="fu">sudo</span> systemctl enable mads_imu.service</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then that agent will <strong>start automatically</strong> at boot time</p>
+</section></section>
+<section>
+<section id="advanced-features" class="title-slide slide level1 center">
+<h1>Advanced features</h1>
+
+</section>
+<section id="fmi-interface" class="slide level2">
+<h2>FMI Interface</h2>
+<blockquote>
+<p><strong>POV</strong>: you have a Simulink model that you want to integrate into a MADS network, e.g.&nbsp;to simulate a physical system or a control algorithm (Digital Twin)</p>
+</blockquote>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ul>
+<li>Be sure that your Simulink model has <strong>Input and Output ports</strong></li>
+<li>Make it parametric as much as possible</li>
+<li>Save it as <em>model exchange</em> FMU v3.0</li>
+<li>The generated FMU can be loaded as a <strong>filter agent</strong> by the <code>mads fmu</code> agent</li>
+<li>The simulation time (TET) must be <strong>smaller than the timestep</strong></li>
+</ul>
+</div><div class="column" style="width:40%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="model.png"></p>
+<figcaption>A Simulink model with Input and Output ports</figcaption>
+</figure>
+</div>
+</div></div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tip</strong></p>
+</div>
+<div class="callout-content">
+<p>The list of simulation software that can export FMU v3.0 is available at <a href="https://fmi-standard.org/tools/" class="uri">https://fmi-standard.org/tools/</a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="onnx-models-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c207369206f6e6e78203e7d7d" class="slide level2">
+<h2>ONNX models <svg style="display:inline-block;vertical-align:-0.125em;height:1em;width:1em" class="si si-onnx" aria-hidden="true" role="img" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>ONNX</title><path d="M23.0325 11.2963c-.0503 0-.1006 0-.1508.0126l-4.021-7.4387c.0754-.1383.1131-.289.1131-.4524 0-.5403-.4398-.9675-.9675-.9675-.2765 0-.5278.113-.7037.3015L9.286 1.156C9.2357.6785 8.821.3016 8.3184.3016c-.5277 0-.9675.4398-.9675.9675 0 .1634.0377.3141.113.4524l-6.245 8.9591c-.0753-.0251-.1633-.0377-.2513-.0377-.5403 0-.9675.4398-.9675.9676 0 .5403.4398.9675.9675.9675h.0377l3.3676 8.3309c-.0503.1257-.088.2639-.088.402 0 .5404.4398.9676.9676.9676.2764 0 .5277-.113.7036-.3015l10.1152.9926c.1005.4273.49.7288.9424.7288.5403 0 .9676-.4398.9676-.9675 0-.2388-.088-.465-.2262-.6283l5.1141-8.8712c.0503.0126.1005.0126.1634.0126.5403 0 .9675-.4398.9675-.9676 0-.5403-.4272-.98-.9675-.98zM17.2272 4.021c.1131.1508.2765.264.4524.3267l-1.533 11.5728c-.1005.0252-.1885.0503-.2764.1005L7.4513 8.708c.0251-.0754.0377-.1634.0377-.2514 0-.0628-.0126-.1256-.0126-.1884zm4.8754 8.5068l-5.177 3.556a1.105 1.105 0 0 0-.1256-.0753L18.3455 4.335h.0126l3.9456 7.288c-.1508.1759-.2388.3895-.2388.6408 0 .1005.0126.1885.0377.2638zM6.3832 7.5016c-.4649.0754-.8293.4775-.8293.955v.0628l-3.4555 2.0481 5.378-7.7026zm.3519 1.91c.1256-.0252.2513-.088.3518-.1634l8.356 7.2628c-.0377.113-.0628.2262-.0628.3518v.0503l-9.311 3.845c-.1382-.201-.3518-.3518-.6031-.402zm8.8963 8.1172c.1257.1382.3016.2513.5026.289l.465 4.046c-.201.1006-.3519.264-.4524.4524l-9.8136-.955zm1.1435.2136c.3267-.1633.5403-.49.5403-.867 0-.088-.0126-.1634-.0377-.2513l4.7372-3.2545-4.8 8.331zm.2513-14.3497l-9.889 4.31-.1131-.0755 1.2565-5.3906h.0377c.3393 0 .6409-.1759.8168-.4397l7.891 1.5706zM1.935 11.6105c0-.0629-.0126-.1257-.0126-.1885l3.9079-2.2995c.0754.0754.1633.1508.2638.201L4.8252 20.243l-3.2043-7.9036c.1885-.176.3142-.4398.3142-.7288Z"></path></svg></h2>
+<blockquote>
+<p><strong>POV</strong>: you have a trained ML model and you want to integrate it into a MADS network, e.g.&nbsp;to perform inference on data collected from the field</p>
+</blockquote>
+<ul>
+<li>Quite similarly to the FMU case, there is the <code>mads onnx</code> agent that loads an ONNX model and runs inference on data received from the network</li>
+<li>it can be used both for as a <strong>filter</strong> and as a <strong>source</strong> agent:
+<ul>
+<li>an ONNX filter agent performs inference on data received from the network and publishes the results back to the network</li>
+<li>an ONNX source agent performs inference on data received from a peripheral (e.g.&nbsp;a camera) and publishes the results back to the network</li>
+</ul></li>
+<li>The ONNX model must be <strong>exported</strong> from the training framework (PyTorch, TensorFlow, etc.) in <strong>ONNX format</strong> and must be <strong>compatible</strong> with the ONNX Runtime version used by the <code>mads onnx</code> agent (currently v1.26.0)</li>
+</ul>
+</section></section>
+<section id="and-remember" class="title-slide slide level1 center">
+<h1>…and remember</h1>
+<p>Look at <a href="https://mads-net.github.io" class="uri">https://mads-net.github.io</a> for documentation and guides!</p>
+
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="../../images/logo.png" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>MADS — <a href="https://mads-net.github.io">https://mads-net.github.io</a></p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-js-tabset/tabset.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': false,
+'previewLinksAuto': false,
+'pdfSeparateFragments': true,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 720,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, RevealJsTabset, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/mads-net\.github\.io");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+            let selectedAnnoteEl;
+            const selectorForAnnotation = ( cell, annotation) => {
+              let cellAttr = 'data-code-cell="' + cell + '"';
+              let lineAttr = 'data-code-annotation="' +  annotation + '"';
+              const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+              return selector;
+            }
+            const selectCodeLines = (annoteEl) => {
+              const doc = window.document;
+              const targetCell = annoteEl.getAttribute("data-target-cell");
+              const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+              const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+              const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+              const lineIds = lines.map((line) => {
+                return targetCell + "-" + line;
+              })
+              let top = null;
+              let height = null;
+              let parent = null;
+              if (lineIds.length > 0) {
+                  //compute the position of the single el (top and bottom and make a div)
+                  const el = window.document.getElementById(lineIds[0]);
+                  top = el.offsetTop;
+                  height = el.offsetHeight;
+                  parent = el.parentElement.parentElement;
+                if (lineIds.length > 1) {
+                  const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+                  const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+                  height = bottom - top;
+                }
+                if (top !== null && height !== null && parent !== null) {
+                  // cook up a div (if necessary) and position it 
+                  let div = window.document.getElementById("code-annotation-line-highlight");
+                  if (div === null) {
+                    div = window.document.createElement("div");
+                    div.setAttribute("id", "code-annotation-line-highlight");
+                    div.style.position = 'absolute';
+                    parent.appendChild(div);
+                  }
+                  div.style.top = top - 2 + "px";
+                  div.style.height = height + 4 + "px";
+                  div.style.left = 0;
+                  let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+                  if (gutterDiv === null) {
+                    gutterDiv = window.document.createElement("div");
+                    gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                    gutterDiv.style.position = 'absolute';
+                    const codeCell = window.document.getElementById(targetCell);
+                    const gutter = codeCell.querySelector('.code-annotation-gutter');
+                    gutter.appendChild(gutterDiv);
+                  }
+                  gutterDiv.style.top = top - 2 + "px";
+                  gutterDiv.style.height = height + 4 + "px";
+                }
+                selectedAnnoteEl = annoteEl;
+              }
+            };
+            const unselectCodeLines = () => {
+              const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+              elementsIds.forEach((elId) => {
+                const div = window.document.getElementById(elId);
+                if (div) {
+                  div.remove();
+                }
+              });
+              selectedAnnoteEl = undefined;
+            };
+              // Handle positioning of the toggle
+          window.addEventListener(
+            "resize",
+            throttle(() => {
+              elRect = undefined;
+              if (selectedAnnoteEl) {
+                selectCodeLines(selectedAnnoteEl);
+              }
+            }, 10)
+          );
+          function throttle(fn, ms) {
+          let throttle = false;
+          let timer;
+            return (...args) => {
+              if(!throttle) { // first call gets through
+                  fn.apply(this, args);
+                  throttle = true;
+              } else { // all the others get throttled
+                  if(timer) clearTimeout(timer); // cancel #2
+                  timer = setTimeout(() => {
+                    fn.apply(this, args);
+                    timer = throttle = false;
+                  }, ms);
+              }
+            };
+          }
+            // Attach click handler to the DT
+            const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+            for (const annoteDlNode of annoteDls) {
+              annoteDlNode.addEventListener('click', (event) => {
+                const clickedEl = event.target;
+                if (clickedEl !== selectedAnnoteEl) {
+                  unselectCodeLines();
+                  const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+                  if (activeEl) {
+                    activeEl.classList.remove('code-annotation-active');
+                  }
+                  selectCodeLines(clickedEl);
+                  clickedEl.classList.add('code-annotation-active');
+                } else {
+                  // Unselect the line
+                  unselectCodeLines();
+                  clickedEl.classList.remove('code-annotation-active');
+                }
+              });
+            }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+
+<script>
+window.addEventListener('load', function(){
+  setTimeout(function(){
+    var out=[];
+    var tbl=document.querySelector('#context-alternatives table');
+    var svg=tbl.querySelector('svg');
+    var cs=getComputedStyle(svg);
+    out.push('SVG computed h='+cs.height+' w='+cs.width+' maxW='+cs.maxWidth+' maxH='+cs.maxHeight+' boxSizing='+cs.boxSizing);
+    var r=svg.getBoundingClientRect();
+    out.push('rect '+r.width.toFixed(1)+'x'+r.height.toFixed(1));
+    // A/B: table height with SVGs, then with plain text glyphs
+    var hSvg=tbl.getBoundingClientRect().height;
+    var svgs=Array.from(tbl.querySelectorAll('svg'));
+    var saved=svgs.map(function(s){var p=s.parentNode;var t=document.createTextNode('X');p.replaceChild(t,s);return t;});
+    tbl.offsetHeight;
+    var hTxt=tbl.getBoundingClientRect().height;
+    out.push('TABLE h: withSVG='+hSvg.toFixed(1)+'  withText='+hTxt.toFixed(1)+'  delta='+(hSvg-hTxt).toFixed(1));
+    // per-row delta
+    var rows=Array.from(tbl.querySelectorAll('tbody tr'));
+    out.push('rows withText='+rows.map(r=>r.getBoundingClientRect().height.toFixed(1)).join(','));
+    document.title=out.join(' || ');
+  },2500);
+});
+</script>
+</body></html>

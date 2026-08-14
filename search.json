@@ -844,7 +844,7 @@
     "href": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269206c697374203e7d7d-contents",
     "title": "Distributed systems with ",
     "section": " Contents",
-    "text": "Contents\n\nRequirements\nWhat is \nConcepts\n\nBroker-based networking\nMADS Agents\nTypes of agents: source, filter, sink\nMany ways to implement an agent\nData sources in Arduino\n\nDesigning a network\nDeployment\nAdvanced features"
+    "text": "Contents\n\nRequirements\nWhat is \nConcepts\n\nBroker-based networking\nMADS Agents\n\nTypes of agents: source, filter, sink\nMany ways to implement an agent\nData sources in Arduino\n\n\nDesigning a network\nDeployment\nAdvanced features"
   },
   {
     "objectID": "presentations/gorini.html#developing-on-linux-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206269207562756e7475203e7d7d",
@@ -901,6 +901,216 @@
     "title": "Distributed systems with ",
     "section": "Common tasks: logging/presenting",
     "text": "Common tasks: logging/presenting\nYou want to consume or present data/signals:\n\nstorage/logging straight to MongoDB databases\nlogging to HDF5 format (for training ML models)\nrealtime presentation via Rerun.io\ncustom data consumers in C++, Rust, Python, R\n\n\n\n\n\n\n\nDefinition\n\n\nMADS Processes that consume a data flow (for logging or presenting, or acting on the field) are called sink agents"
+  },
+  {
+    "objectID": "presentations/gorini.html#context",
+    "href": "presentations/gorini.html#context",
+    "title": "Distributed systems with ",
+    "section": "Context",
+    "text": "Context\nDistributed systems need distributed information and computation\n\n\n\nChallenges\n\nReachability\nTopology\nThroughput\nLatency\nScalability\nSecurity\n\n\n\n\nSolutions\n\nREST/API services: HTTP/HTTPS based, simple and proven, but N-to-1 only, large overhead\nMessage-Queuing protocols: flexible topology, tiny overhead, often very low-level solutions\nMixed/custom solutions: fragile and difficult to scale/integrate"
+  },
+  {
+    "objectID": "presentations/gorini.html#context-restrest-like-solutions",
+    "href": "presentations/gorini.html#context-restrest-like-solutions",
+    "title": "Distributed systems with ",
+    "section": "Context: REST/REST-like solutions",
+    "text": "Context: REST/REST-like solutions\n\n\nCharacteristics:\n\nOnly the server’s URL/IP must be known\nEach edge is a REQ/REP initiated by the client\nNode-to-node direct communication impossible, unless all URLs/IPs are known\nDifficult to scale:\n\nserver resources\nnetwork topology\n\n\n\n\n\n\n\n\nNote\n\n\nIt is information-consumption oriented.\n\n\n\n\n\n\n\n\n\n\n\nREST\n\n\n\nS\n\nServer\n\n\n\nn5\n\nn5\n\n\n\nS-&gt;n5\n\n\n🔴\n\n\n\nn1\n\nn1\n\n\n\nn1-&gt;S\n\n\n\n\n\nn2\n\nn2\n\n\n\nn1-&gt;n2\n\n\n🔴\n\n\n\nn2-&gt;S\n\n\n\n\n\nn3\n\nn3\n\n\n\nn3-&gt;S\n\n\n\n\n\nn4\n\nn4\n\n\n\nn4-&gt;S\n\n\n\n\n\nn5-&gt;S"
+  },
+  {
+    "objectID": "presentations/gorini.html#context-message-queuing-protocols",
+    "href": "presentations/gorini.html#context-message-queuing-protocols",
+    "title": "Distributed systems with ",
+    "section": "Context: Message-Queuing protocols",
+    "text": "Context: Message-Queuing protocols\n\n\nAdvantages over REST:\n\nBroker-based networking\nwire protocol is lightweight (minimum overhead)\nonly broker URL is needed\nmessage t1 can flow from n1 to n6\nflexible topology\nhighly scalable\n\n\n\n\n\n\n\nNote\n\n\nIt is information-distribution oriented.\n\n\n\n\n\n\n\n\n\n\n\nmq\n\n\n\nB\n\nBroker\n\n\n\nn3\n\nn3\n\n\n\nB-&gt;n3\n\n\nt1\n\n\n\nn4\n\nn4\n\n\n\nB-&gt;n4\n\n\nt2\n\n\n\nn5\n\nn5\n\n\n\nB-&gt;n5\n\n\nt3,t4\n\n\n\nn6\n\nn6\n\n\n\nB-&gt;n6\n\n\nt1\n\n\n\nn1\n\nn1\n\n\n\nn1-&gt;B\n\n\nt1\n\n\n\nn2\n\nn2\n\n\n\nn2-&gt;B\n\n\nt2\n\n\n\nn3-&gt;B\n\n\nt3\n\n\n\nn4-&gt;B\n\n\nt4"
+  },
+  {
+    "objectID": "presentations/gorini.html#context-federation",
+    "href": "presentations/gorini.html#context-federation",
+    "title": "Distributed systems with ",
+    "section": "Context: federation",
+    "text": "Context: federation\n\n\n\n\n\n\n\nmq\n\n\n\nB1\n\nBroker 1\n\n\n\nn3\n\nn3\n\n\n\nB1-&gt;n3\n\n\nt1\n\n\n\nn4\n\nn4\n\n\n\nB1-&gt;n4\n\n\nt1,t2,t3\n\n\n\nn5\n\nn5\n\n\n\nB1-&gt;n5\n\n\nt2,t3\n\n\n\nn6\n\nn6\n\n\n\nB1-&gt;n6\n\n\nt1,t14\n\n\n\nn1\n\nn1\n\n\n\nn1-&gt;B1\n\n\nt1\n\n\n\nn2\n\nn2\n\n\n\nn2-&gt;B1\n\n\nt2\n\n\n\nn3-&gt;B1\n\n\nt3\n\n\n\nn4-&gt;B1\n\n\nt14\n\n\n\nB2\n\nBroker 2\n\n\n\nn4-&gt;B2\n\n\nt1,t2,t3\n\n\n\nB2-&gt;n4\n\n\nt14\n\n\n\nn11\n\nn11\n\n\n\nB2-&gt;n11\n\n\nt1,t14\n\n\n\nn12\n\nn12\n\n\n\nB2-&gt;n12\n\n\nt3\n\n\n\nn13\n\nn13\n\n\n\nB2-&gt;n13\n\n\nt2,t14\n\n\n\nn14\n\nn14\n\n\n\nn14-&gt;B2\n\n\nt14\n\n\n\nn11-&gt;B2\n\n\nt11\n\n\n\nn12-&gt;B2\n\n\nt15\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDefinitions\n\n\nTypically, nodes may act as sources (produce information), filters (elaborate), or sinks (consume information). The node n4 acts as a brigde that federates two sub-networks"
+  },
+  {
+    "objectID": "presentations/gorini.html#context-alternatives",
+    "href": "presentations/gorini.html#context-alternatives",
+    "title": "Distributed systems with ",
+    "section": "Context: alternatives",
+    "text": "Context: alternatives\n\n\n\n\n\n\n\n\n\n\n\n\n\nPros\nCons\nProto.\nProd.\nLearning\n\n\n\n\nMQTT\nlightweight, proven\nlow-level, no fed’n\n🟠\n🟢\n\n\n\nZeroMQ\nlightweight, very flexible, proven\nlow-level, fed’n is complex\n🟠\n🟢\n\n\n\nOPC-UA\npowerful, industry-based, fed’n\nheavy, complex, vendor-dependent, limited portability/integrability\n🔴\n🟠🟢\n\n\n\nZenoh\nflexible and powerful, fed’n\nhigh abstraction, low-level\n🟢\n🟠\n\n\n\nApache Spark\ndesigned for high-loads & datacenters, fed’n\nJava-based, limited integrability, unsuited to µC\n🔴\n🟢\n\n\n\nROS2\nflexible, high level, feature rich\nsteep learning curve, robotics oriented, no fed’n\n🟢\n🟢\n\n\n\n\neasy, ZeroMQ-based, portable, flexible, polyglot, fed’n\nyoung (3 years)\n🟢🟢\n🟠🟢\n\n\n\n\n\n\n\n\n\n\nNote\n\n\nLow-level means a framework only/mostly taking care of data communication/distribution, where business logic must be implemented every time; portability means on different platforms/architectures; integrability means against existing solutions; fed’n means federation; learning curves  are subjective and qualitative."
+  },
+  {
+    "objectID": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents",
+    "href": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents",
+    "title": "Distributed systems with ",
+    "section": " Agents",
+    "text": "Agents\n\n\n\n\n\nJust a process in a computer\n\n\n\n\nA  network is made by one broker and many agents\nAgents are processes: whether they run on a single computer or on a multitude of networked computers is irrelevant (except for throughput and latency)\nAgents communicate each other via a TCP/IP network and only through the broker\nThe broker is completely transparent and data-agnostic\nThe process running the broker also distributes agents settings in REQ/REP fashion\nInformation is channeled/routed/organized via topics, e.g. measurements/force/X\nAn agent can publish on a topic and can subscribe to anther (to receive asynchronous updates)"
+  },
+  {
+    "objectID": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-types",
+    "href": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-types",
+    "title": "Distributed systems with ",
+    "section": " Agents: types",
+    "text": "Agents: types\n\n\nSource agents\n\nAcquire information from the field:\n\nsensors\nperipherals (TTY, GUI)\nother protocols\n\nPublish information on the MADS network under one or more topics\nPublishing may be timed or event-based\n\n\n\n\n\n\n\n\n\nsource\n\n\n\nsensor\n\nsensor\n\n\n\nagent\n\nagent\n\n\n\nsensor-&gt;agent\n\n\n\n\n\nperipheral\n\nperipheral\n\n\n\nperipheral-&gt;agent\n\n\n\n\n\nbroker\n\nbroker\n\n\n\nagent-&gt;broker\n\n\nt1"
+  },
+  {
+    "objectID": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-types-1",
+    "href": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-types-1",
+    "title": "Distributed systems with ",
+    "section": " Agents: types",
+    "text": "Agents: types\n\n\nFilter agents\n\nManipulate information:\n\nfilters\ncontrollers\ngateways\n\nThey subscribe to a topic, elabrate the received data, and publish back new data on a different topic\nPublishing is mostly event-based\n\n\n\n\n\n\n\n\n\nsource\n\n\n\nbroker\n\nbroker\n\n\n\nagent\n\nagent\n\n\n\nbroker-&gt;agent\n\n\nt1\n\n\n\nagent-&gt;broker\n\n\nt2"
+  },
+  {
+    "objectID": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-types-2",
+    "href": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-types-2",
+    "title": "Distributed systems with ",
+    "section": " Agents: types",
+    "text": "Agents: types\n\n\nSink agents\n\nDispose of information received by other agents via broker:\n\nto GUI (plots, charts, dashboards)\nto disk (JSON files, HDF5)\nto database (MongoDB)\nto other protocols\n\nOnly deal with data coming from topics they are subscribed to\nTypically event-based\n\n\n\n\n\n\n\n\n\nsource\n\n\n\nbroker\n\nbroker\n\n\n\nagent\n\nagent\n\n\n\nbroker-&gt;agent\n\n\nt3"
+  },
+  {
+    "objectID": "presentations/gorini.html#incidentally-why-mongodb",
+    "href": "presentations/gorini.html#incidentally-why-mongodb",
+    "title": "Distributed systems with ",
+    "section": "Incidentally: why MongoDB?",
+    "text": "Incidentally: why MongoDB?\n\nMongoDB is a schemaless, NoSQL database server: it organizes data in collections of JSON documents\n\n\n\nAdvantages\n\nData collection architectures may change (new agents, different data set-up)\nA schemaless database allows to carry on data collection even when its structure changes\nStill reasonably fast (20–250 kwrites/s)\n\n\nLimitations\n\nDealing with non-consistent schema is demanded to downstream consumption (but doable!)\nSQL queries are easier than MongoDB queries (but AI helps here!)\nSQL servers can bear higher workloads (1.2x–1.5x)"
+  },
+  {
+    "objectID": "presentations/gorini.html#data-format-json",
+    "href": "presentations/gorini.html#data-format-json",
+    "title": "Distributed systems with ",
+    "section": "Data format: JSON",
+    "text": "Data format: JSON\n\n\n\nMADS agents exchange data as JSON objects, because of its flexibility\nUnderlying C++ library is nlohmann::json\nActual wire-format can be JSON (ASCII) or MsgPack (binary), per-agent negotiable\nDirectly maps to what you log in MongoDB\nDirectly maps to Python dictionaries"
+  },
+  {
+    "objectID": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-implementation",
+    "href": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-implementation",
+    "title": "Distributed systems with ",
+    "section": " Agents: implementation",
+    "text": "Agents: implementation\n\n\n\n\n\n\n Requirements\n\n\nMADS has beed designed with requirements of flexibility and easy extensibility\n\n\n\nAn agent can be implemented in a number of alternative ways:\n\nC++ process, linked to the MadsCore shared library (#include &lt;mads.hpp&gt;)\nC process, linked to the MadsCore shared library (#include &lt;mads_c.h&gt;)\nPython script FFI-linked to the MadsCore library (import Mads)\nC++ plugin, with minimal API surface (3 methods)\nRust plugin, with minimal API surface (3 methods)\nPython plugin (a binary that loads a Python module at runtime)\nR plugin (a binary that loads a R script at runtime)\nLua plugin (a binary that loads a Lua script at runtime)"
+  },
+  {
+    "objectID": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-implementation-1",
+    "href": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-implementation-1",
+    "title": "Distributed systems with ",
+    "section": " Agents: implementation",
+    "text": "Agents: implementation\nThe choice depends on personal knowledge/skill and task requirements:\n\n\n\nMethod\nPerformance\nFlexibility\nProduction-ready\nBase install\n\n\n\n\nC++ process\n⭐️⭐️⭐️⭐️⭐️\n⭐️⭐️⭐️⭐️\n⭐️⭐️⭐️⭐️⭐️\n✅\n\n\nC process\n⭐️⭐️⭐️⭐️⭐️\n⭐️⭐️⭐️⭐️\n⭐️⭐️⭐️⭐️\n✅\n\n\nPython script\n⭐️\n⭐️⭐️⭐️⭐️⭐️\n⭐️⭐️\n✅\n\n\nC++ plugin\n⭐️⭐️⭐️⭐️⭐️\n⭐️⭐️⭐️\n⭐️⭐️⭐️⭐️⭐️\n✅\n\n\nRust plugin\n⭐️⭐️⭐️⭐️⭐️\n⭐️⭐️⭐️\n⭐️⭐️⭐️⭐️⭐️\n✅\n\n\nPython plugin\n⭐️⭐️\n⭐️⭐️⭐️⭐️\n⭐️⭐️\n⛔️\n\n\nR plugin\n⭐️⭐️\n⭐️⭐️⭐️⭐️\n⭐️⭐️\n⛔️\n\n\nLua plugin\n⭐️⭐️⭐️\n⭐️⭐️⭐️\n⭐️⭐️\n⛔️\n\n\n\n\n\n⛔️ = see next slide"
+  },
+  {
+    "objectID": "presentations/gorini.html#mads-net-a-repository-of-pre-made-agents",
+    "href": "presentations/gorini.html#mads-net-a-repository-of-pre-made-agents",
+    "title": "Distributed systems with ",
+    "section": "MADS-NET: a repository of pre-made agents",
+    "text": "MADS-NET: a repository of pre-made agents\nThe github.com/MADS-NET page provides a list of open source, ready available plugin and custom agents repositories for solving common tasks, which may be immediately useful, or provide a template on which to build upon:\n\n\n\nPython/R/lua plugins\nHDF5 logging\nML inference of ONNX models\nFMU plugins\nUser interfaces\nJSON schema validation\nArduino I/O\nand more"
+  },
+  {
+    "objectID": "presentations/gorini.html#mads-net-a-repository-of-pre-made-agents-1",
+    "href": "presentations/gorini.html#mads-net-a-repository-of-pre-made-agents-1",
+    "title": "Distributed systems with ",
+    "section": "MADS-NET: a repository of pre-made agents",
+    "text": "MADS-NET: a repository of pre-made agents\nTo install a custom agent from MADS-NET:\n\n\nFrom source\n\nClone the repo\nConfigure and compile:\ncmake -Bbuild -GNinja\ncmake --build build\nTest from build/toolname\nInstall (with sudo if needed):\ncmake --install build\n\n\nPre-compiled (subsection)\n\nList available:\nmads package --list\nInfo on the one you want:\nmads package --info &lt;package&gt;\nInstall (with sudo if needed):\nmads package --install &lt;package&gt;\n\n\n\n\n\n\n\n\nWarning\n\n\nmads package is not a full-fledged package manager: it only supports the latest MADS version. Build from source if you stuble into problems"
+  },
+  {
+    "objectID": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-arduino-based",
+    "href": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-arduino-based",
+    "title": "Distributed systems with ",
+    "section": " Agents: Arduino-based",
+    "text": "Agents: Arduino-based\n\nCheapest and fastest way to ingest field data into a MADS network\nThree possible, complementary solutions:\n\narduino.plugin and a custom .ino sketch that prints a JSON string over serial — any Arduino, but must be serial-port connected to an agent running on separate device\narduinoQ.plugin, only works on an Arduino Uno Q: the agent runs on the CPU, a custom .ino on the MCU, they communicate via RPC — Uno Q only, standalone\narduino_mads: an Arduino-native library that provides low-level message passing to a MADS-network — requires Ethernet- or WiFi-equipped Arduino, standalone, feature-limited\n\n\n\n\n\n\n\n\nTip\n\n\nThe arduino.plugin, despite its name, works with any micro that can print on a serial port a JSON string"
+  },
+  {
+    "objectID": "presentations/gorini.html#common-commands",
+    "href": "presentations/gorini.html#common-commands",
+    "title": "Distributed systems with ",
+    "section": "Common commands",
+    "text": "Common commands\n\nmads broker to start a broker\nmads [source|filter|sink] to load a C++ plugin\nmads [rsource|rfilter|rsink] to load a Rust plugin\nmads plugin to create a plugin template\nmads logger to log network traffic to MongoDB\nmads echo to watch network traffic\nmads top to monitor agents\nmads package to install a pre-made plugin from MADS-NET"
+  },
+  {
+    "objectID": "presentations/gorini.html#mads-broker-centralized-management-tool",
+    "href": "presentations/gorini.html#mads-broker-centralized-management-tool",
+    "title": "Distributed systems with ",
+    "section": "mads broker: centralized management tool",
+    "text": "mads broker: centralized management tool\n\n\nThe broker does much more than just routing messages: it also provides a centralized management of the network\n\nensures that all agents run on compatible versions of the MADS framework\ndistributes to each agent (when it starts) its configuration from a local mads.ini file\nprovides Over the Air (OTA) distribution of plugins binaries to remote agents\n\n\n\n\n[agents] # common to all agents\nfrontend_address = \"tcp://localhost:9090\"\nbackend_address = \"tcp://localhost:9091\"\nsettings_address = \"tcp://localhost:9092\"\ntimecode_fps = 25\nwire_format = \"json\"\ncompression = \"auto\"\n\n[source]\npub_topic = \"measurements/force/X\"\nattachment = \"force_sensor.plugin\" # OTA\n\n[filter]\nsub_topic = [\"measurements\"]\npub_topic = \"filtered/force/X\"\n\n[sink]\nsub_topic = \"filtered\""
+  },
+  {
+    "objectID": "presentations/gorini.html#agents-and-the-mads.ini-file",
+    "href": "presentations/gorini.html#agents-and-the-mads.ini-file",
+    "title": "Distributed systems with ",
+    "section": "Agents and the mads.ini file",
+    "text": "Agents and the mads.ini file\n\nA broker advertises its presence on the network, each broker in a virtual room with possibly different name (mads by default)\nEach agent needs the mads.ini file to start\nThe agent searches for it in this order:\n\na broker URI or a file path passed by the --settings command line option\na room name if the --room command line option is used\na broker running on tcp://localhost:9092 (default)\n\n\n\n\n\n\n\n\nNote\n\n\nStart order of broker and agents is irrelevant, as well it is restarting the broker while agents are running: they will automatically reconnect to the broker when it becomes available again\nThe only way to reload the mads.ini file is to restart the agent"
+  },
+  {
+    "objectID": "presentations/gorini.html#gui-commands",
+    "href": "presentations/gorini.html#gui-commands",
+    "title": "Distributed systems with ",
+    "section": "GUI commands",
+    "text": "GUI commands\nTwo commands provide GUIs to monitor and control a MADS network:\n\nmads director: coordinates the execution of multiple MADS tools on the same machine\nmads chat: reads and writes messages to the MADS network\n(installed with mads package --install mads-chat)\n\n\n\n\n\n\n\nmads director\n\n\n\n\n\n\n\nmads chat"
+  },
+  {
+    "objectID": "presentations/gorini.html#utility-commands",
+    "href": "presentations/gorini.html#utility-commands",
+    "title": "Distributed systems with ",
+    "section": "Utility commands",
+    "text": "Utility commands\n\nmads doctor: help fixing MADS configuration issues\nmads ini: create a template mads.ini file\nmads [record|play|bag]: record and replay network traffic to a bag file (and inspects it)\nmads up: headless version of mads director (for remote control)\nmads service: install a MADS tool as a system service (Linux only)\nmads update: check for updates and provide packages URLs\nmads fsm: creates a finite state machine agent template from a Graphviz scheme\nmads federate: launch a federation agent for connecting two MADS networks"
+  },
+  {
+    "objectID": "presentations/gorini.html#common-general-purpose-plugins",
+    "href": "presentations/gorini.html#common-general-purpose-plugins",
+    "title": "Distributed systems with ",
+    "section": "Common, general purpose plugins",
+    "text": "Common, general purpose plugins\n\nmads sink rerunner.plugin: a sink agent that sends data to Rerun.io for realtime visualization\nmads sink validator.plugin: a sink agent that validates JSON data against a schema\nmads sink hdf5.plugin: a sink agent that logs data to HDF5 files\nmads [source|filter|sink] arduino.plugin: a source/filter/sink agent that communicates with a microcontroller via serial port\n\n\n\n\n\n\n\nPython plugins\n\n\nPython plugins are loaded by a dedicated mads python agent, which is installed with mads package --install mads-python. It is a Python interpreter that loads a Python module at runtime\nTo allow users to use their own Python version, the mads python agent is not part of the base MADS installation, but is available as a separate package from MADS-NET/python_agent to be compiled against your Python of choice"
+  },
+  {
+    "objectID": "presentations/gorini.html#anatomy-of-a-plugin-c",
+    "href": "presentations/gorini.html#anatomy-of-a-plugin-c",
+    "title": "Distributed systems with ",
+    "section": "Anatomy of a plugin: C++",
+    "text": "Anatomy of a plugin: C++\n\n\nclass MySource : public Source&lt;json&gt; {\npublic:\n  using Source::Source; // inherit constructors\n\n  string kind() override { return PLUGIN_NAME; }\n\n  return_type get_output(json &out, \n    vector&lt;unsigned char&gt; *blob = nullptr) override {\n    out.clear();\n    if (!_agent_id.empty()) out[\"agent_id\"] = _agent_id;\n    // FILL out with contents\n    return return_type::success;\n  }\n\n  void set_params(const json &params) override {\n    Source::set_params(params);\n    _params[\"some_field\"] = \"default_value\";\n    _params.merge_patch(params); // merge with INI parameters\n  }\n\n  map&lt;string, string&gt; info() override { \n    return {{some_filed, _params[\"some_field\"].get&lt;string&gt;()}};\n  };\n\nprivate:\n  // some private fields\n};\n\n\nInherit a base class (Source, Filter, Sink)\nImplement a few (3–4) methods:\n\nkind(): returns the plugin name\nget_output(): fills the output JSON object with data to be published\nset_params(): sets parameters from the INI file\ninfo(): returns a map of information about the plugin"
+  },
+  {
+    "objectID": "presentations/gorini.html#anatomy-of-a-plugin-python-module",
+    "href": "presentations/gorini.html#anatomy-of-a-plugin-python-module",
+    "title": "Distributed systems with ",
+    "section": "Anatomy of a plugin: Python module",
+    "text": "Anatomy of a plugin: Python module\n\n\nimport json\n\n# Specify that this is a source agent\nmads.agent_type = \"source\"\n\n# Executed once at startup\ndef setup():\n  print(\"[Python] Setting up source...\")\n  print(\"[Python] Parameters: \" + json.dumps(mads.params))\n  mads.state[\"n\"] = 0\n\n# executed in a loop, to produce data to be published\ndef get_output():\n  mads.data = {\"list\": [1, 2, 3, 4], \"n\": mads.state[\"n\"]}\n  mads.state[\"n\"] = mads.state[\"n\"] + 1\n  mads.data[\"processed\"] = False\n  return json.dumps(mads.data)\n\n\n\n\n\n\nWarning\n\n\n\"source” is the default agent type. If mandatory functions are not implemented, the agent fails to start\n\n\n\n\n\nIt’s a module, not a script\nFilters have process(), sinks have deal_with_data()\nGets implicit access to the mads object:\n\nmads.params: parameters from INI\nmads.state: a dictionary to store persistent state between calls\nmads.data: the data to be published (as JSON string)\nmads.topic: the topic of the last received message"
+  },
+  {
+    "objectID": "presentations/gorini.html#mads-message-example",
+    "href": "presentations/gorini.html#mads-message-example",
+    "title": "Distributed systems with ",
+    "section": "MADS message example",
+    "text": "MADS message example\n\n\nPublihed data is decorated by common fields (lines 8–14):\n\nagent_id: to distinguish different instances of the same agent\nperiod: the nominal time between two consecutive publications (in ms)\ntimestamp: ISO 8601 timestamp of the publication\ntimecode: seconds since the last midnight, rounded to the last timecode_fps frame rate (for binning!)\n\n\n\n\n{\n  \"my_data\": {\n    \"id\": 131,\n    \"payload\": \"rHIR]aDLI\",\n    \"payload_length\": 10,\n    \"values\": [1, 2, 3, 4]\n  },\n  \"agent_id\": \"\",\n  \"hostname\": \"Fram-IV\",\n  \"period\": 100,\n  \"timecode\": 49683.52,\n  \"timestamp\": {\n    \"$date\": \"2026-08-06T13:48:03.540+0200\"\n  }\n}\n\n\n\n\n\n\nImportant\n\n\nSee the guide for timing and synchronization considerations"
+  },
+  {
+    "objectID": "presentations/gorini.html#design-the-network-graph-via-mads.ini",
+    "href": "presentations/gorini.html#design-the-network-graph-via-mads.ini",
+    "title": "Distributed systems with ",
+    "section": "Design the network graph via mads.ini",
+    "text": "Design the network graph via mads.ini\n\n\n[broker]\n\n[forces]\npub_topic = \"imu/forces\"\n\n[accelerations]\npub_topic = \"imu/accelerations\"\n\n[gyro]\npub_topic = \"gyro\"\n\n[ego]\nsub_topic = [\"imu\", \"gyro\"]\npub_topic = \"ego\"\n\n[rerun]\nsub_topic = [\"imu\", \"ego\", \"gyro\"]\n\n[dangling]\nsub_topic = [\"test\"]\n\n\n\n\n\n\n\n\nmads\n\n\n\naccelerations\n\naccelerations\n\n\n\nego\n\nego\n\nimu\ngyro\n\n\n\naccelerations-&gt;ego\n\n\nimu/accelerations\nvia imu\n\n\n\nrerun\n\nrerun\n\nimu\nego\ngyro\n\n\n\naccelerations-&gt;rerun\n\n\nimu/accelerations\nvia imu\n\n\n\ndangling\n\ndangling\n\ntest [!]\n\n\n\nego-&gt;rerun\n\n\nego\n\n\n\nforces\n\nforces\n\n\n\nforces-&gt;ego\n\n\nimu/forces\nvia imu\n\n\n\nforces-&gt;rerun\n\n\nimu/forces\nvia imu\n\n\n\ngyro\n\ngyro\n\n\n\ngyro-&gt;ego\n\n\ngyro\n\n\n\ngyro-&gt;rerun\n\n\ngyro\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\nAgents with dangling topics have dashed borders. Solid edges are explicit topics, dashed are wildcard topics, dotted are implicit topics (same as agent’s name)"
+  },
+  {
+    "objectID": "presentations/gorini.html#implement-the-agents",
+    "href": "presentations/gorini.html#implement-the-agents",
+    "title": "Distributed systems with ",
+    "section": "Implement the agents",
+    "text": "Implement the agents\n\nIf possible, reuse existing agents/plugins from base install or MADS-NET\nIf not, implement a new agent:\n\nif its logics fit the simple source/filter/sink model, create a plugin\nif its logics are more complex, create a finite state machine agent or a custom agent\nbased on the MADS API\n\nPython plugins: start with examples in https://github.com/MADS-NET/python_agent\nC++ plugins: create a template with mads plugin -t &lt;source|filter|sink&gt;\nand fill in the methods\n\n\n\n\n\n\n\nCommands help:\n\n\nAlways use mads &lt;command&gt; --help to get a list of options and usage examples\nIf you are on macOS or Linux, you can also use man mads-&lt;command&gt; to get a more detailed description of the command and its options"
+  },
+  {
+    "objectID": "presentations/gorini.html#deployment",
+    "href": "presentations/gorini.html#deployment",
+    "title": "Distributed systems with ",
+    "section": "Deployment",
+    "text": "Deployment\nAt the moment, only the Linux platform is expected to be used for headless devices (e.g. Raspberry Pi, Beaglebone, etc.) and for production deployments\nOn Linux, the mads service command allows to install a MADS agent as a system service (daemon), so that it starts automatically at boot time and can be managed with standard system commands. So, if your agent is launced as mads source imu.plugin, you can install it as a service with:\nmads service mads_imu source imu.plugin \nThis only previews the service file. Check if its OK, then install with:\nsudo mads service mads_imu source imu.plugin \nsudo systemctl enable mads_imu.service\nThen that agent will start automatically at boot time"
+  },
+  {
+    "objectID": "presentations/gorini.html#fmi-interface",
+    "href": "presentations/gorini.html#fmi-interface",
+    "title": "Distributed systems with ",
+    "section": "FMI Interface",
+    "text": "FMI Interface\n\nPOV: you have a Simulink model that you want to integrate into a MADS network, e.g. to simulate a physical system or a control algorithm (Digital Twin)\n\n\n\n\nBe sure that your Simulink model has Input and Output ports\nMake it parametric as much as possible\nSave it as model exchange FMU v3.0\nThe generated FMU can be loaded as a filter agent by the mads fmu agent\nThe simulation time (TET) must be smaller than the timestep\n\n\n\n\n\nA Simulink model with Input and Output ports\n\n\n\n\n\n\n\n\n\nTip\n\n\nThe list of simulation software that can export FMU v3.0 is available at https://fmi-standard.org/tools/"
+  },
+  {
+    "objectID": "presentations/gorini.html#onnx-models-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c207369206f6e6e78203e7d7d",
+    "href": "presentations/gorini.html#onnx-models-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c207369206f6e6e78203e7d7d",
+    "title": "Distributed systems with ",
+    "section": "ONNX models ONNX",
+    "text": "ONNX models ONNX\n\nPOV: you have a trained ML model and you want to integrate it into a MADS network, e.g. to perform inference on data collected from the field\n\n\nQuite similarly to the FMU case, there is the mads onnx agent that loads an ONNX model and runs inference on data received from the network\nit can be used both for as a filter and as a source agent:\n\nan ONNX filter agent performs inference on data received from the network and publishes the results back to the network\nan ONNX source agent performs inference on data received from a peripheral (e.g. a camera) and publishes the results back to the network\n\nThe ONNX model must be exported from the training framework (PyTorch, TensorFlow, etc.) in ONNX format and must be compatible with the ONNX Runtime version used by the mads onnx agent (currently v1.26.0)"
   },
   {
     "objectID": "guides.html",

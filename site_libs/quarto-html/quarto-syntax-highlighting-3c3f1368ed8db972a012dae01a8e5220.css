@@ -33,7 +33,7 @@
 
 /* other quarto variables */
 :root {
-  --quarto-font-monospace: IBM Plex Mono;
+  --quarto-font-monospace: Fira Code;
 }
 
 /* syntax highlight based on Pandoc's rules */
@@ -233,4 +233,4 @@ code span.wa {
   content: "</";
 }
 
-/*# sourceMappingURL=a544cbef91fc699874d09a02bfa1c2f0.css.map */
+/*# sourceMappingURL=5d187cc3881aa9407e499d2723aa15f7.css.map */

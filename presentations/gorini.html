@@ -104,7 +104,7 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-9ef5c3b1ca8f37e834f68fd59f58be5f.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-aa12e2a5cd49d681f1896a17842cdb57.css">
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L37VBCVVQW"></script>
 
   <script type="text/plain" cookie-consent="tracking">
@@ -225,6 +225,9 @@
       margin-right: 0; 
     }
   </style>
+  <script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -255,10 +258,12 @@ Paolo Bosetti
 <li>Concepts
 <ul>
 <li>Broker-based networking</li>
-<li>MADS Agents</li>
+<li>MADS Agents
+<ul>
 <li>Types of agents: source, filter, sink</li>
 <li>Many ways to implement an agent</li>
 <li>Data sources in Arduino</li>
+</ul></li>
 </ul></li>
 <li>Designing a network</li>
 <li>Deployment</li>
@@ -476,9 +481,1645 @@ Usage:
 </div>
 </div>
 </section></section>
+<section>
 <section id="this-is-just-a-preview" class="title-slide slide level1 center">
 <h1>This is just a preview</h1>
 <p>The rest of this presentation will be available on Sep.&nbsp;2026</p>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section>
+<section id="concepts" class="title-slide slide level1 center">
+<h1>Concepts</h1>
+<p>Infrastructures for distributed systems</p>
+</section>
+<section id="context" class="slide level2">
+<h2>Context</h2>
+<p>Distributed systems need <strong>distributed information and computation</strong></p>
+<div class="columns">
+<div class="column">
+<div class="fragment">
+<h3 id="challenges">Challenges</h3>
+<ul>
+<li>Reachability</li>
+<li>Topology</li>
+<li>Throughput</li>
+<li>Latency</li>
+<li>Scalability</li>
+<li>Security</li>
+</ul>
+</div>
+</div><div class="column">
+<div class="fragment">
+<h3 id="solutions">Solutions</h3>
+<ul>
+<li><strong>REST/API</strong> services: HTTP/HTTPS based, simple and proven, but N-to-1 only, <span class="bred">large overhead</span></li>
+<li><strong>Message-Queuing</strong> protocols: flexible topology, <span class="bgreen">tiny overhead</span>, often very low-level solutions</li>
+<li><strong>Mixed/custom solutions</strong>: fragile and difficult to scale/integrate</li>
+</ul>
+</div>
+</div></div>
+</section>
+<section id="context-restrest-like-solutions" class="slide level2">
+<h2>Context: REST/REST-like solutions</h2>
+<div class="columns">
+<div class="column">
+<p>Characteristics:</p>
+<ul>
+<li>Only the server’s URL/IP must be known</li>
+<li>Each edge is a <code>REQ/REP</code> <span class="bred">initiated by the client</span></li>
+<li>Node-to-node direct communication impossible, unless <span class="bred">all URLs/IPs are known</span></li>
+<li>Difficult to scale:
+<ul>
+<li>server resources</li>
+<li>network topology</li>
+</ul></li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>It is <strong>information-consumption</strong> oriented.</p>
+</div>
+</div>
+</div>
+</div><div class="column">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="480" height="384" viewbox="0.00 0.00 250.54 243.77" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 239.77)">
+<title>REST</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-239.77 246.54,-239.77 246.54,4 -4,4"></polygon>
+<!-- S -->
+<g id="node1" class="node">
+<title>S</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="151.28,-142.87 93.81,-142.87 93.81,-85.4 151.28,-85.4 151.28,-142.87"></polygon>
+<text text-anchor="middle" x="122.55" y="-109.94" font-family="Arial" font-size="14.00">Server</text>
+</g>
+<!-- n5 -->
+<g id="node6" class="node">
+<title>n5</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="135.51,-235.77 99.51,-235.77 99.51,-199.77 135.51,-199.77 135.51,-235.77"></polygon>
+<text text-anchor="middle" x="117.51" y="-213.57" font-family="Arial" font-size="14.00">n5</text>
+</g>
+<!-- S&#45;&gt;n5 -->
+<g id="edge6" class="edge">
+<title>S-&gt;n5</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M115,-142.98C113.46,-157.45 112.64,-174.9 112.81,-189.31"></path>
+<polygon fill="black" stroke="black" points="109.32,-189.75 113.14,-199.64 116.32,-189.53 109.32,-189.75"></polygon>
+<text text-anchor="middle" x="106.13" y="-170.35" font-family="Arial" font-size="14.00">🔴</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="187.78,-41.2 151.78,-41.2 151.78,-5.2 187.78,-5.2 187.78,-41.2"></polygon>
+<text text-anchor="middle" x="169.78" y="-19" font-family="Arial" font-size="14.00">n1</text>
+</g>
+<!-- n1&#45;&gt;S -->
+<g id="edge1" class="edge">
+<title>n1-&gt;S</title>
+<path fill="none" stroke="black" d="M160.22,-41.6C155.02,-51.61 148.4,-64.37 142.15,-76.39"></path>
+<polygon fill="black" stroke="black" points="138.99,-74.89 137.49,-85.38 145.2,-78.11 138.99,-74.89"></polygon>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="104.87,-36 68.87,-36 68.87,0 104.87,0 104.87,-36"></polygon>
+<text text-anchor="middle" x="86.87" y="-13.8" font-family="Arial" font-size="14.00">n2</text>
+</g>
+<!-- n1&#45;&gt;n2 -->
+<g id="edge7" class="edge">
+<title>n1-&gt;n2</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M151.38,-22.05C140.68,-21.38 126.97,-20.52 114.95,-19.76"></path>
+<polygon fill="black" stroke="black" points="115.14,-16.27 104.94,-19.13 114.7,-23.25 115.14,-16.27"></polygon>
+<text text-anchor="middle" x="125.38" y="-25.1" font-family="Arial" font-size="14.00">🔴</text>
+</g>
+<!-- n2&#45;&gt;S -->
+<g id="edge2" class="edge">
+<title>n2-&gt;S</title>
+<path fill="none" stroke="black" d="M93.58,-36.08C97.71,-47.2 103.16,-61.88 108.21,-75.51"></path>
+<polygon fill="black" stroke="black" points="105.04,-77.02 111.8,-85.18 111.6,-74.58 105.04,-77.02"></polygon>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="36,-151.96 0,-151.96 0,-115.96 36,-115.96 36,-151.96"></polygon>
+<text text-anchor="middle" x="18" y="-129.76" font-family="Arial" font-size="14.00">n3</text>
+</g>
+<!-- n3&#45;&gt;S -->
+<g id="edge3" class="edge">
+<title>n3-&gt;S</title>
+<path fill="none" stroke="black" d="M36.21,-130.51C49.39,-128.01 67.68,-124.54 84.04,-121.44"></path>
+<polygon fill="black" stroke="black" points="84.74,-124.87 93.91,-119.57 83.43,-117.99 84.74,-124.87"></polygon>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="242.54,-163.14 206.54,-163.14 206.54,-127.14 242.54,-127.14 242.54,-163.14"></polygon>
+<text text-anchor="middle" x="224.54" y="-140.94" font-family="Arial" font-size="14.00">n4</text>
+</g>
+<!-- n4&#45;&gt;S -->
+<g id="edge4" class="edge">
+<title>n4-&gt;S</title>
+<path fill="none" stroke="black" d="M206.3,-139.6C193.8,-135.8 176.74,-130.61 161.28,-125.91"></path>
+<polygon fill="black" stroke="black" points="162.01,-122.47 151.42,-122.91 159.97,-129.17 162.01,-122.47"></polygon>
+</g>
+<!-- n5&#45;&gt;S -->
+<g id="edge5" class="edge">
+<title>n5-&gt;S</title>
+<path fill="none" stroke="black" d="M123.72,-199.5C125.66,-186.67 126.93,-169.03 127.22,-153.11"></path>
+<polygon fill="black" stroke="black" points="130.72,-152.98 127.26,-142.96 123.72,-152.95 130.72,-152.98"></polygon>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="context-message-queuing-protocols" class="slide level2">
+<h2>Context: Message-Queuing protocols</h2>
+<div class="columns">
+<div class="column">
+<p>Advantages over REST:</p>
+<ul>
+<li>Broker-based networking</li>
+<li>wire protocol is lightweight (minimum overhead)</li>
+<li>only broker URL is needed</li>
+<li>message <code>t1</code> can flow from <code>n1</code> to <code>n6</code></li>
+<li>flexible topology</li>
+<li>highly scalable</li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>It is <strong>information-distribution</strong> oriented.</p>
+</div>
+</div>
+</div>
+</div><div class="column">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="480" height="384" viewbox="0.00 0.00 230.89 258.59" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 254.59)">
+<title>mq</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-254.59 226.89,-254.59 226.89,4 -4,4"></polygon>
+<!-- B -->
+<g id="node1" class="node">
+<title>B</title>
+<polygon fill="#eeeeee" stroke="violet" stroke-width="2" points="140.05,-154 82.58,-154 82.58,-96.53 140.05,-96.53 140.05,-154"></polygon>
+<text text-anchor="middle" x="111.32" y="-121.07" font-family="Arial" font-size="14.00">Broker</text>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<polygon fill="#eeeeee" stroke="darkgreen" stroke-width="2" points="37.35,-198.45 1.35,-198.45 1.35,-162.45 37.35,-162.45 37.35,-198.45"></polygon>
+<text text-anchor="middle" x="19.35" y="-176.25" font-family="Arial" font-size="14.00">n3</text>
+</g>
+<!-- B&#45;&gt;n3 -->
+<g id="edge4" class="edge">
+<title>B-&gt;n3</title>
+<path fill="none" stroke="black" d="M82.55,-135.39C70.81,-141.56 57.35,-149.55 45.85,-157.13"></path>
+<polygon fill="black" stroke="black" points="43.81,-154.29 37.51,-162.81 47.75,-160.07 43.81,-154.29"></polygon>
+<text text-anchor="middle" x="58.36" y="-150.46" font-family="Arial" font-size="14.00">t1</text>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<polygon fill="#eeeeee" stroke="darkgreen" stroke-width="2" points="222.89,-195.96 186.89,-195.96 186.89,-159.96 222.89,-159.96 222.89,-195.96"></polygon>
+<text text-anchor="middle" x="204.89" y="-173.76" font-family="Arial" font-size="14.00">n4</text>
+</g>
+<!-- B&#45;&gt;n4 -->
+<g id="edge6" class="edge">
+<title>B-&gt;n4</title>
+<path fill="none" stroke="black" d="M140.1,-148.87C152,-156.17 165.72,-163.74 177.48,-169.43"></path>
+<polygon fill="black" stroke="black" points="176.26,-172.72 186.81,-173.72 179.19,-166.36 176.26,-172.72"></polygon>
+<text text-anchor="middle" x="152.95" y="-163.35" font-family="Arial" font-size="14.00">t2</text>
+</g>
+<!-- n5 -->
+<g id="node6" class="node">
+<title>n5</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="131.19,-250.59 95.19,-250.59 95.19,-214.59 131.19,-214.59 131.19,-250.59"></polygon>
+<text text-anchor="middle" x="113.19" y="-228.39" font-family="Arial" font-size="14.00">n5</text>
+</g>
+<!-- B&#45;&gt;n5 -->
+<g id="edge7" class="edge">
+<title>B-&gt;n5</title>
+<path fill="none" stroke="black" d="M111.82,-154.03C112.09,-169.67 112.43,-188.93 112.7,-204.47"></path>
+<polygon fill="black" stroke="black" points="109.2,-204.6 112.87,-214.54 116.2,-204.48 109.2,-204.6"></polygon>
+<text text-anchor="middle" x="98.64" y="-183.45" font-family="Arial" font-size="14.00">t3,t4</text>
+</g>
+<!-- n6 -->
+<g id="node7" class="node">
+<title>n6</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="36,-90.46 0,-90.46 0,-54.46 36,-54.46 36,-90.46"></polygon>
+<text text-anchor="middle" x="18" y="-68.26" font-family="Arial" font-size="14.00">n6</text>
+</g>
+<!-- B&#45;&gt;n6 -->
+<g id="edge8" class="edge">
+<title>B-&gt;n6</title>
+<path fill="none" stroke="black" d="M82.56,-108.99C70.64,-102.25 56.89,-94.47 45.15,-87.83"></path>
+<polygon fill="black" stroke="black" points="46.66,-84.66 36.24,-82.78 43.22,-90.75 46.66,-84.66"></polygon>
+<text text-anchor="middle" x="58.01" y="-102.61" font-family="Arial" font-size="14.00">t1</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="222.13,-89.31 186.13,-89.31 186.13,-53.31 222.13,-53.31 222.13,-89.31"></polygon>
+<text text-anchor="middle" x="204.13" y="-67.11" font-family="Arial" font-size="14.00">n1</text>
+</g>
+<!-- n1&#45;&gt;B -->
+<g id="edge1" class="edge">
+<title>n1-&gt;B</title>
+<path fill="none" stroke="black" d="M185.79,-81.97C175.34,-88.05 161.83,-95.9 149.2,-103.24"></path>
+<polygon fill="black" stroke="black" points="147.1,-100.42 140.21,-108.47 150.62,-106.47 147.1,-100.42"></polygon>
+<text text-anchor="middle" x="161.66" y="-96.81" font-family="Arial" font-size="14.00">t1</text>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="129.1,-36 93.1,-36 93.1,0 129.1,0 129.1,-36"></polygon>
+<text text-anchor="middle" x="111.1" y="-13.8" font-family="Arial" font-size="14.00">n2</text>
+</g>
+<!-- n2&#45;&gt;B -->
+<g id="edge2" class="edge">
+<title>n2-&gt;B</title>
+<path fill="none" stroke="black" d="M111.14,-36.2C111.17,-49.86 111.2,-69.07 111.24,-86.16"></path>
+<polygon fill="black" stroke="black" points="107.74,-86.46 111.26,-96.46 114.74,-86.45 107.74,-86.46"></polygon>
+<text text-anchor="middle" x="105.35" y="-65.38" font-family="Arial" font-size="14.00">t2</text>
+</g>
+<!-- n3&#45;&gt;B -->
+<g id="edge3" class="edge">
+<title>n3-&gt;B</title>
+<path fill="none" stroke="black" d="M37.63,-175.56C48.07,-170.68 61.5,-163.2 74.05,-155.46"></path>
+<polygon fill="black" stroke="black" points="75.96,-158.39 82.54,-150.08 72.22,-152.47 75.96,-158.39"></polygon>
+<text text-anchor="middle" x="50" y="-169.71" font-family="Arial" font-size="14.00">t3</text>
+</g>
+<!-- n4&#45;&gt;B -->
+<g id="edge5" class="edge">
+<title>n4-&gt;B</title>
+<path fill="none" stroke="black" d="M186.48,-160.99C175.85,-153.9 162.09,-145.85 149.26,-139.12"></path>
+<polygon fill="black" stroke="black" points="150.63,-135.89 140.13,-134.49 147.46,-142.13 150.63,-135.89"></polygon>
+<text text-anchor="middle" x="162.03" y="-137.45" font-family="Arial" font-size="14.00">t4</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="context-federation" class="slide level2">
+<h2>Context: federation</h2>
+<div class="cell" data-fig-width="8" data-fig-height="5" data-out-height="540px" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="768" height="480" viewbox="0.00 0.00 536.85 282.68" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 278.68)">
+<title>mq</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-278.68 532.85,-278.68 532.85,4 -4,4"></polygon>
+<!-- B1 -->
+<g id="node1" class="node">
+<title>B1</title>
+<polygon fill="#eeeeee" stroke="violet" stroke-width="2" points="152.54,-166.41 83.72,-166.41 83.72,-97.59 152.54,-97.59 152.54,-166.41"></polygon>
+<text text-anchor="middle" x="118.13" y="-127.8" font-family="Arial" font-size="14.00">Broker 1</text>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<polygon fill="#eeeeee" stroke="darkgreen" stroke-width="2" points="269.07,-217 233.07,-217 233.07,-181 269.07,-181 269.07,-217"></polygon>
+<text text-anchor="middle" x="251.07" y="-194.8" font-family="Arial" font-size="14.00">n3</text>
+</g>
+<!-- B1&#45;&gt;n3 -->
+<g id="edge4" class="edge">
+<title>B1-&gt;n3</title>
+<path fill="none" stroke="black" d="M135.24,-166.77C143.65,-180.69 155.4,-195.25 170.59,-203 186.64,-211.19 206.97,-210 223.05,-206.86"></path>
+<polygon fill="black" stroke="black" points="223.95,-210.24 232.91,-204.59 222.38,-203.42 223.95,-210.24"></polygon>
+<text text-anchor="middle" x="191.99" y="-213.2" font-family="Arial" font-size="14.00">t1</text>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<polygon fill="#eeeeee" stroke="orange" stroke-width="2" points="269.07,-163 233.07,-163 233.07,-127 269.07,-127 269.07,-163"></polygon>
+<text text-anchor="middle" x="251.07" y="-140.8" font-family="Arial" font-size="14.00">n4</text>
+</g>
+<!-- B1&#45;&gt;n4 -->
+<g id="edge6" class="edge">
+<title>B1-&gt;n4</title>
+<path fill="none" stroke="black" d="M152.85,-135.35C174.56,-137.5 202.42,-140.27 222.74,-142.29"></path>
+<polygon fill="black" stroke="black" points="222.6,-145.79 232.89,-143.29 223.29,-138.82 222.6,-145.79"></polygon>
+<text text-anchor="middle" x="191.99" y="-146.2" font-family="Arial" font-size="14.00">t1,t2,t3</text>
+</g>
+<!-- n5 -->
+<g id="node6" class="node">
+<title>n5</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="269.07,-90 233.07,-90 233.07,-54 269.07,-54 269.07,-90"></polygon>
+<text text-anchor="middle" x="251.07" y="-67.8" font-family="Arial" font-size="14.00">n5</text>
+</g>
+<!-- B1&#45;&gt;n5 -->
+<g id="edge7" class="edge">
+<title>B1-&gt;n5</title>
+<path fill="none" stroke="black" d="M152.7,-100.31C158.37,-96.1 164.42,-92.2 170.59,-89.2 186.88,-81.26 206.82,-76.96 222.65,-74.64"></path>
+<polygon fill="black" stroke="black" points="223.39,-78.08 232.86,-73.34 222.5,-71.13 223.39,-78.08"></polygon>
+<text text-anchor="middle" x="191.99" y="-94.2" font-family="Arial" font-size="14.00">t2,t3</text>
+</g>
+<!-- n6 -->
+<g id="node7" class="node">
+<title>n6</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="269.07,-36 233.07,-36 233.07,0 269.07,0 269.07,-36"></polygon>
+<text text-anchor="middle" x="251.07" y="-13.8" font-family="Arial" font-size="14.00">n6</text>
+</g>
+<!-- B1&#45;&gt;n6 -->
+<g id="edge8" class="edge">
+<title>B1-&gt;n6</title>
+<path fill="none" stroke="black" d="M137.32,-97.3C145.97,-83.22 157.33,-67.62 170.59,-56.2 185.95,-42.96 206.71,-33.19 223.15,-26.85"></path>
+<polygon fill="black" stroke="black" points="224.56,-30.06 232.75,-23.34 222.16,-23.49 224.56,-30.06"></polygon>
+<text text-anchor="middle" x="191.99" y="-61.2" font-family="Arial" font-size="14.00">t1,t14</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="36,-177 0,-177 0,-141 36,-141 36,-177"></polygon>
+<text text-anchor="middle" x="18" y="-154.8" font-family="Arial" font-size="14.00">n1</text>
+</g>
+<!-- n1&#45;&gt;B1 -->
+<g id="edge1" class="edge">
+<title>n1-&gt;B1</title>
+<path fill="none" stroke="black" d="M36.09,-154.3C46.51,-151.43 60.33,-147.63 73.6,-143.98"></path>
+<polygon fill="black" stroke="black" points="74.86,-147.26 83.57,-141.23 73,-140.51 74.86,-147.26"></polygon>
+<text text-anchor="middle" x="59.84" y="-152.2" font-family="Arial" font-size="14.00">t1</text>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="36,-123 0,-123 0,-87 36,-87 36,-123"></polygon>
+<text text-anchor="middle" x="18" y="-100.8" font-family="Arial" font-size="14.00">n2</text>
+</g>
+<!-- n2&#45;&gt;B1 -->
+<g id="edge2" class="edge">
+<title>n2-&gt;B1</title>
+<path fill="none" stroke="black" d="M36.09,-109.7C46.51,-112.57 60.33,-116.37 73.6,-120.02"></path>
+<polygon fill="black" stroke="black" points="73,-123.49 83.57,-122.77 74.86,-116.74 73,-123.49"></polygon>
+<text text-anchor="middle" x="59.84" y="-122.2" font-family="Arial" font-size="14.00">t2</text>
+</g>
+<!-- n3&#45;&gt;B1 -->
+<g id="edge3" class="edge">
+<title>n3-&gt;B1</title>
+<path fill="none" stroke="black" d="M233.05,-191.98C216.77,-185.1 191.64,-174.06 170.59,-163 167.54,-161.4 164.42,-159.7 161.31,-157.94"></path>
+<polygon fill="black" stroke="black" points="162.99,-154.87 152.58,-152.92 159.5,-160.94 162.99,-154.87"></polygon>
+<text text-anchor="middle" x="191.99" y="-186.2" font-family="Arial" font-size="14.00">t3</text>
+</g>
+<!-- n4&#45;&gt;B1 -->
+<g id="edge5" class="edge">
+<title>n4-&gt;B1</title>
+<path fill="none" stroke="black" d="M234.25,-126.91C228.32,-121.42 221.13,-116.09 213.39,-113.2 197.21,-107.16 178.7,-109.08 162.39,-113.51"></path>
+<polygon fill="black" stroke="black" points="161.09,-110.25 152.57,-116.54 163.15,-116.94 161.09,-110.25"></polygon>
+<text text-anchor="middle" x="191.99" y="-118.2" font-family="Arial" font-size="14.00">t14</text>
+</g>
+<!-- B2 -->
+<g id="node8" class="node">
+<title>B2</title>
+<polygon fill="#eeeeee" stroke="violet" stroke-width="2" points="418.42,-219.41 349.6,-219.41 349.6,-150.59 418.42,-150.59 418.42,-219.41"></polygon>
+<text text-anchor="middle" x="384.01" y="-180.8" font-family="Arial" font-size="14.00">Broker 2</text>
+</g>
+<!-- n4&#45;&gt;B2 -->
+<g id="edge15" class="edge">
+<title>n4-&gt;B2</title>
+<path fill="none" stroke="black" d="M269.26,-154.44C275.29,-157.48 282.2,-160.66 288.75,-163 304.85,-168.74 323.04,-173.4 339.11,-176.92"></path>
+<polygon fill="black" stroke="black" points="338.82,-180.43 349.33,-179.07 340.26,-173.58 338.82,-180.43"></polygon>
+<text text-anchor="middle" x="310.15" y="-178.2" font-family="Arial" font-size="14.00">t1,t2,t3</text>
+</g>
+<!-- B2&#45;&gt;n4 -->
+<g id="edge16" class="edge">
+<title>B2-&gt;n4</title>
+<path fill="none" stroke="black" d="M349.37,-151.7C343.79,-147.82 337.79,-144.45 331.56,-142.2 314.89,-136.17 294.95,-136.89 279.21,-139.11"></path>
+<polygon fill="black" stroke="black" points="278.36,-135.71 269.08,-140.82 279.52,-142.61 278.36,-135.71"></polygon>
+<text text-anchor="middle" x="310.15" y="-147.2" font-family="Arial" font-size="14.00">t14</text>
+</g>
+<!-- n11 -->
+<g id="node10" class="node">
+<title>n11</title>
+<polygon fill="#eeeeee" stroke="darkgreen" stroke-width="2" points="529.03,-254.86 489.31,-254.86 489.31,-215.14 529.03,-215.14 529.03,-254.86"></polygon>
+<text text-anchor="middle" x="509.17" y="-230.8" font-family="Arial" font-size="14.00">n11</text>
+</g>
+<!-- B2&#45;&gt;n11 -->
+<g id="edge11" class="edge">
+<title>B2-&gt;n11</title>
+<path fill="none" stroke="black" d="M409.94,-219.57C417.49,-227.43 426.47,-234.72 436.47,-239 449.76,-244.7 465.73,-244.41 479.22,-242.39"></path>
+<polygon fill="black" stroke="black" points="480.22,-245.76 489.41,-240.48 478.93,-238.88 480.22,-245.76"></polygon>
+<text text-anchor="middle" x="453.98" y="-247.2" font-family="Arial" font-size="14.00">t1,t14</text>
+</g>
+<!-- n12 -->
+<g id="node11" class="node">
+<title>n12</title>
+<polygon fill="#eeeeee" stroke="darkgreen" stroke-width="2" points="529.03,-194.86 489.31,-194.86 489.31,-155.14 529.03,-155.14 529.03,-194.86"></polygon>
+<text text-anchor="middle" x="509.17" y="-170.8" font-family="Arial" font-size="14.00">n12</text>
+</g>
+<!-- B2&#45;&gt;n12 -->
+<g id="edge13" class="edge">
+<title>B2-&gt;n12</title>
+<path fill="none" stroke="black" d="M418.67,-182.27C437.72,-180.72 461.3,-178.81 479.47,-177.33"></path>
+<polygon fill="black" stroke="black" points="479.78,-180.82 489.47,-176.52 479.22,-173.84 479.78,-180.82"></polygon>
+<text text-anchor="middle" x="453.98" y="-184.2" font-family="Arial" font-size="14.00">t3</text>
+</g>
+<!-- n13 -->
+<g id="node12" class="node">
+<title>n13</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="529.03,-124.86 489.31,-124.86 489.31,-85.14 529.03,-85.14 529.03,-124.86"></polygon>
+<text text-anchor="middle" x="509.17" y="-100.8" font-family="Arial" font-size="14.00">n13</text>
+</g>
+<!-- B2&#45;&gt;n13 -->
+<g id="edge14" class="edge">
+<title>B2-&gt;n13</title>
+<path fill="none" stroke="black" d="M406.75,-150.49C414.9,-140.01 425,-129.39 436.47,-122.2 449.26,-114.18 465.49,-109.9 479.26,-107.62"></path>
+<polygon fill="black" stroke="black" points="479.81,-111.07 489.23,-106.23 478.84,-104.14 479.81,-111.07"></polygon>
+<text text-anchor="middle" x="453.98" y="-127.2" font-family="Arial" font-size="14.00">t2,t14</text>
+</g>
+<!-- n14 -->
+<g id="node9" class="node">
+<title>n14</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="270.93,-274.86 231.21,-274.86 231.21,-235.14 270.93,-235.14 270.93,-274.86"></polygon>
+<text text-anchor="middle" x="251.07" y="-250.8" font-family="Arial" font-size="14.00">n14</text>
+</g>
+<!-- n14&#45;&gt;B2 -->
+<g id="edge9" class="edge">
+<title>n14-&gt;B2</title>
+<path fill="none" stroke="black" d="M270.83,-244.97C288.94,-235.29 316.98,-220.3 340.5,-207.72"></path>
+<polygon fill="black" stroke="black" points="342.43,-210.66 349.6,-202.86 339.13,-204.49 342.43,-210.66"></polygon>
+<text text-anchor="middle" x="310.15" y="-238.2" font-family="Arial" font-size="14.00">t14</text>
+</g>
+<!-- n11&#45;&gt;B2 -->
+<g id="edge10" class="edge">
+<title>n11-&gt;B2</title>
+<path fill="none" stroke="black" d="M489.47,-227.41C473.21,-220.81 449.05,-211 428.05,-202.47"></path>
+<polygon fill="black" stroke="black" points="429.25,-199.18 418.67,-198.66 426.62,-205.67 429.25,-199.18"></polygon>
+<text text-anchor="middle" x="453.98" y="-222.2" font-family="Arial" font-size="14.00">t11</text>
+</g>
+<!-- n12&#45;&gt;B2 -->
+<g id="edge12" class="edge">
+<title>n12-&gt;B2</title>
+<path fill="none" stroke="black" d="M489.46,-156.48C484.08,-152.29 477.92,-148.42 471.5,-146.2 456.78,-141.11 451.23,-141.26 436.47,-146.2 433.49,-147.2 430.54,-148.44 427.66,-149.87"></path>
+<polygon fill="black" stroke="black" points="425.66,-146.98 418.7,-154.97 429.12,-153.07 425.66,-146.98"></polygon>
+<text text-anchor="middle" x="453.98" y="-150.2" font-family="Arial" font-size="14.00">t15</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Definitions</strong></p>
+</div>
+<div class="callout-content">
+<p>Typically, nodes may act as <span class="bred">sources</span> (produce information), <span class="bgreen">filters</span> (elaborate), or <span class="bblue">sinks</span> (consume information). The node <code>n4</code> acts as a <strong>brigde</strong> that federates two sub-networks</p>
+</div>
+</div>
+</div>
+</section>
+<section id="context-alternatives" class="slide level2">
+<h2>Context: alternatives</h2>
+<div class="smaller">
+<table class="caption-top">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 32%">
+<col style="width: 32%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Pros</th>
+<th style="text-align: left;">Cons</th>
+<th style="text-align: center;">Proto.</th>
+<th style="text-align: center;">Prod.</th>
+<th style="text-align: center;">Learning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>MQTT</strong></td>
+<td style="text-align: left;">lightweight, proven</td>
+<td style="text-align: left;">low-level, no fed’n</td>
+<td style="text-align: center;">🟠</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;"><p><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,20.995 L 1.938,20.980 L 2.406,20.956 L 2.875,20.922 L 3.344,20.878 L 3.812,20.824 L 4.281,20.761 L 4.750,20.688 L 5.219,20.604 L 5.688,20.512 L 6.156,20.409 L 6.625,20.297 L 7.094,20.175 L 7.562,20.043 L 8.031,19.901 L 8.500,19.750 L 8.969,19.589 L 9.438,19.418 L 9.906,19.237 L 10.375,19.047 L 10.844,18.847 L 11.312,18.637 L 11.781,18.417 L 12.250,18.188 L 12.719,17.948 L 13.188,17.699 L 13.656,17.440 L 14.125,17.172 L 14.594,16.894 L 15.062,16.605 L 15.531,16.308 L 16.000,16.000 L 16.469,15.683 L 16.938,15.355 L 17.406,15.019 L 17.875,14.672 L 18.344,14.315 L 18.812,13.949 L 19.281,13.573 L 19.750,13.188 L 20.219,12.792 L 20.688,12.387 L 21.156,11.972 L 21.625,11.547 L 22.094,11.112 L 22.562,10.668 L 23.031,10.214 L 23.500,9.750 L 23.969,9.276 L 24.438,8.793 L 24.906,8.300 L 25.375,7.797 L 25.844,7.284 L 26.312,6.762 L 26.781,6.229 L 27.250,5.688 L 27.719,5.136 L 28.188,4.574 L 28.656,4.003 L 29.125,3.422 L 29.594,2.831 L 30.062,2.230 L 30.531,1.620 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>ZeroMQ</strong></td>
+<td style="text-align: left;">lightweight, very flexible, proven</td>
+<td style="text-align: left;">low-level, fed’n is complex</td>
+<td style="text-align: center;">🟠</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;"><p><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,21.000 L 1.938,20.999 L 2.406,20.998 L 2.875,20.995 L 3.344,20.990 L 3.812,20.984 L 4.281,20.974 L 4.750,20.961 L 5.219,20.944 L 5.688,20.924 L 6.156,20.898 L 6.625,20.868 L 7.094,20.832 L 7.562,20.791 L 8.031,20.743 L 8.500,20.688 L 8.969,20.625 L 9.438,20.555 L 9.906,20.477 L 10.375,20.390 L 10.844,20.293 L 11.312,20.188 L 11.781,20.072 L 12.250,19.945 L 12.719,19.808 L 13.188,19.659 L 13.656,19.498 L 14.125,19.325 L 14.594,19.139 L 15.062,18.940 L 15.531,18.727 L 16.000,18.500 L 16.469,18.258 L 16.938,18.001 L 17.406,17.729 L 17.875,17.440 L 18.344,17.135 L 18.812,16.814 L 19.281,16.474 L 19.750,16.117 L 20.219,15.742 L 20.688,15.348 L 21.156,14.934 L 21.625,14.501 L 22.094,14.048 L 22.562,13.574 L 23.031,13.079 L 23.500,12.562 L 23.969,12.024 L 24.438,11.463 L 24.906,10.880 L 25.375,10.272 L 25.844,9.642 L 26.312,8.986 L 26.781,8.307 L 27.250,7.602 L 27.719,6.871 L 28.188,6.114 L 28.656,5.331 L 29.125,4.521 L 29.594,3.683 L 30.062,2.817 L 30.531,1.923 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="bred">OPC-UA</span></td>
+<td style="text-align: left;">powerful, industry-based, fed’n</td>
+<td style="text-align: left;">heavy, complex, vendor-dependent, limited portability/integrability</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">🟠🟢</td>
+<td style="text-align: center;"><p><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,21.000 L 1.938,21.000 L 2.406,21.000 L 2.875,21.000 L 3.344,20.999 L 3.812,20.998 L 4.281,20.997 L 4.750,20.995 L 5.219,20.992 L 5.688,20.988 L 6.156,20.983 L 6.625,20.975 L 7.094,20.966 L 7.562,20.954 L 8.031,20.940 L 8.500,20.922 L 8.969,20.900 L 9.438,20.875 L 9.906,20.845 L 10.375,20.809 L 10.844,20.768 L 11.312,20.721 L 11.781,20.666 L 12.250,20.604 L 12.719,20.534 L 13.188,20.455 L 13.656,20.366 L 14.125,20.267 L 14.594,20.157 L 15.062,20.034 L 15.531,19.899 L 16.000,19.750 L 16.469,19.586 L 16.938,19.407 L 17.406,19.211 L 17.875,18.998 L 18.344,18.766 L 18.812,18.514 L 19.281,18.242 L 19.750,17.948 L 20.219,17.631 L 20.688,17.291 L 21.156,16.924 L 21.625,16.532 L 22.094,16.112 L 22.562,15.662 L 23.031,15.183 L 23.500,14.672 L 23.969,14.128 L 24.438,13.549 L 24.906,12.935 L 25.375,12.284 L 25.844,11.594 L 26.312,10.864 L 26.781,10.092 L 27.250,9.276 L 27.719,8.416 L 28.188,7.510 L 28.656,6.555 L 29.125,5.550 L 29.594,4.494 L 30.062,3.385 L 30.531,2.221 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Zenoh</strong></td>
+<td style="text-align: left;">flexible and powerful, fed’n</td>
+<td style="text-align: left;">high abstraction, low-level</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">🟠</td>
+<td style="text-align: center;"><p><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,21.000 L 1.938,20.999 L 2.406,20.998 L 2.875,20.995 L 3.344,20.990 L 3.812,20.984 L 4.281,20.974 L 4.750,20.961 L 5.219,20.944 L 5.688,20.924 L 6.156,20.898 L 6.625,20.868 L 7.094,20.832 L 7.562,20.791 L 8.031,20.743 L 8.500,20.688 L 8.969,20.625 L 9.438,20.555 L 9.906,20.477 L 10.375,20.390 L 10.844,20.293 L 11.312,20.188 L 11.781,20.072 L 12.250,19.945 L 12.719,19.808 L 13.188,19.659 L 13.656,19.498 L 14.125,19.325 L 14.594,19.139 L 15.062,18.940 L 15.531,18.727 L 16.000,18.500 L 16.469,18.258 L 16.938,18.001 L 17.406,17.729 L 17.875,17.440 L 18.344,17.135 L 18.812,16.814 L 19.281,16.474 L 19.750,16.117 L 20.219,15.742 L 20.688,15.348 L 21.156,14.934 L 21.625,14.501 L 22.094,14.048 L 22.562,13.574 L 23.031,13.079 L 23.500,12.562 L 23.969,12.024 L 24.438,11.463 L 24.906,10.880 L 25.375,10.272 L 25.844,9.642 L 26.312,8.986 L 26.781,8.307 L 27.250,7.602 L 27.719,6.871 L 28.188,6.114 L 28.656,5.331 L 29.125,4.521 L 29.594,3.683 L 30.062,2.817 L 30.531,1.923 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Apache Spark</strong></td>
+<td style="text-align: left;">designed for high-loads &amp; datacenters, fed’n</td>
+<td style="text-align: left;">Java-based, limited integrability, unsuited to µC</td>
+<td style="text-align: center;">🔴</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;"><p><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,21.000 L 1.938,20.999 L 2.406,20.998 L 2.875,20.995 L 3.344,20.990 L 3.812,20.984 L 4.281,20.974 L 4.750,20.961 L 5.219,20.944 L 5.688,20.924 L 6.156,20.898 L 6.625,20.868 L 7.094,20.832 L 7.562,20.791 L 8.031,20.743 L 8.500,20.688 L 8.969,20.625 L 9.438,20.555 L 9.906,20.477 L 10.375,20.390 L 10.844,20.293 L 11.312,20.188 L 11.781,20.072 L 12.250,19.945 L 12.719,19.808 L 13.188,19.659 L 13.656,19.498 L 14.125,19.325 L 14.594,19.139 L 15.062,18.940 L 15.531,18.727 L 16.000,18.500 L 16.469,18.258 L 16.938,18.001 L 17.406,17.729 L 17.875,17.440 L 18.344,17.135 L 18.812,16.814 L 19.281,16.474 L 19.750,16.117 L 20.219,15.742 L 20.688,15.348 L 21.156,14.934 L 21.625,14.501 L 22.094,14.048 L 22.562,13.574 L 23.031,13.079 L 23.500,12.562 L 23.969,12.024 L 24.438,11.463 L 24.906,10.880 L 25.375,10.272 L 25.844,9.642 L 26.312,8.986 L 26.781,8.307 L 27.250,7.602 L 27.719,6.871 L 28.188,6.114 L 28.656,5.331 L 29.125,4.521 L 29.594,3.683 L 30.062,2.817 L 30.531,1.923 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>ROS2</strong></td>
+<td style="text-align: left;">flexible, high level, feature rich</td>
+<td style="text-align: left;">steep learning curve, robotics oriented, no fed’n</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;">🟢</td>
+<td style="text-align: center;"><p><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,20.688 L 1.938,20.375 L 2.406,20.062 L 2.875,19.750 L 3.344,19.438 L 3.812,19.125 L 4.281,18.812 L 4.750,18.500 L 5.219,18.188 L 5.688,17.875 L 6.156,17.562 L 6.625,17.250 L 7.094,16.938 L 7.562,16.625 L 8.031,16.312 L 8.500,16.000 L 8.969,15.688 L 9.438,15.375 L 9.906,15.062 L 10.375,14.750 L 10.844,14.438 L 11.312,14.125 L 11.781,13.812 L 12.250,13.500 L 12.719,13.188 L 13.188,12.875 L 13.656,12.562 L 14.125,12.250 L 14.594,11.938 L 15.062,11.625 L 15.531,11.312 L 16.000,11.000 L 16.469,10.688 L 16.938,10.375 L 17.406,10.062 L 17.875,9.750 L 18.344,9.438 L 18.812,9.125 L 19.281,8.812 L 19.750,8.500 L 20.219,8.188 L 20.688,7.875 L 21.156,7.562 L 21.625,7.250 L 22.094,6.938 L 22.562,6.625 L 23.031,6.312 L 23.500,6.000 L 23.969,5.688 L 24.438,5.375 L 24.906,5.062 L 25.375,4.750 L 25.844,4.438 L 26.312,4.125 L 26.781,3.812 L 27.250,3.500 L 27.719,3.188 L 28.188,2.875 L 28.656,2.562 L 29.125,2.250 L 29.594,1.938 L 30.062,1.625 L 30.531,1.312 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"></td>
+<td style="text-align: left;"><strong>easy</strong>, ZeroMQ-based, portable, flexible, polyglot, fed’n</td>
+<td style="text-align: left;">young (3 years)</td>
+<td style="text-align: center;">🟢🟢</td>
+<td style="text-align: center;">🟠🟢</td>
+<td style="text-align: center;"><strong><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.007,20.688 L 1.029,20.375 L 1.066,20.062 L 1.117,19.750 L 1.183,19.438 L 1.264,19.125 L 1.359,18.812 L 1.469,18.500 L 1.593,18.188 L 1.732,17.875 L 1.886,17.562 L 2.055,17.250 L 2.238,16.938 L 2.436,16.625 L 2.648,16.312 L 2.875,16.000 L 3.117,15.688 L 3.373,15.375 L 3.644,15.062 L 3.930,14.750 L 4.230,14.438 L 4.545,14.125 L 4.875,13.812 L 5.219,13.500 L 5.578,13.188 L 5.951,12.875 L 6.339,12.562 L 6.742,12.250 L 7.160,11.938 L 7.592,11.625 L 8.039,11.312 L 8.500,11.000 L 8.976,10.688 L 9.467,10.375 L 9.972,10.062 L 10.492,9.750 L 11.027,9.438 L 11.576,9.125 L 12.140,8.812 L 12.719,8.500 L 13.312,8.188 L 13.920,7.875 L 14.542,7.562 L 15.180,7.250 L 15.832,6.938 L 16.498,6.625 L 17.179,6.312 L 17.875,6.000 L 18.585,5.688 L 19.311,5.375 L 20.050,5.062 L 20.805,4.750 L 21.574,4.438 L 22.357,4.125 L 23.156,3.812 L 23.969,3.500 L 24.796,3.188 L 25.639,2.875 L 26.496,2.562 L 27.367,2.250 L 28.253,1.938 L 29.154,1.625 L 30.070,1.312 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg></strong></td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p><strong>Low-level</strong> means a framework only/mostly taking care of data communication/distribution, where business logic must be implemented every time; <strong>portability</strong> means on different platforms/architectures; <strong>integrability</strong> means against existing solutions; <strong>fed’n</strong> means federation; learning curves <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 22" role="img" class="lc" style="display:inline-block;height:1em;width:auto;vertical-align:-0.15em" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M 1 1 L 1 21 L 31 21" stroke="#b0b0b0" stroke-width="1.35"></path><path d="M 1.000,21.000 L 1.469,20.995 L 1.938,20.980 L 2.406,20.956 L 2.875,20.922 L 3.344,20.878 L 3.812,20.824 L 4.281,20.761 L 4.750,20.688 L 5.219,20.604 L 5.688,20.512 L 6.156,20.409 L 6.625,20.297 L 7.094,20.175 L 7.562,20.043 L 8.031,19.901 L 8.500,19.750 L 8.969,19.589 L 9.438,19.418 L 9.906,19.237 L 10.375,19.047 L 10.844,18.847 L 11.312,18.637 L 11.781,18.417 L 12.250,18.188 L 12.719,17.948 L 13.188,17.699 L 13.656,17.440 L 14.125,17.172 L 14.594,16.894 L 15.062,16.605 L 15.531,16.308 L 16.000,16.000 L 16.469,15.683 L 16.938,15.355 L 17.406,15.019 L 17.875,14.672 L 18.344,14.315 L 18.812,13.949 L 19.281,13.573 L 19.750,13.188 L 20.219,12.792 L 20.688,12.387 L 21.156,11.972 L 21.625,11.547 L 22.094,11.112 L 22.562,10.668 L 23.031,10.214 L 23.500,9.750 L 23.969,9.276 L 24.438,8.793 L 24.906,8.300 L 25.375,7.797 L 25.844,7.284 L 26.312,6.762 L 26.781,6.229 L 27.250,5.688 L 27.719,5.136 L 28.188,4.574 L 28.656,4.003 L 29.125,3.422 L 29.594,2.831 L 30.062,2.230 L 30.531,1.620 L 31.000,1.000" stroke="currentColor" stroke-width="1.8"></path></g></svg> are subjective and qualitative.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents</h2>
+<div class="columns">
+<div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="agent_smith_R.png" height="500"></p>
+<figcaption>Just a process in a computer</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:70%;">
+<ul>
+<li>A <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> network is made by one <strong>broker</strong> and many <strong>agents</strong></li>
+<li>Agents are <strong>processes</strong>: whether they run on a single computer or on a multitude of networked computers is irrelevant (<em>except for throughput and latency</em>)</li>
+<li>Agents communicate each other via a TCP/IP network and <strong>only</strong> through the broker</li>
+<li>The broker is completely <strong>transparent</strong> and <strong>data-agnostic</strong></li>
+<li>The process running the broker also distributes <strong>agents settings</strong> in REQ/REP fashion</li>
+<li>Information is channeled/routed/organized via <strong>topics</strong>, e.g.&nbsp;<code>measurements/force/X</code></li>
+<li>An agent can <strong>publish</strong> on a topic and can <strong>subscribe</strong> to anther (to receive asynchronous updates)</li>
+</ul>
+</div></div>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-types" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents: types</h2>
+<div class="columns">
+<div class="column">
+<h3 id="source-agents">Source agents</h3>
+<ul>
+<li><strong>Acquire</strong> information from the field:
+<ul>
+<li>sensors</li>
+<li>peripherals (TTY, GUI)</li>
+<li>other protocols</li>
+</ul></li>
+<li><strong>Publish</strong> information on the MADS network under one or more <strong>topics</strong></li>
+<li>Publishing may be timed or event-based</li>
+</ul>
+</div><div class="column">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="480" height="384" viewbox="0.00 0.00 162.14 205.80" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 201.8)">
+<title>source</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-201.8 158.14,-201.8 158.14,4 -4,4"></polygon>
+<!-- sensor -->
+<g id="node1" class="node">
+<title>sensor</title>
+<polygon fill="#eeeeee" stroke="darkgray" stroke-width="2" points="58.03,-197.8 -0.01,-197.8 -0.01,-161.8 58.03,-161.8 58.03,-197.8"></polygon>
+<text text-anchor="middle" x="29.01" y="-175.6" font-family="Arial" font-size="14.00">sensor</text>
+</g>
+<!-- agent -->
+<g id="node3" class="node">
+<title>agent</title>
+<polygon fill="#eeeeee" stroke="darkred" stroke-width="2" points="99.01,-124.8 45.01,-124.8 45.01,-88.8 99.01,-88.8 99.01,-124.8"></polygon>
+<text text-anchor="middle" x="72.01" y="-102.6" font-family="Arial" font-size="14.00">agent</text>
+</g>
+<!-- sensor&#45;&gt;agent -->
+<g id="edge1" class="edge">
+<title>sensor-&gt;agent</title>
+<path fill="none" stroke="darkgray" d="M39.42,-161.61C44.54,-153.15 50.82,-142.78 56.5,-133.41"></path>
+<polygon fill="darkgray" stroke="darkgray" points="59.51,-135.2 61.7,-124.83 53.52,-131.57 59.51,-135.2"></polygon>
+</g>
+<!-- peripheral -->
+<g id="node2" class="node">
+<title>peripheral</title>
+<polygon fill="#eeeeee" stroke="darkgray" stroke-width="2" points="154.27,-197.8 75.75,-197.8 75.75,-161.8 154.27,-161.8 154.27,-197.8"></polygon>
+<text text-anchor="middle" x="115.01" y="-175.6" font-family="Arial" font-size="14.00">peripheral</text>
+</g>
+<!-- peripheral&#45;&gt;agent -->
+<g id="edge2" class="edge">
+<title>peripheral-&gt;agent</title>
+<path fill="none" stroke="darkgray" d="M104.6,-161.61C99.48,-153.15 93.2,-142.78 87.52,-133.41"></path>
+<polygon fill="darkgray" stroke="darkgray" points="90.5,-131.57 82.32,-124.83 84.51,-135.2 90.5,-131.57"></polygon>
+</g>
+<!-- broker -->
+<g id="node4" class="node">
+<title>broker</title>
+<polygon fill="#eeeeee" stroke="violet" stroke-width="2" points="99.69,-36 44.33,-36 44.33,0 99.69,0 99.69,-36"></polygon>
+<text text-anchor="middle" x="72.01" y="-13.8" font-family="Arial" font-size="14.00">broker</text>
+</g>
+<!-- agent&#45;&gt;broker -->
+<g id="edge3" class="edge">
+<title>agent-&gt;broker</title>
+<path fill="none" stroke="black" d="M72.01,-88.65C72.01,-76.52 72.01,-60.02 72.01,-46.12"></path>
+<polygon fill="black" stroke="black" points="75.51,-46.11 72.01,-36.11 68.51,-46.11 75.51,-46.11"></polygon>
+<text text-anchor="middle" x="77.85" y="-58.2" font-family="Arial" font-size="14.00">t1</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-types-1" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents: types</h2>
+<div class="columns">
+<div class="column">
+<h3 id="filter-agents">Filter agents</h3>
+<ul>
+<li><strong>Manipulate</strong> information:
+<ul>
+<li>filters</li>
+<li>controllers</li>
+<li>gateways</li>
+</ul></li>
+<li>They <strong>subscribe</strong> to a topic, elabrate the received data, and <strong>publish</strong> back new data on a different topic</li>
+<li>Publishing is <strong>mostly</strong> event-based</li>
+</ul>
+</div><div class="column">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="480" height="384" viewbox="0.00 0.00 63.68 132.80" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 128.8)">
+<title>source</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-128.8 59.68,-128.8 59.68,4 -4,4"></polygon>
+<!-- broker -->
+<g id="node1" class="node">
+<title>broker</title>
+<polygon fill="#eeeeee" stroke="violet" stroke-width="2" points="55.52,-124.8 0.16,-124.8 0.16,-88.8 55.52,-88.8 55.52,-124.8"></polygon>
+<text text-anchor="middle" x="27.84" y="-102.6" font-family="Arial" font-size="14.00">broker</text>
+</g>
+<!-- agent -->
+<g id="node2" class="node">
+<title>agent</title>
+<polygon fill="#eeeeee" stroke="darkgreen" stroke-width="2" points="54.84,-36 0.84,-36 0.84,0 54.84,0 54.84,-36"></polygon>
+<text text-anchor="middle" x="27.84" y="-13.8" font-family="Arial" font-size="14.00">agent</text>
+</g>
+<!-- broker&#45;&gt;agent -->
+<g id="edge1" class="edge">
+<title>broker-&gt;agent</title>
+<path fill="none" stroke="black" d="M18.36,-88.49C15.83,-83 13.45,-76.79 12.17,-70.8 10.61,-63.5 10.61,-61.3 12.17,-54 12.75,-51.29 13.55,-48.53 14.5,-45.81"></path>
+<polygon fill="black" stroke="black" points="17.83,-46.89 18.36,-36.31 11.35,-44.26 17.83,-46.89"></polygon>
+<text text-anchor="middle" x="18.68" y="-58.2" font-family="Arial" font-size="14.00">t1</text>
+</g>
+<!-- agent&#45;&gt;broker -->
+<g id="edge2" class="edge">
+<title>agent-&gt;broker</title>
+<path fill="none" stroke="black" d="M27.84,-36.11C27.84,-48.23 27.84,-64.74 27.84,-78.64"></path>
+<polygon fill="black" stroke="black" points="24.34,-78.65 27.84,-88.65 31.34,-78.65 24.34,-78.65"></polygon>
+<text text-anchor="middle" x="33.68" y="-58.2" font-family="Arial" font-size="14.00">t2</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-types-2" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents: types</h2>
+<div class="columns">
+<div class="column">
+<h3 id="sink-agents">Sink agents</h3>
+<ul>
+<li><strong>Dispose</strong> of information received by other agents via broker:
+<ul>
+<li>to GUI (plots, charts, dashboards)</li>
+<li>to disk (JSON files, HDF5)</li>
+<li>to <strong>database</strong> (<a href="https://mongodb.com">MongoDB</a>)</li>
+<li>to other protocols</li>
+</ul></li>
+<li>Only deal with data coming from topics they are <strong>subscribed</strong> to</li>
+<li>Typically event-based</li>
+</ul>
+</div><div class="column">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="480" height="384" viewbox="0.00 0.00 63.68 132.80" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 128.8)">
+<title>source</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-128.8 59.68,-128.8 59.68,4 -4,4"></polygon>
+<!-- broker -->
+<g id="node1" class="node">
+<title>broker</title>
+<polygon fill="#eeeeee" stroke="violet" stroke-width="2" points="55.52,-124.8 0.16,-124.8 0.16,-88.8 55.52,-88.8 55.52,-124.8"></polygon>
+<text text-anchor="middle" x="27.84" y="-102.6" font-family="Arial" font-size="14.00">broker</text>
+</g>
+<!-- agent -->
+<g id="node2" class="node">
+<title>agent</title>
+<polygon fill="#eeeeee" stroke="darkblue" stroke-width="2" points="54.84,-36 0.84,-36 0.84,0 54.84,0 54.84,-36"></polygon>
+<text text-anchor="middle" x="27.84" y="-13.8" font-family="Arial" font-size="14.00">agent</text>
+</g>
+<!-- broker&#45;&gt;agent -->
+<g id="edge1" class="edge">
+<title>broker-&gt;agent</title>
+<path fill="none" stroke="black" d="M27.84,-88.65C27.84,-76.52 27.84,-60.02 27.84,-46.12"></path>
+<polygon fill="black" stroke="black" points="31.34,-46.11 27.84,-36.11 24.34,-46.11 31.34,-46.11"></polygon>
+<text text-anchor="middle" x="33.68" y="-58.2" font-family="Arial" font-size="14.00">t3</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="section" class="slide level2" data-background-iframe="MADS_Animation/MADSNetworkEmbed.html" data-background-interactive="true">
+<h2></h2>
+</section>
+<section id="incidentally-why-mongodb" class="slide level2">
+<h2>Incidentally: why MongoDB?</h2>
+<blockquote>
+<p>MongoDB is a <strong>schemaless, NoSQL</strong> database server: it organizes data in <strong>collections</strong> of <strong>JSON documents</strong></p>
+</blockquote>
+<div class="columns">
+<div class="column">
+<h3 id="advantages">Advantages</h3>
+<ul>
+<li>Data collection architectures may change (new agents, different data set-up)</li>
+<li>A schemaless database allows to carry on data collection even when its structure changes</li>
+<li>Still reasonably fast (20–250 kwrites/s)</li>
+</ul>
+</div><div class="column">
+<h3 id="limitations">Limitations</h3>
+<ul>
+<li>Dealing with non-consistent schema is demanded to downstream consumption (but doable!)</li>
+<li>SQL queries are easier than MongoDB queries (but AI helps here!)</li>
+<li>SQL servers can bear <strong>higher workloads</strong> (1.2x–1.5x)</li>
+</ul>
+</div></div>
+</section>
+<section id="data-format-json" class="slide level2">
+<h2>Data format: JSON</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li>MADS agents exchange data as <strong>JSON</strong> objects, because of its flexibility</li>
+<li>Underlying C++ library is <code>nlohmann::json</code></li>
+<li>Actual wire-format can be JSON (ASCII) or <strong>MsgPack</strong> (binary), per-agent negotiable</li>
+<li>Directly maps to what you log in MongoDB</li>
+<li>Directly maps to Python dictionaries</li>
+</ul>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="gorini_files/figure-revealjs/bench_plot-1.png" width="1500"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-implementation" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents: implementation</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Requirements</strong></p>
+</div>
+<div class="callout-content">
+<p>MADS has beed designed with requirements of <strong>flexibility</strong> and <strong>easy extensibility</strong></p>
+</div>
+</div>
+</div>
+<p>An agent can be implemented in a number of alternative ways:</p>
+<ul>
+<li>C++ process, linked to the <code>MadsCore</code> shared library (<code>#include &lt;mads.hpp&gt;</code>)</li>
+<li>C process, linked to the <code>MadsCore</code> shared library (<code>#include &lt;mads_c.h&gt;</code>)</li>
+<li>Python script <a href="https://en.wikipedia.org/wiki/Foreign_function_interface">FFI</a>-linked to the <code>MadsCore</code> library (<code>import Mads</code>)</li>
+<li>C++ <a href="https://en.wikipedia.org/wiki/Plug-in_(computing)">plugin</a>, with minimal API surface (3 methods)</li>
+<li>Rust plugin, with minimal API surface (3 methods)</li>
+<li>Python plugin (a binary that loads a Python module at runtime)</li>
+<li>R plugin (a binary that loads a R script at runtime)</li>
+<li>Lua plugin (a binary that loads a Lua script at runtime)</li>
+</ul>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-implementation-1" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents: implementation</h2>
+<p>The choice depends on personal knowledge/skill and task requirements:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Method</th>
+<th style="text-align: center;">Performance</th>
+<th style="text-align: center;">Flexibility</th>
+<th style="text-align: center;">Production-ready</th>
+<th style="text-align: center;">Base install</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">C++ process</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C process</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Python script</td>
+<td style="text-align: center;">⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C++ plugin</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rust plugin</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Python plugin</td>
+<td style="text-align: center;">⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️</td>
+<td style="text-align: center;">⛔️</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R plugin</td>
+<td style="text-align: center;">⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️</td>
+<td style="text-align: center;">⛔️</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lua plugin</td>
+<td style="text-align: center;">⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️⭐️</td>
+<td style="text-align: center;">⭐️⭐️</td>
+<td style="text-align: center;">⛔️</td>
+</tr>
+</tbody>
+</table>
+
+<aside><div>
+<p>⛔️ = see next slide</p>
+</div></aside></section>
+<section id="mads-net-a-repository-of-pre-made-agents" class="slide level2">
+<h2>MADS-NET: a repository of pre-made agents</h2>
+<p>The <a href="https://github.com/MADS-NET">github.com/MADS-NET</a> page provides a list of open source, ready available plugin and custom agents repositories for solving common tasks, which may be immediately useful, or provide a template on which to build upon:</p>
+<div class="columns">
+<div class="column">
+<ul>
+<li>Python/R/lua plugins</li>
+<li>HDF5 logging</li>
+<li>ML inference of ONNX models</li>
+<li>FMU plugins</li>
+<li>User interfaces</li>
+<li>JSON schema validation</li>
+<li>Arduino I/O</li>
+<li>and more</li>
+</ul>
+</div><div class="column">
+<p><a href="https://github.com/MADS-NET/python_agent"><img class="opengraph-image" src="https://opengraph.githubassets.com/2.4.1/MADS-NET/python_agent" alt="MADS-NET repository" width="300px"></a> <a href="https://github.com/MADS-NET/FMU_agent"><img class="opengraph-image" src="https://opengraph.githubassets.com/2.4.1/MADS-NET/FMU_agent" alt="MADS-NET repository" width="300px"></a> <a href="https://github.com/MADS-NET/onnx_agent"><img class="opengraph-image" src="https://opengraph.githubassets.com/2.4.1/MADS-NET/onnx_agent" alt="MADS-NET repository" width="300px"></a> <a href="https://github.com/MADS-NET/arduino_plugin"><img class="opengraph-image" src="https://opengraph.githubassets.com/2.4.1/MADS-NET/arduino_plugin" alt="MADS-NET repository" width="300px"></a></p>
+</div></div>
+</section>
+<section id="mads-net-a-repository-of-pre-made-agents-1" class="slide level2">
+<h2>MADS-NET: a repository of pre-made agents</h2>
+<p>To install a custom agent from MADS-NET:</p>
+<div class="columns">
+<div class="column">
+<h3 id="from-source">From source</h3>
+<ul>
+<li>Clone the repo</li>
+<li>Configure and compile:<br>
+<code>cmake -Bbuild -GNinja</code><br>
+<code>cmake --build build</code></li>
+<li>Test from <code>build/toolname</code></li>
+<li>Install (with <code>sudo</code> if needed):<br>
+<code>cmake --install build</code></li>
+</ul>
+</div><div class="column">
+<h3 id="pre-compiled-subsection">Pre-compiled (subsection)</h3>
+<ul>
+<li>List available:<br>
+<code>mads package --list</code></li>
+<li>Info on the one you want:<br>
+<code>mads package --info &lt;package&gt;</code></li>
+<li>Install (with <code>sudo</code> if needed):<br>
+<code>mads package --install &lt;package&gt;</code></li>
+</ul>
+</div></div>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p><code>mads package</code> is not a full-fledged package manager: it only supports the latest MADS version. <strong>Build from source</strong> if you stuble into problems</p>
+</div>
+</div>
+</div>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-arduino-based" class="slide level2">
+<h2><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Agents: Arduino-based</h2>
+<ul>
+<li>Cheapest and fastest way to ingest field data into a MADS network</li>
+<li>Three possible, complementary solutions:
+<ul>
+<li><a href="https://github.com/MADS-NET/arduino_plugin"><code>arduino.plugin</code></a> and a custom <code>.ino</code> sketch that prints a JSON string over serial — <strong>any Arduino</strong>, but must be serial-port connected to an agent running on separate device</li>
+<li><a href="https://github.com/MADS-NET/arduinoQ_plugin"><code>arduinoQ.plugin</code></a>, only works on an Arduino Uno Q: the agent runs on the CPU, a custom <code>.ino</code> on the MCU, they communicate via RPC — <strong>Uno Q only</strong>, standalone</li>
+<li><a href="https://github.com/MADS-NET/arduino_mads"><code>arduino_mads</code></a>: an Arduino-native library that provides low-level message passing to a MADS-network — requires <strong>Ethernet- or WiFi-equipped Arduino</strong>, standalone, feature-limited</li>
+</ul></li>
+</ul>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tip</strong></p>
+</div>
+<div class="callout-content">
+<p>The <code>arduino.plugin</code>, despite its name, works with <strong>any micro</strong> that can print on a serial port a JSON string</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="commands-and-tools" class="title-slide slide level1 center">
+<h1>Commands and tools</h1>
+<p><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> provides a number of command line tools to manage and monitor a network</p>
+</section>
+<section id="common-commands" class="slide level2">
+<h2>Common commands</h2>
+<ul>
+<li><code>mads broker</code> to start a broker</li>
+<li><code>mads [source|filter|sink]</code> to load a C++ plugin</li>
+<li><code>mads [rsource|rfilter|rsink]</code> to load a Rust plugin</li>
+<li><code>mads plugin</code> to create a plugin template</li>
+<li><code>mads logger</code> to log network traffic to MongoDB</li>
+<li><code>mads echo</code> to watch network traffic</li>
+<li><code>mads top</code> to monitor agents</li>
+<li><code>mads package</code> to install a pre-made plugin from MADS-NET</li>
+</ul>
+</section>
+<section id="mads-broker-centralized-management-tool" class="slide level2">
+<h2><code>mads broker</code>: centralized management tool</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>The broker does much more than just routing messages: it also provides a <strong>centralized management</strong> of the network</p>
+<ul>
+<li>ensures that all agents run on compatible versions of the MADS framework</li>
+<li>distributes to each agent (<strong>when it starts</strong>) its configuration from a local <code>mads.ini</code> file</li>
+<li>provides <strong>Over the Air</strong> (OTA) distribution of plugins binaries to remote agents</li>
+</ul>
+</div><div class="column" style="width:2%;">
+
+</div><div class="column" style="width:48%;">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource toml number-lines code-with-copy"><code class="sourceCode toml"><span id="cb6-1"><a aria-label="1"></a><span class="kw">[agents]</span> <span class="co"># common to all agents</span></span>
+<span id="cb6-2"><a aria-label="2"></a><span class="dt">frontend_address</span> <span class="op">=</span> <span class="st">"tcp://localhost:9090"</span></span>
+<span id="cb6-3"><a aria-label="3"></a><span class="dt">backend_address</span> <span class="op">=</span> <span class="st">"tcp://localhost:9091"</span></span>
+<span id="cb6-4"><a aria-label="4"></a><span class="dt">settings_address</span> <span class="op">=</span> <span class="st">"tcp://localhost:9092"</span></span>
+<span id="cb6-5"><a aria-label="5"></a><span class="dt">timecode_fps</span> <span class="op">=</span> <span class="dv">25</span></span>
+<span id="cb6-6"><a aria-label="6"></a><span class="dt">wire_format</span> <span class="op">=</span> <span class="st">"json"</span></span>
+<span id="cb6-7"><a aria-label="7"></a><span class="dt">compression</span> <span class="op">=</span> <span class="st">"auto"</span></span>
+<span id="cb6-8"><a aria-label="8"></a></span>
+<span id="cb6-9"><a aria-label="9"></a><span class="kw">[source]</span></span>
+<span id="cb6-10"><a aria-label="10"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"measurements/force/X"</span></span>
+<span id="cb6-11"><a aria-label="11"></a><span class="dt">attachment</span> <span class="op">=</span> <span class="st">"force_sensor.plugin"</span> <span class="co"># OTA</span></span>
+<span id="cb6-12"><a aria-label="12"></a></span>
+<span id="cb6-13"><a aria-label="13"></a><span class="kw">[filter]</span></span>
+<span id="cb6-14"><a aria-label="14"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"measurements"</span><span class="op">]</span></span>
+<span id="cb6-15"><a aria-label="15"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"filtered/force/X"</span></span>
+<span id="cb6-16"><a aria-label="16"></a></span>
+<span id="cb6-17"><a aria-label="17"></a><span class="kw">[sink]</span></span>
+<span id="cb6-18"><a aria-label="18"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="st">"filtered"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div></div>
+</section>
+<section id="agents-and-the-mads.ini-file" class="slide level2">
+<h2>Agents and the <code>mads.ini</code> file</h2>
+<ul>
+<li>A broker <strong>advertises</strong> its presence on the network, each broker in a virtual <strong>room</strong> with possibly different name (<code>mads</code> by default)</li>
+<li>Each agent needs the <code>mads.ini</code> file to start</li>
+<li>The agent searches for it in this order:
+<ol type="1">
+<li>a broker URI or a file path passed by the <code>--settings</code> command line option</li>
+<li>a <strong>room</strong> name if the <code>--room</code> command line option is used</li>
+<li>a broker running on <code>tcp://localhost:9092</code> (default)</li>
+</ol></li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>Start order of broker and agents is irrelevant, as well it is restarting the broker while agents are running: they will automatically reconnect to the broker when it becomes available again</p>
+<p><strong>The only way to reload the <code>mads.ini</code> file is to restart the agent</strong></p>
+</div>
+</div>
+</div>
+</section>
+<section id="gui-commands" class="slide level2">
+<h2>GUI commands</h2>
+<p>Two commands provide GUIs to monitor and control a MADS network:</p>
+<ul>
+<li><code>mads director</code>: coordinates the execution of multiple MADS tools on the same machine</li>
+<li><code>mads chat</code>: reads and writes messages to the MADS network<br>
+(installed with <code>mads package --install mads-chat</code>)</li>
+</ul>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="director.png" width="500"></p>
+<figcaption><code>mads director</code></figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="chat.png" width="500"></p>
+<figcaption><code>mads chat</code></figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="utility-commands" class="slide level2">
+<h2>Utility commands</h2>
+<ul>
+<li><code>mads doctor</code>: help fixing MADS configuration issues</li>
+<li><code>mads ini</code>: create a template <code>mads.ini</code> file</li>
+<li><code>mads [record|play|bag]</code>: record and replay network traffic to a bag file (and inspects it)</li>
+<li><code>mads up</code>: headless version of <code>mads director</code> (for remote control)</li>
+<li><code>mads service</code>: install a MADS tool as a system service (Linux only)</li>
+<li><code>mads update</code>: check for updates and provide packages URLs</li>
+<li><code>mads fsm</code>: creates a <a href="https://en.wikipedia.org/wiki/Finite-state_machine">finite state machine</a> agent template from a <a href="https://graphviz.org/">Graphviz</a> scheme</li>
+<li><code>mads federate</code>: launch a federation agent for connecting two MADS networks</li>
+</ul>
+</section>
+<section id="common-general-purpose-plugins" class="slide level2">
+<h2>Common, general purpose plugins</h2>
+<ul>
+<li><code>mads sink rerunner.plugin</code>: a sink agent that sends data to <a href="https://rerun.io">Rerun.io</a> for <strong>realtime visualization</strong></li>
+<li><code>mads sink validator.plugin</code>: a sink agent that validates JSON data against a schema</li>
+<li><code>mads sink hdf5.plugin</code>: a sink agent that logs data to HDF5 files</li>
+<li><code>mads [source|filter|sink] arduino.plugin</code>: a source/filter/sink agent that communicates with a microcontroller via serial port</li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Python plugins</strong></p>
+</div>
+<div class="callout-content">
+<p>Python plugins are loaded by a dedicated <code>mads python</code> agent, which is installed with <code>mads package --install mads-python</code>. It is a <strong>Python interpreter</strong> that loads a Python module at runtime</p>
+<p>To allow users to use their own Python version, the <code>mads python</code> agent <strong>is not part</strong> of the base MADS installation, but is available as a separate package from <a href="https://github.com/MADS-NET/python_agent">MADS-NET/python_agent</a> to be compiled against your Python of choice</p>
+</div>
+</div>
+</div>
+</section>
+<section id="anatomy-of-a-plugin-c" class="slide level2">
+<h2>Anatomy of a plugin: C++</h2>
+<div class="columns">
+<div class="column smaller">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb7-1"><a aria-label="1"></a><span class="kw">class</span> MySource <span class="op">:</span> <span class="kw">public</span> Source<span class="op">&lt;</span>json<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb7-2"><a aria-label="2"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb7-3"><a aria-label="3"></a>  <span class="kw">using</span> Source<span class="op">::</span>Source<span class="op">;</span> <span class="co">// inherit constructors</span></span>
+<span id="cb7-4"><a aria-label="4"></a></span>
+<span id="cb7-5"><a aria-label="5"></a>  string kind<span class="op">()</span> <span class="kw">override</span> <span class="op">{</span> <span class="cf">return</span> PLUGIN_NAME<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb7-6"><a aria-label="6"></a></span>
+<span id="cb7-7"><a aria-label="7"></a>  <span class="dt">return_type</span> get_output<span class="op">(</span>json <span class="op">&amp;</span>out<span class="op">,</span> </span>
+<span id="cb7-8"><a aria-label="8"></a>    vector<span class="op">&lt;</span><span class="dt">unsigned</span> <span class="dt">char</span><span class="op">&gt;</span> <span class="op">*</span>blob <span class="op">=</span> <span class="kw">nullptr</span><span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb7-9"><a aria-label="9"></a>    out<span class="op">.</span>clear<span class="op">();</span></span>
+<span id="cb7-10"><a aria-label="10"></a>    <span class="cf">if</span> <span class="op">(!</span>_agent_id<span class="op">.</span>empty<span class="op">())</span> out<span class="op">[</span><span class="st">"agent_id"</span><span class="op">]</span> <span class="op">=</span> _agent_id<span class="op">;</span></span>
+<span id="cb7-11"><a aria-label="11"></a>    <span class="co">// FILL out with contents</span></span>
+<span id="cb7-12"><a aria-label="12"></a>    <span class="cf">return</span> <span class="dt">return_type</span><span class="op">::</span>success<span class="op">;</span></span>
+<span id="cb7-13"><a aria-label="13"></a>  <span class="op">}</span></span>
+<span id="cb7-14"><a aria-label="14"></a></span>
+<span id="cb7-15"><a aria-label="15"></a>  <span class="dt">void</span> set_params<span class="op">(</span><span class="at">const</span> json <span class="op">&amp;</span>params<span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb7-16"><a aria-label="16"></a>    Source<span class="op">::</span>set_params<span class="op">(</span>params<span class="op">);</span></span>
+<span id="cb7-17"><a aria-label="17"></a>    _params<span class="op">[</span><span class="st">"some_field"</span><span class="op">]</span> <span class="op">=</span> <span class="st">"default_value"</span><span class="op">;</span></span>
+<span id="cb7-18"><a aria-label="18"></a>    _params<span class="op">.</span>merge_patch<span class="op">(</span>params<span class="op">);</span> <span class="co">// merge with INI parameters</span></span>
+<span id="cb7-19"><a aria-label="19"></a>  <span class="op">}</span></span>
+<span id="cb7-20"><a aria-label="20"></a></span>
+<span id="cb7-21"><a aria-label="21"></a>  map<span class="op">&lt;</span>string<span class="op">,</span> string<span class="op">&gt;</span> info<span class="op">()</span> <span class="kw">override</span> <span class="op">{</span> </span>
+<span id="cb7-22"><a aria-label="22"></a>    <span class="cf">return</span> <span class="op">{{</span>some_filed<span class="op">,</span> _params<span class="op">[</span><span class="st">"some_field"</span><span class="op">].</span>get<span class="op">&lt;</span>string<span class="op">&gt;()}};</span></span>
+<span id="cb7-23"><a aria-label="23"></a>  <span class="op">};</span></span>
+<span id="cb7-24"><a aria-label="24"></a></span>
+<span id="cb7-25"><a aria-label="25"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb7-26"><a aria-label="26"></a>  <span class="co">// some private fields</span></span>
+<span id="cb7-27"><a aria-label="27"></a><span class="op">};</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column" style="width:45%;">
+<ul>
+<li>Inherit a base class (Source, Filter, Sink)</li>
+<li>Implement a few (3–4) methods:
+<ul>
+<li><code>kind()</code>: returns the plugin name</li>
+<li><code>get_output()</code>: fills the output JSON object with data to be published</li>
+<li><code>set_params()</code>: sets parameters from the INI file</li>
+<li><code>info()</code>: returns a map of information about the plugin</li>
+</ul></li>
+</ul>
+</div></div>
+</section>
+<section id="anatomy-of-a-plugin-python-module" class="slide level2">
+<h2>Anatomy of a plugin: Python module</h2>
+<div class="columns">
+<div class="column smaller">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-label="1"></a><span class="im">import</span> json</span>
+<span id="cb8-2"><a aria-label="2"></a></span>
+<span id="cb8-3"><a aria-label="3"></a><span class="co"># Specify that this is a source agent</span></span>
+<span id="cb8-4"><a aria-label="4"></a>mads.agent_type <span class="op">=</span> <span class="st">"source"</span></span>
+<span id="cb8-5"><a aria-label="5"></a></span>
+<span id="cb8-6"><a aria-label="6"></a><span class="co"># Executed once at startup</span></span>
+<span id="cb8-7"><a aria-label="7"></a><span class="kw">def</span> setup():</span>
+<span id="cb8-8"><a aria-label="8"></a>  <span class="bu">print</span>(<span class="st">"[Python] Setting up source..."</span>)</span>
+<span id="cb8-9"><a aria-label="9"></a>  <span class="bu">print</span>(<span class="st">"[Python] Parameters: "</span> <span class="op">+</span> json.dumps(mads.params))</span>
+<span id="cb8-10"><a aria-label="10"></a>  mads.state[<span class="st">"n"</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb8-11"><a aria-label="11"></a></span>
+<span id="cb8-12"><a aria-label="12"></a><span class="co"># executed in a loop, to produce data to be published</span></span>
+<span id="cb8-13"><a aria-label="13"></a><span class="kw">def</span> get_output():</span>
+<span id="cb8-14"><a aria-label="14"></a>  mads.data <span class="op">=</span> {<span class="st">"list"</span>: [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>], <span class="st">"n"</span>: mads.state[<span class="st">"n"</span>]}</span>
+<span id="cb8-15"><a aria-label="15"></a>  mads.state[<span class="st">"n"</span>] <span class="op">=</span> mads.state[<span class="st">"n"</span>] <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb8-16"><a aria-label="16"></a>  mads.data[<span class="st">"processed"</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb8-17"><a aria-label="17"></a>  <span class="cf">return</span> json.dumps(mads.data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p><code>"source</code>” is the default agent type. If mandatory functions are not implemented, the agent fails to start</p>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:45%;">
+<ul>
+<li>It’s a <strong>module</strong>, not a script</li>
+<li>Filters have <code>process()</code>, sinks have <code>deal_with_data()</code></li>
+<li>Gets implicit access to the <code>mads</code> object:
+<ul>
+<li><code>mads.params</code>: parameters from INI</li>
+<li><code>mads.state</code>: a dictionary to store persistent state between calls</li>
+<li><code>mads.data</code>: the data to be published (as JSON string)</li>
+<li><code>mads.topic</code>: the topic of the last received message</li>
+</ul></li>
+</ul>
+</div></div>
+</section>
+<section id="mads-message-example" class="slide level2">
+<h2>MADS message example</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Publihed data is decorated by common fields (lines 8–14):</p>
+<ul>
+<li><code>agent_id</code>: to distinguish different instances of the same agent</li>
+<li><code>period</code>: the nominal time between two consecutive publications (in ms)</li>
+<li><code>timestamp</code>: ISO 8601 timestamp of the publication</li>
+<li><code>timecode</code>: seconds since the last midnight, rounded to the last <code>timecode_fps</code> frame rate (for <strong>binning!</strong>)</li>
+</ul>
+</div><div class="column" style="width:3%;">
+
+</div><div class="column" style="width:47%;">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource json number-lines code-with-copy"><code class="sourceCode json"><span id="cb9-1"><a aria-label="1"></a><span class="fu">{</span></span>
+<span id="cb9-2"><a aria-label="2"></a>  <span class="dt">"my_data"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb9-3"><a aria-label="3"></a>    <span class="dt">"id"</span><span class="fu">:</span> <span class="dv">131</span><span class="fu">,</span></span>
+<span id="cb9-4"><a aria-label="4"></a>    <span class="dt">"payload"</span><span class="fu">:</span> <span class="st">"rHIR]aDLI"</span><span class="fu">,</span></span>
+<span id="cb9-5"><a aria-label="5"></a>    <span class="dt">"payload_length"</span><span class="fu">:</span> <span class="dv">10</span><span class="fu">,</span></span>
+<span id="cb9-6"><a aria-label="6"></a>    <span class="dt">"values"</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">1</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">,</span> <span class="dv">4</span><span class="ot">]</span></span>
+<span id="cb9-7"><a aria-label="7"></a>  <span class="fu">},</span></span>
+<span id="cb9-8"><a aria-label="8"></a>  <span class="dt">"agent_id"</span><span class="fu">:</span> <span class="st">""</span><span class="fu">,</span></span>
+<span id="cb9-9"><a aria-label="9"></a>  <span class="dt">"hostname"</span><span class="fu">:</span> <span class="st">"Fram-IV"</span><span class="fu">,</span></span>
+<span id="cb9-10"><a aria-label="10"></a>  <span class="dt">"period"</span><span class="fu">:</span> <span class="dv">100</span><span class="fu">,</span></span>
+<span id="cb9-11"><a aria-label="11"></a>  <span class="dt">"timecode"</span><span class="fu">:</span> <span class="fl">49683.52</span><span class="fu">,</span></span>
+<span id="cb9-12"><a aria-label="12"></a>  <span class="dt">"timestamp"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb9-13"><a aria-label="13"></a>    <span class="dt">"$date"</span><span class="fu">:</span> <span class="st">"2026-08-06T13:48:03.540+0200"</span></span>
+<span id="cb9-14"><a aria-label="14"></a>  <span class="fu">}</span></span>
+<span id="cb9-15"><a aria-label="15"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>See <a href="../manual/timing-scheduling.html">the guide</a> for timing and synchronization considerations</p>
+</div>
+</div>
+</div>
+</div></div>
+</section></section>
+<section>
+<section id="design-a-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-network" class="title-slide slide level1 center">
+<h1>Design a <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> network</h1>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    n1["`mads.ini file`"] --&gt; n2["make graph"]
+    n2 --&gt; n3["complex?"]
+    n2 --&gt; n1
+    n3 -- no --&gt; n4["`prototype 
+    plugin`"] 
+    n3 -- yes --&gt;n5["`make fsm 
+    or API agent`"]
+    n4 --&gt; n6["fast?"]
+    n6 -- yes --&gt; n7["create service"]
+    n6 -- no --&gt; n8["template agent"]
+    n8 --&gt; n7
+    n5 --&gt; n7
+
+    n1@{ shape: rect}
+    n2@{ shape: proc}
+    n3@{ shape: decision}
+    n4@{ shape: proc}
+    n5@{ shape: proc}
+    n6@{ shape: decision}
+    n7@{ shape: proc}
+    n8@{ shape: proc}
+
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="design-the-network-graph-via-mads.ini" class="slide level2">
+<h2>Design the network graph via <code>mads.ini</code></h2>
+<div class="columns">
+<div class="column smaller">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource toml number-lines code-with-copy"><code class="sourceCode toml"><span id="cb10-1"><a aria-label="1"></a><span class="kw">[broker]</span></span>
+<span id="cb10-2"><a aria-label="2"></a></span>
+<span id="cb10-3"><a aria-label="3"></a><span class="kw">[forces]</span></span>
+<span id="cb10-4"><a aria-label="4"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"imu/forces"</span></span>
+<span id="cb10-5"><a aria-label="5"></a></span>
+<span id="cb10-6"><a aria-label="6"></a><span class="kw">[accelerations]</span></span>
+<span id="cb10-7"><a aria-label="7"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"imu/accelerations"</span></span>
+<span id="cb10-8"><a aria-label="8"></a></span>
+<span id="cb10-9"><a aria-label="9"></a><span class="kw">[gyro]</span></span>
+<span id="cb10-10"><a aria-label="10"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"gyro"</span></span>
+<span id="cb10-11"><a aria-label="11"></a></span>
+<span id="cb10-12"><a aria-label="12"></a><span class="kw">[ego]</span></span>
+<span id="cb10-13"><a aria-label="13"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"imu"</span><span class="op">,</span> <span class="st">"gyro"</span><span class="op">]</span></span>
+<span id="cb10-14"><a aria-label="14"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"ego"</span></span>
+<span id="cb10-15"><a aria-label="15"></a></span>
+<span id="cb10-16"><a aria-label="16"></a><span class="kw">[rerun]</span></span>
+<span id="cb10-17"><a aria-label="17"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"imu"</span><span class="op">,</span> <span class="st">"ego"</span><span class="op">,</span> <span class="st">"gyro"</span><span class="op">]</span></span>
+<span id="cb10-18"><a aria-label="18"></a></span>
+<span id="cb10-19"><a aria-label="19"></a><span class="kw">[dangling]</span></span>
+<span id="cb10-20"><a aria-label="20"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"test"</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<svg width="480" height="384" viewbox="0.00 0.00 316.14 242.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none; display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 238)">
+<title>mads</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-238 312.14,-238 312.14,4 -4,4"></polygon>
+<!-- accelerations -->
+<g id="node1" class="node">
+<title>accelerations</title>
+<polygon fill="none" stroke="darkred" points="0,-142.5 0,-178.5 57.75,-178.5 57.75,-142.5 0,-142.5"></polygon>
+<text text-anchor="middle" x="28.88" y="-158.3" font-family="monospace" font-size="8.00">accelerations</text>
+</g>
+<!-- ego -->
+<g id="node3" class="node">
+<title>ego</title>
+<polygon fill="none" stroke="darkgreen" points="151.38,-97.1 151.38,-141.9 205.38,-141.9 205.38,-97.1 151.38,-97.1"></polygon>
+<text text-anchor="middle" x="178.38" y="-130.7" font-family="monospace" font-size="8.00">ego</text>
+<polyline fill="none" stroke="darkgreen" points="151.38,-124.3 205.38,-124.3 "></polyline>
+<text text-anchor="start" x="159.38" y="-113.1" font-family="monospace" font-size="8.00">imu</text>
+<text text-anchor="start" x="159.38" y="-103.5" font-family="monospace" font-size="8.00">gyro</text>
+</g>
+<!-- accelerations&#45;&gt;ego -->
+<g id="edge1" class="edge">
+<title>accelerations-&gt;ego</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M57.92,-150.86C63.79,-148.94 69.95,-146.99 75.75,-145.3 97.47,-138.95 122.07,-132.69 141.62,-127.92"></path>
+<polygon fill="black" stroke="black" points="142.44,-131.32 151.34,-125.57 140.8,-124.51 142.44,-131.32"></polygon>
+<text text-anchor="start" x="75.75" y="-156.5" font-family="monospace" font-size="8.00">imu/accelerations</text>
+<text text-anchor="start" x="75.75" y="-146.9" font-family="monospace" font-size="8.00">via imu</text>
+</g>
+<!-- rerun -->
+<g id="node6" class="node">
+<title>rerun</title>
+<polygon fill="none" stroke="darkblue" points="254.14,-62.3 254.14,-116.7 308.14,-116.7 308.14,-62.3 254.14,-62.3"></polygon>
+<text text-anchor="middle" x="281.14" y="-105.5" font-family="monospace" font-size="8.00">rerun</text>
+<polyline fill="none" stroke="darkblue" points="254.14,-99.1 308.14,-99.1 "></polyline>
+<text text-anchor="start" x="262.14" y="-87.9" font-family="monospace" font-size="8.00">imu</text>
+<text text-anchor="start" x="262.14" y="-78.3" font-family="monospace" font-size="8.00">ego</text>
+<text text-anchor="start" x="262.14" y="-68.7" font-family="monospace" font-size="8.00">gyro</text>
+</g>
+<!-- accelerations&#45;&gt;rerun -->
+<g id="edge2" class="edge">
+<title>accelerations-&gt;rerun</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M58.06,-165.32C94.29,-170.16 158.29,-174.04 206.59,-151.5 221.23,-144.66 235.32,-134.13 247.18,-123.68"></path>
+<polygon fill="black" stroke="black" points="249.61,-126.19 254.63,-116.86 244.89,-121.03 249.61,-126.19"></polygon>
+<text text-anchor="start" x="150.17" y="-178.5" font-family="monospace" font-size="8.00">imu/accelerations</text>
+<text text-anchor="start" x="150.17" y="-168.9" font-family="monospace" font-size="8.00">via imu</text>
+</g>
+<!-- dangling -->
+<g id="node2" class="node">
+<title>dangling</title>
+<polygon fill="none" stroke="darkblue" stroke-dasharray="5,2" points="1.88,-197.5 1.88,-233.5 55.88,-233.5 55.88,-197.5 1.88,-197.5"></polygon>
+<text text-anchor="middle" x="28.88" y="-222.3" font-family="monospace" font-size="8.00">dangling</text>
+<polyline fill="none" stroke="darkblue" stroke-dasharray="5,2" points="1.88,-215.9 55.88,-215.9 "></polyline>
+<text text-anchor="start" x="9.88" y="-204.7" font-family="monospace" font-size="8.00">test [!]</text>
+</g>
+<!-- ego&#45;&gt;rerun -->
+<g id="edge3" class="edge">
+<title>ego-&gt;rerun</title>
+<path fill="none" stroke="black" d="M205.59,-111.7C217.37,-108.19 231.45,-103.99 244.2,-100.2"></path>
+<polygon fill="black" stroke="black" points="245.47,-103.47 254.06,-97.26 243.47,-96.76 245.47,-103.47"></polygon>
+<text text-anchor="middle" x="230.36" y="-106.9" font-family="monospace" font-size="8.00">ego</text>
+</g>
+<!-- forces -->
+<g id="node4" class="node">
+<title>forces</title>
+<polygon fill="none" stroke="darkred" points="1.88,-56.5 1.88,-92.5 55.88,-92.5 55.88,-56.5 1.88,-56.5"></polygon>
+<text text-anchor="middle" x="28.88" y="-72.3" font-family="monospace" font-size="8.00">forces</text>
+</g>
+<!-- forces&#45;&gt;ego -->
+<g id="edge4" class="edge">
+<title>forces-&gt;ego</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M55.91,-82.44C79.67,-89.69 115.01,-100.47 141.45,-108.54"></path>
+<polygon fill="black" stroke="black" points="140.52,-111.92 151.11,-111.49 142.57,-105.22 140.52,-111.92"></polygon>
+<text text-anchor="start" x="86.85" y="-116.5" font-family="monospace" font-size="8.00">imu/forces</text>
+<text text-anchor="start" x="86.85" y="-106.9" font-family="monospace" font-size="8.00">via imu</text>
+</g>
+<!-- forces&#45;&gt;rerun -->
+<g id="edge5" class="edge">
+<title>forces-&gt;rerun</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M56.07,-70.74C90.71,-66.41 153.54,-60.81 206.59,-68.3 219.13,-70.07 232.53,-73.46 244.4,-77.02"></path>
+<polygon fill="black" stroke="black" points="243.38,-80.37 253.97,-80.02 245.48,-73.69 243.38,-80.37"></polygon>
+<text text-anchor="start" x="161.27" y="-79.5" font-family="monospace" font-size="8.00">imu/forces</text>
+<text text-anchor="start" x="161.27" y="-69.9" font-family="monospace" font-size="8.00">via imu</text>
+</g>
+<!-- gyro -->
+<g id="node5" class="node">
+<title>gyro</title>
+<polygon fill="none" stroke="darkred" points="1.88,-0.5 1.88,-36.5 55.88,-36.5 55.88,-0.5 1.88,-0.5"></polygon>
+<text text-anchor="middle" x="28.88" y="-16.3" font-family="monospace" font-size="8.00">gyro</text>
+</g>
+<!-- gyro&#45;&gt;ego -->
+<g id="edge6" class="edge">
+<title>gyro-&gt;ego</title>
+<path fill="none" stroke="black" d="M56.29,-30.56C77.69,-40.9 108.12,-56.95 132.17,-74.9 138.12,-79.34 144.07,-84.54 149.61,-89.78"></path>
+<polygon fill="black" stroke="black" points="147.27,-92.39 156.87,-96.89 152.17,-87.39 147.27,-92.39"></polygon>
+<text text-anchor="middle" x="103.96" y="-76.9" font-family="monospace" font-size="8.00">gyro</text>
+</g>
+<!-- gyro&#45;&gt;rerun -->
+<g id="edge7" class="edge">
+<title>gyro-&gt;rerun</title>
+<path fill="none" stroke="black" d="M55.96,-20.8C90.99,-24.44 154.84,-33.04 206.59,-50.9 219.73,-55.44 233.41,-62.03 245.35,-68.49"></path>
+<polygon fill="black" stroke="black" points="243.67,-71.56 254.11,-73.37 247.07,-65.44 243.67,-71.56"></polygon>
+<text text-anchor="middle" x="178.38" y="-52.9" font-family="monospace" font-size="8.00">gyro</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>Agents with dangling topics have dashed borders. Solid edges are explicit topics, dashed are wildcard topics, dotted are implicit topics (same as agent’s name)</p>
+</div>
+</div>
+</div>
+</section>
+<section id="implement-the-agents" class="slide level2">
+<h2>Implement the agents</h2>
+<ul>
+<li>If possible, reuse existing agents/plugins from base install or MADS-NET</li>
+<li>If not, implement a new agent:
+<ul>
+<li>if its logics fit the simple <code>source/filter/sink</code> model, create a plugin</li>
+<li>if its logics are more complex, create a <strong>finite state machine</strong> agent or a <strong>custom agent</strong><br>
+based on the MADS API</li>
+</ul></li>
+<li>Python plugins: start with examples in <a href="https://github.com/MADS-NET/python_agent" class="uri">https://github.com/MADS-NET/python_agent</a></li>
+<li>C++ plugins: create a template with <code>mads plugin -t &lt;source|filter|sink&gt;</code><br>
+and fill in the methods</li>
+</ul>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Commands help:</strong></p>
+</div>
+<div class="callout-content">
+<p>Always use <code>mads &lt;command&gt; --help</code> to get a list of options and usage examples</p>
+<p>If you are on macOS or Linux, you can also use <code>man mads-&lt;command&gt;</code> to get a more detailed description of the command and its options</p>
+</div>
+</div>
+</div>
+</section>
+<section id="deployment" class="slide level2">
+<h2>Deployment</h2>
+<p>At the moment, only the Linux platform is expected to be used for <strong>headless</strong> devices (e.g.&nbsp;Raspberry Pi, Beaglebone, etc.) and for <strong>production</strong> deployments</p>
+<p>On Linux, the <code>mads service</code> command allows to install a MADS agent as a <strong>system service</strong> (daemon), so that it starts automatically at boot time and can be managed with standard system commands. So, if your agent is launced as <code>mads source imu.plugin</code>, you can install it as a service with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a aria-label="1"></a><span class="ex">mads</span> service mads_imu source imu.plugin </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This only previews the service file. <strong>Check</strong> if its OK, then install with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a aria-label="1"></a><span class="fu">sudo</span> mads service mads_imu source imu.plugin </span>
+<span id="cb12-2"><a aria-label="2"></a><span class="fu">sudo</span> systemctl enable mads_imu.service</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then that agent will <strong>start automatically</strong> at boot time</p>
+</section></section>
+<section>
+<section id="advanced-features" class="title-slide slide level1 center">
+<h1>Advanced features</h1>
+
+</section>
+<section id="fmi-interface" class="slide level2">
+<h2>FMI Interface</h2>
+<blockquote>
+<p><strong>POV</strong>: you have a Simulink model that you want to integrate into a MADS network, e.g.&nbsp;to simulate a physical system or a control algorithm (Digital Twin)</p>
+</blockquote>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ul>
+<li>Be sure that your Simulink model has <strong>Input and Output ports</strong></li>
+<li>Make it parametric as much as possible</li>
+<li>Save it as <em>model exchange</em> FMU v3.0</li>
+<li>The generated FMU can be loaded as a <strong>filter agent</strong> by the <code>mads fmu</code> agent</li>
+<li>The simulation time (TET) must be <strong>smaller than the timestep</strong></li>
+</ul>
+</div><div class="column" style="width:40%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="model.png"></p>
+<figcaption>A Simulink model with Input and Output ports</figcaption>
+</figure>
+</div>
+</div></div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tip</strong></p>
+</div>
+<div class="callout-content">
+<p>The list of simulation software that can export FMU v3.0 is available at <a href="https://fmi-standard.org/tools/" class="uri">https://fmi-standard.org/tools/</a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="onnx-models-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c207369206f6e6e78203e7d7d" class="slide level2">
+<h2>ONNX models <svg style="display:inline-block;vertical-align:-0.125em;height:1em;width:1em" class="si si-onnx" aria-hidden="true" role="img" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>ONNX</title><path d="M23.0325 11.2963c-.0503 0-.1006 0-.1508.0126l-4.021-7.4387c.0754-.1383.1131-.289.1131-.4524 0-.5403-.4398-.9675-.9675-.9675-.2765 0-.5278.113-.7037.3015L9.286 1.156C9.2357.6785 8.821.3016 8.3184.3016c-.5277 0-.9675.4398-.9675.9675 0 .1634.0377.3141.113.4524l-6.245 8.9591c-.0753-.0251-.1633-.0377-.2513-.0377-.5403 0-.9675.4398-.9675.9676 0 .5403.4398.9675.9675.9675h.0377l3.3676 8.3309c-.0503.1257-.088.2639-.088.402 0 .5404.4398.9676.9676.9676.2764 0 .5277-.113.7036-.3015l10.1152.9926c.1005.4273.49.7288.9424.7288.5403 0 .9676-.4398.9676-.9675 0-.2388-.088-.465-.2262-.6283l5.1141-8.8712c.0503.0126.1005.0126.1634.0126.5403 0 .9675-.4398.9675-.9676 0-.5403-.4272-.98-.9675-.98zM17.2272 4.021c.1131.1508.2765.264.4524.3267l-1.533 11.5728c-.1005.0252-.1885.0503-.2764.1005L7.4513 8.708c.0251-.0754.0377-.1634.0377-.2514 0-.0628-.0126-.1256-.0126-.1884zm4.8754 8.5068l-5.177 3.556a1.105 1.105 0 0 0-.1256-.0753L18.3455 4.335h.0126l3.9456 7.288c-.1508.1759-.2388.3895-.2388.6408 0 .1005.0126.1885.0377.2638zM6.3832 7.5016c-.4649.0754-.8293.4775-.8293.955v.0628l-3.4555 2.0481 5.378-7.7026zm.3519 1.91c.1256-.0252.2513-.088.3518-.1634l8.356 7.2628c-.0377.113-.0628.2262-.0628.3518v.0503l-9.311 3.845c-.1382-.201-.3518-.3518-.6031-.402zm8.8963 8.1172c.1257.1382.3016.2513.5026.289l.465 4.046c-.201.1006-.3519.264-.4524.4524l-9.8136-.955zm1.1435.2136c.3267-.1633.5403-.49.5403-.867 0-.088-.0126-.1634-.0377-.2513l4.7372-3.2545-4.8 8.331zm.2513-14.3497l-9.889 4.31-.1131-.0755 1.2565-5.3906h.0377c.3393 0 .6409-.1759.8168-.4397l7.891 1.5706zM1.935 11.6105c0-.0629-.0126-.1257-.0126-.1885l3.9079-2.2995c.0754.0754.1633.1508.2638.201L4.8252 20.243l-3.2043-7.9036c.1885-.176.3142-.4398.3142-.7288Z"></path></svg></h2>
+<blockquote>
+<p><strong>POV</strong>: you have a trained ML model and you want to integrate it into a MADS network, e.g.&nbsp;to perform inference on data collected from the field</p>
+</blockquote>
+<ul>
+<li>Quite similarly to the FMU case, there is the <code>mads onnx</code> agent that loads an ONNX model and runs inference on data received from the network</li>
+<li>it can be used both for as a <strong>filter</strong> and as a <strong>source</strong> agent:
+<ul>
+<li>an ONNX filter agent performs inference on data received from the network and publishes the results back to the network</li>
+<li>an ONNX source agent performs inference on data received from a peripheral (e.g.&nbsp;a camera) and publishes the results back to the network</li>
+</ul></li>
+<li>The ONNX model must be <strong>exported</strong> from the training framework (PyTorch, TensorFlow, etc.) in <strong>ONNX format</strong> and must be <strong>compatible</strong> with the ONNX Runtime version used by the <code>mads onnx</code> agent (currently v1.26.0)</li>
+</ul>
+</section></section>
+<section id="and-remember" class="title-slide slide level1 center">
+<h1>…and remember</h1>
+<p>Look at <a href="https://mads-net.github.io" class="uri">https://mads-net.github.io</a> for documentation and guides!</p>
 
 
 </section>
@@ -514,7 +2155,7 @@ Usage:
       // https://revealjs.com/config/
       Reveal.initialize({
 'controlsAuto': false,
-'previewLinksAuto': true,
+'previewLinksAuto': false,
 'pdfSeparateFragments': true,
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
@@ -823,8 +2464,6 @@ Usage:
               if (link.dataset.originalHref !== undefined) {
                 link.href = link.dataset.originalHref;
               }
-                // default icon
-                link.classList.add("external");
             }
           }
         function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
