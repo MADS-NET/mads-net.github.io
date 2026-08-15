@@ -2054,7 +2054,7 @@ and fill in the methods</li>
 <section id="deployment" class="slide level2">
 <h2>Deployment</h2>
 <p>At the moment, only the Linux platform is expected to be used for <strong>headless</strong> devices (e.g.&nbsp;Raspberry Pi, Beaglebone, etc.) and for <strong>production</strong> deployments</p>
-<p>On Linux, the <code>mads service</code> command allows to install a MADS agent as a <strong>system service</strong> (daemon), so that it starts automatically at boot time and can be managed with standard system commands. So, if your agent is launced as <code>mads source imu.plugin</code>, you can install it as a service with:</p>
+<p>On Linux, the <code>mads service</code> command allows to install a MADS agent as a <strong>system service</strong> (daemon), so that it starts automatically at boot time and can be managed with standard system commands. So, if your agent is launched as <code>mads source imu.plugin</code>, you can install it as a service with:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a aria-label="1"></a><span class="ex">mads</span> service mads_imu source imu.plugin </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This only previews the service file. <strong>Check</strong> if its OK, then install with:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a aria-label="1"></a><span class="fu">sudo</span> mads service mads_imu source imu.plugin </span>

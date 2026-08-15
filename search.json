@@ -1096,7 +1096,7 @@
     "href": "presentations/gorini.html#deployment",
     "title": "Distributed systems with ",
     "section": "Deployment",
-    "text": "Deployment\nAt the moment, only the Linux platform is expected to be used for headless devices (e.g. Raspberry Pi, Beaglebone, etc.) and for production deployments\nOn Linux, the mads service command allows to install a MADS agent as a system service (daemon), so that it starts automatically at boot time and can be managed with standard system commands. So, if your agent is launced as mads source imu.plugin, you can install it as a service with:\nmads service mads_imu source imu.plugin \nThis only previews the service file. Check if its OK, then install with:\nsudo mads service mads_imu source imu.plugin \nsudo systemctl enable mads_imu.service\nThen that agent will start automatically at boot time"
+    "text": "Deployment\nAt the moment, only the Linux platform is expected to be used for headless devices (e.g. Raspberry Pi, Beaglebone, etc.) and for production deployments\nOn Linux, the mads service command allows to install a MADS agent as a system service (daemon), so that it starts automatically at boot time and can be managed with standard system commands. So, if your agent is launched as mads source imu.plugin, you can install it as a service with:\nmads service mads_imu source imu.plugin \nThis only previews the service file. Check if its OK, then install with:\nsudo mads service mads_imu source imu.plugin \nsudo systemctl enable mads_imu.service\nThen that agent will start automatically at boot time"
   },
   {
     "objectID": "presentations/gorini.html#fmi-interface",
