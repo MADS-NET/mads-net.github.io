@@ -872,7 +872,7 @@
     "href": "presentations/gorini.html#test-that-it-works",
     "title": "Distributed systems with ",
     "section": "Test that it works",
-    "text": "Test that it works\nOpen a terminal (Developer PowerShell on Windows) and type:\n\nmads -h\n\nMads command line interface version v2.4.1\nUsage:\n  mads [OPTION...]\n\n  -i, --info                   Print information on MADS installation\n  -p, --prefix                 Print MADS linstall prefix\n      --plugins                List plugins in default plugins directory\n      --keypair [=arg(=mads)]  Generate ZMQ CURVE keypair\n  -f, --force                  Force operation (if applicable)\n      --rooms [=arg(=5000)]    List rooms advertised on the network\n  -j, --json                   Output in JSON format (where applicable)\n  -v, --version                Print version\n  -h, --help                   Print help\n\n\n\n\n\n\n\n\nIf you get an error:\n\n\n\nbe sure that your PATH variable contains the folder where the mads command has been installed\nbe sure that your OS matches one of the versions above listed\nreport back to https://github.com/pbosetti/MADS/issues, carefully describing your issue and configuration"
+    "text": "Test that it works\nOpen a terminal (Developer PowerShell on Windows) and type:\n\nmads -h\n\nMads command line interface version v2.4.2\nUsage:\n  mads [OPTION...]\n\n  -i, --info                   Print information on MADS installation\n  -p, --prefix                 Print MADS linstall prefix\n      --plugins                List plugins in default plugins directory\n      --keypair [=arg(=mads)]  Generate ZMQ CURVE keypair\n  -f, --force                  Force operation (if applicable)\n      --rooms [=arg(=5000)]    List rooms advertised on the network\n  -j, --json                   Output in JSON format (where applicable)\n  -v, --version                Print version\n  -h, --help                   Print help\n\n\n\n\n\n\n\n\nIf you get an error:\n\n\n\nbe sure that your PATH variable contains the folder where the mads command has been installed\nbe sure that your OS matches one of the versions above listed\nreport back to https://github.com/pbosetti/MADS/issues, carefully describing your issue and configuration"
   },
   {
     "objectID": "presentations/gorini.html#brief-description",
@@ -1099,6 +1099,13 @@
     "text": "Deployment\nAt the moment, only the Linux platform is expected to be used for headless devices (e.g. Raspberry Pi, Beaglebone, etc.) and for production deployments\nOn Linux, the mads service command allows to install a MADS agent as a system service (daemon), so that it starts automatically at boot time and can be managed with standard system commands. So, if your agent is launched as mads source imu.plugin, you can install it as a service with:\nmads service mads_imu source imu.plugin \nThis only previews the service file. Check if its OK, then install with:\nsudo mads service mads_imu source imu.plugin \nsudo systemctl enable mads_imu.service\nThen that agent will start automatically at boot time"
   },
   {
+    "objectID": "presentations/gorini.html#performance-considerations",
+    "href": "presentations/gorini.html#performance-considerations",
+    "title": "Distributed systems with ",
+    "section": "Performance considerations",
+    "text": "Performance considerations\n\nBroker can sustain up to 3M msg/s with 1kB payload, up to 30M msg/s when multithreaded (a mads.ini setting)\nAs of version 4.2.x, MADS broker sustains up to ~460 clients (agents) on a single machine on Linux\nMore can be supported by setting RLIMIT_NOFILE to a higher value (will be done by mads.ini in future releases)\nA single agent can sustain up to typ. 40k msg/s (with 1kB payload), depending on the processing load and the CPU speed\nHigher payload may result in dropped messages (eg. ~0.05% at 50k msg/s), but the connection is robust\nIncreasing message queue (a mads.ini setting) may cope with higher but irregular loads (ie. burts exceeding the processing capacity of the agent)\n\n\n\nUse the command ulimit -n &lt;value&gt; on the broker machine to increase the maximum number of connections. Each agent needs two permamnent sockets, plus a transient one when receiving settings. Linux default is 1024, which is enough for ~500 agents"
+  },
+  {
     "objectID": "presentations/gorini.html#fmi-interface",
     "href": "presentations/gorini.html#fmi-interface",
     "title": "Distributed systems with ",
@@ -1111,6 +1118,27 @@
     "title": "Distributed systems with ",
     "section": "ONNX models ONNX",
     "text": "ONNX models ONNX\n\nPOV: you have a trained ML model and you want to integrate it into a MADS network, e.g. to perform inference on data collected from the field\n\n\nQuite similarly to the FMU case, there is the mads onnx agent that loads an ONNX model and runs inference on data received from the network\nit can be used both for as a filter and as a source agent:\n\nan ONNX filter agent performs inference on data received from the network and publishes the results back to the network\nan ONNX source agent performs inference on data received from a peripheral (e.g. a camera) and publishes the results back to the network\n\nThe ONNX model must be exported from the training framework (PyTorch, TensorFlow, etc.) in ONNX format and must be compatible with the ONNX Runtime version used by the mads onnx agent (currently v1.26.0)"
+  },
+  {
+    "objectID": "presentations/gorini.html#novawalk",
+    "href": "presentations/gorini.html#novawalk",
+    "title": "Distributed systems with ",
+    "section": "NovaWalk",
+    "text": "NovaWalk\n\n\n\nNovaWalk is a robotic walker for rehabilitation of patients with neurological disorders\n\nUses an impedance control strategy to drive the motor wheels according to the patient’s gait (load cells, IMU, encoders, cameras)\n\nA Raspberry Pi 5 running MADS is the central controller of the system, which collects data from sensors and peripherals, runs the control algorithm, and sends commands to the motors\nCertified for medical use, CE marked\n\n\n\n\n\nNovaWalk robotic walker"
+  },
+  {
+    "objectID": "presentations/gorini.html#insa-mfja",
+    "href": "presentations/gorini.html#insa-mfja",
+    "title": "Distributed systems with ",
+    "section": "INSA MFJA",
+    "text": "INSA MFJA\n\n\n\nMFJA is a hybrid research-training shopfloor for Industry 4.0, part of INSA Toulouse, France\nMADS is used for collecting machining data from up to 20 machining centers, providing real-time shopfloor monitoring and data logging for optimizing energy consumption\n\n\n\n\n\nINSA MFJA"
+  },
+  {
+    "objectID": "presentations/gorini.html#mirrorworld-prin-2022",
+    "href": "presentations/gorini.html#mirrorworld-prin-2022",
+    "title": "Distributed systems with ",
+    "section": "MirrorWorld PRIN 2022",
+    "text": "MirrorWorld PRIN 2022\n\n\n\nProject task: to create a digital twin of an industrial setting to mirror operators behavior to check for personal safety\nFuses data coming from wearable devices, 2-D and 3-D cameras, AI image processing to provide a real-time digital twin of the factory floor\n\n\n\n\n\nMirrorWorld PRIN 2022"
   },
   {
     "objectID": "guides.html",

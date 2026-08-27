@@ -360,7 +360,7 @@ Paolo Bosetti
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a aria-label="1"></a><span class="ex">mads</span> <span class="at">-h</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Mads command line interface version v2.4.1
+<pre><code>Mads command line interface version v2.4.2
 Usage:
   mads [OPTION...]
 
@@ -2060,7 +2060,21 @@ and fill in the methods</li>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a aria-label="1"></a><span class="fu">sudo</span> mads service mads_imu source imu.plugin </span>
 <span id="cb12-2"><a aria-label="2"></a><span class="fu">sudo</span> systemctl enable mads_imu.service</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Then that agent will <strong>start automatically</strong> at boot time</p>
-</section></section>
+</section>
+<section id="performance-considerations" class="slide level2">
+<h2>Performance considerations</h2>
+<ul>
+<li>Broker can sustain up to <strong>3M msg/s with 1kB payload</strong>, up to 30M msg/s when multithreaded (a <code>mads.ini</code> setting)</li>
+<li>As of version 4.2.x, MADS broker sustains up to <strong>~460 clients</strong> (agents) on a single machine on Linux</li>
+<li>More can be supported by setting <code>RLIMIT_NOFILE</code> to a higher value (will be done by <code>mads.ini</code> in future releases)</li>
+<li>A <strong>single agent</strong> can sustain up to typ. 40k msg/s (with 1kB payload), depending on the processing load and the CPU speed</li>
+<li>Higher payload may result in <strong>dropped messages</strong> (eg. ~0.05% at 50k msg/s), but the connection is robust</li>
+<li>Increasing message queue (a <code>mads.ini</code> setting) may cope with higher but irregular loads (ie. burts exceeding the processing capacity of the agent)</li>
+</ul>
+
+<aside><div>
+<p>Use the command <code>ulimit -n &lt;value&gt;</code> on the broker machine to increase the maximum number of connections. Each agent needs two permamnent sockets, plus a transient one when receiving settings. Linux default is 1024, which is enough for ~500 agents</p>
+</div></aside></section></section>
 <section>
 <section id="advanced-features" class="title-slide slide level1 center">
 <h1>Advanced features</h1>
@@ -2116,6 +2130,66 @@ and fill in the methods</li>
 </ul></li>
 <li>The ONNX model must be <strong>exported</strong> from the training framework (PyTorch, TensorFlow, etc.) in <strong>ONNX format</strong> and must be <strong>compatible</strong> with the ONNX Runtime version used by the <code>mads onnx</code> agent (currently v1.26.0)</li>
 </ul>
+</section></section>
+<section>
+<section id="use-cases" class="title-slide slide level1 center">
+<h1>Use cases</h1>
+<p>Who’s using MADS?</p>
+</section>
+<section id="novawalk" class="slide level2">
+<h2>NovaWalk</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li><strong>NovaWalk</strong> is a robotic walker for rehabilitation of patients with neurological disorders
+<ul>
+<li>Uses an <strong>impedance control strategy</strong> to drive the motor wheels according to the patient’s gait (load cells, IMU, encoders, cameras)</li>
+</ul></li>
+<li>A Raspberry Pi 5 running MADS is the <strong>central controller</strong> of the system, which collects data from sensors and peripherals, runs the control algorithm, and sends commands to the motors</li>
+<li><strong>Certified for medical use</strong>, CE marked</li>
+</ul>
+</div><div class="column">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="./NovaWalk.jpg" style="width:100.0%"></p>
+<figcaption>NovaWalk robotic walker</figcaption>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="insa-mfja" class="slide level2">
+<h2>INSA MFJA</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li>MFJA is a hybrid research-training shopfloor for <strong>Industry 4.0</strong>, part of INSA Toulouse, France</li>
+<li>MADS is used for collecting machining data from up to 20 machining centers, providing real-time shopfloor monitoring and data logging for <strong>optimizing energy consumption</strong></li>
+</ul>
+</div><div class="column">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="./MFJA.jpg" style="width:100.0%"></p>
+<figcaption>INSA MFJA</figcaption>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="mirrorworld-prin-2022" class="slide level2">
+<h2>MirrorWorld PRIN 2022</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li>Project task: to create a <strong>digital twin</strong> of an industrial setting to mirror operators behavior to check for personal safety</li>
+<li>Fuses data coming from wearable devices, 2-D and 3-D cameras, AI image processing to provide a real-time digital twin of the factory floor</li>
+</ul>
+</div><div class="column">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="./MirrorWorld.jpg" style="width:100.0%"></p>
+<figcaption>MirrorWorld PRIN 2022</figcaption>
+</figure>
+</div>
+</div></div>
 </section></section>
 <section id="and-remember" class="title-slide slide level1 center">
 <h1>…and remember</h1>
