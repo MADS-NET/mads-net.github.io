@@ -54,7 +54,7 @@ That said, **C++ is its core language**, and for using it you need a C++ environ
 
 ::: {.callout-warning}
 ### CMake version
-More recent versions of CMake may not work with some of the MADS dependencies. Please st**ay on the tested 4.2.1 version**
+More recent versions of CMake may not work with some of the MADS dependencies. Please **stay on the tested 4.2.1 version**
 
 :::
 
@@ -656,34 +656,6 @@ digraph source {
 ## {background-iframe="MADS_Animation/MADSNetworkEmbed.html" background-interactive="true"}
 
 
-
-## Incidentally: why MongoDB?
-
-> MongoDB is a **schemaless, NoSQL** database server: it organizes data in **collections** of **JSON documents**
-
-
-::: {.columns}
-
-::: {.column}
-### Advantages
-
-* Data collection architectures may change (new agents, different data set-up)
-* A schemaless database allows to carry on data collection even when its structure changes
-* Still reasonably fast (20--250 kwrites/s)
-
-:::
-
-::: {.column}
-### Limitations
-* Dealing with non-consistent schema is demanded to downstream consumption (but doable!)
-* SQL queries are easier than MongoDB queries (but AI helps here!)
-* SQL servers can bear **higher workloads** (1.2x--1.5x)
-  
-:::
-
-:::
-
-
 ## Data format: JSON
 
 
@@ -748,6 +720,33 @@ p
 
 :::
 
+
+## Incidentally: why MongoDB?
+
+> MongoDB is a **schemaless, NoSQL** database server: it organizes data in **collections** of **JSON documents**
+
+
+::: {.columns}
+
+::: {.column}
+### Advantages
+
+* Data collection architectures may change (new agents, different data set-up)
+* A schemaless database allows to carry on data collection even when its structure changes
+* Still reasonably fast (20--250 kwrites/s)
+* Maps nicely to JSON objects
+
+:::
+
+::: {.column}
+### Limitations
+* Dealing with non-consistent schema is demanded to downstream consumption (but doable!)
+* SQL queries are easier than MongoDB queries (but AI helps here!)
+* SQL servers can bear **higher workloads** (1.2x--1.5x)
+  
+:::
+
+:::
 
 
 
@@ -1228,7 +1227,7 @@ If you are on macOS or Linux, you can also use `man mads-<command>` to get a mor
 
 At the moment, only the Linux platform is expected to be used for **headless** devices (e.g. Raspberry Pi, Beaglebone, etc.) and for **production** deployments
 
-On Linux, the `mads service` command allows to install a MADS agent as a **system service** (daemon), so that it starts automatically at boot time and can be managed with standard system commands. So, if your agent is launced as `mads source imu.plugin`, you can install it as a service with:
+On Linux, the `mads service` command allows to install a MADS agent as a **system service** (daemon), so that it starts automatically at boot time and can be managed with standard system commands. So, if your agent is launched as `mads source imu.plugin`, you can install it as a service with:
 
 ```sh
 mads service mads_imu source imu.plugin 
@@ -1243,6 +1242,19 @@ sudo systemctl enable mads_imu.service
 
 Then that agent will **start automatically** at boot time
 
+
+## Performance considerations
+
+* Broker can sustain up to **3M msg/s with 1kB payload**, up to 30M msg/s when multithreaded (a `mads.ini` setting)
+* As of version 4.2.x, MADS broker sustains up to **~460 clients** (agents) on a single machine on Linux
+* More can be supported by setting `RLIMIT_NOFILE` to a higher value (will be done by `mads.ini` in future releases)
+* A **single agent** can sustain up to typ. 40k msg/s (with 1kB payload), depending on the processing load and the CPU speed
+* Higher payload may result in **dropped messages** (eg. ~0.05% at 50k msg/s), but the connection is robust
+* Increasing message queue (a `mads.ini` setting) may cope with higher but irregular loads (ie. burts exceeding the processing capacity of the agent)
+
+:::aside
+Use the command `ulimit -n <value>` on the broker machine to increase the maximum number of connections. Each agent needs two permamnent sockets, plus a transient one when receiving settings. Linux default is 1024, which is enough for ~500 agents
+:::
 
 
 # Advanced features
@@ -1289,6 +1301,65 @@ The list of simulation software that can export FMU v3.0 is available at <https:
   * an ONNX filter agent performs inference on data received from the network and publishes the results back to the network
   * an ONNX source agent performs inference on data received from a peripheral (e.g. a camera) and publishes the results back to the network
 * The ONNX model must be **exported** from the training framework (PyTorch, TensorFlow, etc.) in **ONNX format** and must be **compatible** with the ONNX Runtime version used by the `mads onnx` agent (currently v1.26.0)
+
+# Use cases
+
+Who's using MADS?
+
+## NovaWalk
+
+
+::: {.columns}
+
+::: {.column}
+* **NovaWalk** is a robotic walker for rehabilitation of patients with neurological disorders
+  * Uses an **impedance control strategy** to drive the motor wheels according to the patient's gait (load cells, IMU, encoders, cameras)
+* A Raspberry Pi 5 running MADS is the **central controller** of the system, which collects data from sensors and peripherals, runs the control algorithm, and sends commands to the motors
+* **Certified for medical use**, CE marked
+:::
+
+::: {.column}
+![NovaWalk robotic walker](./NovaWalk.jpg){width=100%}
+:::
+
+:::
+
+
+
+## INSA MFJA
+
+
+::: {.columns}
+
+::: {.column}
+* MFJA is a hybrid research-training shopfloor for **Industry 4.0**, part of INSA Toulouse, France
+* MADS is used for collecting machining data from up to 20 machining centers, providing real-time shopfloor monitoring and data logging for **optimizing energy consumption**
+:::
+
+::: {.column}
+![INSA MFJA](./MFJA.jpg){width=100%}
+:::
+
+:::
+
+
+
+## MirrorWorld PRIN 2022
+
+
+::: {.columns}
+
+::: {.column}
+* Project task: to create a **digital twin** of an industrial setting to mirror operators behavior to check for personal safety
+* Fuses data coming from wearable devices, 2-D and 3-D cameras, AI image processing to provide a real-time digital twin of the factory floor
+:::
+
+::: {.column}
+![MirrorWorld PRIN 2022](./MirrorWorld.jpg){width=100%}
+:::
+
+:::
+
 
 
 
