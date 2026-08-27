@@ -1319,28 +1319,6 @@ Usage:
 <section id="section" class="slide level2" data-background-iframe="MADS_Animation/MADSNetworkEmbed.html" data-background-interactive="true">
 <h2></h2>
 </section>
-<section id="incidentally-why-mongodb" class="slide level2">
-<h2>Incidentally: why MongoDB?</h2>
-<blockquote>
-<p>MongoDB is a <strong>schemaless, NoSQL</strong> database server: it organizes data in <strong>collections</strong> of <strong>JSON documents</strong></p>
-</blockquote>
-<div class="columns">
-<div class="column">
-<h3 id="advantages">Advantages</h3>
-<ul>
-<li>Data collection architectures may change (new agents, different data set-up)</li>
-<li>A schemaless database allows to carry on data collection even when its structure changes</li>
-<li>Still reasonably fast (20–250 kwrites/s)</li>
-</ul>
-</div><div class="column">
-<h3 id="limitations">Limitations</h3>
-<ul>
-<li>Dealing with non-consistent schema is demanded to downstream consumption (but doable!)</li>
-<li>SQL queries are easier than MongoDB queries (but AI helps here!)</li>
-<li>SQL servers can bear <strong>higher workloads</strong> (1.2x–1.5x)</li>
-</ul>
-</div></div>
-</section>
 <section id="data-format-json" class="slide level2">
 <h2>Data format: JSON</h2>
 <div class="columns">
@@ -1362,6 +1340,29 @@ Usage:
 </div>
 </div>
 </div>
+</div></div>
+</section>
+<section id="incidentally-why-mongodb" class="slide level2">
+<h2>Incidentally: why MongoDB?</h2>
+<blockquote>
+<p>MongoDB is a <strong>schemaless, NoSQL</strong> database server: it organizes data in <strong>collections</strong> of <strong>JSON documents</strong></p>
+</blockquote>
+<div class="columns">
+<div class="column">
+<h3 id="advantages">Advantages</h3>
+<ul>
+<li>Data collection architectures may change (new agents, different data set-up)</li>
+<li>A schemaless database allows to carry on data collection even when its structure changes</li>
+<li>Still reasonably fast (20–250 kwrites/s)</li>
+<li>Maps nicely to JSON objects</li>
+</ul>
+</div><div class="column">
+<h3 id="limitations">Limitations</h3>
+<ul>
+<li>Dealing with non-consistent schema is demanded to downstream consumption (but doable!)</li>
+<li>SQL queries are easier than MongoDB queries (but AI helps here!)</li>
+<li>SQL servers can bear <strong>higher workloads</strong> (1.2x–1.5x)</li>
+</ul>
 </div></div>
 </section>
 <section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-implementation" class="slide level2">

@@ -966,18 +966,18 @@
     "text": "Agents: types\n\n\nSink agents\n\nDispose of information received by other agents via broker:\n\nto GUI (plots, charts, dashboards)\nto disk (JSON files, HDF5)\nto database (MongoDB)\nto other protocols\n\nOnly deal with data coming from topics they are subscribed to\nTypically event-based\n\n\n\n\n\n\n\n\n\nsource\n\n\n\nbroker\n\nbroker\n\n\n\nagent\n\nagent\n\n\n\nbroker-&gt;agent\n\n\nt3"
   },
   {
-    "objectID": "presentations/gorini.html#incidentally-why-mongodb",
-    "href": "presentations/gorini.html#incidentally-why-mongodb",
-    "title": "Distributed systems with ",
-    "section": "Incidentally: why MongoDB?",
-    "text": "Incidentally: why MongoDB?\n\nMongoDB is a schemaless, NoSQL database server: it organizes data in collections of JSON documents\n\n\n\nAdvantages\n\nData collection architectures may change (new agents, different data set-up)\nA schemaless database allows to carry on data collection even when its structure changes\nStill reasonably fast (20–250 kwrites/s)\n\n\nLimitations\n\nDealing with non-consistent schema is demanded to downstream consumption (but doable!)\nSQL queries are easier than MongoDB queries (but AI helps here!)\nSQL servers can bear higher workloads (1.2x–1.5x)"
-  },
-  {
     "objectID": "presentations/gorini.html#data-format-json",
     "href": "presentations/gorini.html#data-format-json",
     "title": "Distributed systems with ",
     "section": "Data format: JSON",
     "text": "Data format: JSON\n\n\n\nMADS agents exchange data as JSON objects, because of its flexibility\nUnderlying C++ library is nlohmann::json\nActual wire-format can be JSON (ASCII) or MsgPack (binary), per-agent negotiable\nDirectly maps to what you log in MongoDB\nDirectly maps to Python dictionaries"
+  },
+  {
+    "objectID": "presentations/gorini.html#incidentally-why-mongodb",
+    "href": "presentations/gorini.html#incidentally-why-mongodb",
+    "title": "Distributed systems with ",
+    "section": "Incidentally: why MongoDB?",
+    "text": "Incidentally: why MongoDB?\n\nMongoDB is a schemaless, NoSQL database server: it organizes data in collections of JSON documents\n\n\n\nAdvantages\n\nData collection architectures may change (new agents, different data set-up)\nA schemaless database allows to carry on data collection even when its structure changes\nStill reasonably fast (20–250 kwrites/s)\nMaps nicely to JSON objects\n\n\nLimitations\n\nDealing with non-consistent schema is demanded to downstream consumption (but doable!)\nSQL queries are easier than MongoDB queries (but AI helps here!)\nSQL servers can bear higher workloads (1.2x–1.5x)"
   },
   {
     "objectID": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-implementation",
