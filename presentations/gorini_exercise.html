@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Paolo Bosetti">
+<meta name="dcterms.date" content="2026-08-28">
+
+<title>Exercise for Scuola Gorini 2026</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3c3f1368ed8db972a012dae01a8e5220.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-97e28f47ad423cfcb72627c3f906fd98.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3c3f1368ed8db972a012dae01a8e5220.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-c20ea8789b5200def4fc0a38243f0d7c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-6b6aa9b179cfb2e867f4ddd1c812c718.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-c20ea8789b5200def4fc0a38243f0d7c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L37VBCVVQW"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-L37VBCVVQW', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"express",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  ,
+"language":"en"
+  });
+});
+</script> 
+  
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo light-content">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo dark-content">
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-introduction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Introduction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-introduction">    
+        <li>
+    <a class="dropdown-item" href="../start.html">
+ <span class="dropdown-text">Start here</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../why.html">
+ <span class="dropdown-text">Why MADS?</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../interfaces.html">
+ <span class="dropdown-text">Interfaces</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../who_is_using.html">
+ <span class="dropdown-text">Use cases</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../flyer.pdf">
+ <span class="dropdown-text">Flyer</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../manual"> 
+<span class="menu-text">Documentation</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-commands" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Commands</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-commands">    
+        <li>
+    <a class="dropdown-item" href="../manual/mads.html">
+ <span class="dropdown-text">mads command</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/broker.html">
+ <span class="dropdown-text">Broker</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/plugin.html">
+ <span class="dropdown-text">Plugin</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/source-filter-sink.html">
+ <span class="dropdown-text">Source / Filter / Sink</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/logger.html">
+ <span class="dropdown-text">Logger</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/feedback-perf_assess.html">
+ <span class="dropdown-text">Feedback / Perf Assess</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/inspect_plugin.html">
+ <span class="dropdown-text">Inspect Plugin</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/federate.html">
+ <span class="dropdown-text">Federate</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/fsm.html">
+ <span class="dropdown-text">FSM</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/package.html">
+ <span class="dropdown-text">Package</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/dealer-worker.html">
+ <span class="dropdown-text">Dealer / Worker</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/rust-loaders.html">
+ <span class="dropdown-text">Rust Loaders</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-concepts" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Concepts</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-concepts">    
+        <li>
+    <a class="dropdown-item" href="../manual/network-discovery.html">
+ <span class="dropdown-text">Network discovery</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/message-routing.html">
+ <span class="dropdown-text">Message routing and topics</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/plugins-extensions.html">
+ <span class="dropdown-text">Plugins and extensions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/timing-scheduling.html">
+ <span class="dropdown-text">Timing and scheduling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/message-queues.html">
+ <span class="dropdown-text">Message queues</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/databases-storage.html">
+ <span class="dropdown-text">Databases and data storage</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/cryptography-security.html">
+ <span class="dropdown-text">Cryptography and security</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../guides.html"> 
+<span class="menu-text">Guides</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-presentations" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Presentations</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-presentations">    
+        <li>
+    <a class="dropdown-item" href="../presentations/intro.html">
+ <span class="dropdown-text"><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Intro</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../presentations/gorini.html">
+ <span class="dropdown-text">Scuola Gorini 2026</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://git.new/MADS"> 
+<span class="menu-text"><i class="bi-cloud-arrow-down-fill " style="" role="img" aria-hidden="true"></i> Get MADS</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text"><i class="bi-question-circle-fill " style="" role="img" aria-hidden="true"></i> About</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-github" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-github">    
+        <li>
+    <a class="dropdown-item" href="https://github.com/pbosetti/mads">
+ <span class="dropdown-text">Source Code</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/pbosetti/MADS/issues">
+ <span class="dropdown-text">Issues</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/MADS-Net">
+ <span class="dropdown-text">Plugins</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <div id="quarto-announcement" data-announcement-id="bac4023a3167daaad50509f0325463c0" class="alert alert-warning hidden"><div class="quarto-announcement-content">
+<p>Don’t miss the new <span style="font-weight:bold">MADSCode extension</span> for Visual Studio Code! <a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode">Learn more <i class="bi-link " style="" role="img" aria-hidden="true"></i></a></p>
+</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#objective" id="toc-objective" class="nav-link active" data-scroll-target="#objective"><span class="header-section-number">1</span> Objective</a></li>
+  <li><a href="#arduino-side" id="toc-arduino-side" class="nav-link" data-scroll-target="#arduino-side"><span class="header-section-number">2</span> Arduino-side</a></li>
+  <li><a href="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-side" id="toc-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-side" class="nav-link" data-scroll-target="#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-side"><span class="header-section-number">3</span> <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));">-side</a>
+  <ul class="collapse">
+  <li><a href="#custom-plugins" id="toc-custom-plugins" class="nav-link" data-scroll-target="#custom-plugins"><span class="header-section-number">3.1</span> Custom plugins</a></li>
+  <li><a href="#the-dummy-plugin" id="toc-the-dummy-plugin" class="nav-link" data-scroll-target="#the-dummy-plugin"><span class="header-section-number">3.2</span> The dummy plugin</a></li>
+  <li><a href="#the-statistics-plugin" id="toc-the-statistics-plugin" class="nav-link" data-scroll-target="#the-statistics-plugin"><span class="header-section-number">3.3</span> The statistics plugin</a></li>
+  <li><a href="#compile-the-plugins" id="toc-compile-the-plugins" class="nav-link" data-scroll-target="#compile-the-plugins"><span class="header-section-number">3.4</span> Compile the plugins</a></li>
+  </ul></li>
+  <li><a href="#running-the-network" id="toc-running-the-network" class="nav-link" data-scroll-target="#running-the-network"><span class="header-section-number">4</span> Running the network</a>
+  <ul class="collapse">
+  <li><a href="#the-mads.ini-file" id="toc-the-mads.ini-file" class="nav-link" data-scroll-target="#the-mads.ini-file"><span class="header-section-number">4.1</span> The <code>mads.ini</code>&nbsp;file</a></li>
+  <li><a href="#acquiring-real-data-with-the-arduino-plugin" id="toc-acquiring-real-data-with-the-arduino-plugin" class="nav-link" data-scroll-target="#acquiring-real-data-with-the-arduino-plugin"><span class="header-section-number">4.2</span> Acquiring real data with the Arduino plugin</a></li>
+  <li><a href="#logging-the-data" id="toc-logging-the-data" class="nav-link" data-scroll-target="#logging-the-data"><span class="header-section-number">4.3</span> Logging the data</a></li>
+  <li><a href="#realtime-plotting-with-rerun" id="toc-realtime-plotting-with-rerun" class="nav-link" data-scroll-target="#realtime-plotting-with-rerun"><span class="header-section-number">4.4</span> Realtime plotting with Rerun</a>
+  <ul class="collapse">
+  <li><a href="#install-rerun" id="toc-install-rerun" class="nav-link" data-scroll-target="#install-rerun"><span class="header-section-number">4.4.1</span> Install Rerun</a></li>
+  <li><a href="#install-the-rerun.plugin-and-configure-the-mads.ini-file" id="toc-install-the-rerun.plugin-and-configure-the-mads.ini-file" class="nav-link" data-scroll-target="#install-the-rerun.plugin-and-configure-the-mads.ini-file"><span class="header-section-number">4.4.2</span> Install the <code>rerun.plugin</code> and configure the <code>mads.ini</code> file</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exercise for <em>Scuola Gorini 2026</em></h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">advanced</div>
+    <div class="quarto-category">programming</div>
+    <div class="quarto-category">c++</div>
+  </div>
+  </div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Paolo Bosetti </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Trento
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 28, 2026</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">August 28, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p>This exercise is designed for the <em>Scuola Gorini 2026</em> to demonstrate the use of the MADS plugins for acquiring and processing data streams.</p>
+  </div>
+</div>
+
+
+</header>
+
+
+<section id="objective" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Objective</h1>
+<p>We are building a simple application that uses the following agents:</p>
+<ul>
+<li>an agent that acquires analog data from a serial-port conected Arduino Uno R4</li>
+<li>an agent that processes the acquired data, computing some descriptive and inferential statistics</li>
+<li>an agent that visualizes the data and the computed statistics in <a href="htts://rerun.io" target="rerun">Rerun</a></li>
+<li>an agent that logs the data and the computed statistics to a MongoDB database</li>
+</ul>
+</section>
+<section id="arduino-side" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Arduino-side</h1>
+<p>We are using an Arduino Uno R4 board to acquire analog data from two QWIIC sensors: a temperature sensor and a distance sensor. The Arduino is programmed to read the sensors and send the data over the serial port to the MADS agent in JSON format.</p>
+<p>For the sake of brevity, we’re going to keep the Arduino part as simple as possible.</p>
+<p>Launching the Arduino IDE, we can use the following code to read the sensors and send the data over the serial port:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">  __  __           _       _ _               _____        </span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"> |  \/  | ___   __| |_   _| (_)_ __   ___   | ____|_  __  </span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"> | |\/| |/ _ \ / _` | | | | | | '_ \ / _ \  |  _| \ \/ /  </span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"> | |  | | (_) | (_| | |_| | | | | | | (_) | | |___ &gt;  &lt; _ </span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"> |_|  |_|\___/ \__,_|\__,_|_|_|_| |_|\___/  |_____/_/\_(_)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">                                                          </span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">Provides JSON output of the Modulino distance and temperature sensors.</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Arduino_Modulino.h&gt;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ArduinoJson.h&gt;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">// Some constants for the Arduino sketch</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="pp">#define DELAY </span><span class="dv">50</span><span class="bu">UL</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="pp">#define BAUD_RATE </span><span class="dv">115200</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="pp">#define MAX_DISTANCE </span><span class="dv">1500</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">// Define global instances</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>JsonDocument doc<span class="op">;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>ModulinoDistance Distance<span class="op">;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>ModulinoThermo Thermo<span class="op">;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">// Setup the system</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> setup<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  Serial<span class="op">.</span>begin<span class="op">(</span>BAUD_RATE<span class="op">);</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  Serial<span class="op">.</span>println<span class="op">(</span><span class="st">"# Starting JSON reader"</span><span class="op">);</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Initialize Modulino library and sensors</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  Modulino<span class="op">.</span>begin<span class="op">();</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  Distance<span class="op">.</span>begin<span class="op">();</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  Thermo<span class="op">.</span>begin<span class="op">();</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> loop<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Populate the JSON document with temperature readings</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  doc<span class="op">[</span><span class="st">"measurements"</span><span class="op">][</span><span class="st">"thermo"</span><span class="op">]</span> <span class="op">=</span> Thermo<span class="op">.</span>getTemperature<span class="op">();</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  <span class="co">// If the distance sensor is available, use its reading; </span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  <span class="co">// otherwise, simulate a reading oscillating around its maximum range</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>Distance<span class="op">.</span>available<span class="op">())</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    doc<span class="op">[</span><span class="st">"measurements"</span><span class="op">][</span><span class="st">"distance"</span><span class="op">]</span> <span class="op">=</span> Distance<span class="op">.</span>get<span class="op">();</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    doc<span class="op">[</span><span class="st">"measurements"</span><span class="op">][</span><span class="st">"distance"</span><span class="op">]</span> <span class="op">=</span> MAX_DISTANCE <span class="op">+</span> random<span class="op">(-</span><span class="dv">4</span><span class="op">,</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Serialize the document to Serial port</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>  serializeJson<span class="op">(</span>doc<span class="op">,</span> Serial<span class="op">);</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>  Serial<span class="op">.</span>println<span class="op">();</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Delay the loop to avoid flooding the serial port</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>  delay<span class="op">(</span>DELAY<span class="op">);</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you don’t have the sensors, you can simulate the output by reading the values of two open analog pins (A0 and A1) instead of the sensors. The Arduino code would look like this:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> loop<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Simulate temperature reading</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  doc<span class="op">[</span><span class="st">"measurements"</span><span class="op">][</span><span class="st">"thermo"</span><span class="op">]</span> <span class="op">=</span> analogRead<span class="op">(</span>A0<span class="op">)</span> <span class="op">/</span> <span class="fl">1023.0</span> <span class="op">*</span> <span class="dv">100</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Simulate distance reading</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  doc<span class="op">[</span><span class="st">"measurements"</span><span class="op">][</span><span class="st">"distance"</span><span class="op">]</span> <span class="op">=</span> analogRead<span class="op">(</span>A1<span class="op">)</span> <span class="op">/</span> <span class="fl">1023.0</span> <span class="op">*</span> MAX_DISTANCE<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Serialize the document to Serial port</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  serializeJson<span class="op">(</span>doc<span class="op">,</span> Serial<span class="op">);</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  Serial<span class="op">.</span>println<span class="op">();</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Delay the loop to avoid flooding the serial port</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  delay<span class="op">(</span>DELAY<span class="op">);</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Touching the analog pins with your fingers will change the readings, allowing you to test the MADS agent without the sensors.</p>
+</div>
+</div>
+</section>
+<section id="b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-side" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> <img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));">-side</h1>
+<section id="custom-plugins" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="custom-plugins"><span class="header-section-number">3.1</span> Custom plugins</h2>
+<p>We must create two custom plugins:</p>
+<ol type="1">
+<li>the <code>stats.plugin</code>, which computes the running statistics on the incoming data (a <strong>filter</strong>)</li>
+<li>the <code>dummy.plugin</code>, which is a <strong>dummy agent</strong> that simulates the acquisition of data from the Arduino board, in case you don’t have the sensors or the board (a <strong>source</strong>)</li>
+</ol>
+<p>To create a plugin, we use the <code>mads plugin</code> command, which creates a template code for the plugin, including the build harness and the CMake configuration. The commands are:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> plugin <span class="at">--type</span> filter <span class="at">--dir</span> Gorini stats</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> plugin <span class="at">--type</span> source <span class="at">--dir</span> Gorini dummy</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The first command creates a filter plugin called <code>stats</code> in the <code>Gorini</code> directory, plus some additional files and the <code>CMakeLists.txt</code> file, while the second command creates a source plugin called <code>dummy</code> in the same directory, refusing to overwrite the files already created by the first command.</p>
+<p>The <code>CMakeLists.txt</code> is ready and working, but it only compiles the <strong>first plugin</strong> (i.e., the <code>stats</code> plugin). To compile both plugins, we need to edit the <code>CMakeLists.txt</code> file and add the following lines close to the end, before the ection marked <code># INSTALL</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">add_plugin</span>(dummy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>add_plugin(dummy)</code> CMake macro expects a file <code>src/dummy.cpp</code> and compiles it to produce the <code>dummy.plugin</code> shared library.</p>
+</div>
+</div>
+</section>
+<section id="the-dummy-plugin" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="the-dummy-plugin"><span class="header-section-number">3.2</span> The dummy plugin</h2>
+<p>Open the file in <code>src/dummy.cpp</code>. We need to include a couple of headers for generating random numbers and for measuring time:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// other includes as needed here</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;random&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;chrono&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then we focus on the <code>DummyPlugin</code> class in <code>src/dummy.cpp</code>. Firstly, we need some private members for the random number generator and the distributions. At the end of the class, we set:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  array<span class="op">&lt;</span>normal_distribution<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;,</span> <span class="dv">4</span><span class="op">&gt;</span> _dist<span class="op">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  mt19937 _rng<span class="op">{</span><span class="dv">20260816</span><span class="op">};</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We are using the convention to prefix private members with an underscore <code>_</code> to distinguish them from public members and parameters.</p>
+</div>
+</div>
+<p>The <code>_dist</code> object is an array of four normal distributions, which we will use to generate random numbers for the distance and temperature sensors. The <code>_rng</code> object is a Mersenne Twister random number generator, seeded with a fixed value for reproducibility.</p>
+<p>Now we can complete the four methods that define plugin behavior:</p>
+<ul>
+<li><code>set_params()</code>: this method is called by the agent to set the parameters of the plugin upon start. We set the means and standard deviations of the distributions from the parameters.</li>
+<li><code>get_output()</code>: this method is called by the agent to get the output of the plugin. We generate random numbers from the distributions and return them in a JSON object.</li>
+<li><code>info()</code>: this method is called by the agent to get information about the plugin upon start. We return a map of strings with the means and standard deviations of the distributions.</li>
+</ul>
+<p>Let’s start with <code>set_params()</code>: We need 4 distributions, for in even minutes we’re going to use the first two, and for odd minutes we’re going to use the last two. This way we’ll see a change in the output means and standard deviations every minute.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> set_params<span class="op">(</span><span class="at">const</span> json <span class="op">&amp;</span>params<span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    Source<span class="op">::</span>set_params<span class="op">(</span>params<span class="op">);</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// provide sensible defaults for the parameters by setting e.g.</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    _params<span class="op">[</span><span class="st">"means"</span><span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="fl">10.0</span><span class="op">,</span> <span class="fl">10.0</span><span class="op">,</span> <span class="fl">10.0</span><span class="op">,</span> <span class="fl">12.0</span><span class="op">};</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    _params<span class="op">[</span><span class="st">"stds"</span><span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="fl">0.2</span><span class="op">,</span> <span class="fl">0.3</span><span class="op">,</span> <span class="fl">0.2</span><span class="op">,</span> <span class="fl">0.2</span><span class="op">};</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// then merge the defaults with the actually provided parameters</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// params needs to be cast to json</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    _params<span class="op">.</span>merge_patch<span class="op">(</span>params<span class="op">);</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>_params<span class="op">[</span><span class="st">"means"</span><span class="op">].</span>size<span class="op">()</span> <span class="op">!=</span> <span class="dv">4</span> <span class="op">||</span> _params<span class="op">[</span><span class="st">"stds"</span><span class="op">].</span>size<span class="op">()</span> <span class="op">!=</span> <span class="dv">4</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      <span class="cf">throw</span> <span class="bu">std::</span>invalid_argument<span class="op">(</span><span class="st">"means and stds must be arrays of size 4"</span><span class="op">);</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// initialize the distributions with the means and standard deviations</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    _dist<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> normal_distribution<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;(</span>_params<span class="op">[</span><span class="st">"means"</span><span class="op">][</span><span class="dv">0</span><span class="op">],</span> _params<span class="op">[</span><span class="st">"stds"</span><span class="op">][</span><span class="dv">0</span><span class="op">]);</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    _dist<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> normal_distribution<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;(</span>_params<span class="op">[</span><span class="st">"means"</span><span class="op">][</span><span class="dv">1</span><span class="op">],</span> _params<span class="op">[</span><span class="st">"stds"</span><span class="op">][</span><span class="dv">1</span><span class="op">]);</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    _dist<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> normal_distribution<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;(</span>_params<span class="op">[</span><span class="st">"means"</span><span class="op">][</span><span class="dv">2</span><span class="op">],</span> _params<span class="op">[</span><span class="st">"stds"</span><span class="op">][</span><span class="dv">2</span><span class="op">]);</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    _dist<span class="op">[</span><span class="dv">3</span><span class="op">]</span> <span class="op">=</span> normal_distribution<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;(</span>_params<span class="op">[</span><span class="st">"means"</span><span class="op">][</span><span class="dv">3</span><span class="op">],</span> _params<span class="op">[</span><span class="st">"stds"</span><span class="op">][</span><span class="dv">3</span><span class="op">]);</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Now to <code>get_output()</code>: its output (the message to be published) is the JSON object <code>out</code>, while the returned value is a <code>return_type</code> enum that indicates the success or failure of the method. The method generates random numbers from the distributions and returns them in a JSON object.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>  <span class="dt">return_type</span> get_output<span class="op">(</span>json <span class="op">&amp;</span>out<span class="op">,</span> vector<span class="op">&lt;</span><span class="dt">unsigned</span> <span class="dt">char</span><span class="op">&gt;</span> <span class="op">*</span>blob <span class="op">=</span> <span class="kw">nullptr</span><span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// reset the output JSON object</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    out<span class="op">.</span>clear<span class="op">();</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    out<span class="op">[</span><span class="st">"measurements"</span><span class="op">]</span> <span class="op">=</span> json<span class="op">::</span>object<span class="op">();</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// get the current minutes value</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">auto</span> now <span class="op">=</span> chrono<span class="op">::</span>system_clock<span class="op">::</span>now<span class="op">();</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">auto</span> minutes <span class="op">=</span> chrono<span class="op">::</span>duration_cast<span class="op">&lt;</span>chrono<span class="op">::</span>minutes<span class="op">&gt;(</span>now<span class="op">.</span>time_since_epoch<span class="op">()).</span>count<span class="op">();</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// swap generator for odd and even minutes</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>minutes <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>      out<span class="op">[</span><span class="st">"measurements"</span><span class="op">][</span><span class="st">"distance"</span><span class="op">]</span> <span class="op">=</span> _dist<span class="op">[</span><span class="dv">0</span><span class="op">](</span>_rng<span class="op">);</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>      out<span class="op">[</span><span class="st">"measurements"</span><span class="op">][</span><span class="st">"thermo"</span><span class="op">]</span> <span class="op">=</span> _dist<span class="op">[</span><span class="dv">1</span><span class="op">](</span>_rng<span class="op">);</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>      out<span class="op">[</span><span class="st">"measurements"</span><span class="op">][</span><span class="st">"distance"</span><span class="op">]</span> <span class="op">=</span> _dist<span class="op">[</span><span class="dv">2</span><span class="op">](</span>_rng<span class="op">);</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>      out<span class="op">[</span><span class="st">"measurements"</span><span class="op">][</span><span class="st">"thermo"</span><span class="op">]</span> <span class="op">=</span> _dist<span class="op">[</span><span class="dv">3</span><span class="op">](</span>_rng<span class="op">);</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dt">return_type</span><span class="op">::</span>success<span class="op">;</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Finally, it is useful to provide feedback to the user of actual parameter values used during initialization (<code>set_params()</code>). We can do so by implementing the <code>info()</code> method, which returns a map of strings with additional information about the plugin. This information is printed when the plugin is loaded by the agent.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>  map<span class="op">&lt;</span>string<span class="op">,</span> string<span class="op">&gt;</span> info<span class="op">()</span> <span class="kw">override</span> <span class="op">{</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">{</span> <span class="co">// A C++ map is a list of pairs</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span><span class="st">"means"</span><span class="op">,</span> _params<span class="op">[</span><span class="st">"means"</span><span class="op">].</span>dump<span class="op">()},</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span><span class="st">"stds"</span><span class="op">,</span> _params<span class="op">[</span><span class="st">"stds"</span><span class="op">].</span>dump<span class="op">()}</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">};</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">};</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="the-statistics-plugin" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="the-statistics-plugin"><span class="header-section-number">3.3</span> The statistics plugin</h2>
+<p>This plugin is a tad more complex. To make things easier, we are going to use a third party library that provides descriptive and inferential statistics on running windows: <a href="https://github.com/pbosetti/statisticalc" target="statisticalc">statisticalc</a>. Take a moment to look at the repo to learn how to use it.</p>
+<p>To be flexible, we want the plugin to dynamically select which measurements it has to operate on. We can do that by provinding it with a list of <strong>keypaths</strong>. A keypath is a string that identifies a field in a JSON object, using the <a href="https://datatracker.ietf.org/doc/html/rfc6901">JSON pointer</a> syntax. For example, the keypath <code>/measurements/thermo</code> identifies the <code>thermo</code> field in the <code>measurements</code> object. So, if we want to compute statistics on the <code>thermo</code> and <code>distance</code> measurements, we can provide the following keypaths:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span><span class="st">"/measurements/thermo"</span><span class="op">,</span> <span class="st">"/measurements/distance"</span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The frst step is to add it to the CMake harness. Open the <code>CMakeLists.txt</code> file and add the following in the <code># DEPENDENCIES</code> section:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">FetchContent_Declare</span>(statisticalc</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_REPOSITORY</span> https://github.com/pbosetti/statisticalc.git</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_TAG</span>        HEAD</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">GIT_SHALLOW</span>    <span class="ot">TRUE</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">EXCLUDE_FROM_ALL</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">FetchContent_MakeAvailable</span>(statisticalc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>then be sure to link it to the <code>stats</code> target: change the <code>add_plugin(stats)</code> line to:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">add_plugin</span>(stats LIBS <span class="bn">statisticalc::statisticalc</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Now the <code>src/stats.cpp</code> file: This is a <strong>filter plugin</strong>, and we have to implement a different set of methods. First of all, let’s load the necessary header, from the statisticalc library:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;statisticalc/statisticalc.hpp&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> statisticalc<span class="op">::</span>Alternative<span class="op">;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> statisticalc<span class="op">::</span>RunningStats<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>As for the private members, we two sets of running statistics: one for the reference (training set), one for the moving window. Each set can potentially contain multiple running statistics, for different measurement types (e.g., temperature, distance, etc.). We use a <code>std::map</code> to store the running statistics, with the key being the JSON pointer to the measurement in the input JSON object:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  map<span class="op">&lt;</span>string<span class="op">,</span> statisticalc<span class="op">::</span>RunningStats<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;&gt;</span> _reference_stats<span class="op">;</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  map<span class="op">&lt;</span>string<span class="op">,</span> statisticalc<span class="op">::</span>RunningStats<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;&gt;</span> _running_stats<span class="op">;</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Now the settings: <code>set_params()</code> and <code>info()</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> set_params<span class="op">(</span><span class="at">const</span> json <span class="op">&amp;</span>params<span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    Filter<span class="op">::</span>set_params<span class="op">(</span>params<span class="op">);</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// provide sensible defaults for the parameters by setting e.g.</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    _params<span class="op">[</span><span class="st">"keypaths"</span><span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="st">"/measurements/distance"</span><span class="op">};</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    _params<span class="op">[</span><span class="st">"reference_samples"</span><span class="op">]</span> <span class="op">=</span> <span class="dv">100</span><span class="op">;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    _params<span class="op">[</span><span class="st">"window_size"</span><span class="op">]</span> <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    _params<span class="op">.</span>merge_patch<span class="op">(</span>params<span class="op">);</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>_params<span class="op">[</span><span class="st">"keypaths"</span><span class="op">].</span>size<span class="op">()</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>      <span class="cf">throw</span> <span class="bu">std::</span>invalid_argument<span class="op">(</span><span class="st">"keypaths must be a non-empty array"</span><span class="op">);</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Initialize the running statistics for each keypath with the specified window size</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span> <span class="op">&amp;</span>keypath <span class="op">:</span> _params<span class="op">[</span><span class="st">"keypaths"</span><span class="op">])</span> <span class="op">{</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>      _running_stats<span class="op">[</span>keypath<span class="op">.</span>get<span class="op">&lt;</span>string<span class="op">&gt;()]</span> <span class="op">=</span> RunningStats<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;(</span>_params<span class="op">[</span><span class="st">"window_size"</span><span class="op">].</span>get<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;());</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span> <span class="op">&amp;</span>keypath <span class="op">:</span> _params<span class="op">[</span><span class="st">"keypaths"</span><span class="op">])</span> <span class="op">{</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>      _reference_stats<span class="op">[</span>keypath<span class="op">.</span>get<span class="op">&lt;</span>string<span class="op">&gt;()]</span> <span class="op">=</span> RunningStats<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;(</span>_params<span class="op">[</span><span class="st">"reference_samples"</span><span class="op">].</span>get<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;());</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Implement this method if you want to provide additional information</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  map<span class="op">&lt;</span>string<span class="op">,</span> string<span class="op">&gt;</span> info<span class="op">()</span> <span class="kw">override</span> <span class="op">{</span> </span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">{</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span><span class="st">"keypaths"</span><span class="op">,</span> _params<span class="op">[</span><span class="st">"keypaths"</span><span class="op">].</span>dump<span class="op">()},</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span><span class="st">"reference_samples"</span><span class="op">,</span> to_string<span class="op">(</span>_params<span class="op">[</span><span class="st">"reference_samples"</span><span class="op">].</span>get<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;())},</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span><span class="st">"window_size"</span><span class="op">,</span> to_string<span class="op">(</span>_params<span class="op">[</span><span class="st">"window_size"</span><span class="op">].</span>get<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;())}</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">};</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>  <span class="op">};</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Being this a <strong>filter</strong> plugin, we need to implement the <code>load_data()</code> and <code>process()</code> methods. The first one is called by the agent to load the data from the input JSON object, while the second one is called to process the data and produce the output JSON object. The operation is split, so that the agent may gracefully fail upon receiving data and before processing.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>  <span class="dt">return_type</span> load_data<span class="op">(</span>json <span class="at">const</span> <span class="op">&amp;</span>input<span class="op">,</span> string topic <span class="op">=</span> <span class="st">""</span><span class="op">,</span> vector<span class="op">&lt;</span><span class="dt">unsigned</span> <span class="dt">char</span><span class="op">&gt;</span> <span class="at">const</span> <span class="op">*</span>blob <span class="op">=</span> <span class="kw">nullptr</span><span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="kw">auto</span> <span class="op">&amp;</span>pair <span class="op">:</span> _running_stats<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>      json<span class="op">::</span>json_pointer keypath<span class="op">(</span>pair<span class="op">.</span>first<span class="op">);</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> <span class="op">(!</span>_reference_stats<span class="op">[</span>pair<span class="op">.</span>first<span class="op">].</span>full<span class="op">())</span> <span class="op">{</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        _reference_stats<span class="op">[</span>pair<span class="op">.</span>first<span class="op">]</span> <span class="op">&lt;&lt;</span> input<span class="op">[</span>keypath<span class="op">].</span>get<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;();</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>      pair<span class="op">.</span>second <span class="op">&lt;&lt;</span> input<span class="op">[</span>keypath<span class="op">].</span>get<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;();</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dt">return_type</span><span class="op">::</span>success<span class="op">;</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Finally, the <code>process()</code> method computes the statistics on the running window and returns them in the output JSON object. It also computes the confidence interval for the mean, and performs a t-test and a variance test against the reference statistics.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>  <span class="dt">return_type</span> process<span class="op">(</span>json <span class="op">&amp;</span>out<span class="op">,</span> vector<span class="op">&lt;</span><span class="dt">unsigned</span> <span class="dt">char</span><span class="op">&gt;</span> <span class="op">*</span>blob <span class="op">=</span> <span class="kw">nullptr</span><span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    out<span class="op">.</span>clear<span class="op">();</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// load the data as necessary and set the fields of the json out variable</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="kw">auto</span> <span class="op">&amp;</span>pair <span class="op">:</span> _running_stats<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>      json<span class="op">::</span>json_pointer keypath<span class="op">(</span>pair<span class="op">.</span>first<span class="op">);</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>      out<span class="op">[</span>keypath<span class="op">][</span><span class="st">"mean"</span><span class="op">]</span> <span class="op">=</span> pair<span class="op">.</span>second<span class="op">.</span>mean<span class="op">();</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>      out<span class="op">[</span>keypath<span class="op">][</span><span class="st">"median"</span><span class="op">]</span> <span class="op">=</span> pair<span class="op">.</span>second<span class="op">.</span>median<span class="op">();</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>      out<span class="op">[</span>keypath<span class="op">][</span><span class="st">"stddev"</span><span class="op">]</span> <span class="op">=</span> pair<span class="op">.</span>second<span class="op">.</span>stddev<span class="op">();</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>      <span class="kw">auto</span> ci <span class="op">=</span> pair<span class="op">.</span>second<span class="op">.</span>mean_ci<span class="op">(</span><span class="fl">0.999</span><span class="op">);</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>      out<span class="op">[</span>keypath<span class="op">][</span><span class="st">"mean_ci"</span><span class="op">]</span> <span class="op">=</span> <span class="op">{</span>ci<span class="op">.</span>lower<span class="op">,</span> ci<span class="op">.</span>upper<span class="op">};</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>      <span class="kw">auto</span> t_test <span class="op">=</span> pair<span class="op">.</span>second<span class="op">.</span>t_test<span class="op">(</span>_reference_stats<span class="op">[</span>pair<span class="op">.</span>first<span class="op">].</span>mean<span class="op">());</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>      out<span class="op">[</span>keypath<span class="op">][</span><span class="st">"t_test"</span><span class="op">]</span> <span class="op">=</span> t_test<span class="op">.</span>p_value<span class="op">;</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>      <span class="kw">auto</span> f_test <span class="op">=</span> pair<span class="op">.</span>second<span class="op">.</span>variance_test<span class="op">(</span>_reference_stats<span class="op">[</span>pair<span class="op">.</span>first<span class="op">].</span>variance<span class="op">());</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>      out<span class="op">[</span>keypath<span class="op">][</span><span class="st">"variance_test"</span><span class="op">]</span> <span class="op">=</span> f_test<span class="op">.</span>p_value<span class="op">;</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>      out<span class="op">[</span>keypath<span class="op">][</span><span class="st">"ref_mean"</span><span class="op">]</span> <span class="op">=</span> _reference_stats<span class="op">[</span>pair<span class="op">.</span>first<span class="op">].</span>mean<span class="op">();</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>      out<span class="op">[</span>keypath<span class="op">][</span><span class="st">"ref_stddev"</span><span class="op">]</span> <span class="op">=</span> _reference_stats<span class="op">[</span>pair<span class="op">.</span>first<span class="op">].</span>stddev<span class="op">();</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dt">return_type</span><span class="op">::</span>success<span class="op">;</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="compile-the-plugins" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="compile-the-plugins"><span class="header-section-number">3.4</span> Compile the plugins</h2>
+<p>To compile the plugins, run the following commands from the <code>Gorini</code> directory:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-Bbuild</span> <span class="at">-GNinja</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j8</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Now in the <code>build</code> folder you have the <code>stats.plugin</code> and <code>dummy.plugin</code> shared libraries, which can be loaded by the MADS <code>filter</code> and <code>source</code> agents, respectively.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Test exectuables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>At the end of each source file there is a <code>main()</code> function. It is used to compile a standalone executable for testing purposes. We are not doing that here, but you can use it to test the plugins independently of the MADS framework. In a typical case, the <code>main()</code> function is used to test the plugin class with some sample data, and print the output to the console.</p>
+<p>On compile, CMake creates a <code>stats</code> and a <code>dummy</code> executable in the <code>build</code> folder beside their <code>.plugin</code> counterparts, which can be run to test the plugins. On macOS only, the the <code>.plugin</code> file itself is executable, so you can launch it alone to test the class with the content of the <code>main()</code> function. On Linux and Windows, you need to run the <code>stats</code> and <code>dummy</code> executables instead.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="running-the-network" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Running the network</h1>
+<section id="the-mads.ini-file" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="the-mads.ini-file"><span class="header-section-number">4.1</span> The <code>mads.ini</code>&nbsp;file</h2>
+<p>To run the network of agents, we need to create a custom <code>mads.ini</code> configuration file, which will be loaded by the broker and distributed to each agent.</p>
+<p>The INI file must have a section for each agent (i.e.&nbsp;a <code>[stats]</code> section for the <code>stats</code> agent, a <code>[dummy]</code> section for the <code>dummy</code> agent, etc.), and each agent section may customize the parameters loaded by the plugin in the <code>set_params()</code> method.</p>
+<p>The easiest way to create a template <code>mads ini</code> is with the <code>mads ini</code> command:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> ini <span class="at">-o</span> mads.ini</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then open the file, remove the sections we don’t need and add the sections for the two custom agents:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[agents]</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Settings shared by all agents</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="dt">frontend_address</span> <span class="op">=</span> <span class="st">"tcp://localhost:9090"</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="dt">backend_address</span> <span class="op">=</span> <span class="st">"tcp://localhost:9091"</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="dt">settings_address</span> <span class="op">=</span> <span class="st">"tcp://localhost:9092"</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="dt">timecode_fps</span> <span class="op">=</span> <span class="dv">25</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="kw">[broker]</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="dt">frontend_address</span> <span class="op">=</span> <span class="st">"tcp://*:9090"</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="dt">backend_address</span> <span class="op">=</span> <span class="st">"tcp://*:9091"</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="dt">settings_address</span> <span class="op">=</span> <span class="st">"tcp://*:9092"</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="dt">prefer_loopback_for_local_services</span> <span class="op">=</span> <span class="cn">true</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="kw">[logger]</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="dt">mongo_uri</span> <span class="op">=</span> <span class="st">"mongodb://localhost:27017"</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="dt">mongo_db</span> <span class="op">=</span> <span class="st">"gorini"</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"stats"</span><span class="op">,</span> <span class="st">"arduino"</span><span class="op">]</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="kw">[arduino]</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Check this value!</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="dt">port</span> <span class="op">=</span> <span class="st">"/dev/cu.usbmodemB43A4536D2A02"</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="kw">[dummy]</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"arduino"</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a><span class="dt">period</span> <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a><span class="dt">means</span> <span class="op">=</span> <span class="op">[</span><span class="fl">10.0</span><span class="op">,</span> <span class="fl">10.0</span><span class="op">,</span> <span class="fl">10.0</span><span class="op">,</span> <span class="fl">12.0</span><span class="op">]</span></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a><span class="dt">stds</span> <span class="op">=</span> <span class="op">[</span><span class="fl">0.2</span><span class="op">,</span> <span class="fl">0.3</span><span class="op">,</span> <span class="fl">0.2</span><span class="op">,</span> <span class="fl">0.2</span><span class="op">]</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a><span class="kw">[stats]</span></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"arduino"</span><span class="op">]</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a><span class="dt">keypaths</span> <span class="op">=</span> <span class="op">[</span><span class="st">"/measurements/distance"</span><span class="op">,</span> <span class="st">"/measurements/thermo"</span><span class="op">]</span></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a><span class="dt">reference_samples</span> <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a><span class="dt">window_size</span> <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a><span class="kw">[rerunner]</span></span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"arduino"</span><span class="op">,</span> <span class="st">"stats"</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The INI file can be used to preview a graph of the network we are defining: run the command <code>mads doctor -s mads.ini --graph=mads.dot</code> and you get a Graphviz DOT file that renders as:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 280.66 185.58" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 181.58)">
+<title>mads</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-181.58 276.66,-181.58 276.66,4 -4,4"></polygon>
+<!-- arduino -->
+<g id="node1" class="node">
+<title>arduino</title>
+<polygon fill="none" stroke="black" points="0,-123.98 0,-159.98 54,-159.98 54,-123.98 0,-123.98"></polygon>
+<text text-anchor="middle" x="27" y="-139.78" font-family="monospace" font-size="8.00">arduino</text>
+</g>
+<!-- logger -->
+<g id="node3" class="node">
+<title>logger</title>
+<polygon fill="none" stroke="darkblue" points="218.66,-74.58 218.66,-119.38 272.66,-119.38 272.66,-74.58 218.66,-74.58"></polygon>
+<text text-anchor="middle" x="245.66" y="-108.18" font-family="monospace" font-size="8.00">logger</text>
+<polyline fill="none" stroke="darkblue" points="218.66,-101.78 272.66,-101.78 "></polyline>
+<text text-anchor="start" x="226.66" y="-90.58" font-family="monospace" font-size="8.00">stats</text>
+<text text-anchor="start" x="226.66" y="-80.98" font-family="monospace" font-size="8.00">arduino</text>
+</g>
+<!-- arduino&#45;&gt;logger -->
+<g id="edge1" class="edge">
+<title>arduino-&gt;logger</title>
+<path fill="none" stroke="#7f7f7f" d="M54.19,-152.18C89.48,-164.19 153.35,-179.71 200.66,-155.98 212.65,-149.96 222.2,-138.96 229.3,-128.08"></path>
+<polygon fill="#7f7f7f" stroke="#7f7f7f" points="232.32,-129.85 234.47,-119.47 226.32,-126.24 232.32,-129.85"></polygon>
+<text text-anchor="middle" x="141.44" y="-170.38" font-family="monospace" font-size="8.00" fill="#7f7f7f">arduino</text>
+</g>
+<!-- rerunner -->
+<g id="node4" class="node">
+<title>rerunner</title>
+<polygon fill="none" stroke="darkblue" points="218.66,-10.58 218.66,-55.38 272.66,-55.38 272.66,-10.58 218.66,-10.58"></polygon>
+<text text-anchor="middle" x="245.66" y="-44.18" font-family="monospace" font-size="8.00">rerunner</text>
+<polyline fill="none" stroke="darkblue" points="218.66,-37.78 272.66,-37.78 "></polyline>
+<text text-anchor="start" x="226.66" y="-26.58" font-family="monospace" font-size="8.00">arduino</text>
+<text text-anchor="start" x="226.66" y="-16.98" font-family="monospace" font-size="8.00">stats</text>
+</g>
+<!-- arduino&#45;&gt;rerunner -->
+<g id="edge2" class="edge">
+<title>arduino-&gt;rerunner</title>
+<path fill="none" stroke="#7f7f7f" d="M54.18,-141.11C83.44,-139.23 131.53,-133.32 168.44,-114.98 185.69,-106.4 187.31,-99.87 200.66,-85.98 202.87,-83.67 210.89,-74.07 219.49,-63.66"></path>
+<polygon fill="#7f7f7f" stroke="#7f7f7f" points="222.44,-65.59 226.1,-55.65 217.04,-61.14 222.44,-65.59"></polygon>
+<text text-anchor="middle" x="141.44" y="-134.38" font-family="monospace" font-size="8.00" fill="#7f7f7f">arduino</text>
+</g>
+<!-- stats -->
+<g id="node5" class="node">
+<title>stats</title>
+<polygon fill="none" stroke="darkblue" points="114.44,-22.98 114.44,-58.98 168.44,-58.98 168.44,-22.98 114.44,-22.98"></polygon>
+<text text-anchor="middle" x="141.44" y="-47.78" font-family="monospace" font-size="8.00">stats</text>
+<polyline fill="none" stroke="darkblue" points="114.44,-41.38 168.44,-41.38 "></polyline>
+<text text-anchor="start" x="122.44" y="-30.18" font-family="monospace" font-size="8.00">arduino</text>
+</g>
+<!-- arduino&#45;&gt;stats -->
+<g id="edge3" class="edge">
+<title>arduino-&gt;stats</title>
+<path fill="none" stroke="#7f7f7f" d="M48.1,-123.92C66.06,-107.79 92.54,-84 112.54,-66.03"></path>
+<polygon fill="#7f7f7f" stroke="#7f7f7f" points="115.03,-68.5 120.13,-59.22 110.35,-63.3 115.03,-68.5"></polygon>
+<text text-anchor="middle" x="84.22" y="-102.38" font-family="monospace" font-size="8.00" fill="#7f7f7f">arduino</text>
+</g>
+<!-- dummy -->
+<g id="node2" class="node">
+<title>dummy</title>
+<polygon fill="none" stroke="darkred" points="0,-19.98 0,-55.98 54,-55.98 54,-19.98 0,-19.98"></polygon>
+<text text-anchor="middle" x="27" y="-35.78" font-family="monospace" font-size="8.00">dummy</text>
+</g>
+<!-- dummy&#45;&gt;logger -->
+<g id="edge4" class="edge">
+<title>dummy-&gt;logger</title>
+<path fill="none" stroke="black" d="M40.97,-56.04C48.81,-65.48 59.66,-76.23 72,-81.98 115.56,-102.27 171.98,-103.08 208.26,-100.82"></path>
+<polygon fill="black" stroke="black" points="208.66,-104.3 218.38,-100.07 208.15,-97.32 208.66,-104.3"></polygon>
+<text text-anchor="middle" x="141.44" y="-103.38" font-family="monospace" font-size="8.00">arduino</text>
+</g>
+<!-- dummy&#45;&gt;rerunner -->
+<g id="edge5" class="edge">
+<title>dummy-&gt;rerunner</title>
+<path fill="none" stroke="black" d="M54.07,-24.51C70.82,-16.62 93.33,-7.44 114.44,-3.38 138,1.17 144.85,1.04 168.44,-3.38 182.22,-5.96 196.72,-10.96 209.33,-16.12"></path>
+<polygon fill="black" stroke="black" points="207.99,-19.36 218.56,-20.07 210.74,-12.92 207.99,-19.36"></polygon>
+<text text-anchor="middle" x="141.44" y="-6.38" font-family="monospace" font-size="8.00">arduino</text>
+</g>
+<!-- dummy&#45;&gt;stats -->
+<g id="edge6" class="edge">
+<title>dummy-&gt;stats</title>
+<path fill="none" stroke="black" d="M54,-38.41C66.78,-38.65 82.42,-38.98 96.44,-39.38 98.98,-39.45 101.6,-39.53 104.24,-39.61"></path>
+<polygon fill="black" stroke="black" points="104.27,-43.12 114.38,-39.96 104.51,-36.12 104.27,-43.12"></polygon>
+<text text-anchor="middle" x="84.22" y="-42.38" font-family="monospace" font-size="8.00">arduino</text>
+</g>
+<!-- stats&#45;&gt;logger -->
+<g id="edge7" class="edge">
+<title>stats-&gt;logger</title>
+<path fill="none" stroke="#7f7f7f" d="M168.57,-54.96C178.62,-60.37 190.19,-66.63 200.66,-72.38 203.58,-73.98 206.59,-75.64 209.62,-77.32"></path>
+<polygon fill="#7f7f7f" stroke="#7f7f7f" points="208.2,-80.54 218.64,-82.34 211.6,-74.42 208.2,-80.54"></polygon>
+<text text-anchor="middle" x="193.55" y="-74.38" font-family="monospace" font-size="8.00" fill="#7f7f7f">stats</text>
+</g>
+<!-- stats&#45;&gt;rerunner -->
+<g id="edge8" class="edge">
+<title>stats-&gt;rerunner</title>
+<path fill="none" stroke="#7f7f7f" d="M168.48,-38.05C174.38,-37.45 180.62,-36.85 186.44,-36.38 193.57,-35.79 201.2,-35.28 208.52,-34.83"></path>
+<polygon fill="#7f7f7f" stroke="#7f7f7f" points="208.78,-38.32 218.56,-34.24 208.37,-31.33 208.78,-38.32"></polygon>
+<text text-anchor="middle" x="193.55" y="-39.38" font-family="monospace" font-size="8.00" fill="#7f7f7f">stats</text>
+</g>
+</g>
+</svg>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Note that both the <code>arduino</code> and the <code>dummy</code> agents publish to the same topic, so they both provide data to the <code>stats</code> filter, which eventually feeds the <code>logger</code> and the <code>rerunner</code> sink agents.</p>
+<p>Now open <strong>four terminals</strong> and run the following commands in each of them:</p>
+<ul>
+<li>Terminal 1: <code>mads broker</code>: this launches the broker, which is the central hub of the network</li>
+<li>Terminal 2: <code>mads source build/dummy.plugin</code>: this launches the dummy source agent</li>
+<li>Terminal 3: <code>mads filter build/stats.plugin</code>: this launches the stats filter agent</li>
+<li>Terminal 4: <code>mads echo arduino</code>: this shows the data published on the <code>arduino</code> topic, which is the output of the dummy source agent</li>
+</ul>
+<p>In the last terminal you’ll see a stream of JSON objects, each containing the <code>distance</code> and <code>thermo</code> measurements. More metadata (including timestamp) is added by the MADS framework, but the important part is the <code>measurements</code> object, which contains the two measurements.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Look at the guide <a href="../guides/director.html">here</a> for how to use the <code>mads director</code> GUI to launch the network of agents and monitor their status in a single window. Also look at the help for its terminal counterpart, the <code>mads up</code> command.</p>
+</div>
+</div>
+<p>To stop any of the agents, press <code>Ctrl+C</code> in the terminal where it is running. To stop the broker, type “q” in its terminal. Note that the order in which the agents and the broker are launched <strong>is irrelevant</strong>.</p>
+<p>If you stop the <code>mads echo</code> comand and launch <code>mads echo stats</code>, you’ll see the output of the <code>stats</code> filter agent, which contains the computed statistics for each measurement.</p>
+</section>
+<section id="acquiring-real-data-with-the-arduino-plugin" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="acquiring-real-data-with-the-arduino-plugin"><span class="header-section-number">4.2</span> Acquiring real data with the Arduino plugin</h2>
+<p>the <strong>MADS-Net</strong> repository provides a pre-compiled plugin for routing serial port data to the MADS network. The plugin can be easily installed with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--install</span> arduino.plugin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Prepend the command with <code>sudo</code> on Linux and macOS if you have installed MADS in a system path.</p>
+</div>
+</div>
+<p>Then you can replace the dummy source agent with the proper Arduino source:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> source arduino.plugin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If you have both agents, <code>dummy</code> and <code>arduino</code>, running at the same time, they will both publish to the same topic, so you can see the data from both sources in the <code>mads echo arduino</code> terminal, but you <strong>won’t be able to distinguish their output</strong>. To avoid confusion, stop the <code>dummy</code> agent before launching the <code>arduino</code> agent.</p>
+</section>
+<section id="logging-the-data" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="logging-the-data"><span class="header-section-number">4.3</span> Logging the data</h2>
+<p>Logging the data to a database is a powerful tool to store process data to be later used to train models, perform statistical analysis, or simply to keep a record of the process. The MADS framework provides a <code>logger</code> agent that can log data to a MongoDB database.</p>
+<p>Once you have a MongoDB database running on yur local machine, you can start logging just by launching <code>mads logger</code> in a terninal.</p>
+<p>Look at the logging guide for more information on how to configure the logger agent and how to use it to log data to a MongoDB database.</p>
+</section>
+<section id="realtime-plotting-with-rerun" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="realtime-plotting-with-rerun"><span class="header-section-number">4.4</span> Realtime plotting with Rerun</h2>
+<p>The last step is to visualize the data and the computed statistics in realtime. The MADS framework provides a <code>rerunner</code> agent that can send data to the <a href="https://rerun.io" target="rerun">Rerun</a> visualization tool.</p>
+<p>How to use rerun is documented in the <a href="../guides/rerun.html">dedicated guide</a>. In short, you need to install the Rerun application on your machine, install the <code>rerun.plugin</code>, and properly configure the <code>[rerunner]</code> section in the <code>mads.ini</code> file.</p>
+<section id="install-rerun" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="install-rerun"><span class="header-section-number">4.4.1</span> Install Rerun</h3>
+<p>The easiest way to install Rerun is via <code>pip</code>, preferably in a virtual environment (conda or venv).</p>
+<p>The command is:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-mvenv</span> .venv</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install rerun-sdk==0.35.0</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Remember to activate the virtual environment in every terminal you want to run the <code>rerunner</code> agent, otherwise it won’t find the <code>rerun</code> package.</p>
+</div>
+</div>
+<p>If the command <code>rerun</code> opens a GUI window, you are ready to go. If not, check the <a href="https://rerun.io/docs/getting-started/installation">Rerun installation guide</a> for your platform.</p>
+</section>
+<section id="install-the-rerun.plugin-and-configure-the-mads.ini-file" class="level3" data-number="4.4.2">
+<h3 data-number="4.4.2" class="anchored" data-anchor-id="install-the-rerun.plugin-and-configure-the-mads.ini-file"><span class="header-section-number">4.4.2</span> Install the <code>rerun.plugin</code> and configure the <code>mads.ini</code> file</h3>
+<p>As for the <code>arduino.plugin</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> package <span class="at">--install</span> rerun.plugin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>then edit the <code>[rerunner]</code> section in the <code>mads.ini</code> as follows:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[rerunner]</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"arduino"</span><span class="op">,</span> <span class="st">"stats"</span><span class="op">]</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="dt">keypaths</span> <span class="op">=</span> <span class="op">[</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/arduino/measurements/distance"</span><span class="op">,</span> </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/distance"</span><span class="op">,</span> </span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/distance/mean"</span><span class="op">,</span> </span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/distance/ref_mean"</span><span class="op">,</span> </span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/distance/mean_ci/0"</span><span class="op">,</span> </span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/distance/mean_ci/1"</span><span class="op">,</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/distance/stddev"</span><span class="op">,</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/distance/ref_stddev"</span><span class="op">,</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/distance/t_test"</span><span class="op">,</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/distance/variance_test"</span><span class="op">,</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/arduino/measurements/thermo"</span><span class="op">,</span> </span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/thermo"</span><span class="op">,</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/thermo/mean"</span><span class="op">,</span> </span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/thermo/ref_mean"</span><span class="op">,</span> </span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/thermo/mean_ci/0"</span><span class="op">,</span> </span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/thermo/mean_ci/1"</span><span class="op">,</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/thermo/stddev"</span><span class="op">,</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/thermo/ref_stddev"</span><span class="op">,</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/thermo/t_test"</span><span class="op">,</span></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/stats/measurements/thermo/variance_test"</span></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>In this case, the <code>keypaths</code> array tells the plugin which fields to send to the Rerun application. The <code>sub_topic</code> array tells the plugin which topics to subscribe to. In this case, we are subscribing to both the <code>arduino</code> and the <code>stats</code> topics, so we can visualize both the raw data and the computed statistics. Note that each keypath must be prefixed with the topic name (e.g., <code>/arduino/</code> or <code>/stats/</code>), otherwise the plugin won’t find the field in the input JSON object.</p>
+<p>Note that if the broker is running, it will automatically reload the <code>mads.ini</code> file when you save it, although running agents shall be restarted to force reload their settings.</p>
+<p>Now you can launch the <code>rerunner</code> agent and see the data in the Rerun application:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> sink rerun.plugin</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Confguring the Rerun application is beyond the scope of this exercise, but you can find some examples in the <a href="https://rerun.io/docs/getting-started/visualization">Rerun documentation</a>.</p>
+
+
+</section>
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/mads-net\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Paolo Bosetti, <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">BY-NC-SA4.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
