@@ -1057,6 +1057,13 @@
     "text": "Common, general purpose plugins\n\nmads sink rerunner.plugin: a sink agent that sends data to Rerun.io for realtime visualization\nmads sink validator.plugin: a sink agent that validates JSON data against a schema\nmads sink hdf5.plugin: a sink agent that logs data to HDF5 files\nmads [source|filter|sink] arduino.plugin: a source/filter/sink agent that communicates with a microcontroller via serial port\n\n\n\n\n\n\n\nPython plugins\n\n\nPython plugins are loaded by a dedicated mads python agent, which is installed with mads package --install mads-python. It is a Python interpreter that loads a Python module at runtime\nTo allow users to use their own Python version, the mads python agent is not part of the base MADS installation, but is available as a separate package from MADS-NET/python_agent to be compiled against your Python of choice"
   },
   {
+    "objectID": "presentations/gorini.html#rerun-interface",
+    "href": "presentations/gorini.html#rerun-interface",
+    "title": "Distributed systems with ",
+    "section": "Rerun interface",
+    "text": "Rerun interface\n\n\n\n\nRerun window (see https://rerun.io)"
+  },
+  {
     "objectID": "presentations/gorini.html#anatomy-of-a-plugin-c",
     "href": "presentations/gorini.html#anatomy-of-a-plugin-c",
     "title": "Distributed systems with ",
