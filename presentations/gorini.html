@@ -1753,7 +1753,8 @@ Usage:
 <section id="anatomy-of-a-plugin-python-module" class="slide level2">
 <h2>Anatomy of a plugin: Python module</h2>
 <div class="columns">
-<div class="column smaller">
+<div class="column">
+<div class="smaller">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-label="1"></a><span class="im">import</span> json</span>
 <span id="cb8-2"><a aria-label="2"></a></span>
 <span id="cb8-3"><a aria-label="3"></a><span class="co"># Specify that this is a source agent</span></span>
@@ -1771,6 +1772,7 @@ Usage:
 <span id="cb8-15"><a aria-label="15"></a>  mads.state[<span class="st">"n"</span>] <span class="op">=</span> mads.state[<span class="st">"n"</span>] <span class="op">+</span> <span class="dv">1</span></span>
 <span id="cb8-16"><a aria-label="16"></a>  mads.data[<span class="st">"processed"</span>] <span class="op">=</span> <span class="va">False</span></span>
 <span id="cb8-17"><a aria-label="17"></a>  <span class="cf">return</span> json.dumps(mads.data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <div class="callout callout-warning callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -2041,8 +2043,7 @@ Usage:
 <li>If not, implement a new agent:
 <ul>
 <li>if its logics fit the simple <code>source/filter/sink</code> model, create a plugin</li>
-<li>if its logics are more complex, create a <strong>finite state machine</strong> agent or a <strong>custom agent</strong><br>
-based on the MADS API</li>
+<li>if its logics are more complex, create a <strong>finite state machine</strong> agent or a <strong>custom agent</strong> based on the MADS API</li>
 </ul></li>
 <li>Python plugins: start with examples in <a href="https://github.com/MADS-NET/python_agent" class="uri">https://github.com/MADS-NET/python_agent</a></li>
 <li>C++ plugins: create a template with <code>mads plugin -t &lt;source|filter|sink&gt;</code><br>
