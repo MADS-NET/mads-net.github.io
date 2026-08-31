@@ -29,8 +29,14 @@ We are building a simple application that uses the following agents:
 
 * an agent that acquires analog data from a serial-port conected Arduino Uno R4
 * an agent that processes the acquired data, computing some descriptive and inferential statistics
-* an agent that visualizes the data and the computed statistics in [Rerun](htts://rerun.io){target="rerun"}
+* an agent that visualizes the data and the computed statistics in [Rerun](https://rerun.io){target="rerun"}
 * an agent that logs the data and the computed statistics to a MongoDB database
+
+:::aside
+
+The code here presented is available on [GitHub](https://github.com/pbosetti/Gorini){target="github"}.
+
+:::
 
 # Arduino-side
 
@@ -549,7 +555,7 @@ source .venv/bin/activate
 Remember to activate the virtual environment in every terminal you want to run the `rerunner` agent, otherwise it won't find the `rerun` package.
 :::
 
-If the command `rerun` opens a GUI window, you are ready to go. If not, check the [Rerun installation guide](https://rerun.io/docs/getting-started) for your platform.
+If the command `rerun` opens a GUI window, you are ready to go. If not, check the [Rerun installation guide](https://rerun.io/docs/getting-started){target="rerun"} for your platform.
 
 
 ### Install the `rerun.plugin` and configure the `mads.ini` file
@@ -599,8 +605,9 @@ Now you can launch the `rerunner` agent and see the data in the Rerun applicatio
 mads sink rerun.plugin
 ```
 
-Confguring the Rerun application is beyond the scope of this exercise, but you can find some examples in the [Rerun documentation](https://rerun.io/docs/concepts/visualization/blueprints).
+Confguring the Rerun application is beyond the scope of this exercise, but you can find some examples in the [Rerun documentation](https://rerun.io/docs/concepts/visualization/blueprints){target="rerun"}.
 
 ![Rerun visualization of the distance and temperature measurements (simulated)](rerun.png)
 
 Rerun supports *blueprints*:, files that define the layout and the visualization of the data. You can create your own blueprints and load them in the Rerun application to customize the visualization. The blueprint used above can be downloaded [here](arduino.rbl){target="_blank"}.
+
