@@ -1446,7 +1446,7 @@
     "href": "presentations/gorini_exercise.html",
     "title": "Exercise for Scuola Gorini 2026",
     "section": "",
-    "text": "We are building a simple application that uses the following agents:\n\nan agent that acquires analog data from a serial-port conected Arduino Uno R4\nan agent that processes the acquired data, computing some descriptive and inferential statistics\nan agent that visualizes the data and the computed statistics in Rerun\nan agent that logs the data and the computed statistics to a MongoDB database"
+    "text": "We are building a simple application that uses the following agents:\n\nan agent that acquires analog data from a serial-port conected Arduino Uno R4\nan agent that processes the acquired data, computing some descriptive and inferential statistics\nan agent that visualizes the data and the computed statistics in Rerun\nan agent that logs the data and the computed statistics to a MongoDB database\n\n\n\nThe code here presented is available on GitHub."
   },
   {
     "objectID": "presentations/gorini_exercise.html#custom-plugins",

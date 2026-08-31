@@ -385,7 +385,7 @@ cookieconsent.run({
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -442,7 +442,7 @@ cookieconsent.run({
 </header>
 
 
-<section id="objective" class="level1" data-number="1">
+<section id="objective" class="level1 page-columns page-full" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Objective</h1>
 <p>We are building a simple application that uses the following agents:</p>
 <ul>
@@ -451,7 +451,10 @@ cookieconsent.run({
 <li>an agent that visualizes the data and the computed statistics in <a href="htts://rerun.io" target="rerun">Rerun</a></li>
 <li>an agent that logs the data and the computed statistics to a MongoDB database</li>
 </ul>
-</section>
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<p>The code here presented is available on <a href="https://github.com/pbosetti/Gorini" target="github">GitHub</a>.</p>
+</div></div></section>
 <section id="arduino-side" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Arduino-side</h1>
 <p>We are using an Arduino Uno R4 board to acquire analog data from two QWIIC sensors: a temperature sensor and a distance sensor. The Arduino is programmed to read the sensors and send the data over the serial port to the MADS agent in JSON format.</p>
