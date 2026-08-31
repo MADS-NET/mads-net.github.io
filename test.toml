@@ -1,0 +1,35 @@
+[agents]
+# Settings shared by all agents
+frontend_address = "tcp://localhost:9090"
+backend_address = "tcp://localhost:9091"
+settings_address = "tcp://localhost:9092"
+timecode_fps = 25
+
+[broker]
+frontend_address = "tcp://*:9090"
+backend_address = "tcp://*:9091"
+settings_address = "tcp://*:9092"
+prefer_loopback_for_local_services = true
+
+[logger]
+mongo_uri = "mongodb://localhost:27017"
+mongo_db = "gorini"
+sub_topic = ["stats", "arduino"]
+
+[arduino]
+port = "/dev/cu.usbmodemB43A4536D2A02"
+
+[dummy]
+pub_topic = "arduino"
+period = 100
+means = [10.0, 10.0, 10.0, 12.0]
+stds = [0.2, 0.3, 0.2, 0.2]
+
+[stats]
+sub_topic = ["arduino"]
+keypaths = ["/measurements/distance", "/measurements/thermo"]
+reference_samples = 50
+window_size = 10
+
+[rerunner]
+sub_topic = ["arduino", "stats"]

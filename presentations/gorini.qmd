@@ -12,7 +12,11 @@ format:
   revealjs:
     link-external-icon: false
     preview-links: false
-revealjs-plugins: [tabset]
+    qountdown:
+      minutes: 45
+      label: true      # optional remaining-time readout
+      label-position: tl
+revealjs-plugins: [tabset, qountdown]
 abstract: |
   A high level introduction to the MADS Framework.
 # filters:
@@ -163,7 +167,7 @@ mads -h
 
 ## Common tasks: acquisition
 
-You want to **aquire data/signals**:
+You want to **acquire data/signals**:
 
 * from microcontrollers via serial connection (e.g. Arduino)
 * on microcontrollers with an ARM Linux OS (e.g. Arduino Uno Q, Raspberry Pi, Beaglebone)
@@ -473,7 +477,7 @@ Typically, nodes may act as [sources]{.bred} (produce information), [filters]{.b
 | [OPC-UA]{.bred} | powerful, industry-based, fed'n | heavy, complex, vendor-dependent, limited portability/integrability | 🔴 | 🟠🟢 | {{< lc curve=4 >}} |
 | **Zenoh** | flexible and powerful, fed'n | high abstraction, low-level | 🟢 | 🟠 | {{< lc curve=3 >}} |
 | **Apache Spark** | designed for high-loads & datacenters, fed'n | Java-based, limited integrability, unsuited to µC | 🔴 | 🟢 | {{< lc curve=3 >}} |
-| **ROS2** | flexible, high level, feature rich | steep learning curve, robotics oriented, no fed'n | 🟢 | 🟢 | {{< lc curve=1 >}} |
+| **ROS2** | flexible, high level, feature rich | long learning curve, robotics oriented, no fed'n | 🟢 | 🟢 | {{< lc curve=1 >}} |
 | {{< logo >}} | **easy**, ZeroMQ-based, portable, flexible, polyglot, fed'n | young (3 years) | 🟢🟢 | 🟠🟢 | **{{< lc curve=0.5 >}}** |
 
 :::callout-note
@@ -762,7 +766,7 @@ An agent can be implemented in a number of alternative ways:
 
 * C++ process, linked to the `MadsCore` shared library (`#include <mads.hpp>`)
 * C process, linked to the `MadsCore` shared library (`#include <mads_c.h>`)
-* Python script [FFI](https://en.wikipedia.org/wiki/Foreign_function_interface)-linked to the `MadsCore` library (`import Mads`)
+* Python script [FFI](https://en.wikipedia.org/wiki/Foreign_function_interface)-linked to the `MadsCore` library (`from mads_agent import Agent`)
 * C++ [plugin](https://en.wikipedia.org/wiki/Plug-in_(computing)), with minimal API surface (3 methods)
 * Rust plugin, with minimal API surface (3 methods)
 * Python plugin (a binary that loads a Python module at runtime)
@@ -983,15 +987,19 @@ Two commands provide GUIs to monitor and control a MADS network:
 * `mads sink hdf5.plugin`: a sink agent that logs data to HDF5 files
 * `mads [source|filter|sink] arduino.plugin`: a source/filter/sink agent that communicates with a microcontroller via serial port
 
-
 ::: {.callout-note}
 ### Python plugins
 Python plugins are loaded by a dedicated `mads python` agent, which is installed with `mads package --install mads-python`. It is a **Python interpreter** that loads a Python module at runtime
 
 To allow users to use their own Python version, the `mads python` agent **is not part** of the base MADS installation, but is available as a separate package from [MADS-NET/python_agent](https://github.com/MADS-NET/python_agent) to be compiled against your Python of choice
-
 :::
 
+
+## Rerun interface
+
+:::center
+![Rerun window (see <https://rerun.io>)](rerun.png){width=75%}
+:::
 
 ## Anatomy of a plugin: C++
 
@@ -1048,8 +1056,8 @@ private:
 
 ::: {.columns}
 
-::: {.column .smaller}
-
+::: {.column}
+:::smaller
 ```python
 import json
 
@@ -1069,7 +1077,7 @@ def get_output():
   mads.data["processed"] = False
   return json.dumps(mads.data)
 ```
-
+:::
 ::: {.callout-warning}
 `"source`" is the default agent type. If mandatory functions are not implemented, the agent fails to start
 :::
@@ -1135,9 +1143,6 @@ See [the guide](/manual/timing-scheduling.qmd) for timing and synchronization co
 :::
 
 :::
-
-
-
 
 
 # Design a {{< logo >}} network
@@ -1206,7 +1211,7 @@ Agents with dangling topics have dashed borders. Solid edges are explicit topics
 * If possible, reuse existing agents/plugins from base install or MADS-NET
 * If not, implement a new agent:
   * if its logics fit the simple `source/filter/sink` model, create a plugin
-  * if its logics are more complex, create a **finite state machine** agent or a **custom agent**\
+  * if its logics are more complex, create a **finite state machine** agent or a **custom agent**
     based on the MADS API
 * Python plugins: start with examples in <https://github.com/MADS-NET/python_agent>
 * C++ plugins: create a template with `mads plugin -t <source|filter|sink>`\
@@ -1250,7 +1255,7 @@ Then that agent will **start automatically** at boot time
 * More can be supported by setting `RLIMIT_NOFILE` to a higher value (will be done by `mads.ini` in future releases)
 * A **single agent** can sustain up to typ. 40k msg/s (with 1kB payload), depending on the processing load and the CPU speed
 * Higher payload may result in **dropped messages** (eg. ~0.05% at 50k msg/s), but the connection is robust
-* Increasing message queue (a `mads.ini` setting) may cope with higher but irregular loads (ie. burts exceeding the processing capacity of the agent)
+* Increasing message queue (a `mads.ini` setting) may cope with higher but irregular loads (ie. bursts exceeding the processing capacity of the agent)
 
 :::aside
 Use the command `ulimit -n <value>` on the broker machine to increase the maximum number of connections. Each agent needs two permamnent sockets, plus a transient one when receiving settings. Linux default is 1024, which is enough for ~500 agents
@@ -1366,3 +1371,5 @@ Who's using MADS?
 # ...and remember
 
 Look at <https://mads-net.github.io> for documentation and guides!
+
+Exercise: [here](gorini_exercise.qmd){target="_blank"}
