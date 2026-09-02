@@ -162,6 +162,11 @@ div.margin-aside p {
   color: $my-gray;
 }
 
+img.navbar-logo {
+  max-height: 80px;
+  max-width: 100%;
+}
+
 /*-- RevealJS Presentation styles --*/
 
 .reveal {

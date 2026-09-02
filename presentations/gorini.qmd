@@ -461,7 +461,7 @@ digraph mq {
 }
 ```
 
-:::callout-important
+:::{.callout-important .smaller}
 ### Definitions
 Typically, nodes may act as [sources]{.bred} (produce information), [filters]{.bgreen} (elaborate), or [sinks]{.bblue} (consume information). The node `n4` acts as a **brigde** that federates two sub-networks
 
@@ -481,7 +481,7 @@ Typically, nodes may act as [sources]{.bred} (produce information), [filters]{.b
 | {{< logo >}} | **easy**, ZeroMQ-based, portable, flexible, polyglot, fed'n | young (3 years) | 🟢🟢 | 🟠🟢 | **{{< lc curve=0.5 >}}** |
 
 :::callout-note
-**Low-level** means a framework only/mostly taking care of data communication/distribution, where business logic must be implemented every time; **portability** means on different platforms/architectures; **integrability** means against existing solutions; **fed'n** means federation; learning curves {{< lc >}} are subjective and qualitative.
+**Low-level**: framework only/mostly taking care of data communication/distribution, where business logic must be implemented every time; **portability**: different platforms/architectures; **integrability**: against existing solutions; **fed'n** means federation; learning curves {{< lc >}} are subjective and qualitative.
 :::
 :::
 
@@ -1251,23 +1251,27 @@ Then that agent will **start automatically** at boot time
 ## Performance considerations
 
 * Broker can sustain up to **3M msg/s with 1kB payload**, up to 30M msg/s when multithreaded (a `mads.ini` setting)
-* As of version 4.2.x, MADS broker sustains up to **~460 clients** (agents) on a single machine on Linux
-* More can be supported by setting `RLIMIT_NOFILE` to a higher value (will be done by `mads.ini` in future releases)
+* As of version 2.4.3, MADS broker sustains a configurable maximum number of clients (memory limited)
 * A **single agent** can sustain up to typ. 40k msg/s (with 1kB payload), depending on the processing load and the CPU speed
 * Higher payload may result in **dropped messages** (eg. ~0.05% at 50k msg/s), but the connection is robust
 * Increasing message queue (a `mads.ini` setting) may cope with higher but irregular loads (ie. bursts exceeding the processing capacity of the agent)
 
-:::aside
-Use the command `ulimit -n <value>` on the broker machine to increase the maximum number of connections. Each agent needs two permamnent sockets, plus a transient one when receiving settings. Linux default is 1024, which is enough for ~500 agents
+
+::: {.callout-warning}
+
+Up to v2.4.3, timings relies on individual device clocks, which have to be synchronized (eg. via NTP) to avoid time drifts. In a coming version (currently in development), a **clock synchronization** mechanism will be implemented even on devices with no RTC and no NTP access
+
 :::
+
 
 
 # Advanced features
 
 ## FMI Interface
 
+:::smaller
 > **POV**: you have a Simulink model that you want to integrate into a MADS network, e.g. to simulate a physical system or a control algorithm (Digital Twin)
-
+:::
 
 ::: {.columns}
 
@@ -1299,7 +1303,9 @@ The list of simulation software that can export FMU v3.0 is available at <https:
 
 ## ONNX models {{< si onnx >}}
 
+::: smaller
 > **POV**: you have a trained ML model and you want to integrate it into a MADS network, e.g. to perform inference on data collected from the field
+:::
 
 * Quite similarly to the FMU case, there is the `mads onnx` agent that loads an ONNX model and runs inference on data received from the network
 * it can be used both for as a **filter** and as a **source** agent:
