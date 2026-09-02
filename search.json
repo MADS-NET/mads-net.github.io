@@ -1015,6 +1015,13 @@
     "text": "Agents: Arduino-based\n\nCheapest and fastest way to ingest field data into a MADS network\nThree possible, complementary solutions:\n\narduino.plugin and a custom .ino sketch that prints a JSON string over serial — any Arduino, but must be serial-port connected to an agent running on separate device\narduinoQ.plugin, only works on an Arduino Uno Q: the agent runs on the CPU, a custom .ino on the MCU, they communicate via RPC — Uno Q only, standalone\narduino_mads: an Arduino-native library that provides low-level message passing to a MADS-network — requires Ethernet- or WiFi-equipped Arduino, standalone, feature-limited\n\n\n\n\n\n\n\n\nTip\n\n\nThe arduino.plugin, despite its name, works with any micro that can print on a serial port a JSON string"
   },
   {
+    "objectID": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-arduino-based-1",
+    "href": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-arduino-based-1",
+    "title": "Distributed systems with ",
+    "section": " Agents: Arduino-based",
+    "text": "Agents: Arduino-based\n\n\n\nA new, powerful Arduino plugin is in preparation, with direct selection of I/O pins from mads.ini, with no programming required on the Arduino side\nIt exploits the https://github.com/pbosetti/ArduinoDriver library and firmware, which provides a generic, low-level USB interface to Arduino I/O pins, and is compatible with most Arduino boards\nExpected release: Fall 2026\nTentative name: ArduinoIO.plugin"
+  },
+  {
     "objectID": "presentations/gorini.html#common-commands",
     "href": "presentations/gorini.html#common-commands",
     "title": "Distributed systems with ",
