@@ -994,6 +994,7 @@ Usage:
 </div>
 </div>
 </div>
+<div class="smaller">
 <div class="callout callout-important callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -1004,6 +1005,7 @@ Usage:
 </div>
 <div class="callout-content">
 <p>Typically, nodes may act as <span class="bred">sources</span> (produce information), <span class="bgreen">filters</span> (elaborate), or <span class="bblue">sinks</span> (consume information). The node <code>n4</code> acts as a <strong>brigde</strong> that federates two sub-networks</p>
+</div>
 </div>
 </div>
 </div>
@@ -2079,16 +2081,25 @@ and fill in the methods</li>
 <h2>Performance considerations</h2>
 <ul>
 <li>Broker can sustain up to <strong>3M msg/s with 1kB payload</strong>, up to 30M msg/s when multithreaded (a <code>mads.ini</code> setting)</li>
-<li>As of version 4.2.x, MADS broker sustains up to <strong>~460 clients</strong> (agents) on a single machine on Linux</li>
-<li>More can be supported by setting <code>RLIMIT_NOFILE</code> to a higher value (will be done by <code>mads.ini</code> in future releases)</li>
+<li>As of version 2.4.3, MADS broker sustains a configurable maximum number of clients (memory limited)</li>
 <li>A <strong>single agent</strong> can sustain up to typ. 40k msg/s (with 1kB payload), depending on the processing load and the CPU speed</li>
 <li>Higher payload may result in <strong>dropped messages</strong> (eg. ~0.05% at 50k msg/s), but the connection is robust</li>
 <li>Increasing message queue (a <code>mads.ini</code> setting) may cope with higher but irregular loads (ie. bursts exceeding the processing capacity of the agent)</li>
 </ul>
-
-<aside><div>
-<p>Use the command <code>ulimit -n &lt;value&gt;</code> on the broker machine to increase the maximum number of connections. Each agent needs two permamnent sockets, plus a transient one when receiving settings. Linux default is 1024, which is enough for ~500 agents</p>
-</div></aside></section></section>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>Up to v2.4.3, timings relies on individual device clocks, which have to be synchronized (eg. via NTP) to avoid time drifts. In a coming version (currently in development), a <strong>clock synchronization</strong> mechanism will be implemented even on devices with no RTC and no NTP access</p>
+</div>
+</div>
+</div>
+</section></section>
 <section>
 <section id="advanced-features" class="title-slide slide level1 center">
 <h1>Advanced features</h1>
@@ -2096,9 +2107,11 @@ and fill in the methods</li>
 </section>
 <section id="fmi-interface" class="slide level2">
 <h2>FMI Interface</h2>
+<div class="smaller">
 <blockquote>
 <p><strong>POV</strong>: you have a Simulink model that you want to integrate into a MADS network, e.g.&nbsp;to simulate a physical system or a control algorithm (Digital Twin)</p>
 </blockquote>
+</div>
 <div class="columns">
 <div class="column" style="width:60%;">
 <ul>
@@ -2132,9 +2145,11 @@ and fill in the methods</li>
 </section>
 <section id="onnx-models-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c207369206f6e6e78203e7d7d" class="slide level2">
 <h2>ONNX models <svg style="display:inline-block;vertical-align:-0.125em;height:1em;width:1em" class="si si-onnx" aria-hidden="true" role="img" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>ONNX</title><path d="M23.0325 11.2963c-.0503 0-.1006 0-.1508.0126l-4.021-7.4387c.0754-.1383.1131-.289.1131-.4524 0-.5403-.4398-.9675-.9675-.9675-.2765 0-.5278.113-.7037.3015L9.286 1.156C9.2357.6785 8.821.3016 8.3184.3016c-.5277 0-.9675.4398-.9675.9675 0 .1634.0377.3141.113.4524l-6.245 8.9591c-.0753-.0251-.1633-.0377-.2513-.0377-.5403 0-.9675.4398-.9675.9676 0 .5403.4398.9675.9675.9675h.0377l3.3676 8.3309c-.0503.1257-.088.2639-.088.402 0 .5404.4398.9676.9676.9676.2764 0 .5277-.113.7036-.3015l10.1152.9926c.1005.4273.49.7288.9424.7288.5403 0 .9676-.4398.9676-.9675 0-.2388-.088-.465-.2262-.6283l5.1141-8.8712c.0503.0126.1005.0126.1634.0126.5403 0 .9675-.4398.9675-.9676 0-.5403-.4272-.98-.9675-.98zM17.2272 4.021c.1131.1508.2765.264.4524.3267l-1.533 11.5728c-.1005.0252-.1885.0503-.2764.1005L7.4513 8.708c.0251-.0754.0377-.1634.0377-.2514 0-.0628-.0126-.1256-.0126-.1884zm4.8754 8.5068l-5.177 3.556a1.105 1.105 0 0 0-.1256-.0753L18.3455 4.335h.0126l3.9456 7.288c-.1508.1759-.2388.3895-.2388.6408 0 .1005.0126.1885.0377.2638zM6.3832 7.5016c-.4649.0754-.8293.4775-.8293.955v.0628l-3.4555 2.0481 5.378-7.7026zm.3519 1.91c.1256-.0252.2513-.088.3518-.1634l8.356 7.2628c-.0377.113-.0628.2262-.0628.3518v.0503l-9.311 3.845c-.1382-.201-.3518-.3518-.6031-.402zm8.8963 8.1172c.1257.1382.3016.2513.5026.289l.465 4.046c-.201.1006-.3519.264-.4524.4524l-9.8136-.955zm1.1435.2136c.3267-.1633.5403-.49.5403-.867 0-.088-.0126-.1634-.0377-.2513l4.7372-3.2545-4.8 8.331zm.2513-14.3497l-9.889 4.31-.1131-.0755 1.2565-5.3906h.0377c.3393 0 .6409-.1759.8168-.4397l7.891 1.5706zM1.935 11.6105c0-.0629-.0126-.1257-.0126-.1885l3.9079-2.2995c.0754.0754.1633.1508.2638.201L4.8252 20.243l-3.2043-7.9036c.1885-.176.3142-.4398.3142-.7288Z"></path></svg></h2>
+<div class="smaller">
 <blockquote>
 <p><strong>POV</strong>: you have a trained ML model and you want to integrate it into a MADS network, e.g.&nbsp;to perform inference on data collected from the field</p>
 </blockquote>
+</div>
 <ul>
 <li>Quite similarly to the FMU case, there is the <code>mads onnx</code> agent that loads an ONNX model and runs inference on data received from the network</li>
 <li>it can be used both for as a <strong>filter</strong> and as a <strong>source</strong> agent:
