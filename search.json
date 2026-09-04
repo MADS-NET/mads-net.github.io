@@ -1019,7 +1019,7 @@
     "href": "presentations/gorini.html#b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206c6f676f203e7d7d-agents-arduino-based-1",
     "title": "Distributed systems with ",
     "section": " Agents: Arduino-based",
-    "text": "Agents: Arduino-based\n\n\n\nA new, powerful Arduino plugin is in preparation, with direct selection of I/O pins from mads.ini, with no programming required on the Arduino side\nIt exploits the https://github.com/pbosetti/ArduinoDriver library and firmware, which provides a generic, low-level USB interface to Arduino I/O pins, and is compatible with most Arduino boards\nExpected release: Fall 2026\nTentative name: ArduinoIO.plugin"
+    "text": "Agents: Arduino-based\n\n\n\nA new, powerful Arduino plugin is in preparation, with direct selection of I/O pins from mads.ini, with no programming required on the Arduino side\nIt exploits the https://github.com/pbosetti/ArduinoDriver library and firmware, which provides a generic, low-level USB interface to Arduino I/O pins, and is compatible with most Arduino boards\nSupports read, write, stream, and interrupts\nExpected release: Fall 2026 released\nPlugin name: ArduinoIO.plugin"
   },
   {
     "objectID": "presentations/gorini.html#common-commands",
