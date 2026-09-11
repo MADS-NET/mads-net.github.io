@@ -474,17 +474,17 @@ Important
 <section id="installing-on-macos" class="level2">
 <h2 class="anchored" data-anchor-id="installing-on-macos">Installing on MacOS</h2>
 <p>Suppose that you downloaded the installer <code>mads-&lt;version&gt;-Darwin-universal.sh</code> (where <code>&lt;version&gt;</code> is the version number, e.g.&nbsp;<code>2.0.0</code>). The installer takes the following arguments:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./Mads-2.0.0-Darwin-universal.sh</span> <span class="at">--help</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Usage:</span> packages/Mads-2.0.0-Darwin-universal.sh <span class="pp">[</span><span class="ss">options</span><span class="pp">]</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./Mads-v2.4.2-Darwin-universal.sh</span> <span class="at">--help</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Usage:</span> packages/Mads-v2.4.2-Darwin-universal.sh <span class="pp">[</span><span class="ss">options</span><span class="pp">]</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Options:</span> [defaults in brackets after descriptions]</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--help</span>            print this message</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--version</span>         print cmake installer version</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--prefix=dir</span>      directory in which to install</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--include-subdir</span>  include the Mads-2.0.0-Darwin-universal subdirectory</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--exclude-subdir</span>  exclude the Mads-2.0.0-Darwin-universal subdirectory</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--include-subdir</span>  include the Mads-v2.4.2-Darwin-universal subdirectory</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--exclude-subdir</span>  exclude the Mads-v2.4.2-Darwin-universal subdirectory</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">--skip-license</span>    accept license</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>If you run it with no arguments, it will install MADS in the <code>/usr/local/</code> directory (need <code>sudo</code>) and ask for accepting the license. If you (as me) prefer to keep it in your home directory, you can run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./Mads-2.0.0-Darwin-universal.sh</span> <span class="at">--prefix</span><span class="op">=</span><span class="va">${HOME}</span> <span class="at">--skip-license</span>    </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./Mads-v2.4.2-Darwin-universal.sh</span> <span class="at">--prefix</span><span class="op">=</span><span class="va">${HOME}</span> <span class="at">--skip-license</span>    </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>which will install in <code>${HOME}/usr/local</code> and automatically accept license. Then, you want to add <code>${HOME}/usr/local/bin</code> to your search path: add the following line to your <code>.zshrc</code> or <code>.bashrc</code> file:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="va">${HOME}</span>/usr/local/bin:<span class="va">$PATH</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Finally, restart your terminal and check that MADS is correctly installed by running:</p>
@@ -498,14 +498,14 @@ Important
 <h2 class="anchored" data-anchor-id="installing-on-linux">Installing on Linux</h2>
 <p>On <a href="https://git.new/MADS">git.new/MADS</a> you find two <code>deb</code> packages:</p>
 <ul>
-<li><code>mads-&lt;version&gt;-Linux-x86_64.deb</code> for Intel architectures</li>
-<li><code>mads-&lt;version&gt;-Linux-aarch64.deb</code> for ARM architectures (e.g.&nbsp;Raspberry Pi)</li>
+<li><code>Mads-&lt;version&gt;-Linux-x86_64.deb</code> for Intel architectures</li>
+<li><code>Mads-&lt;version&gt;-Linux-aarch64.deb</code> for ARM architectures (e.g.&nbsp;Raspberry Pi)</li>
 </ul>
 <p>Installing is as simple as:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">MV</span><span class="op">=</span>2.1.1  <span class="co"># or the latest version</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/pbosetti/MADS/releases/download/v<span class="va">${MV}</span>/mads-<span class="va">${MV}</span>-Linux-aarch64.deb</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dpkg <span class="at">-i</span> mads-<span class="va">${MV}</span>-Linux-aarch64.deb</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> mads-<span class="va">${MV}</span>-Linux-aarch64.deb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">MV</span><span class="op">=</span>v2.4.2  <span class="co"># or the latest version</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/pbosetti/MADS/releases/download/v<span class="va">${MV}</span>/Mads-<span class="va">${MV}</span>-Linux-aarch64.deb</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dpkg <span class="at">-i</span> Mads-<span class="va">${MV}</span>-Linux-aarch64.deb</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> Mads-<span class="va">${MV}</span>-Linux-aarch64.deb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
