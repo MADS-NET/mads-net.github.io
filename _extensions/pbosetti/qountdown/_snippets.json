@@ -1,0 +1,45 @@
+{
+  "Qountdown config": {
+    "prefix": "meta",
+    "body": [
+      "format:",
+      "  revealjs:",
+      "    qountdown:",
+      "      minutes: ${1:20}",
+      "      label: ${2|true,false,elapsed|}",
+      "revealjs-plugins:",
+      "  - qountdown"
+    ],
+    "description": "Configure the qountdown time bar in the front matter"
+  },
+  "Qountdown options": {
+    "prefix": "meta-full",
+    "body": [
+      "qountdown:",
+      "  minutes: ${1:20}",
+      "  start: ${2|fullscreen,immediate,manual|}",
+      "  on-exit: ${3|reset,pause,continue|}",
+      "  position: ${4|above,below|}",
+      "  color: \"${5:#f0a202}\"",
+      "  warning-color: \"${6:#f25c05}\"",
+      "  overtime-color: \"${7:#d7263d}\"",
+      "  warning-at: ${8:0.8}",
+      "  label: ${9|true,false,elapsed|}",
+      "  label-position: ${10|bl,br,tl,tr|}"
+    ],
+    "description": "All qountdown options, to paste under format: revealjs:"
+  },
+  "Qountdown overtime hook": {
+    "prefix": "overtime",
+    "body": [
+      "```{=html}",
+      "<script>",
+      "  Reveal.on('qountdown-overtime', () => {",
+      "    ${1:console.log('time is up');}",
+      "  });",
+      "</script>",
+      "```"
+    ],
+    "description": "React to the qountdown clock running over time"
+  }
+}

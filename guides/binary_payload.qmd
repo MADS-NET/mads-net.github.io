@@ -1,0 +1,214 @@
+---
+title: "Binary payloads"
+author:
+  - name: "Paolo Bosetti"
+    affiliations: 
+      - name: "University of Trento"
+date: 09/16/2026
+date-modified: today
+format: html
+# or uncomment the following line to also create PDF format
+# format: 
+#   html:
+#     toc: true
+#   pdf:
+#     toc: true
+draft: false
+categories: [binary, payload, plugin, programming, advanced, msgpack, json]
+abstract: |
+  JSON is the default format for exchanging data between agents, but sometimes you really need to send binary data. This guide shows how to do it in MADS.
+---
+
+# Context
+
+MADS agents exchange data in JSON format by default, which is a good choice for
+most applications and has the advantages of being flexible, human-readable, and
+to have flexible and easy to use interfaces in all programming languages used by
+MADS --- with the notable exception of C.
+
+JSON has two drawbacks, though:
+
+- it is verbose and not really efficient
+- it cannot store binary data (e.g. images)
+
+About verbosity and efficiency, MADS takes care for that with the optional use
+of **MsgPack** serialization on the wire. In fact, verbosity means an impact on
+both **bandwidth** and **deserialization time**. The same information in JSON
+format takes **more bytes**, because of the extra characters needed for the
+syntax and the numerical values being stored as strings. At the same time,
+**deserializing** a JSON message (i.e. converting it into a native data
+structure) is expensive because of the extra parsing needed for the syntax and
+the conversion of strings to numbers.
+
+Any MADS agent can specify `wire_format = msgpack` in its settings section (or
+use it once in the `[agents]` section to apply it to all agents) to use MsgPack
+serialization instead of JSON. When you do that, messages that are internally
+stored as `nlohmann::json` objects are serialized in a very efficient binary
+format and transmitted as such. The receiving agent will automatically and
+efficiently deserialize the message back into a `nlohmann::json` object, and
+this way we save both bandwidth (only efficient binary messages are sent) and
+deserialization time (no parsing and string-to-number conversion is needed).
+
+But MgsPack format only solves the forst drawback, while the second one (the
+inability to store binary data) is still there. A simple solution would be to
+encode the binary data in base64 and store it as a string in the JSON object,
+but that would be inefficient further increase the bandwidth usage. A better
+solution is to use **binary payloads**, which we are going to describe in this
+guide.
+
+# Binary payloads
+
+In MADS, each message on the wire is composed of three mandatory *parts*. The
+first part communicates message type and structure, the second part is the
+topic, and the third part is the JSON payload.
+
+There is also an optional **fourth part**, which is the **binary payload**. This
+part is not used by default, but it can be used to send binary data along with
+the message. The binary payload is a sequence of bytes that can contain any kind
+of data, such as images, audio, or any other binary format. The `Mads::Agent`
+[class documentation](https://pbosetti.github.io/MADS/classMads_1_1Agent.html){target="_blank"}
+describes how to send and receive messages with binary payloads, but the easiest
+way to do that is in a plugin, which is what we are going to show in this guide.
+
+## The plugin interface to binary payloads
+
+The source plugin API requires the implementation of the method:
+
+```cpp
+return_type get_output(json &out, vector<unsigned char> *blob = nullptr)
+```
+
+where `out` is the JSON payload that we normally use to send data structures
+(serialized as JSON or as MsgPack, depending on the `wire_format` setting). This
+is a mandatory argument, but it can be as well be an empty object `{}`.
+
+Where things get interesting is the **second argument**, which is a pointer to a
+`std::vector<unsigned char>`. This is the binary payload that we can fill with
+any data we want to send. If we don't want to send any binary data, we can
+simply pass `nullptr` as the second argument (which is indeed the default).
+
+This means that we can exploit the `blob` argument to send any kind of binary
+data we want, wether it is an image, a video, or just a large data structure
+that we want to serialize in a more efficient way than JSON, e.g. with Protobuf
+or Cap'n Proto. The only requirement is that the receiving agent **must know**
+**how to interpret the binary data**, since it will not be automatically
+deserialized like the JSON payload.
+
+
+::: {.callout-warning}
+
+When an agent has to publish/receive a large data structure with many numerical values (vecrors or matrices), you might be tempted to use more efficient serialization formats like Protobuf to encode the data structure. Although this is a perfectly valid and reasonable approach, it adds a considerable amount of complexity to the plugin code, and you really want to veryfy that you really need that and the MsgPack feature is really not enough for your application.
+
+In this regards, not that on standard systems and networks an agent uing `wire_format = msgpack` deal with more than 110k messages per seconds with 1kB payloads, and more than 70k messages per second in JSON format. See [here for some benchmarks](../presentations/gorini.html#/data-format-json){target="_blank"}.
+:::
+
+
+## Sending binary payloads
+
+Let us make an example, and implement the `get_output` method for a plugin that
+sends a frame grabbed from a camera. The frame is a binary image, and we want to
+send it along with some metadata in the JSON payload.
+
+::: {.callout-tip}
+
+Note that the JSON metadata could be as well be an empty object `{}`, if we
+don't want to send any metadata and really minimize the bandwidth usage.
+
+:::
+
+Focusing on the minimal implementation of the `get_output` method, we can do
+something like this:
+
+```cpp
+  return_type get_output(json &out, vector<unsigned char> *blob = nullptr) override {
+    out.clear();
+    // We are using OpenCV to grab a frame from the already created _cap 
+    // camera object
+    if (!_cap.isOpened() && !open_camera()) {
+      _error = "No camera available";
+      return return_type::error;
+    }
+
+    cv::Mat frame;
+    if (!_cap.read(frame) || frame.empty()) {
+      _error = "Failed to grab frame from camera";
+      return return_type::retry;
+    }
+
+    // the blob object is already initialized by the plugin loader as an 
+    // empty vector, so it shuld be always != nullptr, but we check it anyway
+    if (blob) {
+      if (!cv::imencode(".jpg", frame, *blob)) {
+        _error = "Failed to encode frame as JPEG";
+        return return_type::error;
+      }
+    }
+
+    // Add some metadata to the JSON payload
+    out["width"] = frame.cols;
+    out["height"] = frame.rows;
+    out["mode"] = _bw ? "BW" : "RGB";
+    out["format"] = "jpg";
+
+    if (!_agent_id.empty()) out["agent_id"] = _agent_id;
+    return return_type::success;
+  }
+```
+
+That's it: `cv:imencode` does most of the work for us, and we just need to fill
+the JSON payload with some metadata. The `blob` vector will be sent as the
+binary payload along with the message.
+
+
+## Receiving binary payloads
+
+The counterpart is an agent that receives the message and extracts the binary
+payload. it might be a filter or a sink plugin: for simplicity sake, we will
+focus on a **sink plugin** example.
+
+```cpp
+  return_type load_data(json const &input, string topic = "",
+                        vector<unsigned char> const *blob = nullptr) override {
+    if (!blob || blob->empty()) {
+      _error = "No image blob received";
+      return return_type::warning;
+    }
+
+    // create a sequential filename
+    ostringstream fname;
+    fname << _basename << "_" << setw(3) << setfill('0') << _next_index
+          << ".jpg";
+
+    ofstream ofs(fname.str(), ios::binary);
+    if (!ofs) {
+      _error = "Cannot open file '" + fname.str() + "' for writing";
+      return return_type::error;
+    }
+
+    // write the blob straight to the file
+    ofs.write(reinterpret_cast<const char *>(blob->data()),
+              static_cast<streamsize>(blob->size()));
+    if (!ofs) {
+      _error = "Failed to write image to '" + fname.str() + "'";
+      return return_type::error;
+    }
+
+    ++_next_index;
+    return return_type::success;
+  }
+```
+
+Depending on how you want to consume the blob, you might have to do some casting
+as above, for the `ofstream::write` method requires a `const char*` pointer,
+while the blob is a `std::vector<unsigned char>`. The `reinterpret_cast` is used
+to convert the pointer type accordingly, while the actual bytes to write are
+obtained with the `data()` method of the vector. The number of bytes to write is
+obtained with the `size()` method of the vector, and it is cast to `streamsize`
+to match the expected type of the `write` method. Other binary consumers might
+need or want different data types, but the idea is the same: the `blob` vector
+contains the raw bytes of the binary payload, and it is up to the receiving
+agent to interpret them correctly.
+
+# Full example
+
+The full example, complete and working, can be found on the [MADS-NET GitHub repository](https://github.com/MADS-NET/image_plugin).

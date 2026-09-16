@@ -1,0 +1,110 @@
+# _schema.yml for the "qountdown" revealjs-plugin extension.
+# Describes plugin options for IDE tooling and runtime validation.
+#
+# Configure in _quarto.yml, _metadata.yml, or document front matter under
+# format: revealjs:
+#   format:
+#     revealjs:
+#       qountdown:
+#         minutes: 15
+#         label: true
+#   revealjs-plugins:
+#     - qountdown
+
+$schema: https://m.canouil.dev/quarto-wizard/assets/schema/v2/extension-schema.json
+
+options:
+  minutes:
+    type: number
+    default: 20
+    exclusiveMinimum: 0
+    description: "Allocated time, in minutes. Fractional values are allowed (0.5 is 30 seconds)."
+    examples: [15, 20, 45]
+  start:
+    type: string
+    default: fullscreen
+    enum: [fullscreen, immediate, manual]
+    description: "When the clock starts: `fullscreen` (when the deck goes full screen), `immediate` (as soon as the deck loads), or `manual` (only via a key or the API)."
+  on-exit:
+    type: string
+    default: reset
+    enum: [reset, pause, continue]
+    aliases: [onExit]
+    description: "What happens when you leave full screen: `reset` (back to zero and stopped), `pause` (resume where you left off), or `continue` (keep running). Defaults to `continue` unless `start` is `fullscreen`."
+  position:
+    type: string
+    default: above
+    enum: [above, below]
+    description: "Put the time bar above or below the RevealJS progress bar."
+  height:
+    type: [number, "null"]
+    default: null
+    exclusiveMinimum: 0
+    description: "Height of the time bar in pixels. Defaults to the height of the progress bar."
+  color:
+    type: string
+    default: "#f0a202"
+    description: "Accent colour while on schedule."
+    completion:
+      type: color
+  warning-color:
+    type: string
+    default: "#f25c05"
+    aliases: [warningColor]
+    description: "Accent colour past `warning-at`."
+    completion:
+      type: color
+  overtime-color:
+    type: string
+    default: "#d7263d"
+    aliases: [overtimeColor]
+    description: "Accent colour once the time is up; the bar also pulses."
+    completion:
+      type: color
+  track-color:
+    type: string
+    default: "rgba(0, 0, 0, 0.2)"
+    aliases: [trackColor]
+    description: "Colour of the unfilled part of the bar."
+    completion:
+      type: color
+  warning-at:
+    type: number
+    default: 0.8
+    minimum: 0
+    maximum: 1
+    aliases: [warningAt]
+    description: "Fraction of the allocated time at which the warning colour kicks in."
+  label:
+    type: [boolean, string]
+    default: false
+    enum: [true, false, remaining, elapsed]
+    description: "Show a clock readout: `true` (or `remaining`) counts down, `elapsed` counts up, `false` shows no readout."
+  label-position:
+    type: string
+    default: bl
+    enum: [bl, br, tl, tr, bottom-left, bottom-right, top-left, top-right]
+    enumCaseInsensitive: true
+    aliases: [labelPosition]
+    description: "Corner for the clock readout."
+  keys:
+    type: [object, boolean]
+    default:
+      toggle: "t"
+      reset: "T"
+      set: "M"
+    description: "Keyboard shortcuts. Set to `false` to disable them all."
+    properties:
+      toggle:
+        type: string
+        default: "t"
+        description: "Key that pauses and resumes the clock."
+      reset:
+        type: string
+        default: "T"
+        description: "Key that resets the clock to zero."
+      set:
+        type: string
+        default: "M"
+        description: "Key that opens the box for typing a new duration in minutes."
+    additionalProperties: false

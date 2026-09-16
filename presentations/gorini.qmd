@@ -8,7 +8,9 @@ date-format: "YYYY-MMM-DD"
 draft: false
 logo: ../images/logo.png
 categories: [intro, meeting]
-format: 
+resources:
+  - MADS_Animation/MADSNetworkEmbed.html
+format:
   revealjs:
     link-external-icon: false
     preview-links: false
@@ -33,7 +35,6 @@ abstract: |
 #| echo: false
 library(tidyverse)
 ```
-
 
 ## {{< bi list >}} Contents
 
@@ -881,6 +882,32 @@ The `arduino.plugin`, despite its name, works with **any micro** that can print 
 :::
 
 
+## {{< logo >}} Agents: Arduino-based
+
+
+::: {.columns}
+
+::: {.column width="66%"}
+
+* A new, powerful Arduino plugin is in preparation, with direct selection of I/O pins from `mads.ini`, with **no programming** required on the Arduino side
+* It exploits the <https://github.com/pbosetti/ArduinoDriver> library and firmware, which provides a **generic, low-level USB interface** to Arduino I/O pins, and is compatible with most Arduino boards
+* Supports read, write, stream, and interrupts
+* Expected release: ~~Fall 2026~~ **released**
+* Plugin name: [ArduinoIO.plugin](https://github.com/MADS-NET/ArduinoIO_plugin)
+
+:::
+
+::: {.column width="33%"}
+
+[<img class="opengraph-image" src="https://opengraph.githubassets.com/2.4.1/pbosetti/ArduinoDriver" alt="ArduinoDriver" width="450px" />](https://github.com/pbosetti/ArduinoDriver)
+
+[<img class="opengraph-image" src="https://opengraph.githubassets.com/2.4.1/MADS-NET/ArduinoIO_plugin" alt="ArduinoDriver" width="450px" />](https://github.com/MADS-NET/ArduinoIO_plugin)
+:::
+
+:::
+
+
+
 # Commands and tools
 {{< logo >}} provides a number of command line tools to manage and monitor a network
 
@@ -1376,6 +1403,5 @@ Who's using MADS?
 
 # ...and remember
 
-Look at <https://mads-net.github.io> for documentation and guides!
-
-Exercise: [here](gorini_exercise.qmd){target="_blank"}
+* Look at <https://mads-net.github.io> for documentation and guides
+* Full lesson exercise is [here](gorini_exercise.qmd){target="_blank"}, with source code on [GitHub](https://github.com/pbosetti/Gorini){target="github"}

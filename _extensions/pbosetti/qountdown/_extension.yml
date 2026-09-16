@@ -1,6 +1,6 @@
 title: Qountdown
 author: Paolo Bosetti
-version: 1.2.0
+version: 1.3.0
 quarto-required: ">=1.3.0"
 contributes:
   revealjs-plugins:
@@ -13,3 +13,5 @@ contributes:
         qountdown:
           minutes: 20
           start: fullscreen
+source: pbosetti/qountdown@1.3.0
+source-type: registry

@@ -45,21 +45,21 @@ That said, agents and broker **must have the same MAJOR.MINOR version** to be ab
 Suppose that you downloaded the installer `mads-<version>-Darwin-universal.sh` (where `<version>` is the version number, e.g. `2.0.0`). The installer takes the following arguments:
 
 ```bash
-./Mads-2.0.0-Darwin-universal.sh --help
-Usage: packages/Mads-2.0.0-Darwin-universal.sh [options]
+./Mads-v2.4.2-Darwin-universal.sh --help
+Usage: packages/Mads-v2.4.2-Darwin-universal.sh [options]
 Options: [defaults in brackets after descriptions]
   --help            print this message
   --version         print cmake installer version
   --prefix=dir      directory in which to install
-  --include-subdir  include the Mads-2.0.0-Darwin-universal subdirectory
-  --exclude-subdir  exclude the Mads-2.0.0-Darwin-universal subdirectory
+  --include-subdir  include the Mads-v2.4.2-Darwin-universal subdirectory
+  --exclude-subdir  exclude the Mads-v2.4.2-Darwin-universal subdirectory
   --skip-license    accept license
 ```
 
 If you run it with no arguments, it will install MADS in the `/usr/local/` directory (need `sudo`) and ask for accepting the license. If you (as me) prefer to keep it in your home directory, you can run:
 
 ```bash
-./Mads-2.0.0-Darwin-universal.sh --prefix=${HOME} --skip-license    
+./Mads-v2.4.2-Darwin-universal.sh --prefix=${HOME} --skip-license    
 ```
 
 which will install in `${HOME}/usr/local` and automatically accept license. Then, you want to add `${HOME}/usr/local/bin` to your search path: add the following line to your `.zshrc` or `.bashrc` file:
@@ -82,16 +82,16 @@ Unless we're talking of very specific use cases, you probably want to compile yo
 
 On [git.new/MADS](https://git.new/MADS) you find two `deb` packages:
 
-* `mads-<version>-Linux-x86_64.deb` for Intel architectures
-* `mads-<version>-Linux-aarch64.deb` for ARM architectures (e.g. Raspberry Pi)
+* `Mads-<version>-Linux-x86_64.deb` for Intel architectures
+* `Mads-<version>-Linux-aarch64.deb` for ARM architectures (e.g. Raspberry Pi)
 
 Installing is as simple as:
 
 ```bash
-export MV=2.1.1  # or the latest version
-wget https://github.com/pbosetti/MADS/releases/download/v${MV}/mads-${MV}-Linux-aarch64.deb
-sudo dpkg -i mads-${MV}-Linux-aarch64.deb
-rm mads-${MV}-Linux-aarch64.deb
+export MV=v2.4.2  # or the latest version
+wget https://github.com/pbosetti/MADS/releases/download/v${MV}/Mads-${MV}-Linux-aarch64.deb
+sudo dpkg -i Mads-${MV}-Linux-aarch64.deb
+rm Mads-${MV}-Linux-aarch64.deb
 ```
 
 ::: callout-note
