@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2026-04-11">
+<meta name="dcterms.date" content="2026-09-16">
 
-<title>AI anyone?</title>
+<title>Binary payloads</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -89,7 +89,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/bootstrap/bootstrap-333e99d084c2ffcec8e6d96540d279c4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-580cd51fbb4f3c7d95b8bb74838632fa.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-333e99d084c2ffcec8e6d96540d279c4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/quarto-contrib/fontawesome-7-free-7.2.0/fontawesome.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -145,50 +144,6 @@ cookieconsent.run({
 });
 </script> 
   
-<style>
-div.callout-thumbs-up.callout {
-  border-left-color: #008000;
-}
-div.callout-thumbs-up.callout-style-default .callout-header {
-  background-color: rgba(0, 128, 0, 0.13);
-}
-div.callout-thumbs-up .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-thumbs-up.callout-style-default .callout-icon::before, div.callout-thumbs-up.callout-titled .callout-icon::before {
-  font-family: 'Font Awesome 7 Free';
-  font-weight: 900;
-  font-style: normal;
-  content: '\f164' !important;
-  background-image: none;
-}
-div.callout-prompt.callout {
-  border-left-color: #b3ff00;
-}
-div.callout-prompt.callout-style-default .callout-header {
-  background-color: rgba(179, 255, 0, 0.13);
-}
-div.callout-prompt .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-prompt.callout-style-default .callout-icon::before, div.callout-prompt.callout-titled .callout-icon::before {
-  font-family: 'Font Awesome 7 Free';
-  font-weight: 900;
-  font-style: normal;
-  content: '\e2ca' !important;
-  background-image: none;
-}
-div.callout-todo.callout {
-  border-left-color: pink;
-}
-div.callout-todo.callout-style-default .callout-header {
-  background-color: rgb(from pink r g b / 13%);
-}
-div.callout-todo .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-todo.callout-style-default .callout-icon::before, div.callout-todo.callout-titled .callout-icon::before {
-  font-family: 'Font Awesome 7 Free';
-  font-weight: 900;
-  font-style: normal;
-  content: '\f31c' !important;
-  background-image: none;
-}
-</style>
 
 
 </head>
@@ -406,33 +361,31 @@ div.callout-todo.callout-style-default .callout-icon::before, div.callout-todo.c
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#intro" id="toc-intro" class="nav-link active" data-scroll-target="#intro">Intro</a>
+  <li><a href="#context" id="toc-context" class="nav-link active" data-scroll-target="#context">Context</a></li>
+  <li><a href="#binary-payloads" id="toc-binary-payloads" class="nav-link" data-scroll-target="#binary-payloads">Binary payloads</a>
   <ul class="collapse">
-  <li><a href="#serial-port" id="toc-serial-port" class="nav-link" data-scroll-target="#serial-port">Serial port</a></li>
-  <li><a href="#running-stats" id="toc-running-stats" class="nav-link" data-scroll-target="#running-stats">Running stats</a></li>
+  <li><a href="#the-plugin-interface-to-binary-payloads" id="toc-the-plugin-interface-to-binary-payloads" class="nav-link" data-scroll-target="#the-plugin-interface-to-binary-payloads">The plugin interface to binary payloads</a></li>
+  <li><a href="#sending-binary-payloads" id="toc-sending-binary-payloads" class="nav-link" data-scroll-target="#sending-binary-payloads">Sending binary payloads</a></li>
+  <li><a href="#receiving-binary-payloads" id="toc-receiving-binary-payloads" class="nav-link" data-scroll-target="#receiving-binary-payloads">Receiving binary payloads</a></li>
   </ul></li>
-  <li><a href="#project-setup" id="toc-project-setup" class="nav-link" data-scroll-target="#project-setup">Project setup</a></li>
-  <li><a href="#ai-assisted-coding" id="toc-ai-assisted-coding" class="nav-link" data-scroll-target="#ai-assisted-coding">AI-assisted coding</a>
-  <ul class="collapse">
-  <li><a href="#preliminary-notes" id="toc-preliminary-notes" class="nav-link" data-scroll-target="#preliminary-notes">Preliminary notes</a></li>
-  <li><a href="#prompt-setup" id="toc-prompt-setup" class="nav-link" data-scroll-target="#prompt-setup">Prompt setup</a></li>
-  </ul></li>
-  <li><a href="#final-test" id="toc-final-test" class="nav-link" data-scroll-target="#final-test">Final test</a></li>
-  <li><a href="#my-version-of-the-code" id="toc-my-version-of-the-code" class="nav-link" data-scroll-target="#my-version-of-the-code">My version of the code</a></li>
+  <li><a href="#full-example" id="toc-full-example" class="nav-link" data-scroll-target="#full-example">Full example</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">AI anyone?</h1>
+<h1 class="title">Binary payloads</h1>
   <div class="quarto-categories">
+    <div class="quarto-category">binary</div>
+    <div class="quarto-category">payload</div>
     <div class="quarto-category">plugin</div>
-    <div class="quarto-category">coding</div>
-    <div class="quarto-category">AI</div>
-    <div class="quarto-category">intermediate</div>
+    <div class="quarto-category">programming</div>
+    <div class="quarto-category">advanced</div>
+    <div class="quarto-category">msgpack</div>
+    <div class="quarto-category">json</div>
   </div>
   </div>
 
@@ -457,7 +410,7 @@ div.callout-todo.callout-style-default .callout-icon::before, div.callout-todo.c
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 11, 2026</p>
+      <p class="date">September 16, 2026</p>
     </div>
   </div>
   
@@ -473,7 +426,7 @@ div.callout-todo.callout-style-default .callout-icon::before, div.callout-todo.c
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>Nowadays agentic AI coding assistants can be a powerful help. This guide shows how to integrate AI in your plugin development workflow.</p>
+    <p>JSON is the default format for exchanging data between agents, but sometimes you really need to send binary data. This guide shows how to do it in MADS.</p>
   </div>
 </div>
 
@@ -481,184 +434,134 @@ div.callout-todo.callout-style-default .callout-icon::before, div.callout-todo.c
 </header>
 
 
-<section id="intro" class="level1">
-<h1>Intro</h1>
-<p>MADS agents can be programmed in many different ways: in C++, using the <a href="https://github.com/MADS-Net/python_agent"><code>python_agent</code></a>, writing your own python scripts that loads the <a href="../guides/python_agent.html"><code>Agent</code> library</a>, using R scripts and the <a href="https://github.com/MADS-Net/r_plugin"><code>r_plugin</code></a>, and possibly other ways too. Regardless, C++ code always provides the best performances.</p>
-<p>But even if you are not really proficient in C++, you can still create your own plugins by <strong>properly</strong> using some AI coding agents.</p>
-<p>Hereafter we’ll go through an example that creates a source agent that reads measurements from a serial port, and a filter agent that calculates some running statistics on the data provided by the source.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>In the following we are using GPT-5.4, but you may as well use other modern, coding-oriented agents and get very similar results, still leveraging the same approach.</p>
-<p>Whatever you are using, be sure to use a coding agent integrated with Visual Studio Code (or the editor you prefer), so it can have access to the files in your project. In visual Studio Code, this means either ChatGPT Codex extension, or the embedded Copilot module.</p>
-</div>
-</div>
-<section id="serial-port" class="level2">
-<h2 class="anchored" data-anchor-id="serial-port">Serial port</h2>
-<p>Supppose that the serial-port connected device published data frames with the following format:</p>
-<pre><code>^&lt;value1&gt;,&lt;value2&gt;,...,&lt;valueN&gt;$</code></pre>
-<p>with a variable number of values in each frame, and a variable time interval between frames. The <code>^</code> and <code>$</code> characters are the start and end of frame markers, respectively.</p>
-<p>Since we may connect to the device at any time, we may start reading in the middle of a frame, so we need to be able to handle partial frames and correctly reassemble them into complete frames.</p>
-</section>
-<section id="running-stats" class="level2">
-<h2 class="anchored" data-anchor-id="running-stats">Running stats</h2>
-<p>We want to calculate the running mean and standard deviation of the values in the frames, with a sliding window of 100 frames and a stride of 50 frames. The stats should be published as a new topic every time a new stats package is available.</p>
-</section>
-</section>
-<section id="project-setup" class="level1 page-columns page-full">
-<h1>Project setup</h1>
-<p>Create a new project folder and open it in VSCode. Be sure to have the extension installed. If not, simply open the terminal and type:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">code</span> <span class="at">--install-extension</span> MADS-Net.madscode</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
-<div class="no-row-height column-margin column-container"><div class="margin-aside">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode" target="_blank"><img src="images/MADSCode.png" class="img-fluid figure-img"></a></p>
-<figcaption>VSCode MADSCode extension</figcaption>
-</figure>
-</div>
-</div></div><p>Now in the MADS side panel under the section <span class="bgray">plugins</span> select “Create a new one”, select <code>source</code> as type and name it <code>serial</code>, then repeate the command, select <code>filter</code> as type and name it <code>stats</code>.</p>
-<p>Open the <code>CMakeLists.txt</code> file and after the line <code>add_plugin(serial)</code> add a new line with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">add_plugin</span>(serial)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">add_plugin</span>(stats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This way the cmake script can build and create both the source and the filter plugin at the same time, compiling <code>src/serial.cpp</code> and <code>src/stats.cpp</code>, respectively.</p>
-<p>The MADS plugin library, which is fetched by CMake and available in <code>src/_deps/plugin-src</code>, contains a simple <code>SerialPort</code> C++ class. We are going to use it, so we can as well add</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;serialport.hpp&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>near the top of <code>src/serial.cpp</code>. This is going to be a hint for the AI assistant on how to deal with the serial ports.</p>
-</section>
-<section id="ai-assisted-coding" class="level1">
-<h1>AI-assisted coding</h1>
-<section id="preliminary-notes" class="level2">
-<h2 class="anchored" data-anchor-id="preliminary-notes">Preliminary notes</h2>
-<p>AI coding assistants are very powerful, but they are not perfect. As for all AI-based tools, they can <strong>make mistakes</strong>, and they can also be confused by ambiguous instructions. For this reason, it’s important to be very <strong>clear and specific</strong> in your instructions, and to always <strong>verify</strong> the code they generate.</p>
-<p>But when comparing coding assistants to other AI-based tools, we are in a field that has a big advantage: we can easily verify the code they generate by running it and checking if it works as expected. This is a huge advantage, because it allows us to quickly identify and fix any mistakes the assistant may have made. Even better: we can ask the assistant to go on and fix the code until it works as expected, which is a very powerful way to leverage the AI assistant’s capabilities.</p>
-<p>That’s why there are <strong>two golden rules</strong> to follow when using AI coding assistants:</p>
-<ol type="1">
-<li>be thorough, clear, specific, and as quantitative as possible in your instructions;</li>
-<li>always ask to include a test strategy in the instructions, so that you can verify the code and ask the assistant to fix it until all tests pass.</li>
-</ol>
-</section>
-<section id="prompt-setup" class="level2">
-<h2 class="anchored" data-anchor-id="prompt-setup">Prompt setup</h2>
-<p>Telling our AI agent what to do is definitely too complex and long for a single prompt, so we rather write the requirements in an <code>AGENTS.md</code> file, and then tell the agent to go and read it for instructions.</p>
-<p>In preparing the file, its important that you clearly state</p>
-<ol type="1">
-<li>the aim of the work</li>
-<li>the assumptions: web links to the MADS framework documentation, coding style, C++ version, workspace organization (folder structure)</li>
-<li>for each target (<code>serial</code> and <code>stats</code>), clearly state:
-<ol type="1">
-<li>its purpose</li>
-<li>library to use and how to find them (pre-installed or via FetchContent)</li>
-<li>a test strategy</li>
-</ol></li>
-</ol>
-<p>The latter is particularly important, for it allows the agent to veryfy its products and tune them until all tests pass.</p>
-<p>The <code>AGENTS.md</code> file we are proposing is available <a href="../ai_example/AGENTS.md" target="_blank">here</a>.</p>
-<p>Carefully read the instructions file. When you are satisfied, type the prompt:</p>
-<div class="callout callout-style-default callout-prompt callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Prompt</span>Prompt this:
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Look at AGENTS.md: report if the instructions are lacking.</p>
-</div>
-</div>
-<p>This won’t do anything, but it’s an important step to check whether your instructions are sound and complete.</p>
-<p>If needed, complete the instructions file with the requests, then:</p>
-<div class="callout callout-style-default callout-prompt callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Prompt</span>Prompt this:
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Proceed with the implementation. Be sure that all tests pass.</p>
-</div>
-</div>
-<p>If you — like me — get all test-related functions in the same .cpp files, you probably want to adjust that by moving those fuctions into a separate and common header file, so you have a cleaner codebase. Adding comments to methods would also be a nice final touch:</p>
-<div class="callout callout-style-default callout-prompt callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Prompt</span>Prompt this:
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Move all functions related to testing into a separate header file. Also add Doxygen comments to all public members.</p>
-</div>
-</div>
-</section>
-</section>
-<section id="final-test" class="level1">
-<h1>Final test</h1>
-<p>To make a final smoke test we want to launch a net with both agents running. The quickest way is to use <code>mads director</code> and prepare the settings files with the MADSCode VS extension.</p>
-<p>In the <span class="bgray">Configurations</span> section on the left panel select <code>Generate INI file</code> and then <code>Generate diretctor file</code> (accept default names both times).</p>
-<p>Open the just created <code>mads.ini</code> file (project local!) and add to the end:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[serial]</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">address</span> <span class="op">=</span> <span class="st">""</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">baudrate</span> <span class="op">=</span> <span class="dv">115200</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">[stats]</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="dt">sub_topic</span> <span class="op">=</span> <span class="op">[</span><span class="st">"serial"</span><span class="op">]</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="dt">window</span> <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="dt">stride</span> <span class="op">=</span> <span class="dv">50</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then add to the end of <code>director.toml</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[serial]</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dt">command</span> <span class="op">=</span> <span class="st">"mads source build/serial.plugin -p100"</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">after</span> <span class="op">=</span> <span class="st">"broker"</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="dt">workdir</span> <span class="op">=</span> <span class="st">""</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="dt">enabled</span> <span class="op">=</span> <span class="cn">false</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">[stats]</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="dt">command</span> <span class="op">=</span> <span class="st">"mads filter build/stats.plugin"</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="dt">after</span> <span class="op">=</span> <span class="st">"broker"</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="dt">workdir</span> <span class="op">=</span> <span class="st">""</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="dt">enabled</span> <span class="op">=</span> <span class="cn">false</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>And finally click the play button to the right of <code>director.toml</code> in the <span class="bgray">control</span> section.</p>
-<p>Now you can manually start the <code>stats</code> and the <code>source</code> plugins. If you have used exactly my prompt and the same agent, chances are that you won’t get any data out of the <code>source</code>. In my case, the reason is that we asked to define a fallback condition that generates deterministic data suitable for unit testing when the serial port address is empty, but no data is generated when the plugin is normally called by the MADS source agent.</p>
-<p>We thus have to ask the coding agent to fix that:</p>
-<div class="callout callout-style-default callout-prompt callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Prompt</span>Prompt this:
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>When the <code>serial</code> plugin is used in normal conditions (i.e.&nbsp;not in testing) and the serial port <code>address</code> field is empty, I want it to generate random data, both in number and value.</p>
-<p>Add a suitable helper function that initializes a buffer of 20 data frames with random number of element and random values, starting and ending with a partial frame, so that the last fragment can be the beginning of the first one. This buffer shall be used in a circular fashion, rewinding it to the beginning when it has been consumed to its end.</p>
-</div>
-</div>
-<p>At this point you should be done and happily see in the feedback agent that the <code>stats</code> plugin is correctly receiving data from the <code>serial</code> plugin and calculating the running statistics on it, at a frequency of one stats package every 50 frames, as we asked in the <code>mads.ini</code> file (window of 100 and stride of 50).</p>
-</section>
-<section id="my-version-of-the-code" class="level1">
-<h1>My version of the code</h1>
-<p>You can download my version of the code here:</p>
+<section id="context" class="level1">
+<h1>Context</h1>
+<p>MADS agents exchange data in JSON format by default, which is a good choice for most applications and has the advantages of being flexible, human-readable, and to have flexible and easy to use interfaces in all programming languages used by MADS — with the notable exception of C.</p>
+<p>JSON has two drawbacks, though:</p>
 <ul>
-<li><a href="../ai_example/AGENTS.md" target="_blank">AGENTS.md</a></li>
-<li><a href="../ai_example/src/serial.cpp" target="_blank">src/serial.cpp</a></li>
-<li><a href="../ai_example/src/stats.cpp" target="_blank">src/stats.cpp</a></li>
-<li><a href="../ai_example/src/test_helpers.hpp" target="_blank">src/test_helpers.hpp</a></li>
+<li>it is verbose and not really efficient</li>
+<li>it cannot store binary data (e.g.&nbsp;images)</li>
 </ul>
+<p>About verbosity and efficiency, MADS takes care for that with the optional use of <strong>MsgPack</strong> serialization on the wire. In fact, verbosity means an impact on both <strong>bandwidth</strong> and <strong>deserialization time</strong>. The same information in JSON format takes <strong>more bytes</strong>, because of the extra characters needed for the syntax and the numerical values being stored as strings. At the same time, <strong>deserializing</strong> a JSON message (i.e.&nbsp;converting it into a native data structure) is expensive because of the extra parsing needed for the syntax and the conversion of strings to numbers.</p>
+<p>Any MADS agent can specify <code>wire_format = msgpack</code> in its settings section (or use it once in the <code>[agents]</code> section to apply it to all agents) to use MsgPack serialization instead of JSON. When you do that, messages that are internally stored as <code>nlohmann::json</code> objects are serialized in a very efficient binary format and transmitted as such. The receiving agent will automatically and efficiently deserialize the message back into a <code>nlohmann::json</code> object, and this way we save both bandwidth (only efficient binary messages are sent) and deserialization time (no parsing and string-to-number conversion is needed).</p>
+<p>But MgsPack format only solves the forst drawback, while the second one (the inability to store binary data) is still there. A simple solution would be to encode the binary data in base64 and store it as a string in the JSON object, but that would be inefficient further increase the bandwidth usage. A better solution is to use <strong>binary payloads</strong>, which we are going to describe in this guide.</p>
+</section>
+<section id="binary-payloads" class="level1">
+<h1>Binary payloads</h1>
+<p>In MADS, each message on the wire is composed of three mandatory <em>parts</em>. The first part communicates message type and structure, the second part is the topic, and the third part is the JSON payload.</p>
+<p>There is also an optional <strong>fourth part</strong>, which is the <strong>binary payload</strong>. This part is not used by default, but it can be used to send binary data along with the message. The binary payload is a sequence of bytes that can contain any kind of data, such as images, audio, or any other binary format. The <code>Mads::Agent</code> <a href="https://pbosetti.github.io/MADS/classMads_1_1Agent.html" target="_blank">class documentation</a> describes how to send and receive messages with binary payloads, but the easiest way to do that is in a plugin, which is what we are going to show in this guide.</p>
+<section id="the-plugin-interface-to-binary-payloads" class="level2">
+<h2 class="anchored" data-anchor-id="the-plugin-interface-to-binary-payloads">The plugin interface to binary payloads</h2>
+<p>The source plugin API requires the implementation of the method:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">return_type</span> get_output<span class="op">(</span>json <span class="op">&amp;</span>out<span class="op">,</span> vector<span class="op">&lt;</span><span class="dt">unsigned</span> <span class="dt">char</span><span class="op">&gt;</span> <span class="op">*</span>blob <span class="op">=</span> <span class="kw">nullptr</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>where <code>out</code> is the JSON payload that we normally use to send data structures (serialized as JSON or as MsgPack, depending on the <code>wire_format</code> setting). This is a mandatory argument, but it can be as well be an empty object <code>{}</code>.</p>
+<p>Where things get interesting is the <strong>second argument</strong>, which is a pointer to a <code>std::vector&lt;unsigned char&gt;</code>. This is the binary payload that we can fill with any data we want to send. If we don’t want to send any binary data, we can simply pass <code>nullptr</code> as the second argument (which is indeed the default).</p>
+<p>This means that we can exploit the <code>blob</code> argument to send any kind of binary data we want, wether it is an image, a video, or just a large data structure that we want to serialize in a more efficient way than JSON, e.g.&nbsp;with Protobuf or Cap’n Proto. The only requirement is that the receiving agent <strong>must know</strong> <strong>how to interpret the binary data</strong>, since it will not be automatically deserialized like the JSON payload.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When an agent has to publish/receive a large data structure with many numerical values (vecrors or matrices), you might be tempted to use more efficient serialization formats like Protobuf to encode the data structure. Although this is a perfectly valid and reasonable approach, it adds a considerable amount of complexity to the plugin code, and you really want to veryfy that you really need that and the MsgPack feature is really not enough for your application.</p>
+<p>In this regards, not that on standard systems and networks an agent uing <code>wire_format = msgpack</code> deal with more than 110k messages per seconds with 1kB payloads, and more than 70k messages per second in JSON format. See <a href="../presentations/gorini.html#/data-format-json" target="_blank">here for some benchmarks</a>.</p>
+</div>
+</div>
+</section>
+<section id="sending-binary-payloads" class="level2">
+<h2 class="anchored" data-anchor-id="sending-binary-payloads">Sending binary payloads</h2>
+<p>Let us make an example, and implement the <code>get_output</code> method for a plugin that sends a frame grabbed from a camera. The frame is a binary image, and we want to send it along with some metadata in the JSON payload.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that the JSON metadata could be as well be an empty object <code>{}</code>, if we don’t want to send any metadata and really minimize the bandwidth usage.</p>
+</div>
+</div>
+<p>Focusing on the minimal implementation of the <code>get_output</code> method, we can do something like this:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>  <span class="dt">return_type</span> get_output<span class="op">(</span>json <span class="op">&amp;</span>out<span class="op">,</span> vector<span class="op">&lt;</span><span class="dt">unsigned</span> <span class="dt">char</span><span class="op">&gt;</span> <span class="op">*</span>blob <span class="op">=</span> <span class="kw">nullptr</span><span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    out<span class="op">.</span>clear<span class="op">();</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// We are using OpenCV to grab a frame from the already created _cap </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// camera object</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>_cap<span class="op">.</span>isOpened<span class="op">()</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>open_camera<span class="op">())</span> <span class="op">{</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      _error <span class="op">=</span> <span class="st">"No camera available"</span><span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="dt">return_type</span><span class="op">::</span>error<span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">::</span>Mat frame<span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>_cap<span class="op">.</span>read<span class="op">(</span>frame<span class="op">)</span> <span class="op">||</span> frame<span class="op">.</span>empty<span class="op">())</span> <span class="op">{</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      _error <span class="op">=</span> <span class="st">"Failed to grab frame from camera"</span><span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="dt">return_type</span><span class="op">::</span>retry<span class="op">;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// the blob object is already initialized by the plugin loader as an </span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// empty vector, so it shuld be always != nullptr, but we check it anyway</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>blob<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> <span class="op">(!</span>cv<span class="op">::</span>imencode<span class="op">(</span><span class="st">".jpg"</span><span class="op">,</span> frame<span class="op">,</span> <span class="op">*</span>blob<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        _error <span class="op">=</span> <span class="st">"Failed to encode frame as JPEG"</span><span class="op">;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dt">return_type</span><span class="op">::</span>error<span class="op">;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>      <span class="op">}</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Add some metadata to the JSON payload</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    out<span class="op">[</span><span class="st">"width"</span><span class="op">]</span> <span class="op">=</span> frame<span class="op">.</span>cols<span class="op">;</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    out<span class="op">[</span><span class="st">"height"</span><span class="op">]</span> <span class="op">=</span> frame<span class="op">.</span>rows<span class="op">;</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    out<span class="op">[</span><span class="st">"mode"</span><span class="op">]</span> <span class="op">=</span> _bw <span class="op">?</span> <span class="st">"BW"</span> <span class="op">:</span> <span class="st">"RGB"</span><span class="op">;</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    out<span class="op">[</span><span class="st">"format"</span><span class="op">]</span> <span class="op">=</span> <span class="st">"jpg"</span><span class="op">;</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>_agent_id<span class="op">.</span>empty<span class="op">())</span> out<span class="op">[</span><span class="st">"agent_id"</span><span class="op">]</span> <span class="op">=</span> _agent_id<span class="op">;</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dt">return_type</span><span class="op">::</span>success<span class="op">;</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>That’s it: <code>cv:imencode</code> does most of the work for us, and we just need to fill the JSON payload with some metadata. The <code>blob</code> vector will be sent as the binary payload along with the message.</p>
+</section>
+<section id="receiving-binary-payloads" class="level2">
+<h2 class="anchored" data-anchor-id="receiving-binary-payloads">Receiving binary payloads</h2>
+<p>The counterpart is an agent that receives the message and extracts the binary payload. it might be a filter or a sink plugin: for simplicity sake, we will focus on a <strong>sink plugin</strong> example.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>  <span class="dt">return_type</span> load_data<span class="op">(</span>json <span class="at">const</span> <span class="op">&amp;</span>input<span class="op">,</span> string topic <span class="op">=</span> <span class="st">""</span><span class="op">,</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                        vector<span class="op">&lt;</span><span class="dt">unsigned</span> <span class="dt">char</span><span class="op">&gt;</span> <span class="at">const</span> <span class="op">*</span>blob <span class="op">=</span> <span class="kw">nullptr</span><span class="op">)</span> <span class="kw">override</span> <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>blob <span class="op">||</span> blob<span class="op">-&gt;</span>empty<span class="op">())</span> <span class="op">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      _error <span class="op">=</span> <span class="st">"No image blob received"</span><span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="dt">return_type</span><span class="op">::</span>warning<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// create a sequential filename</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    ostringstream fname<span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    fname <span class="op">&lt;&lt;</span> _basename <span class="op">&lt;&lt;</span> <span class="st">"_"</span> <span class="op">&lt;&lt;</span> setw<span class="op">(</span><span class="dv">3</span><span class="op">)</span> <span class="op">&lt;&lt;</span> setfill<span class="op">(</span><span class="ch">'0'</span><span class="op">)</span> <span class="op">&lt;&lt;</span> _next_index</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;&lt;</span> <span class="st">".jpg"</span><span class="op">;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    ofstream ofs<span class="op">(</span>fname<span class="op">.</span>str<span class="op">(),</span> ios<span class="op">::</span>binary<span class="op">);</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>ofs<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      _error <span class="op">=</span> <span class="st">"Cannot open file '"</span> <span class="op">+</span> fname<span class="op">.</span>str<span class="op">()</span> <span class="op">+</span> <span class="st">"' for writing"</span><span class="op">;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="dt">return_type</span><span class="op">::</span>error<span class="op">;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// write the blob straight to the file</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    ofs<span class="op">.</span>write<span class="op">(</span><span class="kw">reinterpret_cast</span><span class="op">&lt;</span><span class="at">const</span> <span class="dt">char</span> <span class="op">*&gt;(</span>blob<span class="op">-&gt;</span>data<span class="op">()),</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>              <span class="kw">static_cast</span><span class="op">&lt;</span>streamsize<span class="op">&gt;(</span>blob<span class="op">-&gt;</span>size<span class="op">()));</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>ofs<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>      _error <span class="op">=</span> <span class="st">"Failed to write image to '"</span> <span class="op">+</span> fname<span class="op">.</span>str<span class="op">()</span> <span class="op">+</span> <span class="st">"'"</span><span class="op">;</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="dt">return_type</span><span class="op">::</span>error<span class="op">;</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">++</span>_next_index<span class="op">;</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dt">return_type</span><span class="op">::</span>success<span class="op">;</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Depending on how you want to consume the blob, you might have to do some casting as above, for the <code>ofstream::write</code> method requires a <code>const char*</code> pointer, while the blob is a <code>std::vector&lt;unsigned char&gt;</code>. The <code>reinterpret_cast</code> is used to convert the pointer type accordingly, while the actual bytes to write are obtained with the <code>data()</code> method of the vector. The number of bytes to write is obtained with the <code>size()</code> method of the vector, and it is cast to <code>streamsize</code> to match the expected type of the <code>write</code> method. Other binary consumers might need or want different data types, but the idea is the same: the <code>blob</code> vector contains the raw bytes of the binary payload, and it is up to the receiving agent to interpret them correctly.</p>
+</section>
+</section>
+<section id="full-example" class="level1">
+<h1>Full example</h1>
+<p>The full example, complete and working, can be found on the <a href="https://github.com/MADS-NET/image_plugin">MADS-NET GitHub repository</a>.</p>
 
 
 </section>

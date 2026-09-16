@@ -2,6 +2,7 @@
   {
     "listing": "/guides.html",
     "items": [
+      "/guides/binary_payload.html",
       "/guides/onnx.html",
       "/guides/arduino_uno_q.html",
       "/guides/package.html",
