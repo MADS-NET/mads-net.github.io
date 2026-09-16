@@ -327,11 +327,17 @@ cookieconsent.run({
    
   <ul>
   <li><a href="#what-is-it" id="toc-what-is-it" class="nav-link active" data-scroll-target="#what-is-it">What is it</a></li>
+  <li><a href="#mads-design-principle" id="toc-mads-design-principle" class="nav-link" data-scroll-target="#mads-design-principle">MADS design principle</a></li>
+  <li><a href="#where-to-start" id="toc-where-to-start" class="nav-link" data-scroll-target="#where-to-start">Where to start</a>
+  <ul class="collapse">
+  <li><a href="#the-software-collection" id="toc-the-software-collection" class="nav-link" data-scroll-target="#the-software-collection">The software collection</a></li>
+  <li><a href="#the-dcumentation" id="toc-the-dcumentation" class="nav-link" data-scroll-target="#the-dcumentation">The dcumentation</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -359,7 +365,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 11, 2026</p>
+      <p class="date-modified">September 16, 2026</p>
     </div>
   </div>
     
@@ -370,59 +376,75 @@ cookieconsent.run({
 </header>
 
 
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<section id="what-is-it" class="level1 page-columns page-full">
+<h1>What is it</h1>
+<div class="columns">
+<div class="column" style="width:70%;">
+<p>MADS-NET is a simple framework for implementing a network of distributed agents that communicate with each other via a broker. It is designed to be <strong>lightweight</strong>, <strong>modular</strong>, and <strong>easy to use</strong>.</p>
+<p>It is made by a main set of executables available in the <a href="https://github.com/pbosetti/MADS">MADS tools collection</a> repo, which also provides installers for Linux, MacOS and Windows.</p>
+<p>It is a polyglot environment that can be extended in C++, C, Rust, Python, R, and Lua. It is also possible to interface with other languages via the <code>popen</code> interface.</p>
+<p>The target audiences for MADS are <strong>distributed measurement systems, IoT, process control systems, and robotics</strong>.</p>
+</div><div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="./flyer.pdf"><img src="images/flier_preview.png" class="img-fluid figure-img" style="padding-left: 15px;;width:100.0%"></a></p>
+<figcaption>Download the flyer</figcaption>
+</figure>
 </div>
-<div class="callout-title-container flex-fill">
-Important
 </div>
 </div>
-<div class="callout-body-container callout-body">
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
 <p>Always get the latest MADS installer on: 👉 <a href="https://git.new/MADS">git.new/MADS</a> 👈</p>
 <p>See <a href="./guides/install.html">this guide</a> for installation instructions.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-important callout-titled">
+</div></div></section>
+<section id="mads-design-principle" class="level1">
+<h1>MADS design principle</h1>
+<p>The main requirements for MADS are:</p>
+<ul>
+<li><strong>ubiquity</strong>: it should run on any platform, from embedded devices to high-end servers, regardless architecture and operating system</li>
+<li><strong>lightweight</strong>: it should be possible to run on low-end devices with limited resources</li>
+<li><strong>modularity</strong>: it should be possible to add new agents without recompiling the whole system</li>
+<li><strong>easy to use</strong>: it should be easy to install and configure, and it should be possible to use it with a minimum API knowledge (<strong>less than five</strong> functions), using any common programming language</li>
+<li><strong>centralized</strong>: configuration and custom code are stored in a single location</li>
+</ul>
+<p>What MADS delivers is a framework of tools and libraries that make easy and quick to implement a distributed agents system by completely separating:</p>
+<ul>
+<li>the networking operations: IPs, sockets, connectionsand re-connections: everything is automatic (but customizable if needed)</li>
+<li>the topology of the distributed system: defined in a single settings file (TOML format), and inspectable as a Graphviz dot file</li>
+<li>the business logic of each agent: only focus on the algorithms and the data, without having to care about networking, timings, addressing etc.</li>
+</ul>
+</section>
+<section id="where-to-start" class="level1">
+<h1>Where to start</h1>
+<section id="the-software-collection" class="level2">
+<h2 class="anchored" data-anchor-id="the-software-collection">The software collection</h2>
+<p>The MADS framework is Open Source (Apache 2.0 license) and is available on <a href="https://github.com/pbosetti/MADS">GitHub</a>.</p>
+<p>Beside the main framework there is a collection of ready to use agents, called <em>plugins</em>, that can be easily integrated into the MADS system and are available on <a href="https://github.com/MADS-NET" class="uri">https://github.com/MADS-NET</a>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>New version!
+Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>MADS v2.4.0</strong> is OUT! This version introduces some <strong>breaking changes</strong>: look at <a href="https://github.com/pbosetti/MADS/blob/v2/CHANGES.md">the changes here</a> to learn more.</p>
+<p>The VSCode extension <a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode">MADSCode</a> provdes useful features that simplify and accelerate custom agents development.</p>
 </div>
 </div>
-<section id="what-is-it" class="level1">
-<h1>What is it</h1>
-<p>MADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.</p>
-<p>It is made by a main set of executables available in the <a href="https://github.com/pbosetti/MADS">MADS tools collection</a> repo, which also provides installers for Linux, MacOS and Windows.</p>
-<p>The MADS tools collection includes a broker and a set of general purpose agents that can act as <strong>sources</strong>, <strong>filters</strong>, or <strong>sinks</strong>. The actual operations performed by agents can be customized either via scripting languages (using simple <code>popen</code> interface), or by implementing dedicated plugins in C++.</p>
-<p>Some of the available plugins are:</p>
-<ul>
-<li><a href="https://github.com/MADS-NET/arduino_plugin">arduino_plugin</a>: reads from a serial connected arduino</li>
-<li><a href="https://github.com/MADS-NET/hpe2d_plugin">hpe2D_plugin</a>: performs human pose estimation from a camera stream</li>
-<li><a href="https://github.com/MADS-NET/mqtt_plugin">mqtt_plugin</a>: acts as a bridge with an MQTT network via two agents: <code>mqtt2mads.plugin</code> (source) and <code>mads2mqtt.plugin</code> (sink)</li>
-<li><a href="https://github.com/MADS-NET/say_plugin">say_plugin</a>: Text-to-speech of incoming messages</li>
-<li><a href="https://github.com/MADS-NET/ble_plugin">ble_plugin</a>: Bluetooth Low Energy source plugin</li>
-<li><a href="https://github.com/MADS-NET/tui_plugin">tui_plugin</a>: Terminal User Interface for sending metadata commands to MADS network</li>
-<li><a href="https://github.com/MADS-NET/lua_plugin">lua_plugin</a>: Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)</li>
-<li><a href="https://github.com/MADS-NET/hdf5_plugin">hdf5_plugin</a>: a sink agent that logs data traffic into a HDF5 file</li>
-<li><a href="https://github.com/MADS-NET/rpio_plugin">rpio_plugin</a>: source and sink agents for Raspberry Pi GPIO pins (using <code>libgpiod</code> v1.6)</li>
-<li><a href="https://github.com/MADS-NET/replay_plugin">replay_plugin</a>: a source plugin that replays data from a CSV file</li>
-<li><a href="https://github.com/MADS-NET/rerunner_plugin">rerunner_plugin</a>: a sink plugin that plots stream data in real-time on <a href="https://rerun.io">Rerun</a></li>
-</ul>
-<p>There are also additional monolithic agents:</p>
-<ul>
-<li><a href="https://github.com/MADS-NET/python_agent">python_agent</a>: Interfacing Python3 scripts to the MADS network (useful for prototyping and rapid development)</li>
-</ul>
-<p>Look into the <a href="./guides.html">guides</a> section for more information on how to use the MADS tools collection.</p>
+</section>
+<section id="the-dcumentation" class="level2">
+<h2 class="anchored" data-anchor-id="the-dcumentation">The dcumentation</h2>
+<p>The <a href="./start.html">Start here</a> page provides a quick overview of the MADS framework and its main features. It is a good starting point for new users.</p>
+<p>Look into the <a href="./guides.html">guides</a> section for more information on how to use the MADS tools collection, searchable and organized by topics.</p>
+<p>The <strong>Commands</strong> section in the menu bar provides a complete list of the most important commands available in the MADS tools collection.</p>
+<p>The <strong>Concepts</strong> section covers the main concepts behind MADS, including the architecture, the communication model, and the configuration files.</p>
+<p>The <strong>Presentations</strong> section provides a set of interactive, web-based slides that can be used to present MADS to others.</p>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

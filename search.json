@@ -1432,7 +1432,21 @@
     "href": "index.html",
     "title": ": Multi-Agent Distributed System",
     "section": "",
-    "text": "Important\n\n\n\nAlways get the latest MADS installer on: 👉 git.new/MADS 👈\nSee this guide for installation instructions.\n\n\n\n\n\n\n\n\nImportantNew version!\n\n\n\nMADS v2.4.0 is OUT! This version introduces some breaking changes: look at the changes here to learn more.\n\n\n\nWhat is it\nMADS-NET is a simple framework for implementing a network of distributed agents that can exchange information via ZeroMQ.\nIt is made by a main set of executables available in the MADS tools collection repo, which also provides installers for Linux, MacOS and Windows.\nThe MADS tools collection includes a broker and a set of general purpose agents that can act as sources, filters, or sinks. The actual operations performed by agents can be customized either via scripting languages (using simple popen interface), or by implementing dedicated plugins in C++.\nSome of the available plugins are:\n\narduino_plugin: reads from a serial connected arduino\nhpe2D_plugin: performs human pose estimation from a camera stream\nmqtt_plugin: acts as a bridge with an MQTT network via two agents: mqtt2mads.plugin (source) and mads2mqtt.plugin (sink)\nsay_plugin: Text-to-speech of incoming messages\nble_plugin: Bluetooth Low Energy source plugin\ntui_plugin: Terminal User Interface for sending metadata commands to MADS network\nlua_plugin: Interfacing Lua scripts to the MADS network (useful for prototyping and rapid development)\nhdf5_plugin: a sink agent that logs data traffic into a HDF5 file\nrpio_plugin: source and sink agents for Raspberry Pi GPIO pins (using libgpiod v1.6)\nreplay_plugin: a source plugin that replays data from a CSV file\nrerunner_plugin: a sink plugin that plots stream data in real-time on Rerun\n\nThere are also additional monolithic agents:\n\npython_agent: Interfacing Python3 scripts to the MADS network (useful for prototyping and rapid development)\n\nLook into the guides section for more information on how to use the MADS tools collection.\n\n\n\n\n Back to top"
+    "text": "MADS-NET is a simple framework for implementing a network of distributed agents that communicate with each other via a broker. It is designed to be lightweight, modular, and easy to use.\nIt is made by a main set of executables available in the MADS tools collection repo, which also provides installers for Linux, MacOS and Windows.\nIt is a polyglot environment that can be extended in C++, C, Rust, Python, R, and Lua. It is also possible to interface with other languages via the popen interface.\nThe target audiences for MADS are distributed measurement systems, IoT, process control systems, and robotics.\n\n\n\n\nDownload the flyer\n\n\n\n\n\n\nAlways get the latest MADS installer on: 👉 git.new/MADS 👈\nSee this guide for installation instructions."
+  },
+  {
+    "objectID": "index.html#the-software-collection",
+    "href": "index.html#the-software-collection",
+    "title": ": Multi-Agent Distributed System",
+    "section": "The software collection",
+    "text": "The software collection\nThe MADS framework is Open Source (Apache 2.0 license) and is available on GitHub.\nBeside the main framework there is a collection of ready to use agents, called plugins, that can be easily integrated into the MADS system and are available on https://github.com/MADS-NET.\n\n\n\n\n\n\nTip\n\n\n\nThe VSCode extension MADSCode provdes useful features that simplify and accelerate custom agents development."
+  },
+  {
+    "objectID": "index.html#the-dcumentation",
+    "href": "index.html#the-dcumentation",
+    "title": ": Multi-Agent Distributed System",
+    "section": "The dcumentation",
+    "text": "The dcumentation\nThe Start here page provides a quick overview of the MADS framework and its main features. It is a good starting point for new users.\nLook into the guides section for more information on how to use the MADS tools collection, searchable and organized by topics.\nThe Commands section in the menu bar provides a complete list of the most important commands available in the MADS tools collection.\nThe Concepts section covers the main concepts behind MADS, including the architecture, the communication model, and the configuration files.\nThe Presentations section provides a set of interactive, web-based slides that can be used to present MADS to others."
   },
   {
     "objectID": "interfaces.html",
