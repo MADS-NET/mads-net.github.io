@@ -12,3 +12,8 @@ _site
 
 ai_example
 /.luarc.json
+
+.DS_Store
+
+.claude
+.vscode
