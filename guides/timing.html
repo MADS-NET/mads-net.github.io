@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Paolo Bosetti">
-<meta name="dcterms.date" content="2025-06-06">
+<meta name="dcterms.date" content="2026-09-25">
 
 <title>Time and time synchronization</title>
 <style>
@@ -27,6 +27,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -109,7 +144,6 @@ cookieconsent.run({
 });
 </script> 
   
-<meta name="quarto:status" content="draft">
 
 
 </head>
@@ -117,7 +151,7 @@ cookieconsent.run({
 <body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -327,7 +361,32 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#contents" id="toc-contents" class="nav-link active" data-scroll-target="#contents">Contents</a></li>
+  <li><a href="#why-time-matters" id="toc-why-time-matters" class="nav-link active" data-scroll-target="#why-time-matters">Why time matters</a></li>
+  <li><a href="#how-mads-puts-time-into-a-message" id="toc-how-mads-puts-time-into-a-message" class="nav-link" data-scroll-target="#how-mads-puts-time-into-a-message">How MADS puts time into a message</a>
+  <ul class="collapse">
+  <li><a href="#timecode-caveats" id="toc-timecode-caveats" class="nav-link" data-scroll-target="#timecode-caveats">Timecode caveats</a></li>
+  </ul></li>
+  <li><a href="#the-problem-every-computer-has-its-own-clock" id="toc-the-problem-every-computer-has-its-own-clock" class="nav-link" data-scroll-target="#the-problem-every-computer-has-its-own-clock">The problem: every computer has its own clock</a></li>
+  <li><a href="#the-classic-fix-ntp" id="toc-the-classic-fix-ntp" class="nav-link" data-scroll-target="#the-classic-fix-ntp">The classic fix: NTP</a>
+  <ul class="collapse">
+  <li><a href="#when-ntp-is-not-enough" id="toc-when-ntp-is-not-enough" class="nav-link" data-scroll-target="#when-ntp-is-not-enough">When NTP is not enough</a></li>
+  </ul></li>
+  <li><a href="#whats-new-in-mads-v2.5.0" id="toc-whats-new-in-mads-v2.5.0" class="nav-link" data-scroll-target="#whats-new-in-mads-v2.5.0">What’s new in MADS v2.5.0</a>
+  <ul class="collapse">
+  <li><a href="#step-1-each-agent-measures-its-offset-automatic" id="toc-step-1-each-agent-measures-its-offset-automatic" class="nav-link" data-scroll-target="#step-1-each-agent-measures-its-offset-automatic">Step 1 — Each agent measures its offset (automatic)</a></li>
+  <li><a href="#step-2-agents-on-the-same-computer-share-one-measurement" id="toc-step-2-agents-on-the-same-computer-share-one-measurement" class="nav-link" data-scroll-target="#step-2-agents-on-the-same-computer-share-one-measurement">Step 2 — Agents on the same computer share one measurement</a></li>
+  <li><a href="#seeing-the-whole-network-mads-top" id="toc-seeing-the-whole-network-mads-top" class="nav-link" data-scroll-target="#seeing-the-whole-network-mads-top">Seeing the whole network: <code>mads top</code></a>
+  <ul class="collapse">
+  <li><a href="#at-a-glance-the-host-clock-skew-section" id="toc-at-a-glance-the-host-clock-skew-section" class="nav-link" data-scroll-target="#at-a-glance-the-host-clock-skew-section">At a glance: the <em>Host clock skew</em> section</a></li>
+  <li><a href="#in-detail-mads-top---probe" id="toc-in-detail-mads-top---probe" class="nav-link" data-scroll-target="#in-detail-mads-top---probe">In detail: <code>mads top --probe</code></a></li>
+  </ul></li>
+  <li><a href="#step-3-correct-the-timestamps-optional" id="toc-step-3-correct-the-timestamps-optional" class="nav-link" data-scroll-target="#step-3-correct-the-timestamps-optional">Step 3 — Correct the timestamps (optional)</a></li>
+  <li><a href="#keeping-up-with-drift" id="toc-keeping-up-with-drift" class="nav-link" data-scroll-target="#keeping-up-with-drift">Keeping up with drift</a></li>
+  <li><a href="#agents-that-cant-reach-the-broker-directly" id="toc-agents-that-cant-reach-the-broker-directly" class="nav-link" data-scroll-target="#agents-that-cant-reach-the-broker-directly">Agents that can’t reach the broker directly</a></li>
+  <li><a href="#settings-reference" id="toc-settings-reference" class="nav-link" data-scroll-target="#settings-reference">Settings reference</a></li>
+  </ul></li>
+  <li><a href="#which-setup-should-i-use" id="toc-which-setup-should-i-use" class="nav-link" data-scroll-target="#which-setup-should-i-use">Which setup should I use?</a></li>
+  <li><a href="#good-to-know" id="toc-good-to-know" class="nav-link" data-scroll-target="#good-to-know">Good to know</a></li>
   </ul>
 </nav>
     </div>
@@ -366,14 +425,14 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 6, 2025</p>
+      <p class="date">September 25, 2026</p>
     </div>
   </div>
   
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 16, 2026</p>
+      <p class="date-modified">September 25, 2026</p>
     </div>
   </div>
     
@@ -390,8 +449,388 @@ cookieconsent.run({
 </header>
 
 
-<section id="contents" class="level1">
-<h1>Contents</h1>
+<section id="why-time-matters" class="level1">
+<h1>Why time matters</h1>
+<p>A MADS network usually spans several computers: a Raspberry Pi reading sensors, a workstation running a controller, a server storing everything in a database. When you look at the data afterwards, you want to answer questions like:</p>
+<ul>
+<li><em>did the temperature rise before or after the motor started?</em></li>
+<li><em>how long did the controller take to react to that alarm?</em></li>
+<li><em>what were all sensors reading at 10:53:18?</em></li>
+</ul>
+<p>To answer them, every message must carry the time at which it was produced, <strong>and those times must be comparable across computers</strong>. This guide explains how MADS writes time into messages, why different computers rarely agree on what time it is, and how MADS v2.5.0 helps you measure and fix the disagreement.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Short version
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Every message gets a <code>timestamp</code> and a <code>timecode</code>, read from the clock of the computer that <strong>sent</strong> it.</li>
+<li>Computer clocks drift apart. The standard fix is <strong>NTP</strong>, a service that keeps a computer’s clock on time.</li>
+<li>From <strong>v2.5.0</strong>, every agent automatically measures how far its clock is from the broker computer’s clock. Run <code>mads top --probe</code> to see it.</li>
+<li>If you can’t (or don’t want to) set up NTP everywhere, add <code>clock_correction = true</code> to the <code>[agents]</code> section of <code>mads.ini</code>: all timestamps will then be aligned to the broker’s clock.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="how-mads-puts-time-into-a-message" class="level1">
+<h1>How MADS puts time into a message</h1>
+<p>Every time an agent publishes a message, MADS adds three fields to it (unless the message already has them):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"data"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"T"</span><span class="fu">:</span> <span class="fl">21.4</span> <span class="fu">},</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"timestamp"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"$date"</span><span class="fu">:</span> <span class="st">"2025-07-11T10:53:18.716+0200"</span> <span class="fu">},</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"timecode"</span><span class="fu">:</span> <span class="fl">39198.68</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"hostname"</span><span class="fu">:</span> <span class="st">"computer-A"</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<dl>
+<dt><code>timestamp</code></dt>
+<dd>
+The date and time, down to the millisecond, in the standard <em>ISO 8601</em> format. The final <code>+0200</code> is the time zone of the sending computer, so the timestamp identifies one exact instant no matter where it was produced. The odd-looking <code>{"$date": ...}</code> wrapper lets MongoDB store it as a real date, so you can search and sort by it. This is the field used by the loggers and by <a href="../guides/replay.html">the replay agent</a>.
+</dd>
+<dt><code>timecode</code></dt>
+<dd>
+The number of seconds since <strong>local midnight</strong>, rounded to a <em>frame</em>. It is a plain number, which makes it convenient for plots and for lining up samples from different sources. The frame length is set by <code>timecode_fps</code> in the <code>[agents]</code> section of <code>mads.ini</code>: with the default of 25 frames per second, timecodes are multiples of 40 ms. In the example, 39198.68 s is 10:53:18.68.
+</dd>
+<dt><code>hostname</code></dt>
+<dd>
+The name of the computer that sent the message.
+</dd>
+</dl>
+<p>The important point is <strong>where</strong> these values come from:</p>
+<p><img src="images/timing_stamp.svg" class="img-fluid" style="width:100.0%" alt="A source agent on computer A sends a message through the broker to a logger. The timestamp, timecode and hostname fields are added by the source agent, using computer A's clock. The broker and the logger do not change them."></p>
+<p>The time is read <strong>from the clock of the computer that sends the message</strong>, at the moment the message is sent. The broker only forwards the message, and the logger stores it as it arrives. Neither of them changes the time.</p>
+<p>So if computer A’s clock is wrong, every message from computer A carries a wrong time, and nothing further along the chain will notice.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If your plugin or script already puts a <code>timestamp</code> or <code>timecode</code> field in the message, MADS keeps yours. This is useful when your device has its own precise acquisition time, such as a data acquisition board with a hardware clock. It also means that you are responsible for that time being correct.</p>
+</div>
+</div>
+<section id="timecode-caveats" class="level2">
+<h2 class="anchored" data-anchor-id="timecode-caveats">Timecode caveats</h2>
+<p>The timecode is handy but has three limits you should know about:</p>
+<ul>
+<li><strong>It restarts at midnight.</strong> A recording spanning midnight goes from 86399.96 back to 0. Use <code>timestamp</code> when you need the date too.</li>
+<li><strong>It uses local time.</strong> Two computers set to different time zones produce timecodes that are hours apart for the same instant. Set all MADS computers to the same time zone, or use <code>timestamp</code>, which includes the time zone.</li>
+<li><strong>It is rounded to the frame.</strong> At 25 fps, two messages sent 10 ms apart can have the same timecode. If you need finer resolution, use <code>timestamp</code> or raise <code>timecode_fps</code>.</li>
+</ul>
+</section>
+</section>
+<section id="the-problem-every-computer-has-its-own-clock" class="level1">
+<h1>The problem: every computer has its own clock</h1>
+<p>Every computer keeps time with a small quartz crystal. These crystals are cheap and good, but not perfect: a typical one gains or loses a few seconds per day, and the exact amount changes with temperature. Some situations make it worse:</p>
+<ul>
+<li>A <strong>Raspberry Pi</strong> has no battery-backed clock. When it boots without a network connection, it starts from the last time it remembers, which can be hours or days in the past.</li>
+<li>A <strong>virtual machine or container host</strong> that has been suspended can wake up with its clock stuck at the moment it was suspended.</li>
+<li>A clock that was <strong>set by hand</strong> is usually off by a few seconds from the start.</li>
+</ul>
+<p>Left alone, two computers that agree today will disagree by seconds after a few weeks. For a MADS network this matters a lot, because it changes the story your data tells:</p>
+<p><img src="images/timing_drift.svg" class="img-fluid" style="width:100.0%" alt="Two timelines. On the first one, labelled what really happened, the button press on computer A happens at 10:00:00.000 and the motor start on computer B at 10:00:00.200. On the second one, labelled what the database says, computer A's clock is half a second ahead, so the button press is recorded at 10:00:00.500, after the motor start."></p>
+<p>Here, computer A’s clock is only half a second ahead, and the database now says the motor started <em>before</em> the button was pressed. With the same error, a measured reaction time could come out <em>negative</em>, or two signals that should be in step could appear shifted. You will not get an error message: the data simply looks wrong, or worse, looks right but isn’t.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nothing in the data itself tells you whether the clocks were in agreement. You have to check it <strong>while the system is running</strong>, because once the data is in the database it is usually too late to find out.</p>
+</div>
+</div>
+</section>
+<section id="the-classic-fix-ntp" class="level1">
+<h1>The classic fix: NTP</h1>
+<p>The standard solution, used by nearly every computer connected to the internet, is the <strong>Network Time Protocol (NTP)</strong>. A small service on each computer regularly asks a <em>time server</em> what time it is, measures how long the answer took to arrive, and gently adjusts the local clock so it stays in step. With a good setup, computers on the same local network agree to within a millisecond or better. Over the internet, the agreement is within a few milliseconds.</p>
+<p>Most operating systems enable NTP by default, <strong>as long as the computer can reach a time server</strong>. This is how to check it:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Linux (and Raspberry Pi OS)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">macOS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Windows</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">timedatectl</span> status</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Look for <code>System clock synchronized: yes</code> and <code>NTP service: active</code>. If your system uses <em>chrony</em> (common on recent distributions), you can get more detail, including the current error, with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">chronyc</span> tracking</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>System time</code> line tells you how far the clock is from the NTP time.</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>NTP is enabled in <em>System Settings → General → Date &amp; Time → Set time and date automatically</em>. To see the current error against a time server:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sntp</span> time.apple.com</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The first number printed is the difference in seconds between your clock and the server’s clock.</p>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>NTP is enabled in <em>Settings → Time &amp; language → Date &amp; time → Set time automatically</em>. To check its status from a terminal:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>w32tm <span class="op">/</span>query <span class="op">/</span>status</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>and to force an immediate update (from an administrator terminal):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>w32tm <span class="op">/</span>resync</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<section id="when-ntp-is-not-enough" class="level2">
+<h2 class="anchored" data-anchor-id="when-ntp-is-not-enough">When NTP is not enough</h2>
+<p>NTP works well, but in real MADS installations you often hit one of these cases:</p>
+<ul>
+<li><p><strong>The network is isolated.</strong> Machine networks in labs and factories are often cut off from the internet, so no public time server can be reached. You can turn one of your computers into a local time server. The broker computer is a natural choice. For example, with chrony on Linux, add these two lines to <code>/etc/chrony/chrony.conf</code> on the broker computer and restart chrony:</p>
+<pre><code>allow 192.168.1.0/24   # the address range of your MADS network
+local stratum 10       # keep serving time even with no internet</code></pre>
+<p>Then point the other computers to it. However, this needs administrator access and some care on every machine.</p></li>
+<li><p><strong>You can’t configure some of the devices.</strong> This includes embedded boards, computers managed by someone else, or a colleague’s laptop that joins for one experiment.</p></li>
+<li><p><strong>You don’t know whether it is working.</strong> NTP runs silently. Each computer can say whether <em>it</em> thinks it is synchronized, but nothing tells you whether the whole MADS network actually agrees <em>right now</em>.</p></li>
+</ul>
+<p>This is where MADS v2.5.0 comes in.</p>
+</section>
+</section>
+<section id="whats-new-in-mads-v2.5.0" class="level1">
+<h1>What’s new in MADS v2.5.0</h1>
+<p>Starting with v2.5.0, MADS itself can <strong>measure</strong>, <strong>show</strong> and, if you ask it to, <strong>correct</strong> the differences between the clocks of your computers. You don’t need to write any code for this, and in most cases you don’t need to change any settings either.</p>
+<p>The reference clock is always <strong>the clock of the computer running the broker</strong>. It doesn’t matter whether that clock is exactly right. What matters is that all agents are compared against the same clock, so that their timestamps can be compared with each other.</p>
+<section id="step-1-each-agent-measures-its-offset-automatic" class="level2">
+<h2 class="anchored" data-anchor-id="step-1-each-agent-measures-its-offset-automatic">Step 1 — Each agent measures its offset (automatic)</h2>
+<p>When an agent starts, it contacts the broker to download its settings. Since v2.5.0, it also runs a short time check with the broker. Five times in a row, it asks the broker “what time is it?” and notes when the question left and when the answer came back:</p>
+<p><img src="images/timing_exchange.svg" class="img-fluid" style="width:100.0%" alt="Timing diagram between an agent and the broker. The agent sends a request at time t1, as read on its own clock. The broker receives it at t2 and replies at t3, both read on the broker's clock. The agent receives the reply at t4. From the four times, the agent computes the round-trip delay and the clock offset."></p>
+<p>The exchange produces four times. Two are read on the agent’s clock and two on the broker’s clock. From these, the agent works out two things:</p>
+<ul>
+<li>the <strong>delay</strong>: how long the message spent travelling on the network, there and back</li>
+<li>the <strong>offset</strong>: how many milliseconds must be added to the agent’s clock to read the same time as the broker’s clock</li>
+</ul>
+<p>This is the same method NTP uses. Out of the five attempts, MADS keeps the one with the shortest delay, because a fast round trip leaves less room for error.</p>
+<p>The result is printed in the agent’s startup summary:</p>
+<pre><code>  Timecode FPS:     25
+  Timecode offset:  0 s
+  Clock domain:     raspberrypi
+  Clock offset:     42.017 ms (broker, 0 hops, delay 0.412 ms, ref sensor_1:1)</code></pre>
+<p>To read these lines:</p>
+<ul>
+<li><strong>Clock offset: 42.017 ms</strong> means this computer’s clock is about 42 ms <em>behind</em> the broker’s clock. A negative number means it is <em>ahead</em>.</li>
+<li><strong>delay 0.412 ms</strong> is the network round-trip time. On a wired local network this is typically well below a millisecond. On Wi-Fi it can be a few milliseconds.</li>
+<li><strong>Clock domain</strong> and <strong>ref</strong> are explained in the next step.</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Measuring does not change anything.</strong> By default, MADS only measures and reports the offset. Your computer’s clock is never touched, and the timestamps in your messages are exactly as they were before v2.5.0. Correcting the timestamps is a separate choice (see <a href="#step-3-correct-the-timestamps-optional">Step 3</a>).</p>
+</div>
+</div>
+</section>
+<section id="step-2-agents-on-the-same-computer-share-one-measurement" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-agents-on-the-same-computer-share-one-measurement">Step 2 — Agents on the same computer share one measurement</h2>
+<p>All agents running on the same computer read the same clock, so they should all have the <strong>same</strong> offset. If each agent measured on its own, they would get slightly different numbers because of network noise. Their corrected timestamps would then disagree by a fraction of a millisecond, for no reason.</p>
+<p>To avoid this, agents on the same computer form a <strong>clock domain</strong>. Every few seconds, each agent tells the others in its domain what it measured, and they all adopt the same measurement: the one with the shortest network delay. No configuration is needed.</p>
+<p><img src="images/timing_domains.svg" class="img-fluid" style="width:100.0%" alt="The broker computer at the top holds the reference clock. Below it, a Raspberry Pi with three agents forms one clock domain: one agent measures its offset against the broker and shares the result, so all three show +42.0 ms. A workstation with two agents forms a second clock domain, where all agents show −3.1 ms."></p>
+<p>The <code>ref</code> value in the startup summary, for example <code>sensor_1:1</code>, says which agent’s measurement is being used. All agents in the same domain should show the same <code>ref</code>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>On Linux, the clock domain is identified by the running system kernel rather than by the computer name. This means that several <strong>Docker containers</strong> on the same machine, which have different names but share the same clock, are correctly treated as one domain. On macOS and Windows, the computer name is used.</p>
+</div>
+</div>
+</section>
+<section id="seeing-the-whole-network-mads-top" class="level2">
+<h2 class="anchored" data-anchor-id="seeing-the-whole-network-mads-top">Seeing the whole network: <code>mads top</code></h2>
+<p>The <code>mads top</code> command (see <code>man mads-top</code>) shows the live traffic on your MADS network. Since v2.5.0 it helps you check the clocks in two ways.</p>
+<section id="at-a-glance-the-host-clock-skew-section" class="level3">
+<h3 class="anchored" data-anchor-id="at-a-glance-the-host-clock-skew-section">At a glance: the <em>Host clock skew</em> section</h3>
+<p>In its normal mode, <code>mads top</code> adds a <strong>Host clock skew</strong> section below the topic table. For each computer that is sending messages, it shows the difference between the time written in the messages and the time on the computer where you run <code>mads top</code>:</p>
+<pre><code>  Host clock skew (passive, vs. this machine's local time -- see 'mads top --probe' for a real measurement)
+    raspberrypi           +41.3ms
+    workstation           -3.3ms</code></pre>
+<p>This costs nothing, as it only reads messages that are already travelling on the network, and it works with agents of any MADS version. However, it mixes the clock difference with the network delay, so treat it as a rough indicator:</p>
+<ul>
+<li>a few milliseconds: fine, that’s just the network</li>
+<li>hundreds of milliseconds or more: the clocks disagree, and it’s time to look closer</li>
+</ul>
+</section>
+<section id="in-detail-mads-top---probe" class="level3">
+<h3 class="anchored" data-anchor-id="in-detail-mads-top---probe">In detail: <code>mads top --probe</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> top <span class="at">--probe</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>In this mode, <code>mads top</code> asks every agent on the network to report its current offset, and displays them grouped by clock domain:</p>
+<pre><code>mads top --probe  5 responder(s)  link: up   (press q to quit)
+
+  (this agent)  domain laptop  offset +1.2ms  (broker, 0 hops, ref top@8812:1)
+
+  DOMAIN raspberrypi
+    sensor_1          raspberrypi     +42.0ms     broker  0 hops  delay 3.1ms
+    sensor_2          raspberrypi     +42.0ms     broker  0 hops  delay 2.8ms
+    filter            raspberrypi     +42.0ms     broker  0 hops  delay 3.4ms
+  DOMAIN workstation
+    logger            workstation     -3.1ms      broker  0 hops  delay 1.9ms
+    controller        workstation     -3.1ms      broker  0 hops  delay 2.2ms</code></pre>
+<p>What to look for:</p>
+<ul>
+<li><strong>Within a domain, all offsets are identical.</strong> If they differ and stay different, something is wrong, for example agents that cannot hear each other.</li>
+<li><strong>Across domains, the offsets tell you how far each computer is from the broker computer.</strong> If you rely on NTP, all offsets should be within a few milliseconds. Large numbers mean NTP is not doing its job on that computer.</li>
+<li>An offset shown as <strong><code>?</code></strong> means that agent has not measured anything yet. It may have just started, or it has measuring turned off.</li>
+</ul>
+<p>The <code>delay</code> column is the time the probe took to reach that agent and come back through the broker. It is naturally larger than the delay in the startup summary, and does not affect the offset shown.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This is the only mode in which <code>mads top</code> sends something on the network instead of just listening. The probe is very light and harmless for the other agents.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="step-3-correct-the-timestamps-optional" class="level2">
+<h2 class="anchored" data-anchor-id="step-3-correct-the-timestamps-optional">Step 3 — Correct the timestamps (optional)</h2>
+<p>If you know that some computers’ clocks can’t be trusted, you can tell MADS to <strong>correct the timestamps</strong> using the measured offset. Add this line to the <code>[agents]</code> section of <code>mads.ini</code> (to apply it to all agents), or to the section of a single agent:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[agents]</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="dt">clock_correction </span><span class="ot">=</span><span class="st"> </span><span class="kw">true</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>From now on, when an agent sends a message, it adds its offset to its local time before writing <code>timestamp</code> and <code>timecode</code>. As a result, all messages carry <strong>the broker computer’s time</strong>, no matter which computer sent them.</p>
+<p>A corrected message is always marked as such, so that you can tell it apart from an uncorrected one:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"data"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"T"</span><span class="fu">:</span> <span class="fl">21.4</span> <span class="fu">},</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"timestamp"</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">"$date"</span><span class="fu">:</span> <span class="st">"2025-07-11T10:53:18.758+0200"</span> <span class="fu">},</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"timecode"</span><span class="fu">:</span> <span class="fl">39198.72</span><span class="fu">,</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"hostname"</span><span class="fu">:</span> <span class="st">"raspberrypi"</span><span class="fu">,</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"clock_offset_us"</span><span class="fu">:</span> <span class="dv">42017</span><span class="fu">,</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"clock_ref"</span><span class="fu">:</span> <span class="st">"sensor_1:1"</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<dl>
+<dt><code>clock_offset_us</code></dt>
+<dd>
+The correction that was applied, in <strong>microseconds</strong> (millionths of a second). If you ever need the original local time, subtract it from <code>timestamp</code>. In the example, 10:53:18.758 − 42 ms = 10:53:18.716.
+</dd>
+<dt><code>clock_ref</code></dt>
+<dd>
+Which measurement was used, so that you can check that messages from different agents were corrected against the same reference.
+</dd>
+</dl>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Correction only helps if the agent can measure its offset. If an agent can’t reach the broker to measure, its messages are sent <strong>uncorrected</strong>, and in that case the <code>clock_offset_us</code> and <code>clock_ref</code> fields are missing. If you turn on correction, check for these fields in your data.</p>
+</div>
+</div>
+</section>
+<section id="keeping-up-with-drift" class="level2">
+<h2 class="anchored" data-anchor-id="keeping-up-with-drift">Keeping up with drift</h2>
+<p>By default, the offset is measured <strong>once, when the agent starts</strong>. For short experiments this is enough. For an agent that runs for days, the clocks keep drifting apart after the measurement: without NTP, typically by tens of milliseconds per hour.</p>
+<p>To measure again periodically, set <code>clock_interval_ms</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[agents]</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="dt">clock_correction </span><span class="ot">=</span><span class="st"> </span><span class="kw">true</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="dt">clock_interval_ms </span><span class="ot">=</span><span class="st"> 60000   # measure again every minute</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Only one agent per clock domain actually measures again, and the others adopt its result. So even with many agents, this costs just a few tiny messages per minute.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Each new measurement makes the corrected time <strong>jump</strong> to the new value. In most cases the jump is a small fraction of a millisecond. After a long gap, or after the computer’s clock was changed by hand, it can be larger, and two consecutive messages can even appear slightly out of order. If your analysis is sensitive to this, keep <code>clock_interval_ms</code> short, so that each jump stays small.</p>
+</div>
+</div>
+</section>
+<section id="agents-that-cant-reach-the-broker-directly" class="level2">
+<h2 class="anchored" data-anchor-id="agents-that-cant-reach-the-broker-directly">Agents that can’t reach the broker directly</h2>
+<p>The measurement described in Step 1 uses the same connection that agents use to download their settings from the broker. Some agents don’t have that connection:</p>
+<ul>
+<li>agents on another network, connected through <code>mads-bridge</code> or <code>mads-federate</code></li>
+<li>agents that load their settings from a <strong>local</strong> <code>.ini</code> file instead of from the broker (for example, started with <code>-s my_settings.ini</code>)</li>
+</ul>
+<p>For these agents, set:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">clock_source </span><span class="ot">=</span><span class="st"> "peer"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>With this setting, the agent measures its offset by exchanging messages with the <strong>other agents</strong> on the network, along the same path its data takes. Each answering agent also reports its own offset from the broker, so the final result still refers to the broker’s clock, reached in more than one step. The number of steps is reported as <code>hops</code> in the startup summary and in <code>mads top --probe</code>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Peer measurements go through the broker twice, so they are less precise than the direct ones: expect errors of a few milliseconds rather than fractions of a millisecond. They only work if at least one other agent on the network answers. Agents answer by default, as long as they subscribe to at least one topic. Also, the first peer measurement happens right after the agent connects, so its startup summary may still say <code>Clock offset: not yet measured</code>. Use <code>mads top --probe</code> to see the value.</p>
+</div>
+</div>
+</section>
+<section id="settings-reference" class="level2">
+<h2 class="anchored" data-anchor-id="settings-reference">Settings reference</h2>
+<p>All settings go in the <code>[agents]</code> section of <code>mads.ini</code> to apply to every agent, or in a single agent’s section to apply only to it. They are all optional. The values shown are the defaults.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[agents]</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="dt">clock_source </span><span class="ot">=</span><span class="st"> "broker"       # "broker", "peer", or "none"</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="dt">clock_sync_responder </span><span class="ot">=</span><span class="st"> true   # answer other agents' clock checks</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="dt">clock_interval_ms </span><span class="ot">=</span><span class="st"> 0         # 0 = measure only at startup</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="dt">clock_announce_ms </span><span class="ot">=</span><span class="st"> 5000      # how often to share the result with the same domain</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="dt">clock_correction </span><span class="ot">=</span><span class="st"> false      # apply the offset to timestamp/timecode</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>clock_source</code></td>
+<td><code>"broker"</code>: measure against the broker (most precise). <code>"peer"</code>: measure through other agents (see above). <code>"none"</code>: don’t measure at all.</td>
+</tr>
+<tr class="even">
+<td><code>clock_sync_responder</code></td>
+<td>Whether this agent answers clock checks from other agents and from <code>mads top --probe</code>, and shares its result with agents in the same domain. Leave it on unless you have a reason not to.</td>
+</tr>
+<tr class="odd">
+<td><code>clock_interval_ms</code></td>
+<td>How often, in milliseconds, to measure again. <code>0</code> means only once at startup.</td>
+</tr>
+<tr class="even">
+<td><code>clock_announce_ms</code></td>
+<td>How often, in milliseconds, each agent shares its offset with the other agents on the same computer.</td>
+</tr>
+<tr class="odd">
+<td><code>clock_correction</code></td>
+<td>If <code>true</code>, <code>timestamp</code> and <code>timecode</code> are corrected to the broker’s clock, and every message carries <code>clock_offset_us</code> and <code>clock_ref</code>.</td>
+</tr>
+</tbody>
+</table>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -402,9 +841,49 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>To be done.</p>
+<p>v2.5.0 uses a special topic named <code>clocksync</code> for these exchanges. Don’t use that name for your own topics. Like the <code>control</code> and <code>agent_event</code> topics, it is automatically excluded from recordings made with <code>mads-record</code> and from <code>mads-federate</code>.</p>
 </div>
 </div>
+</section>
+</section>
+<section id="which-setup-should-i-use" class="level1">
+<h1>Which setup should I use?</h1>
+<dl>
+<dt>Everything runs on one computer</dt>
+<dd>
+Nothing to do: there is only one clock. <code>mads top --probe</code> will show a single domain with an offset close to zero.
+</dd>
+<dt>Several computers, all with working NTP</dt>
+<dd>
+Leave the defaults. Check with <code>mads top --probe</code> from time to time, and especially before an important experiment: all offsets should be within a few milliseconds. Leave <code>clock_correction</code> off, because NTP already does the job, and does it more smoothly.
+</dd>
+<dt>Isolated network, or computers you can’t configure</dt>
+<dd>
+Make sure the broker computer has a reasonably correct clock, ideally with NTP, or at least set carefully by hand. Then turn on correction and periodic measuring for the whole network:
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[agents]</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="dt">clock_correction </span><span class="ot">=</span><span class="st"> </span><span class="kw">true</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="dt">clock_interval_ms </span><span class="ot">=</span><span class="st"> </span><span class="dv">60000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+All timestamps will be consistent with each other, even if the other computers’ clocks are off by minutes.
+</dd>
+<dt>Agents behind <code>mads-bridge</code> or <code>mads-federate</code></dt>
+<dd>
+Use <code>clock_source = "peer"</code> for those agents, as described <a href="#agents-that-cant-reach-the-broker-directly">above</a>.
+</dd>
+<dt>Brief sessions, where you only care about order within one agent’s data</dt>
+<dd>
+You can leave everything as is. Time differences <em>within</em> one agent’s messages are always reliable, because they come from a single clock.
+</dd>
+</dl>
+</section>
+<section id="good-to-know" class="level1">
+<h1>Good to know</h1>
+<ul>
+<li><strong>MADS never changes your computer’s clock.</strong> It only measures, and, if you ask it to, corrects the times written in messages. NTP stays the right tool for keeping the system clock on time, and the two can work together.</li>
+<li><strong>Accuracy.</strong> On a wired local network, the measured offset is typically accurate to a fraction of a millisecond. The method assumes a message takes the same time to go and to come back. When it doesn’t (busy Wi-Fi, a slow VPN), the error is up to half the difference between the two directions.</li>
+<li><strong>Older brokers.</strong> An agent from v2.5.0 or later connected to an older broker simply can’t measure. The startup summary shows <code>Clock offset: not yet measured</code> and everything else works as before. However, agents and broker should in any case share the same <em>major.minor</em> version.</li>
+<li><strong>Timecode offset.</strong> The startup summary also shows an older <code>Timecode offset</code> line. It is a single, coarse comparison with the broker, rounded to the timecode frame (40 ms at 25 fps). It is still there for compatibility, but the new <code>Clock offset</code> is far more precise.</li>
+<li><strong>Sub-millisecond needs.</strong> If you need to align data to within microseconds (for example, vibration signals from different boards), you need hardware-level synchronization, such as PTP (IEEE 1588) or a shared trigger signal. That is beyond what software over a normal network can do, and beyond the scope of this guide.</li>
+</ul>
 
 
 </section>

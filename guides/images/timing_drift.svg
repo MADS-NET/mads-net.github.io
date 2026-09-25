@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 360" font-family="Helvetica, Arial, sans-serif" font-size="14">
+  <defs>
+    <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888"/>
+    </marker>
+  </defs>
+  <rect width="820" height="360" fill="#ffffff"/>
+
+  <!-- Row 1: reality -->
+  <text x="20" y="40" font-weight="bold" fill="#333">What really happened</text>
+  <line x1="150" y1="90" x2="780" y2="90" stroke="#333" stroke-width="2" marker-end="url(#arr2)"/>
+  <g font-size="11" fill="#777" text-anchor="middle">
+    <line x1="150" y1="85" x2="150" y2="95" stroke="#777"/><text x="150" y="112">.000</text>
+    <line x1="300" y1="85" x2="300" y2="95" stroke="#777"/><text x="300" y="112">.200</text>
+    <line x1="450" y1="85" x2="450" y2="95" stroke="#777"/><text x="450" y="112">.400</text>
+    <line x1="600" y1="85" x2="600" y2="95" stroke="#777"/><text x="600" y="112">.600</text>
+    <line x1="750" y1="85" x2="750" y2="95" stroke="#777"/><text x="750" y="112">.800</text>
+  </g>
+  <text x="20" y="95" fill="#777" font-size="12">10:00:00</text>
+  <circle cx="150" cy="90" r="9" fill="#2c6fb7"/>
+  <text x="150" y="68" text-anchor="middle" fill="#1d4f86" font-size="13">A: button pressed</text>
+  <circle cx="300" cy="90" r="9" fill="#d35400"/>
+  <text x="310" y="68" text-anchor="start" fill="#a04000" font-size="13">B: motor starts</text>
+
+  <!-- Row 2: database -->
+  <text x="20" y="205" font-weight="bold" fill="#333">What the database says</text>
+  <line x1="150" y1="255" x2="780" y2="255" stroke="#333" stroke-width="2" marker-end="url(#arr2)"/>
+  <g font-size="11" fill="#777" text-anchor="middle">
+    <line x1="150" y1="250" x2="150" y2="260" stroke="#777"/><text x="150" y="277">.000</text>
+    <line x1="300" y1="250" x2="300" y2="260" stroke="#777"/><text x="300" y="277">.200</text>
+    <line x1="450" y1="250" x2="450" y2="260" stroke="#777"/><text x="450" y="277">.400</text>
+    <line x1="600" y1="250" x2="600" y2="260" stroke="#777"/><text x="600" y="277">.600</text>
+    <line x1="750" y1="250" x2="750" y2="260" stroke="#777"/><text x="750" y="277">.800</text>
+  </g>
+  <text x="20" y="260" fill="#777" font-size="12">10:00:00</text>
+  <circle cx="300" cy="255" r="9" fill="#d35400"/>
+  <text x="300" y="233" text-anchor="middle" fill="#a04000" font-size="13">B: motor starts</text>
+  <circle cx="525" cy="255" r="9" fill="#2c6fb7"/>
+  <text x="525" y="233" text-anchor="middle" fill="#1d4f86" font-size="13">A: button pressed</text>
+
+  <!-- shift arrow -->
+  <path d="M150,100 C150,170 525,170 525,242" fill="none" stroke="#2c6fb7" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arr2)"/>
+  <text x="360" y="140" text-anchor="start" fill="#1d4f86" font-size="12">computer A's clock is half a second ahead</text>
+  <line x1="300" y1="100" x2="300" y2="242" stroke="#d35400" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <text x="292" y="172" text-anchor="end" fill="#a04000" font-size="12">computer B's clock is right</text>
+
+  <text x="410" y="325" text-anchor="middle" fill="#b03a2e" font-size="14" font-weight="bold">The motor seems to start 300 ms before anyone pressed the button.</text>
+  <text x="410" y="347" text-anchor="middle" fill="#555" font-size="13" font-style="italic">Each message is right according to its own computer, but together they tell the wrong story.</text>
+</svg>
