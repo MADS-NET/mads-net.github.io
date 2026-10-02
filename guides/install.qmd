@@ -42,24 +42,36 @@ That said, agents and broker **must have the same MAJOR.MINOR version** to be ab
 
 ## Installing on MacOS
 
-Suppose that you downloaded the installer `mads-<version>-Darwin-universal.sh` (where `<version>` is the version number, e.g. `2.0.0`). The installer takes the following arguments:
+The easiest way to install on macOS is via [homebrew](https://brew.sh). If you don't have it, install it first. Then, run:
 
 ```bash
-./Mads-v2.4.2-Darwin-universal.sh --help
-Usage: packages/Mads-v2.4.2-Darwin-universal.sh [options]
+brew install pbosetti/mads/mads
+```
+
+::: {.callout-important}
+Every update afterwards will reset the whole install, removing any plugins of any custom agent that you might have installed in between. This is by design, so you are forced to recompile and re-install custom agents and plugins. 
+
+Conversely, the content of the `$(mads -p)/etc` folder is preserved across updates, so `mads.ini` and cryptographic keys are not lost when you update MADS version via homebrew.
+:::
+
+If you prefer a finer control on the installation, you can download the installer from [git.new/MADS](https://git.new/MADS). Suppose that you downloaded the installer `Mads-<version>-Darwin-universal.sh` (where `<version>` is the version number, e.g. `2.5.0`). The installer takes the following arguments:
+
+```bash
+./Mads-v2.5.0-Darwin-universal.sh --help
+Usage: packages/Mads-v2.5.0-Darwin-universal.sh [options]
 Options: [defaults in brackets after descriptions]
   --help            print this message
   --version         print cmake installer version
   --prefix=dir      directory in which to install
-  --include-subdir  include the Mads-v2.4.2-Darwin-universal subdirectory
-  --exclude-subdir  exclude the Mads-v2.4.2-Darwin-universal subdirectory
+  --include-subdir  include the Mads-v2.5.0-Darwin-universal subdirectory
+  --exclude-subdir  exclude the Mads-v2.5.0-Darwin-universal subdirectory
   --skip-license    accept license
 ```
 
 If you run it with no arguments, it will install MADS in the `/usr/local/` directory (need `sudo`) and ask for accepting the license. If you (as me) prefer to keep it in your home directory, you can run:
 
 ```bash
-./Mads-v2.4.2-Darwin-universal.sh --prefix=${HOME} --skip-license    
+./Mads-v2.5.0-Darwin-universal.sh --prefix=${HOME} --skip-license    
 ```
 
 which will install in `${HOME}/usr/local` and automatically accept license. Then, you want to add `${HOME}/usr/local/bin` to your search path: add the following line to your `.zshrc` or `.bashrc` file:
@@ -88,7 +100,7 @@ On [git.new/MADS](https://git.new/MADS) you find two `deb` packages:
 Installing is as simple as:
 
 ```bash
-export MV=v2.4.2  # or the latest version
+export MV=v2.5.0  # or the latest version
 wget https://github.com/pbosetti/MADS/releases/download/v${MV}/Mads-${MV}-Linux-aarch64.deb
 sudo dpkg -i Mads-${MV}-Linux-aarch64.deb
 rm Mads-${MV}-Linux-aarch64.deb
@@ -135,6 +147,7 @@ export PYTHONPATH=$PYTHONPATH:$(mads -p)/python
 If you want to make this permanent, add the above line to your `.zshrc` or `.bashrc` file (on Unix) or to your system environment variables (on Windows).
 
 **Method 2**: manipulate from python:
+
 ```python
 import sys, os
 import subprocess
