@@ -101,7 +101,7 @@ Installing is as simple as:
 
 ```bash
 export MV=v2.5.0  # or the latest version
-wget https://github.com/pbosetti/MADS/releases/download/v${MV}/Mads-${MV}-Linux-aarch64.deb
+wget https://github.com/pbosetti/MADS/releases/download/${MV}/Mads-${MV}-Linux-aarch64.deb
 sudo dpkg -i Mads-${MV}-Linux-aarch64.deb
 rm Mads-${MV}-Linux-aarch64.deb
 ```
