@@ -288,6 +288,10 @@ cookieconsent.run({
     <a class="dropdown-item" href="../manual/cryptography-security.html">
  <span class="dropdown-text">Cryptography and security</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../guides/shared-memory.html">
+ <span class="dropdown-text">Local transport and shared memory</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -369,6 +373,11 @@ cookieconsent.run({
   <li><a href="#common-options" id="toc-common-options" class="nav-link" data-scroll-target="#common-options">Common options</a></li>
   <li><a href="#role-specific-options" id="toc-role-specific-options" class="nav-link" data-scroll-target="#role-specific-options">Role-specific options</a></li>
   <li><a href="#plugin-resolution" id="toc-plugin-resolution" class="nav-link" data-scroll-target="#plugin-resolution">Plugin resolution</a></li>
+  <li><a href="#choosing-the-transport" id="toc-choosing-the-transport" class="nav-link" data-scroll-target="#choosing-the-transport">Choosing the transport</a></li>
+  <li><a href="#shared-memory" id="toc-shared-memory" class="nav-link" data-scroll-target="#shared-memory">Shared memory</a>
+  <ul class="collapse">
+  <li><a href="#plugin-zero-copy-api-protocol-p9" id="toc-plugin-zero-copy-api-protocol-p9" class="nav-link" data-scroll-target="#plugin-zero-copy-api-protocol-p9">Plugin zero-copy API (protocol P9)</a></li>
+  </ul></li>
   <li><a href="#gotchas" id="toc-gotchas" class="nav-link" data-scroll-target="#gotchas">Gotchas</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
   </ul>
@@ -416,7 +425,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 2, 2026</p>
+      <p class="date-modified">October 30, 2026</p>
     </div>
   </div>
     
@@ -441,6 +450,7 @@ cookieconsent.run({
 <li><a href="../guides/OTA_plugins.html">OTA Plugins</a> — distributing <code>.plugin</code> files via the broker</li>
 <li><a href="../guides/security.html">Security in MADS</a> (for <code>--crypto</code>)</li>
 <li><a href="../guides/auto-discovery.html">Auto-discovery</a> (for <code>--room</code>)</li>
+<li><a href="../guides/shared-memory.html">Local transport and shared memory</a> (for <code>--transport</code> and <code>shm</code>)</li>
 </ul>
 </div></div><section id="synopsis" class="level1">
 <h1>Synopsis</h1>
@@ -527,25 +537,29 @@ Important
 </tr>
 <tr class="odd">
 <td><code>-s</code>, <code>--settings</code> <em>URI</em></td>
-<td>Settings file/URI (<code>tcp://host:port</code> or a local <code>.ini</code> path).</td>
+<td>Settings file/URI (<code>tcp://host:port</code>, the broker’s local <code>ipc://path</code>, or a local <code>.ini</code> path).</td>
 </tr>
 <tr class="even">
 <td><code>--settings-timeout</code> <em>ms</em></td>
 <td>Timeout when reading settings from a broker (<code>0</code> = no timeout, the default).</td>
 </tr>
 <tr class="odd">
+<td><code>--transport</code> <em>mode</em></td>
+<td><code>auto</code>, <code>tcp</code> or <code>ipc</code>; see <a href="#choosing-the-transport">Choosing the transport</a>.</td>
+</tr>
+<tr class="even">
 <td><code>-r</code>, <code>--room[=name]</code></td>
 <td>Discover the broker via UDP instead of <code>--settings</code> (opt-in; default room <code>mads</code>).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>-S</code>, <code>--save-settings</code> <em>file</em></td>
 <td>Dump the resolved settings to an ini file.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>--crypto</code>, <code>--keys_dir</code>, <code>--key_broker</code>, <code>--key_client</code>, <code>--auth_verbose</code></td>
 <td>CURVE encryption for the broker connection.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>-v</code>, <code>--version</code> / <code>-h</code>, <code>--help</code></td>
 <td>Version / usage.</td>
 </tr>
@@ -638,6 +652,128 @@ Tip
 </div>
 </div>
 </section>
+<section id="choosing-the-transport" class="level1">
+<h1>Choosing the transport</h1>
+<p>An agent reaches the broker either over tcp, at the <code>[agents]</code> <code>frontend_address</code>/<code>backend_address</code>, or over the broker’s local <code>ipc://</code> endpoints (see <a href="../manual/broker.html#local-transport-ipc">Local transport</a>). The choice is made once, at startup, from the <code>transport</code> setting:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Value</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>auto</code> (default)</td>
+<td>Use ipc when the broker runs on this host, tcp otherwise.</td>
+</tr>
+<tr class="even">
+<td><code>tcp</code></td>
+<td>Always use the tcp addresses, as before ipc existed.</td>
+</tr>
+<tr class="odd">
+<td><code>ipc</code></td>
+<td>Use ipc, or refuse to start if it is not possible.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>--transport</code> option wins over the <code>transport</code> key of the agent’s own section, which wins over the one in <code>[agents]</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[agents]</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># transport = "auto"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">[camera]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="dt">transport</span> <span class="op">=</span> <span class="st">"tcp"</span>   <span class="co"># this one always goes through tcp</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>With <code>auto</code>, the agent asks the broker which ipc endpoints it offers (the <code>transport</code> command) and switches to them only if <strong>all</strong> of these hold:</p>
+<ul>
+<li>the agent’s libzmq supports ipc;</li>
+<li>the broker offers both the frontend and the backend ipc endpoints;</li>
+<li>the broker runs on the same host: its host token matches the agent’s;</li>
+<li>the socket files are visible from the agent, which rules out containers that share a hostname but not a filesystem.</li>
+</ul>
+<p>Otherwise it silently uses tcp. Settings fetched over ipc (<code>-s ipc:///tmp/mads-1000/broker-9092-settings.ipc</code>) prove the broker is local, so the host check is skipped, and the data sockets follow over ipc. The transport in use is shown in the agent’s startup information.</p>
+<p><a href="../manual/doctor.html"><code>mads doctor</code></a> predicts which transport an agent started on a given host would use.</p>
+</section>
+<section id="shared-memory" class="level1">
+<h1>Shared memory</h1>
+<p>A producer that publishes large binary blobs (camera frames, point clouds) can keep them in shared memory instead of copying them through ZeroMQ and the broker. Only a small descriptor travels on the bus; consumers on the same host read the bytes in place. Enable it in the producer’s section:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>shm</code></td>
+<td><code>false</code></td>
+<td>Publish blobs through a shared-memory ring owned by this agent.</td>
+</tr>
+<tr class="even">
+<td><code>shm_slots</code></td>
+<td><code>8</code></td>
+<td>Number of slots in the ring.</td>
+</tr>
+<tr class="odd">
+<td><code>shm_slot_size</code></td>
+<td><code>16777216</code> (16 MiB)</td>
+<td>Size of one slot, in bytes. Larger blobs are sent inline.</td>
+</tr>
+</tbody>
+</table>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[camera]</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dt">pub_topic</span> <span class="op">=</span> <span class="st">"frames"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="dt">shm</span> <span class="op">=</span> <span class="cn">true</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="dt">shm_slots</span> <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="dt">shm_slot_size</span> <span class="op">=</span> <span class="dv">8388608</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Consumers need no setting. A <code>filter</code> or <code>sink</code> on the same host reads shared blobs directly; agents that do not opt in to zero-copy, <code>mads record</code>, and the C API receive an ordinary blob copy. The ring is <strong>lossy</strong>: a slow consumer may find its slot overwritten, and that message is then dropped and counted, never delivered half-written. A consumer on another host cannot read the ring and reports an error, so use <code>shm</code> only when every consumer of the topic is local.</p>
+<section id="plugin-zero-copy-api-protocol-p9" class="level2">
+<h2 class="anchored" data-anchor-id="plugin-zero-copy-api-protocol-p9">Plugin zero-copy API (protocol P9)</h2>
+<p>Plugins built against plugin protocol <strong>9</strong> can skip the remaining copies. All the new methods have copying defaults, so a P8 plugin only needs a rebuild:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Plugin</th>
+<th>Override</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Filter</code>, <code>Sink</code></td>
+<td><code>load_data_view(in, topic, BlobView blob)</code></td>
+<td>Read the blob in place. The default copies it and calls <code>load_data()</code>.</td>
+</tr>
+<tr class="even">
+<td><code>Source</code></td>
+<td><code>supports_shared_output()</code> + <code>get_output_shared(out, BlobBuffer &amp;buf)</code></td>
+<td>Write the blob straight into a ring slot.</td>
+</tr>
+<tr class="odd">
+<td><code>Filter</code></td>
+<td><code>supports_shared_output()</code> + <code>process_shared(out, BlobBuffer &amp;buf)</code></td>
+<td>Same, for a filter’s output.</td>
+</tr>
+</tbody>
+</table>
+<p>A <code>BlobView</code> is valid only for the duration of the call (for a filter, through the following <code>process()</code>). If an output blob does not fit in <code>buf.capacity</code>, the plugin sets <code>buf.size</code> to the size it needs and returns <code>return_type::retry</code>; the loader then calls <code>get_output()</code>/<code>process()</code> and sends that blob inline. See the <a href="../guides/shared-memory.html">shared-memory guide</a> for a full example.</p>
+</section>
+</section>
 <section id="gotchas" class="level1">
 <h1>Gotchas</h1>
 <div class="callout callout-style-default callout-warning callout-titled">
@@ -669,7 +805,7 @@ Warning
 </section>
 <section id="see-also" class="level1">
 <h1>See also</h1>
-<p><a href="../manual/mads.html">mads</a> · <a href="../manual/plugin.html">plugin</a></p>
+<p><a href="../manual/mads.html">mads</a> · <a href="../manual/plugin.html">plugin</a> · <a href="../manual/broker.html">broker</a> · <a href="../guides/shared-memory.html">Local transport and shared memory</a></p>
 
 
 </section>

@@ -285,6 +285,10 @@ cookieconsent.run({
     <a class="dropdown-item" href="../manual/cryptography-security.html">
  <span class="dropdown-text">Cryptography and security</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../guides/shared-memory.html">
+ <span class="dropdown-text">Local transport and shared memory</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -419,7 +423,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 2, 2026</p>
+      <p class="date-modified">October 30, 2026</p>
     </div>
   </div>
     
@@ -529,34 +533,38 @@ cookieconsent.run({
 <td>Timeout in milliseconds while reading settings from the broker.</td>
 </tr>
 <tr class="even">
+<td><code>--transport</code></td>
+<td>Transport to the broker: <code>auto</code> (ipc when the broker runs on this host), <code>tcp</code> or <code>ipc</code>.</td>
+</tr>
+<tr class="odd">
 <td><code>-r</code>, <code>--room</code></td>
 <td>Discover the broker settings endpoint in a service-discovery room.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>--crypto</code></td>
 <td>Enable CURVE encryption for broker communication.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>--keys_dir</code></td>
 <td>Directory containing CURVE key files.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>--key_broker</code></td>
 <td>Broker/server key name, without the <code>.key</code> extension.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>--key_client</code></td>
 <td>Client key name, without the <code>.key</code> extension.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>--auth_verbose</code></td>
 <td>Enable verbose authentication messages.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>-v</code>, <code>--version</code></td>
 <td>Print the MADS library version and exit.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>-h</code>, <code>--help</code></td>
 <td>Print usage and exit.</td>
 </tr>
@@ -628,7 +636,8 @@ cookieconsent.run({
 <li>agent name override from <code>--name</code>;</li>
 <li>agent ID from <code>--agent-id</code>;</li>
 <li>CURVE encryption settings from <code>--crypto</code> and related key options;</li>
-<li>settings timeout from <code>--settings-timeout</code>.</li>
+<li>settings timeout from <code>--settings-timeout</code>;</li>
+<li>transport override from <code>--transport</code> (see <a href="../manual/source-filter-sink.html#choosing-the-transport">Choosing the transport</a>).</li>
 </ul>
 <p>The loaded settings are cached and can be retrieved with:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="at">const</span> nlohmann<span class="op">::</span>json <span class="op">&amp;</span>settings <span class="op">=</span> agent<span class="op">.</span>settings_json<span class="op">();</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>

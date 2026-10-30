@@ -2,6 +2,9 @@
   {
     "listing": "/guides.html",
     "items": [
+      "/guides/ipc_shm.html",
+      "/guides/mads_ini.html",
+      "/guides/shared-memory.html",
       "/guides/timing.html",
       "/guides/binary_payload.html",
       "/guides/onnx.html",

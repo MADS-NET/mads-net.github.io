@@ -21,12 +21,16 @@
     <lastmod>2026-06-15T15:39:52.257Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/fmu.html</loc>
-    <lastmod>2026-04-02T13:58:06.863Z</lastmod>
+    <loc>https://mads-net.github.io/guides/zeroconf.html</loc>
+    <lastmod>2025-09-16T15:07:37.942Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/guides/shared-memory.html</loc>
+    <lastmod>2026-10-06T18:50:04.350Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/agent_app.html</loc>
-    <lastmod>2026-05-02T16:45:09.196Z</lastmod>
+    <lastmod>2026-10-06T14:42:03.034Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/onnx.html</loc>
@@ -69,136 +73,140 @@
     <lastmod>2026-06-15T15:39:59.861Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/echo_top.html</loc>
-    <lastmod>2026-07-29T11:49:17.877Z</lastmod>
+    <loc>https://mads-net.github.io/guides/ipc_shm.html</loc>
+    <lastmod>2026-10-30T10:41:15.613Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/timing-scheduling.html</loc>
-    <lastmod>2026-07-07T12:15:40.477Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/cryptography-security.html</loc>
-    <lastmod>2026-07-07T12:43:39.131Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/plugins-extensions.html</loc>
-    <lastmod>2026-07-07T12:07:11.472Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/mads.html</loc>
-    <lastmod>2026-07-07T12:51:10.914Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/package.html</loc>
-    <lastmod>2026-07-07T12:09:21.413Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/up.html</loc>
-    <lastmod>2026-08-29T08:25:08.628Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/network-discovery.html</loc>
-    <lastmod>2026-07-07T12:49:26.218Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/dealer-worker.html</loc>
-    <lastmod>2026-07-07T12:07:42.365Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/fsm.html</loc>
-    <lastmod>2026-07-07T12:08:39.464Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/plugin.html</loc>
-    <lastmod>2026-07-07T12:54:11.709Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/doctor.html</loc>
-    <lastmod>2026-07-29T11:49:22.905Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/presentations/gorini_exercise.html</loc>
-    <lastmod>2026-08-31T12:36:26.759Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/guides.html</loc>
-    <lastmod>2025-08-07T15:14:54.450Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/interfaces.html</loc>
-    <lastmod>2026-07-07T07:39:25.077Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/index.html</loc>
-    <lastmod>2026-09-16T07:13:28.953Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/why.html</loc>
-    <lastmod>2026-07-07T07:37:34.278Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/who_is_using.html</loc>
-    <lastmod>2025-08-06T08:42:35.620Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/about.html</loc>
-    <lastmod>2025-08-05T12:00:46.384Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/presentations/intro.html</loc>
-    <lastmod>2026-08-05T11:14:10.974Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/presentations/gorini.html</loc>
-    <lastmod>2026-09-16T09:11:56.903Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/databases-storage.html</loc>
-    <lastmod>2026-07-07T12:35:11.483Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/source-filter-sink.html</loc>
-    <lastmod>2026-07-07T12:09:42.737Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/broker.html</loc>
-    <lastmod>2026-07-07T12:51:58.968Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/logger.html</loc>
-    <lastmod>2026-07-07T12:36:31.457Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/message-routing.html</loc>
-    <lastmod>2026-07-07T12:29:17.359Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/feedback-perf_assess.html</loc>
-    <lastmod>2026-07-07T12:08:30.812Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/index.html</loc>
-    <lastmod>2026-07-29T09:38:45.659Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/rust-loaders.html</loc>
-    <lastmod>2026-07-07T12:09:33.616Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/inspect_plugin.html</loc>
-    <lastmod>2026-07-07T12:08:49.430Z</lastmod>
-  </url>
-  <url>
-    <loc>https://mads-net.github.io/manual/federate.html</loc>
-    <lastmod>2026-07-07T12:07:53.939Z</lastmod>
+    <loc>https://mads-net.github.io/manual/message-queues.html</loc>
+    <lastmod>2026-07-07T12:28:07.825Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/manual/record_play.html</loc>
     <lastmod>2026-07-29T11:49:13.188Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/manual/message-queues.html</loc>
-    <lastmod>2026-07-07T12:28:07.825Z</lastmod>
+    <loc>https://mads-net.github.io/manual/federate.html</loc>
+    <lastmod>2026-07-07T12:07:53.939Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/inspect_plugin.html</loc>
+    <lastmod>2026-07-07T12:08:49.430Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/rust-loaders.html</loc>
+    <lastmod>2026-07-07T12:09:33.616Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/index.html</loc>
+    <lastmod>2026-07-29T09:38:45.659Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/feedback-perf_assess.html</loc>
+    <lastmod>2026-07-07T12:08:30.812Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/message-routing.html</loc>
+    <lastmod>2026-07-07T12:29:17.359Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/logger.html</loc>
+    <lastmod>2026-07-07T12:36:31.457Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/broker.html</loc>
+    <lastmod>2026-10-07T12:19:18.644Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/source-filter-sink.html</loc>
+    <lastmod>2026-10-06T14:42:24.793Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/databases-storage.html</loc>
+    <lastmod>2026-07-07T12:35:11.483Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/presentations/gorini.html</loc>
+    <lastmod>2026-09-16T09:11:56.903Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/presentations/intro.html</loc>
+    <lastmod>2026-08-05T11:14:10.974Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/about.html</loc>
+    <lastmod>2025-08-05T12:00:46.384Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/who_is_using.html</loc>
+    <lastmod>2025-08-06T08:42:35.620Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/why.html</loc>
+    <lastmod>2026-07-07T07:37:34.278Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/index.html</loc>
+    <lastmod>2026-09-16T07:13:28.953Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/interfaces.html</loc>
+    <lastmod>2026-07-07T07:39:25.077Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/guides.html</loc>
+    <lastmod>2025-08-07T15:14:54.450Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/presentations/gorini_exercise.html</loc>
+    <lastmod>2026-08-31T12:36:26.759Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/doctor.html</loc>
+    <lastmod>2026-10-06T14:42:28.839Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/plugin.html</loc>
+    <lastmod>2026-07-07T12:54:11.709Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/fsm.html</loc>
+    <lastmod>2026-07-07T12:08:39.464Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/dealer-worker.html</loc>
+    <lastmod>2026-07-07T12:07:42.365Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/network-discovery.html</loc>
+    <lastmod>2026-07-07T12:49:26.218Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/up.html</loc>
+    <lastmod>2026-08-29T08:25:08.628Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/package.html</loc>
+    <lastmod>2026-07-07T12:09:21.413Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/mads.html</loc>
+    <lastmod>2026-07-07T12:51:10.914Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/plugins-extensions.html</loc>
+    <lastmod>2026-07-07T12:07:11.472Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/cryptography-security.html</loc>
+    <lastmod>2026-07-07T12:43:39.131Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/timing-scheduling.html</loc>
+    <lastmod>2026-07-07T12:15:40.477Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/manual/echo_top.html</loc>
+    <lastmod>2026-07-29T11:49:17.877Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/monolithic_agents.html</loc>
@@ -238,7 +246,7 @@
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/security.html</loc>
-    <lastmod>2026-06-15T15:50:46.270Z</lastmod>
+    <lastmod>2026-10-06T14:42:52.045Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/director.html</loc>
@@ -249,8 +257,12 @@
     <lastmod>2026-06-12T09:06:18.380Z</lastmod>
   </url>
   <url>
-    <loc>https://mads-net.github.io/guides/zeroconf.html</loc>
-    <lastmod>2025-09-16T15:07:37.942Z</lastmod>
+    <loc>https://mads-net.github.io/guides/fmu.html</loc>
+    <lastmod>2026-04-02T13:58:06.863Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mads-net.github.io/guides/mads_ini.html</loc>
+    <lastmod>2026-10-30T10:41:05.914Z</lastmod>
   </url>
   <url>
     <loc>https://mads-net.github.io/guides/structure.html</loc>

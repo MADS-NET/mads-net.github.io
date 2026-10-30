@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Paolo Bosetti">
+<meta name="dcterms.date" content="2026-10-30">
+
+<title>The mads.ini Editor</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3c3f1368ed8db972a012dae01a8e5220.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-97e28f47ad423cfcb72627c3f906fd98.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3c3f1368ed8db972a012dae01a8e5220.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-333e99d084c2ffcec8e6d96540d279c4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-580cd51fbb4f3c7d95b8bb74838632fa.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-333e99d084c2ffcec8e6d96540d279c4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/quarto-contrib/bootstrap-icons-1.11.1/all.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-L37VBCVVQW"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-L37VBCVVQW', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"express",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  ,
+"language":"en"
+  });
+});
+</script> 
+  
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo light-content">
+    <img src="../images/logo_white.png" alt="" class="navbar-logo dark-content">
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-introduction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Introduction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-introduction">    
+        <li>
+    <a class="dropdown-item" href="../start.html">
+ <span class="dropdown-text">Start here</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../why.html">
+ <span class="dropdown-text">Why MADS?</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../interfaces.html">
+ <span class="dropdown-text">Interfaces</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../who_is_using.html">
+ <span class="dropdown-text">Use cases</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../flyer.pdf">
+ <span class="dropdown-text">Flyer</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../manual"> 
+<span class="menu-text">Documentation</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-commands" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Commands</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-commands">    
+        <li>
+    <a class="dropdown-item" href="../manual/mads.html">
+ <span class="dropdown-text">mads command</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/broker.html">
+ <span class="dropdown-text">Broker</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/plugin.html">
+ <span class="dropdown-text">Plugin</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/source-filter-sink.html">
+ <span class="dropdown-text">Source / Filter / Sink</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/logger.html">
+ <span class="dropdown-text">Logger</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/feedback-perf_assess.html">
+ <span class="dropdown-text">Feedback / Perf Assess</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/inspect_plugin.html">
+ <span class="dropdown-text">Inspect Plugin</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/federate.html">
+ <span class="dropdown-text">Federate</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/fsm.html">
+ <span class="dropdown-text">FSM</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/package.html">
+ <span class="dropdown-text">Package</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/dealer-worker.html">
+ <span class="dropdown-text">Dealer / Worker</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/rust-loaders.html">
+ <span class="dropdown-text">Rust Loaders</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-concepts" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Concepts</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-concepts">    
+        <li>
+    <a class="dropdown-item" href="../manual/network-discovery.html">
+ <span class="dropdown-text">Network discovery</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/message-routing.html">
+ <span class="dropdown-text">Message routing and topics</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/plugins-extensions.html">
+ <span class="dropdown-text">Plugins and extensions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/timing-scheduling.html">
+ <span class="dropdown-text">Timing and scheduling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/message-queues.html">
+ <span class="dropdown-text">Message queues</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/databases-storage.html">
+ <span class="dropdown-text">Databases and data storage</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../manual/cryptography-security.html">
+ <span class="dropdown-text">Cryptography and security</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../guides/shared-memory.html">
+ <span class="dropdown-text">Local transport and shared memory</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../guides.html"> 
+<span class="menu-text">Guides</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-presentations" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Presentations</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-presentations">    
+        <li>
+    <a class="dropdown-item" href="../presentations/intro.html">
+ <span class="dropdown-text"><img src="../images/logo.svg" style="height: 0.9em; vertical-align: -0.125em; margin: 0; padding: 0; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));"> Intro</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../presentations/gorini.html">
+ <span class="dropdown-text">Scuola Gorini 2026</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://git.new/MADS"> 
+<span class="menu-text"><i class="bi-cloud-arrow-down-fill " style="" role="img" aria-hidden="true"></i> Get MADS</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text"><i class="bi-question-circle-fill " style="" role="img" aria-hidden="true"></i> About</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-bi-github" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-bi-github">    
+        <li>
+    <a class="dropdown-item" href="https://github.com/pbosetti/mads">
+ <span class="dropdown-text">Source Code</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/pbosetti/MADS/issues">
+ <span class="dropdown-text">Issues</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/MADS-Net">
+ <span class="dropdown-text">Plugins</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <div id="quarto-announcement" data-announcement-id="bac4023a3167daaad50509f0325463c0" class="alert alert-warning hidden"><div class="quarto-announcement-content">
+<p>Don’t miss the new <span style="font-weight:bold">MADSCode extension</span> for Visual Studio Code! <a href="https://marketplace.visualstudio.com/items?itemName=MADS-Net.madscode">Learn more <i class="bi-link " style="" role="img" aria-hidden="true"></i></a></p>
+</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#why-an-editor-for-mads.ini" id="toc-why-an-editor-for-mads.ini" class="nav-link active" data-scroll-target="#why-an-editor-for-mads.ini">Why an editor for <code>mads.ini</code>?</a></li>
+  <li><a href="#starting-the-editor" id="toc-starting-the-editor" class="nav-link" data-scroll-target="#starting-the-editor">Starting the editor</a></li>
+  <li><a href="#a-tour-of-the-window" id="toc-a-tour-of-the-window" class="nav-link" data-scroll-target="#a-tour-of-the-window">A tour of the window</a></li>
+  <li><a href="#nodes-roles-and-links" id="toc-nodes-roles-and-links" class="nav-link" data-scroll-target="#nodes-roles-and-links">Nodes, roles and links</a>
+  <ul class="collapse">
+  <li><a href="#node-colors" id="toc-node-colors" class="nav-link" data-scroll-target="#node-colors">Node colors</a></li>
+  <li><a href="#how-links-are-computed" id="toc-how-links-are-computed" class="nav-link" data-scroll-target="#how-links-are-computed">How links are computed</a></li>
+  <li><a href="#catch-all-links-and-dangling-topics" id="toc-catch-all-links-and-dangling-topics" class="nav-link" data-scroll-target="#catch-all-links-and-dangling-topics">Catch-all links and dangling topics</a></li>
+  </ul></li>
+  <li><a href="#editing" id="toc-editing" class="nav-link" data-scroll-target="#editing">Editing</a>
+  <ul class="collapse">
+  <li><a href="#connecting-and-disconnecting" id="toc-connecting-and-disconnecting" class="nav-link" data-scroll-target="#connecting-and-disconnecting">Connecting and disconnecting</a></li>
+  <li><a href="#nodes-and-the-inspector" id="toc-nodes-and-the-inspector" class="nav-link" data-scroll-target="#nodes-and-the-inspector">Nodes and the inspector</a></li>
+  <li><a href="#shortcuts" id="toc-shortcuts" class="nav-link" data-scroll-target="#shortcuts">Shortcuts</a></li>
+  <li><a href="#document-settings" id="toc-document-settings" class="nav-link" data-scroll-target="#document-settings">Document settings</a></li>
+  </ul></li>
+  <li><a href="#what-happens-to-your-file" id="toc-what-happens-to-your-file" class="nav-link" data-scroll-target="#what-happens-to-your-file">What happens to your file</a></li>
+  <li><a href="#remote-editing" id="toc-remote-editing" class="nav-link" data-scroll-target="#remote-editing">Remote editing</a>
+  <ul class="collapse">
+  <li><a href="#what-it-is-and-when-to-use-it" id="toc-what-it-is-and-when-to-use-it" class="nav-link" data-scroll-target="#what-it-is-and-when-to-use-it">What it is, and when to use it</a></li>
+  <li><a href="#three-ways-to-allow-it" id="toc-three-ways-to-allow-it" class="nav-link" data-scroll-target="#three-ways-to-allow-it">Three ways to allow it</a>
+  <ul class="collapse">
+  <li><a href="#on-the-brokers-own-computer" id="toc-on-the-brokers-own-computer" class="nav-link" data-scroll-target="#on-the-brokers-own-computer">1. On the broker’s own computer</a></li>
+  <li><a href="#development-over-the-network-with-a-password" id="toc-development-over-the-network-with-a-password" class="nav-link" data-scroll-target="#development-over-the-network-with-a-password">2. Development over the network, with a password</a></li>
+  <li><a href="#production-with-curve-editor-keys" id="toc-production-with-curve-editor-keys" class="nav-link" data-scroll-target="#production-with-curve-editor-keys">3. Production, with CURVE editor keys</a></li>
+  <li><a href="#curve-plus-a-password" id="toc-curve-plus-a-password" class="nav-link" data-scroll-target="#curve-plus-a-password">4. CURVE plus a password</a></li>
+  </ul></li>
+  <li><a href="#broker-settings-reference" id="toc-broker-settings-reference" class="nav-link" data-scroll-target="#broker-settings-reference">Broker settings reference</a></li>
+  <li><a href="#opening-the-brokers-settings" id="toc-opening-the-brokers-settings" class="nav-link" data-scroll-target="#opening-the-brokers-settings">Opening the broker’s settings</a>
+  <ul class="collapse">
+  <li><a href="#the-password-prompt" id="toc-the-password-prompt" class="nav-link" data-scroll-target="#the-password-prompt">The password prompt</a></li>
+  </ul></li>
+  <li><a href="#working-on-a-remote-document" id="toc-working-on-a-remote-document" class="nav-link" data-scroll-target="#working-on-a-remote-document">Working on a remote document</a></li>
+  <li><a href="#limitations-to-keep-in-mind" id="toc-limitations-to-keep-in-mind" class="nav-link" data-scroll-target="#limitations-to-keep-in-mind">Limitations to keep in mind</a></li>
+  </ul></li>
+  <li><a href="#headless" id="toc-headless" class="nav-link" data-scroll-target="#headless">Command-line helpers</a></li>
+  <li><a href="#quick-tips" id="toc-quick-tips" class="nav-link" data-scroll-target="#quick-tips">Quick tips</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">The mads.ini Editor</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">v3</div>
+    <div class="quarto-category">mads-ini</div>
+    <div class="quarto-category">GUI</div>
+    <div class="quarto-category">settings</div>
+    <div class="quarto-category">remote</div>
+    <div class="quarto-category">intermediate</div>
+  </div>
+  </div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Paolo Bosetti </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Trento
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 30, 2026</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">October 30, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p>MADS v3 ships <code>mads ini</code>, a graphical node editor for the <code>mads.ini</code> settings file. It shows agents as nodes and topics as links, keeps your comments intact, offers command-line helpers for scripts, and can edit the settings file of a <em>running</em> broker from another computer, protected by CURVE keys and/or a password.</p>
+  </div>
+</div>
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This guide describe a feature that is introduced by <strong>MADS v3.x</strong>, and that is not available on previous versions.</p>
+</div>
+</div>
+<section id="why-an-editor-for-mads.ini" class="level1">
+<h1>Why an editor for <code>mads.ini</code>?</h1>
+<p>The <code>mads.ini</code> file is where you describe a whole MADS system: one section per agent, plus the <code>[agents]</code> and <code>[broker]</code> sections with the global settings. It is a plain text file, and that is fine for a handful of agents. With twenty agents, though, it becomes hard to answer simple questions: <em>who receives what? who publishes this topic? did I misspell a topic name?</em></p>
+<p><code>mads ini</code> answers them visually. Each agent is a <strong>node</strong>, and each <strong>topic</strong> (the label agents use to publish and subscribe to messages) that one agent publishes and another subscribes to is a <strong>link</strong>. Typical uses:</p>
+<ul>
+<li>see the <strong>whole system at a glance</strong> and how data flows from sources to sinks;</li>
+<li><strong>avoid typos</strong> in topic names: you connect pins by dragging, instead of typing strings;</li>
+<li>find <strong>dangling topics</strong>: subscriptions nobody publishes to are flagged;</li>
+<li>add and configure agents with <strong>typed widgets</strong> instead of remembering key names;</li>
+<li><strong>edit the settings of a running broker</strong> from your laptop, without logging into the machine hosting it.</li>
+</ul>
+<p>The editor reads and writes the very same <code>mads.ini</code>: no new format, and the file remains perfectly usable with a text editor.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/mads_ini_overview.png" class="img-fluid figure-img"></p>
+<figcaption>The editor on a full <code>mads.ini</code>: palette on the left, canvas with nodes and links in the middle, inspector on the right (here showing the <code>[agents]</code> document settings), status footer at the bottom.</figcaption>
+</figure>
+</div>
+</section>
+<section id="starting-the-editor" class="level1">
+<h1>Starting the editor</h1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> ini              <span class="co"># opens &lt;prefix&gt;/etc/mads.ini, or a new document from the template</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> ini deploy/mads.ini   <span class="co"># opens a specific file</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Without a GUI
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If your MADS build has no graphical interface (or <code>mads-ini</code> is not installed), a bare <code>mads ini</code> just prints the template file, as in older releases, and <code>mads ini FILE</code> fails with a message pointing you to the headless commands described <a href="#headless">below</a>. To print the template explicitly, use <code>mads ini --print</code>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Windows
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>As for any other MADS command on Windows, type <code>mads-ini</code> (with the hyphen).</p>
+</div>
+</div>
+</section>
+<section id="a-tour-of-the-window" class="level1">
+<h1>A tour of the window</h1>
+<p>The window has three parts:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Part</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Palette</strong> (left)</td>
+<td><em>Open broker settings</em> panel (see <a href="#remote-editing">remote editing</a>), <em>Document settings</em>, and one button per node type, grouped as <em>Plugin loaders</em>, <em>Agents</em> and <em>Other</em> (Python agent, Custom agent). Clicking a button adds a node at the centre of the view. A collapsible <strong>Problems</strong> list shows lint results.</td>
+</tr>
+<tr class="even">
+<td><strong>Canvas</strong> (middle)</td>
+<td>The nodes and their links. A small <strong>minimap</strong> sits in a corner (View &gt; Minimap toggles it).</td>
+</tr>
+<tr class="odd">
+<td><strong>Inspector</strong> (right)</td>
+<td>The settings of the selected node, or the document settings when nothing is selected.</td>
+</tr>
+<tr class="even">
+<td><strong>Footer</strong></td>
+<td>File name (with <em>(modified)</em> when there are unsaved changes), number of agents/links/errors/warnings, and the first error in red.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="nodes-roles-and-links" class="level1">
+<h1>Nodes, roles and links</h1>
+<section id="node-colors" class="level2">
+<h2 class="anchored" data-anchor-id="node-colors">Node colors</h2>
+<p>Every section of the file other than <code>[agents]</code> and <code>[broker]</code> is a node. The color of its title bar tells its <strong>role</strong>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Color</th>
+<th>Role</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>green</td>
+<td>source</td>
+<td>it only publishes</td>
+</tr>
+<tr class="even">
+<td>blue</td>
+<td>filter</td>
+<td>it subscribes <em>and</em> publishes</td>
+</tr>
+<tr class="odd">
+<td>orange</td>
+<td>sink</td>
+<td>it only subscribes</td>
+</tr>
+</tbody>
+</table>
+<p>For built-in agents the role is fixed. For <strong>custom</strong> and <strong>Python</strong> agents there is no fixed role, so the editor deduces it: only <code>pub_topic</code> set means source, only <code>sub_topic</code> set means sink, anything else means filter. You can override it with the <strong>Role</strong> combo in the inspector (choose <em>Automatic</em> again to remove the override). The role is only a drawing aid: agents ignore it.</p>
+</section>
+<section id="how-links-are-computed" class="level2">
+<h2 class="anchored" data-anchor-id="how-links-are-computed">How links are computed</h2>
+<p>A link means “the subscriber receives what the publisher publishes”. The publisher’s topic is its <code>pub_topic</code>, or the section name when <code>pub_topic</code> is absent. Each <code>sub_topic</code> entry of a subscriber is an input pin.</p>
+<p>The editor applies the <strong>same matching rules the agents use at run time</strong>, so what you see is what you get:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Link color</th>
+<th>Kind</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>blue</td>
+<td>exact</td>
+<td>the topic equals a <code>sub_topic</code> entry</td>
+</tr>
+<tr class="even">
+<td>amber</td>
+<td>prefix</td>
+<td>a plain entry is the <em>beginning</em> of the topic</td>
+</tr>
+<tr class="odd">
+<td>cyan</td>
+<td>wildcard</td>
+<td>an entry with MQTT wildcards matches the topic</td>
+</tr>
+<tr class="even">
+<td>grey</td>
+<td>implied</td>
+<td>the publisher has no <code>pub_topic</code>, so its section name is used</td>
+</tr>
+</tbody>
+</table>
+<p>Rules and gotchas worth knowing:</p>
+<ul>
+<li><strong>Plain entries match by prefix</strong>, byte by byte: <code>sensors</code> also receives <code>sensors_raw</code>, not only <code>sensors/...</code>.</li>
+<li><code>+</code> matches exactly one level, and works only as a <strong>whole level</strong> (<code>a/+/b</code>). Something like <code>fmu_+</code> is <em>not</em> a wildcard: it matches itself literally, and the editor warns you.</li>
+<li><code>#</code> matches the level it replaces and everything below, so <code>sensors/#</code> also matches <code>sensors</code>. It is valid only as the <strong>last</strong> level.</li>
+<li><code>*</code> is <strong>not</strong> a wildcard in MADS; it matches itself, and the editor warns you. To receive every topic starting with <code>fmu_</code>, just write <code>fmu_</code> (a prefix), or use <code>+</code> and <code>#</code> levels.</li>
+<li>The empty entry <code>""</code> subscribes to <strong>everything</strong>.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/mads_ini_node_inspector.png" class="img-fluid figure-img"></p>
+<figcaption>Node “clock” selected. The inspector shows its name, type, role, comment, topics, timing keys, overrides of <code>[agents]</code>, and custom keys such as <code>period</code> with the “Add key” row. Orange <code>!</code> marks on some input pins flag topics nobody publishes.</figcaption>
+</figure>
+</div>
+</section>
+<section id="catch-all-links-and-dangling-topics" class="level2">
+<h2 class="anchored" data-anchor-id="catch-all-links-and-dangling-topics">Catch-all links and dangling topics</h2>
+<p>Links from the <code>""</code> (subscribe to everything) entry would clutter the canvas, so they are hidden: the <strong>(all)</strong> pin shows a badge <strong>&lt;- N</strong>, where <em>N</em> is the number of publishers behind it. Turn them on with <strong>View &gt; Show catch-all links</strong>, or from the canvas context menu.</p>
+<p>An input pin whose topic is published by nobody is marked with <strong>!</strong> in its label, and listed as <em>info</em> in the Problems list. This is how you find typos and leftovers. A published topic that nobody subscribes to is listed there too.</p>
+</section>
+</section>
+<section id="editing" class="level1">
+<h1>Editing</h1>
+<section id="connecting-and-disconnecting" class="level2">
+<h2 class="anchored" data-anchor-id="connecting-and-disconnecting">Connecting and disconnecting</h2>
+<ul>
+<li><strong>Connect</strong>: drag from an output pin to an input pin. The editor appends the topic to the target’s <code>sub_topic</code> (turning a single string into an array, or creating the key if needed). If the target already receives that topic through an existing entry, nothing changes and the footer tells you which entry does.</li>
+<li><strong>Disconnect</strong>: Ctrl-click (Cmd-click on macOS) the link’s pin, or select the link and press Delete. This removes the <code>sub_topic</code> entries that equal the topic exactly. If another entry (a prefix, a wildcard, the catch-all) also delivers the topic, the editor refuses and names it: edit that entry by hand in the inspector.</li>
+</ul>
+<p>Each connect or disconnect is a single undo step.</p>
+</section>
+<section id="nodes-and-the-inspector" class="level2">
+<h2 class="anchored" data-anchor-id="nodes-and-the-inspector">Nodes and the inspector</h2>
+<p>Add nodes from the palette; a new node gets the first free alias of its type (e.g.&nbsp;<code>federate_a</code>), with <code>_2</code>, <code>_3</code>… appended if taken. Select a node to edit its keys in the inspector:</p>
+<ul>
+<li>every key known for that node type appears with a typed widget (checkbox, number, choice list…), grouped by topic, timing, and so on;</li>
+<li>the checkbox in front of a key <strong>enables or comments out</strong> the key (the value is kept in the file as <code># key = value</code>, ready to be re-enabled);</li>
+<li>each key has an inline <strong>comment</strong> field, and the section itself has a comment;</li>
+<li><strong>Overrides of [agents]</strong> lets a node override a fleet-wide default set in <code>[agents]</code>;</li>
+<li><strong>Custom keys</strong> (for node types that accept them) lets you add keys the schema does not know: pick a name, a type and a value, then press <strong>Add</strong>;</li>
+<li>the node can be renamed, duplicated and deleted via right-click.</li>
+</ul>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Renaming a node does <strong>not</strong> rewrite the <code>sub_topic</code> entries of other nodes that were matching its old name as an implicit <code>pub_topic</code>. Check the links afterwards.</p>
+</div>
+</div>
+</section>
+<section id="shortcuts" class="level2">
+<h2 class="anchored" data-anchor-id="shortcuts">Shortcuts</h2>
+<p>On macOS, read Cmd for Ctrl.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Action</th>
+<th>Input</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>New / Open / Save / Save As</td>
+<td>Ctrl+N / Ctrl+O / Ctrl+S / Ctrl+Shift+S</td>
+</tr>
+<tr class="even">
+<td>Quit</td>
+<td>Ctrl+Q</td>
+</tr>
+<tr class="odd">
+<td>Undo / Redo</td>
+<td>Ctrl+Z / Ctrl+Shift+Z or Ctrl+Y</td>
+</tr>
+<tr class="even">
+<td>Duplicate node</td>
+<td>Ctrl+D</td>
+</tr>
+<tr class="odd">
+<td>Delete selected nodes and links</td>
+<td>Delete or Backspace, with the pointer over the canvas</td>
+</tr>
+<tr class="even">
+<td>Find node</td>
+<td>Shift+Space, or View &gt; Find node…</td>
+</tr>
+<tr class="odd">
+<td>Pan the canvas</td>
+<td>hold Space and drag, even over nodes</td>
+</tr>
+<tr class="even">
+<td>Detach a link</td>
+<td>Ctrl-click (Cmd-click) the link’s pin</td>
+</tr>
+<tr class="odd">
+<td>Move a node</td>
+<td>drag it (the position is saved in the file)</td>
+</tr>
+</tbody>
+</table>
+<p>Right-click on a node gives <strong>Rename…</strong>, <strong>Duplicate</strong>, <strong>Delete</strong>. Right-click on empty canvas gives <strong>Add node</strong>, <strong>Auto layout</strong> and <strong>Show catch-all links</strong>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Finding a node in a big file
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Press Shift+Space and start typing: matches are by prefix, then substring, then by the letters in order (at most twelve are listed). Up/Down to choose, Enter to select and center the canvas on the node, Escape to close. Shortcuts such as undo and the finder are suspended while a text field has the keyboard.</p>
+</div>
+</div>
+<p><strong>Auto layout</strong> (View menu or canvas menu) arranges all nodes left to right by data flow: sources on the left, sinks on the right. When you open a file, only nodes without a saved position are placed automatically, and that does not count as a modification.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Limitations
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There is no canvas zoom yet: use panning, the minimap and the node finder to navigate large systems.</p>
+</div>
+</div>
+</section>
+<section id="document-settings" class="level2">
+<h2 class="anchored" data-anchor-id="document-settings">Document settings</h2>
+<p>Click <strong>Document settings</strong> in the palette (or in the View menu) to edit the <code>[agents]</code> and <code>[broker]</code> sections in the inspector. <code>[agents]</code> holds fleet-wide defaults: an inheritable key set there applies to every node unless the node sets its own value. <code>[broker]</code> holds the broker’s settings, including the remote editing keys described below.</p>
+</section>
+</section>
+<section id="what-happens-to-your-file" class="level1">
+<h1>What happens to your file</h1>
+<p>The editor is careful with files you may have written by hand:</p>
+<ul>
+<li><strong>Comments stay where they were.</strong> A comment right above a section header belongs to the section; comment lines right above a key belong to that key. Commented-out keys are kept.</li>
+<li><strong>Values are written back exactly as read.</strong> Only the layout is normalized on save (spacing around <code>=</code>, at most one blank line, one blank line before each section). A hand-written file may therefore look slightly different after its first save.</li>
+<li><strong>Node positions</strong> are stored in a special comment line below the section header, which agents never read:</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[sensors]</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#@ type=filter pos=420,180</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Saving is safe.</strong> The editor writes <code>FILE.tmp</code>, copies the previous file to <code>FILE.bak</code>, and renames the temporary file over the original, so a crash leaves either the old or the new file. Text that is not valid TOML is refused.</li>
+<li><strong>External changes are detected.</strong> If the file changed on disk since you loaded it, saving does not overwrite it: you can choose <strong>Reload (discard mine)</strong>, <strong>Overwrite</strong> or <strong>Cancel</strong>. The editor also checks about once a second and shows a banner when it notices an outside change.</li>
+<li>Opening or closing a document with unsaved changes asks whether to <strong>Save</strong>, <strong>Discard</strong> or <strong>Cancel</strong>.</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The editor does not talk to the broker (for local files)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Editing a local file only changes the file. The running broker notices the change by itself (it watches its settings file and reloads about a second later), but <strong>agents fetch their settings when they start</strong>: restart an agent to make it pick up its new settings.</p>
+</div>
+</div>
+</section>
+<section id="remote-editing" class="level1">
+<h1>Remote editing</h1>
+<section id="what-it-is-and-when-to-use-it" class="level2">
+<h2 class="anchored" data-anchor-id="what-it-is-and-when-to-use-it">What it is, and when to use it</h2>
+<p>The broker is the central process of a MADS network: it routes messages and hands out the settings file to agents. With <em>remote editing</em> the broker lets an authorized editor <strong>read and replace its own settings file</strong> over the network. You open it in the very same node editor, change what you need, press Save, and the broker validates, writes and reloads the file.</p>
+<p>Use it when the broker runs on a machine you do not want to log into (a rack PC, a Raspberry Pi in a test cell…), or simply to keep one authoritative <code>mads.ini</code> on the broker and edit it from anywhere.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/mads_ini_open_panel.png" class="img-fluid figure-img"></p>
+<figcaption>A new, empty document with the <em>Open broker settings</em> panel expanded: discovered brokers (“rooms”), the local broker button, and a free address field.</figcaption>
+</figure>
+</div>
+<p>Some properties worth knowing up front:</p>
+<ul>
+<li>The service is <strong>off by default</strong>. You enable it with <code>remote_edit = true</code> in <code>[broker]</code> and restart the broker.</li>
+<li>It can reach <strong>exactly one file</strong>: the settings file the broker was started with. Requests carry no file names, so it cannot be used to read or write anything else.</li>
+<li>A save is validated as TOML, written atomically, and picked up by the broker like any other change. If the file changed since you loaded it, nothing is written and you are asked what to do.</li>
+</ul>
+</section>
+<section id="three-ways-to-allow-it" class="level2">
+<h2 class="anchored" data-anchor-id="three-ways-to-allow-it">Three ways to allow it</h2>
+<p>Which setup you need depends on where you edit from:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>You edit from…</th>
+<th>Setup</th>
+<th>Security</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>the same computer as the broker</td>
+<td><code>remote_edit = true</code> only</td>
+<td>plain local socket, usable only by the OS user who runs the broker</td>
+</tr>
+<tr class="even">
+<td>another computer, on a trusted lab network, for development</td>
+<td>password, no keys</td>
+<td>password is never sent, but <strong>the file contents travel in clear</strong></td>
+</tr>
+<tr class="odd">
+<td>another computer, in production</td>
+<td>CURVE editor keys (optionally + password)</td>
+<td>the connection is encrypted and authenticated</td>
+</tr>
+</tbody>
+</table>
+<p>(<em>CURVE</em> is the encryption used by MADS when the broker is started with <code>--crypto</code>. Each participant has a <strong>key pair</strong>: a secret key that stays on its machine and a public key you can hand out freely. The broker only admits those whose public key it knows.)</p>
+<p>The full access matrix is the following:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>no password</th>
+<th>password</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>broker <strong>without</strong> <code>--crypto</code></td>
+<td>no network listener, local only</td>
+<td>plaintext network access, password required; file contents travel in clear</td>
+</tr>
+<tr class="even">
+<td>broker <strong>with</strong> <code>--crypto</code></td>
+<td>CURVE; only keys in the editors folder; if none, no network listener</td>
+<td>CURVE <strong>and</strong> password</td>
+</tr>
+</tbody>
+</table>
+<p>The local (ipc) endpoint, when the broker’s <code>ipc</code> setting is on, never asks for a password in any of these cases.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Editor keys are <strong>separate from the bus keys</strong>: an editor key gives no access to the message bus, and an agent key gives no editing right. The only exception is the password case, see option 4.</p>
+</div>
+</div>
+<section id="on-the-brokers-own-computer" class="level3">
+<h3 class="anchored" data-anchor-id="on-the-brokers-own-computer">1. On the broker’s own computer</h3>
+<p>Add to <code>mads.ini</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[broker]</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dt">remote_edit</span> <span class="op">=</span> <span class="cn">true</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Restart the broker, then run <code>mads ini</code> on the same machine and click <strong>Local broker</strong>. No keys, no password.</p>
+</section>
+<section id="development-over-the-network-with-a-password" class="level3">
+<h3 class="anchored" data-anchor-id="development-over-the-network-with-a-password">2. Development over the network, with a password</h3>
+<p>For trusted networks only. On the broker’s host:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> ini <span class="at">--set-password</span> /path/to/mads.ini</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You are asked to type the password twice (it is not echoed; passwords shorter than 8 characters are accepted with a warning). Set <code>remote_edit = true</code> in the same file, <strong>restart the broker</strong> (it prints a warning at startup), then from the editor open <code>host:9094</code> with <strong>Use CURVE keys</strong> unchecked.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Without <code>--crypto</code> the password itself is never sent, but the <strong>settings text travels in clear</strong>, including any secret written in it. Do not use this setup outside a network you trust.</p>
+</div>
+</div>
+</section>
+<section id="production-with-curve-editor-keys" class="level3">
+<h3 class="anchored" data-anchor-id="production-with-curve-editor-keys">3. Production, with CURVE editor keys</h3>
+<ol type="1">
+<li><p>On the <strong>editor’s</strong> computer, generate a key pair:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> <span class="at">--keypair</span> NAME</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This writes <code>NAME.key</code> (secret, owner-only, keep it here) and <code>NAME.pub</code> (public) in the current directory. It refuses to overwrite existing files unless you add <code>--force</code>.</p></li>
+<li><p>Copy <strong>only <code>NAME.pub</code></strong> to the broker’s <em>editors folder</em>: by default <code>&lt;keys_dir&gt;/editors</code>, i.e.&nbsp;<code>$(mads -p)/etc/editors</code>, or the folder named by <code>editors_dir</code> in <code>[broker]</code>. If the folder does not exist, a broker started with <code>--crypto</code> creates it at startup and tells you; copy the key into it afterwards.</p></li>
+<li><p>Make sure <code>remote_edit = true</code> is set, then <strong>(re)start the broker with <code>--crypto</code></strong>: it reads the editor keys only at startup. With no valid key in the folder, there is no network listener at all.</p></li>
+<li><p>On the editor’s computer you need <code>NAME.key</code> and the broker’s public key (<code>broker.pub</code>). In the panel, enter the address, check <strong>Use CURVE keys</strong>, select <code>NAME.key</code> with <strong>Secret key…</strong> and <code>broker.pub</code> with <strong>Broker public key…</strong>.</p></li>
+</ol>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Do not copy <code>NAME.pub</code> into the broker’s main keys directory, unless that editor should also be allowed to join the message bus.</p>
+</div>
+</div>
+</section>
+<section id="curve-plus-a-password" class="level3">
+<h3 class="anchored" data-anchor-id="curve-plus-a-password">4. CURVE plus a password</h3>
+<p>A second factor on top of option 3: set up the editor keys as above, then run <code>mads ini --set-password /path/to/mads.ini</code> and restart the broker. The editor asks for the password when connecting.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If the editors folder holds <strong>no</strong> valid key, the broker accepts any key of the bus keys directory <em>together with</em> the password (its startup line says “bus keys”). Keep at least one editor key in the editors folder if bus participants must not be able to edit, even knowing the password.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="broker-settings-reference" class="level2">
+<h2 class="anchored" data-anchor-id="broker-settings-reference">Broker settings reference</h2>
+<p>All keys live in <code>[broker]</code> and are commented out by default in the template <code>mads.ini</code>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>remote_edit</code></td>
+<td><code>false</code></td>
+<td>turns the service on</td>
+</tr>
+<tr class="even">
+<td><code>edit_address</code></td>
+<td><code>"tcp://*:9094"</code></td>
+<td>network endpoint; its port also names the local socket <code>broker-&lt;port&gt;-edit.ipc</code>, so several brokers on a host do not collide</td>
+</tr>
+<tr class="odd">
+<td><code>editors_dir</code></td>
+<td><code>&lt;keys_dir&gt;/editors</code></td>
+<td>folder holding the editors’ public keys (<code>*.pub</code>)</td>
+</tr>
+<tr class="even">
+<td><code>edit_ipc</code></td>
+<td>derived from the port</td>
+<td>an explicit <code>ipc://</code> endpoint instead</td>
+</tr>
+<tr class="odd">
+<td><code>edit_backups</code></td>
+<td><code>10</code></td>
+<td>how many timestamped backups to keep</td>
+</tr>
+<tr class="even">
+<td><code>edit_password_file</code></td>
+<td><code>&lt;settings file&gt;.edit_password</code></td>
+<td>where the password verifier lives</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="opening-the-brokers-settings" class="level2">
+<h2 class="anchored" data-anchor-id="opening-the-brokers-settings">Opening the broker’s settings</h2>
+<p>Click <strong>Open broker settings</strong> at the top of the palette, or choose <strong>File &gt; Open broker settings…</strong>. The panel opens by itself whenever the document has no file or broker behind it. There are three ways to connect:</p>
+<ul>
+<li><strong>Rooms</strong>: brokers that announce themselves on the network (started with the <code>-r</code> discovery option) are listed by name and host. Only brokers with <code>remote_edit</code> on can be selected. Hover to see the endpoint; <code>(CURVE)</code> marks an encrypted one, which uses the key files chosen under <strong>Keys</strong>.</li>
+<li><strong>Local broker</strong>: opens the broker on this computer through its local socket, for the port in the field beside the button (9094 by default; the last one used is remembered). The button is enabled only if the socket file exists, which does not prove the broker is answering.</li>
+<li><strong>Address</strong>: type <code>host</code>, <code>host:port</code> or <code>tcp://host:port</code> (port defaults to 9094; IPv6 works with or without brackets), or <code>ipc:///path/to/socket</code>, then press Enter or <strong>Open</strong>. Check <strong>Use CURVE keys</strong> for a broker started with <code>--crypto</code> (it is disabled for ipc addresses). The last address and CURVE choice are remembered.</li>
+</ul>
+<p>The <strong>Keys</strong> section shows up when CURVE is in use. Only the <em>paths</em> of the key files are remembered; the files are read when connecting. If one is missing, the editor tells you which.</p>
+<section id="the-password-prompt" class="level3">
+<h3 class="anchored" data-anchor-id="the-password-prompt">The password prompt</h3>
+<p>If the broker requires a password, a <strong>Password required</strong> dialog names the endpoint. Enter or <strong>OK</strong> sends it, <strong>Cancel</strong> gives up, and a wrong password asks again.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/mads_ini_password.png" class="img-fluid figure-img"></p>
+<figcaption>The “Password required” dialog for <code>tcp://127.0.0.1:9094</code>, with the <strong>Remember on this computer</strong> option.</figcaption>
+</figure>
+</div>
+<p><strong>Remember on this computer</strong> saves, after a successful open or save, a <em>key derived from the password</em> for that one broker address; the password itself is never stored. The derived key is kept in the editor’s preferences file, which is readable by you only:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>System</th>
+<th>Preferences file</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>macOS</td>
+<td><code>~/Library/Application Support/MADS/mads-ini.json</code></td>
+</tr>
+<tr class="even">
+<td>Linux</td>
+<td><code>$XDG_CONFIG_HOME/mads/mads-ini.json</code> (or <code>~/.config/mads/mads-ini.json</code>)</td>
+</tr>
+<tr class="odd">
+<td>Windows</td>
+<td><code>%APPDATA%\MADS\mads-ini.json</code></td>
+</tr>
+</tbody>
+</table>
+<p>If <code>MADS_CONFIG_DIR</code> is set, the file is <code>$MADS_CONFIG_DIR/mads-ini.json</code> instead. The remembered key opens that broker only. If the broker’s password later changes, the editor drops it, tells you, and asks again.</p>
+</section>
+</section>
+<section id="working-on-a-remote-document" class="level2">
+<h2 class="anchored" data-anchor-id="working-on-a-remote-document">Working on a remote document</h2>
+<p>A remote document looks like any other, but the window title and the footer show the endpoint followed by <code>(remote)</code>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/mads_ini_remote_document.png" class="img-fluid figure-img"></p>
+<figcaption>A broker’s settings file opened remotely through its local socket. The title bar and footer show <code>ipc:///tmp/mads-501/broker-9094-edit.ipc (remote)</code>.</figcaption>
+</figure>
+</div>
+<ul>
+<li><strong>Save</strong> sends the text to the broker together with the version you loaded. The broker checks that it is valid TOML, writes it atomically and reloads it; newly started agents get the new settings immediately. If the broker’s file changed in the meantime, nothing is written and a dialog offers <strong>Reload (discard mine)</strong>, <strong>Overwrite</strong> or <strong>Cancel</strong>.</li>
+<li><strong>Reload</strong> (File &gt; Reload) fetches the broker’s current file.</li>
+<li><strong>Save As…</strong> writes a <em>local</em> file instead. The document then becomes that file and is disconnected from the broker; the broker’s file is untouched.</li>
+<li><strong>Changes by others</strong>: about every 5 seconds the editor checks the broker’s file. If you have no unsaved changes it reloads silently (“Reloaded: file changed on disk”); otherwise a banner offers <strong>Reload</strong> or <strong>Keep mine</strong>. An unreachable broker is simply retried.</li>
+<li><strong>Backups</strong>: before each save the broker copies the current file to <code>&lt;settings file&gt;.&lt;YYYYmmdd-HHMMSS&gt;.bak</code> next to it, and keeps the newest <code>edit_backups</code> (10 by default). Note this is separate from the local <code>FILE.bak</code> described above.</li>
+<li><strong>Audit trail</strong>: each save, and each refused or failed request, is logged on the broker’s console with the editor’s public key (or <code>ipc</code>).</li>
+<li><strong>Recent files</strong> (File &gt; Open Recent) lists only local files, not remote brokers.</li>
+</ul>
+</section>
+<section id="limitations-to-keep-in-mind" class="level2">
+<h2 class="anchored" data-anchor-id="limitations-to-keep-in-mind">Limitations to keep in mind</h2>
+<ul>
+<li>Editor keys and the password are <strong>read at broker start</strong>: restart the broker after adding or removing an editor key, or after <code>--set-password</code> / <code>--remove-password</code>.</li>
+<li>After <strong>5 consecutive wrong passwords</strong> the broker refuses all password attempts for 30 seconds.</li>
+<li>Password-only mode (no <code>--crypto</code>) is <strong>plaintext</strong>: the file contents are visible on the network.</li>
+<li>The local socket works only for the OS user that runs the broker.</li>
+<li>If the network endpoint cannot be bound (port busy), the broker prints a warning and carries on without the service.</li>
+<li>Saved text is limited to 4 MiB.</li>
+<li>Saving changes the <em>file</em>; running agents keep their old settings until restarted.</li>
+</ul>
+</section>
+</section>
+<section id="headless" class="level1">
+<h1>Command-line helpers</h1>
+<p>For scripts, CI jobs and SSH sessions, <code>mads ini</code> also works without any window. All commands default to <code>&lt;prefix&gt;/etc/mads.ini</code> when FILE is omitted.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>mads ini --check FILE</code></td>
+<td>lints the file without changing it; prints one line per problem. Exit 0 = clean, 1 = warnings, 2 = errors (info lines, such as unmatched topics, do not count)</td>
+</tr>
+<tr class="even">
+<td><code>mads ini --get section.key FILE</code></td>
+<td>prints the raw value of an active key</td>
+</tr>
+<tr class="odd">
+<td><code>mads ini --set section.key=value FILE</code></td>
+<td>sets a key (repeatable); creates the section if missing; keeps all comments</td>
+</tr>
+<tr class="even">
+<td><code>mads ini --set ... --comment "text" FILE</code></td>
+<td>also sets the inline comment of the keys just set</td>
+</tr>
+<tr class="odd">
+<td><code>mads ini --set-password FILE</code></td>
+<td>creates the editing password for the broker (see above)</td>
+</tr>
+<tr class="even">
+<td><code>mads ini --remove-password FILE</code></td>
+<td>removes it</td>
+</tr>
+</tbody>
+</table>
+<p>Values that are valid TOML keep their type (<code>100</code>, <code>true</code>, <code>["a", "b"]</code>); anything else is stored as a string. Note that <code>--set</code> does not lint the value: run <code>--check</code> afterwards.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lint a file in a CI job</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> ini <span class="at">--check</span> deploy/mads.ini</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># read the sampling period of one agent</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> ini <span class="at">--get</span> logger.time_step deploy/mads.ini</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># set two keys at once, with a comment</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> ini <span class="at">--set</span> logger.time_step=50 <span class="at">--set</span> logger.sub_topic=<span class="st">'["sensors/#"]'</span> <span class="dt">\</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--comment</span> <span class="st">"tuned on the test rig"</span> deploy/mads.ini</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To write a fresh template for a broker running on another host:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mads</span> ini <span class="at">-o</span> mads.ini <span class="at">-b</span> broker.local <span class="at">-F</span> 19090 <span class="at">-B</span> 19091</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="quick-tips" class="level1">
+<h1>Quick tips</h1>
+<ul>
+<li>Start from an existing <code>mads.ini</code>: open it, press Auto layout once, and you have a map of your system.</li>
+<li>Look at the <strong>Problems</strong> list and the <code>!</code> marks before deploying a file: they catch most topic typos.</li>
+<li>Prefer <code>fmu_</code> (a prefix) over <code>fmu_*</code>, which does not do what it seems.</li>
+<li>Hand-editing the file while the editor is open is fine: it notices the change and offers to reload.</li>
+<li>For the complete reference, see <code>man mads-ini</code>, and <code>man mads-broker</code> (section <em>REMOTE EDITING</em>).</li>
+</ul>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/mads-net\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Paolo Bosetti, <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">BY-NC-SA4.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

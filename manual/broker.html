@@ -288,6 +288,10 @@ cookieconsent.run({
     <a class="dropdown-item" href="../manual/cryptography-security.html">
  <span class="dropdown-text">Cryptography and security</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../guides/shared-memory.html">
+ <span class="dropdown-text">Local transport and shared memory</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -370,6 +374,12 @@ cookieconsent.run({
   <li><a href="#settings-file-resolution" id="toc-settings-file-resolution" class="nav-link" data-scroll-target="#settings-file-resolution">Settings file resolution</a></li>
   <li><a href="#interactive-controls" id="toc-interactive-controls" class="nav-link" data-scroll-target="#interactive-controls">Interactive controls</a></li>
   <li><a href="#live-settings-reload" id="toc-live-settings-reload" class="nav-link" data-scroll-target="#live-settings-reload">Live settings reload</a></li>
+  <li><a href="#local-transport-ipc" id="toc-local-transport-ipc" class="nav-link" data-scroll-target="#local-transport-ipc">Local transport (ipc)</a>
+  <ul class="collapse">
+  <li><a href="#socket-files" id="toc-socket-files" class="nav-link" data-scroll-target="#socket-files">Socket files</a></li>
+  <li><a href="#lifecycle" id="toc-lifecycle" class="nav-link" data-scroll-target="#lifecycle">Lifecycle</a></li>
+  <li><a href="#the-transport-command" id="toc-the-transport-command" class="nav-link" data-scroll-target="#the-transport-command">The <code>transport</code> command</a></li>
+  </ul></li>
   <li><a href="#security" id="toc-security" class="nav-link" data-scroll-target="#security">Security</a></li>
   <li><a href="#auto-discovery" id="toc-auto-discovery" class="nav-link" data-scroll-target="#auto-discovery">Auto-discovery</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See also</a></li>
@@ -418,7 +428,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 2, 2026</p>
+      <p class="date-modified">October 30, 2026</p>
     </div>
   </div>
     
@@ -442,6 +452,7 @@ cookieconsent.run({
 <li><a href="../guides/structure.html">Network structure</a> — the broker’s role in a MADS network</li>
 <li><a href="../guides/auto-discovery.html">Service advertising and auto-discovery</a></li>
 <li><a href="../guides/security.html">Security in MADS</a> (for <code>--crypto</code>)</li>
+<li><a href="../guides/shared-memory.html">Local transport and shared memory</a> (ipc and zero-copy blobs)</li>
 <li><a href="../guides/services.html">Services</a> (for running the broker with <code>-d/--daemon</code> as a systemd service)</li>
 </ul>
 </div></div><section id="synopsis" class="level1">
@@ -460,13 +471,13 @@ cookieconsent.run({
 <pre class="mermaid mermaid-js">flowchart TB
   subgraph "Broker process"
     FE["Frontend
-(XSUB, bind)"]
+(XSUB, bind tcp + ipc)"]
     BE["Backend
-(XPUB, bind)"]
+(XPUB, bind tcp + ipc)"]
     PX["proxy_steerable
 forwards frames verbatim"]
     ST["Settings
-(REP, bind)"]
+(ROUTER, bind tcp + ipc)"]
     W["File watcher
 re-reads mads.ini every 1s"]
     D["Discovery thread
@@ -578,7 +589,7 @@ Tip
 </tr>
 <tr class="even">
 <td><code>N</code></td>
-<td>Cycle through this host’s settings URIs, one per network interface — use this to find the address remote agents should connect to.</td>
+<td>Cycle through this host’s settings URIs, one per network interface, plus the local <code>ipc://</code> settings endpoint when one is bound — use this to find the address remote agents should connect to.</td>
 </tr>
 <tr class="odd">
 <td><code>P</code></td>
@@ -646,11 +657,151 @@ Important
 </div>
 </div>
 </section>
+<section id="local-transport-ipc" class="level1">
+<h1>Local transport (ipc)</h1>
+<p>Agents running on the same machine as the broker do not need the TCP stack at all. The broker binds each of its three sockets <strong>twice</strong>: on its <code>tcp://</code> address and on an <code>ipc://</code> endpoint, a Unix-domain socket file. Agents on the broker’s host pick the ipc endpoints automatically (see <a href="../manual/source-filter-sink.html#choosing-the-transport">Choosing the transport</a>); remote agents keep using tcp. Nothing changes on the wire: the same frames travel over a cheaper channel.</p>
+<p>These keys live in the broker’s own section, next to the addresses:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[broker]</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">frontend_address</span> <span class="op">=</span> <span class="st">"tcp://*:9090"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">backend_address</span> <span class="op">=</span> <span class="st">"tcp://*:9091"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="dt">settings_address</span> <span class="op">=</span> <span class="st">"tcp://*:9092"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ipc = true</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ipc_dir = "/tmp/mads-1000"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># frontend_ipc = "ipc:///tmp/mads-1000/front.ipc"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># backend_ipc = "ipc:///tmp/mads-1000/back.ipc"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># settings_ipc = "ipc:///tmp/mads-1000/settings.ipc"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ipc</code></td>
+<td><code>true</code></td>
+<td>Also bind the ipc endpoints. Ignored, with a warning, if libzmq has no ipc transport.</td>
+</tr>
+<tr class="even">
+<td><code>ipc_dir</code></td>
+<td>runtime directory</td>
+<td>Where the socket files go.</td>
+</tr>
+<tr class="odd">
+<td><code>frontend_ipc</code>, <code>backend_ipc</code>, <code>settings_ipc</code></td>
+<td>derived</td>
+<td>Explicit <code>ipc://</code> endpoint for one socket. Needed only when that socket’s tcp address has no numeric port.</td>
+</tr>
+<tr class="even">
+<td><code>ipc_sndbuf</code>, <code>ipc_rcvbuf</code></td>
+<td>1048576 (1 MiB)</td>
+<td>Kernel buffer size of the ipc connections only, in bytes; <code>0</code> keeps the OS default. Read from <code>[broker]</code>, then <code>[agents]</code>; agents use the same keys (their own section first, then <code>[agents]</code>).</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Why ipc needs bigger buffers
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The OS gives Unix-domain sockets small buffers by default: 8 KiB on macOS. A 1 MiB message then needs over a hundred refills per hop, which caps ipc at about 1.4 GB/s per hop and makes it <em>slower</em> than loopback tcp for messages of a few hundred KiB and up. With 1 MiB buffers the same hop moves about 30 GB/s, and ipc beats tcp at every message size. The buffer size applies to the ipc endpoints only: the tcp endpoints of the same broker sockets keep the plain <code>sndbuf</code>/<code>rcvbuf</code> settings, or the OS default and its autotuning. MADS builds libzmq with a small patch for this, since stock libzmq 4.3.5 applies socket buffer sizes to tcp only.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Linux caps socket buffers
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>On Linux the kernel silently caps every buffer request at <code>net.core.wmem_max</code> (send) and <code>net.core.rmem_max</code> (receive). On a stock install both are about 208 KiB, which is also the default size of a Unix-domain socket, so the 1 MiB <code>ipc_sndbuf</code>/<code>ipc_rcvbuf</code> default has no effect until you raise them:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> sysctl <span class="at">-w</span> net.core.wmem_max=4194304 net.core.rmem_max=4194304</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># make it permanent:</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">printf</span> <span class="st">'net.core.wmem_max = 4194304\nnet.core.rmem_max = 4194304\n'</span> <span class="kw">|</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sudo</span> tee /etc/sysctl.d/90-mads.conf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Linux’s AF_UNIX default is already much larger than macOS’s 8 KiB, so the small-buffer bottleneck is milder there; raising the limits matters for large messages. macOS caps at <code>kern.ipc.maxsockbuf</code>, 8 MiB by default, so the 1 MiB default applies as is.</p>
+</div>
+</div>
+<section id="socket-files" class="level2">
+<h2 class="anchored" data-anchor-id="socket-files">Socket files</h2>
+<p>By default the socket files live in the per-user <strong>runtime directory</strong>:</p>
+<ul>
+<li>Linux: <code>$XDG_RUNTIME_DIR/mads</code>, falling back to <code>/tmp/mads-&lt;uid&gt;</code>;</li>
+<li>macOS: <code>/tmp/mads-&lt;uid&gt;</code> (<code>$TMPDIR</code> is too long for a socket path);</li>
+<li>Windows: <code>%LOCALAPPDATA%\mads\run</code>.</li>
+</ul>
+<p>The directory is created with owner-only permissions (<code>0700</code>), and the broker refuses one owned by another user. Each file is named after the socket’s tcp port and role, for example <code>broker-9090-front.ipc</code>, <code>broker-9091-back.ipc</code> and <code>broker-9092-settings.ipc</code>, so several brokers on one host never collide. A socket path must fit in 100 bytes, so keep a custom <code>ipc_dir</code> short.</p>
+</section>
+<section id="lifecycle" class="level2">
+<h2 class="anchored" data-anchor-id="lifecycle">Lifecycle</h2>
+<ul>
+<li><strong>Startup.</strong> The broker probes each path before binding. A stale file left by a crashed broker is replaced. A socket that another live process still accepts connections on, or a path that is not a socket, is left alone: that endpoint is skipped with a warning. The ipc endpoints appear in the startup banner next to the tcp ones.</li>
+<li><strong>Failure.</strong> An ipc problem never affects tcp service. An endpoint that cannot be bound is simply not offered to agents.</li>
+<li><strong>Shutdown.</strong> On a clean exit (<code>Q</code>, <code>X</code>, or a signal in <code>--daemon</code> mode) the broker removes its socket files, but only if they are still the ones it created. Ctrl-C in interactive mode leaves them behind; the next broker replaces them.</li>
+</ul>
+</section>
+<section id="the-transport-command" class="level2">
+<h2 class="anchored" data-anchor-id="the-transport-command">The <code>transport</code> command</h2>
+<p>Agents ask the settings socket what the broker offers with a <code>transport</code> request, sent right after the settings and timecode requests. The broker replies with one JSON frame:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"host_token"</span><span class="fu">:</span> <span class="st">"lab-pc/4c4c4544-0042-3510-8048-b4c04f4b4d32"</span><span class="fu">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"ipc"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"frontend"</span><span class="fu">:</span> <span class="st">"ipc:///tmp/mads-1000/broker-9090-front.ipc"</span><span class="fu">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"backend"</span><span class="fu">:</span> <span class="st">"ipc:///tmp/mads-1000/broker-9091-back.ipc"</span><span class="fu">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"settings"</span><span class="fu">:</span> <span class="st">"ipc:///tmp/mads-1000/broker-9092-settings.ipc"</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"curve"</span><span class="fu">:</span> <span class="kw">false</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>host_token</code> identifies the broker’s machine (hostname plus machine id). An agent compares it with its own to decide whether it shares the broker’s host. An empty ipc string means that role is not offered. A broker that predates the command answers with its bare version string, which agents read as “tcp only”, so mixed-version fleets keep working.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>ipc and security
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>ip_whitelist</code> does not apply to ipc peers, which have no IP address. Their access control is the owner-only runtime directory: only processes of the same user can reach the sockets. CURVE, when enabled with <code>--crypto</code>, applies to the ipc endpoints exactly as to the tcp ones.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Windows
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ipc on Windows uses AF_UNIX sockets, which need Windows 10 or later and a libzmq built against the Windows 10 SDK (<code>afunix.h</code>). With a libzmq lacking ipc, the broker warns and serves tcp only, and agents silently stay on tcp.</p>
+</div>
+</div>
+<p><a href="../manual/doctor.html"><code>mads doctor</code></a> shows the advertised endpoints, whether their socket files exist on this host, and which transport a local agent would pick.</p>
+</section>
+</section>
 <section id="security" class="level1">
 <h1>Security</h1>
 <p>With <code>--crypto[=keyname]</code>, CURVE authentication is set up on <strong>all three</strong> sockets (frontend, backend, and settings) — not just the pub/sub pair. Two additional settings, read from the broker’s own ini section, only take effect when <code>--crypto</code> is active:</p>
 <ul>
-<li><code>ip_whitelist</code>: an array of allowed client IPs (default: empty, meaning all IPs are allowed).</li>
+<li><code>ip_whitelist</code>: an array of allowed client IPs (default: empty, meaning all IPs are allowed). It only filters tcp peers; see <a href="#local-transport-ipc">Local transport</a>.</li>
 <li><code>auth_verbose</code>: enable verbose authentication logging.</li>
 </ul>
 <p>See <a href="../guides/security.html">Security in MADS</a> for generating keypairs (<code>mads --keypair</code>, <a href="../manual/mads.html">mads</a>) and the full authentication setup.</p>
@@ -675,7 +826,7 @@ Note
 </section>
 <section id="see-also" class="level1">
 <h1>See also</h1>
-<p><a href="../manual/mads.html">mads</a> · <a href="../manual/federate.html">federate</a> · <a href="../manual/network-discovery.html">Network discovery</a> · <a href="../manual/timing-scheduling.html">Timing and scheduling</a></p>
+<p><a href="../manual/mads.html">mads</a> · <a href="../manual/federate.html">federate</a> · <a href="../manual/network-discovery.html">Network discovery</a> · <a href="../manual/timing-scheduling.html">Timing and scheduling</a> · <a href="../manual/doctor.html">doctor</a> · <a href="../guides/shared-memory.html">Local transport and shared memory</a></p>
 
 
 </section>

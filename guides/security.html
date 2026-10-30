@@ -285,6 +285,10 @@ cookieconsent.run({
     <a class="dropdown-item" href="../manual/cryptography-security.html">
  <span class="dropdown-text">Cryptography and security</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../guides/shared-memory.html">
+ <span class="dropdown-text">Local transport and shared memory</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -372,6 +376,7 @@ cookieconsent.run({
   <li><a href="#launching-the-agents" id="toc-launching-the-agents" class="nav-link" data-scroll-target="#launching-the-agents">Launching the agents</a></li>
   <li><a href="#a-note-on-the-logger" id="toc-a-note-on-the-logger" class="nav-link" data-scroll-target="#a-note-on-the-logger">A note on the logger</a></li>
   <li><a href="#ip-whitelist" id="toc-ip-whitelist" class="nav-link" data-scroll-target="#ip-whitelist">IP Whitelist</a></li>
+  <li><a href="#local-transport" id="toc-local-transport" class="nav-link" data-scroll-target="#local-transport">Local transport</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -418,7 +423,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 2, 2026</p>
+      <p class="date-modified">October 30, 2026</p>
     </div>
   </div>
     
@@ -565,6 +570,11 @@ Tip
 <p>Also note the <code>auth_verbose</code> boolean flag: if enabled, the authentication steps are verbosely stated, helping troubleshooting authentication errors.</p>
 </div>
 </div>
+</section>
+<section id="local-transport" class="level2">
+<h2 class="anchored" data-anchor-id="local-transport">Local transport</h2>
+<p>Agents on the broker’s own host connect through its <code>ipc://</code> endpoints (Unix-domain socket files) rather than through tcp loopback; see <a href="../manual/broker.html#local-transport-ipc">Local transport</a>. An ipc peer has no IP address, so <strong><code>ip_whitelist</code> does not apply to it</strong>: listing <code>127.0.0.1</code> does not restrict local agents. Their access control is the filesystem: the socket files live in a per-user runtime directory (<code>$XDG_RUNTIME_DIR/mads</code> or <code>/tmp/mads-&lt;uid&gt;</code>) with owner-only permissions, so only processes of the user running the broker can reach them. CURVE still applies over ipc when the broker runs with <code>--crypto</code>.</p>
+<p>Local agents running as another user cannot see the socket files, so they fall back to tcp, where the whitelist applies as usual. To force every connection through the whitelist, set <code>ipc = false</code> in <code>[broker]</code> (<code>transport = "tcp"</code> in <code>[agents]</code> only changes what well-behaved agents choose). <code>mads doctor</code> reports whether the runtime directory is owner-only.</p>
 
 
 </section>
